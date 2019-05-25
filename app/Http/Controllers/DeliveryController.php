@@ -56,11 +56,7 @@ class DeliveryController extends Controller
  
 
 
-     public function ahmed(){
-
-     	echo 'Hello ahmed';
-     }
-   
+  
 	protected function getCountries($lang, $selected = NULL){
 		if($lang == "ar"){
 			$country_col = "country_ar_name AS country_name";
