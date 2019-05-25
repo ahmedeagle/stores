@@ -1,6 +1,6 @@
 /node_modules
-.env
 /.vagrant
 Homestead.json
 Homestead.yaml
 npm-debug.log
+.env
