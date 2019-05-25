@@ -58,7 +58,7 @@ class DeliveryController extends Controller
 
      public function ahmed(){
 
-     	
+     	echo 'Hello ahmed';
      }
    
 	protected function getCountries($lang, $selected = NULL){
