@@ -2,7 +2,7 @@
 //Seller.php
 
 namespace App;
-
+//
 //Class which implements Illuminate\Contracts\Auth\Authenticatable
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
