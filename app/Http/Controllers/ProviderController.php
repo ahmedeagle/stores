@@ -2239,8 +2239,6 @@ public function editProviderOffer(Request $request){
 
 public function updateProviderOffer(Request $request){
 
-
-
    	$lang = $request->input('lang');
 		 
 		if($lang == "ar"){
@@ -2260,7 +2258,7 @@ public function updateProviderOffer(Request $request){
 			);
 		}else{
 			$msg = array(
-				0 => 'Job updated successfully',
+				0 => 'Offer updated successfully',
 				1 => 'All fields are required',
 				2 => 'access_token required',
 				3 => 'offer id  required',
@@ -2326,27 +2324,54 @@ public function updateProviderOffer(Request $request){
 
          
 
-
+         
          $inputs['provider_id']  =  $this->get_id($request,'providers','provider_id');
          $inputs['offer_title']  =  $request -> offer_title;
-  
-              
-                    // cat_id
 
+
+          if($request-> photo ){
+
+			           /* $image  = $request -> photo ;
+						//save new image   
+						$image ->store('/','offers');
+						$nameOfImage = $image ->hashName();
+						$inputs['photo'] =  $nameOfImage;*/
+                        //save new image   64 encoded
+ 
               $offer = DB::table('providers_offers') 
                                 -> where ([
                                 	         'provider_id'   =>   $inputs['provider_id'],
                                 	         'id'            =>   $request -> offer_id
 
                                          ]) ;
-
-
+ 
              if(!$offer -> first()){
  
                 return response()->json(['status' => false, 'errNum' => 10, 'msg' => $msg[10]]);
              }
-              //
- 
+
+             $image = $this->saveImage($request -> photo,$request -> image_ext, 'offers/');
+             $name = $offer -> first() -> photo;
+
+	               if(Storage::disk('offers')->exists($name))
+	               {	                     
+	                    Storage::disk('offers')->delete($name);
+	               }         
+      					
+    					if($image == ""){
+    						if($lang == "ar"){
+    							$errMsg = "فشل فى رفع الصورة حاول فى وقت  لاحق";
+    						}else{
+    							$errMsg = "Failed to upload image, please try again later";
+    						}
+    
+    						return response()->json(['status'=> false, 'errNum' => 30, 'msg' => $errMsg]);
+    					}else{
+    					     
+        	                      $inputs['photo']  = $image;
+    					}	
+			    }  
+
                 
 			try {
  
