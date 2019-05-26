@@ -2345,7 +2345,7 @@ public function updateProviderOffer(Request $request){
  
                 return response()->json(['status' => false, 'errNum' => 10, 'msg' => $msg[10]]);
              }
-             
+              //
  
                 
 			try {
