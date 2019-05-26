@@ -2011,6 +2011,7 @@ public function deleteProviderCategory(Request $request){
 						    	  'start_date',
 						    	  'end_date',
 						    	  'expire',
+						    	  'providers_offers.publish',
 						    	  'paid',
 						    	  'paid_amount',
 						    	  'providers_offers.status'
@@ -2143,6 +2144,221 @@ public function addProviderOffer(Request $request){
 	}
 
 
+public function editProviderOffer(Request $request){
+
+        	$lang = $request->input('lang');
+		 
+		if($lang == "ar"){
+			$msg = array(
+				0 => '',
+				1 => 'كل الحقول مطلوبه',
+ 				2 => 'توكن المستخدم غير موجود ',
+ 				3 => 'لابد من ادخال رقم   العرض  ',
+				4 =>  ' العرض  غير موجود '
+			);
+
+
+		}else{
+			$msg = array(
+				0 => '',
+				1 => 'All fields are required',
+				2 => 'access_token required',
+				3 =>'offer id  required',
+				4 => 'offer not found ',
+ 
+				 
+			);
+		}
+
+		$messages = array(
+				 
+			'access_token.required'     => 2,
+			'required'                  => 1,
+			'offer_id.required'         => 3,
+			'offer_id.exists'           => 4,
+
+
+		);
+
+		$validator = Validator::make($request->all(),[
+			'access_token'           => 'required',
+ 			'offer_id'               => 'required|exists:providers_offers,id' 
+			
+		], $messages);
+
+		if($validator->fails()){
+			$error = $validator->errors()->first();
+			return response()->json(['status' => false, 'errNum' => $error, 'msg' => $msg[$error]]);
+		} 
+
+          
+         $inputs['provider_id']  =  $this->get_id($request,'providers','provider_id');
+              
+                    // cat_id
+
+              $offer = DB::table('providers_offers') 
+                                -> where ([
+                                	         'provider_id'   =>   $inputs['provider_id'],
+                                	         'id'            =>   $request -> offer_id
+
+                                         ])
+                               -> select(
+                               	           'id',
+                               	           'offer_title',
+                               	           'paid',
+                               	           'status',
+                               	           'publish',
+                               	           DB::raw('DATE(start_date) AS start_date'),
+                               	           DB::raw('DATE(end_date) AS end_date'),
+                               	           DB::raw("CONCAT('". url('/') ."','/offers/',providers_offers.photo) AS offer_image")                               
+                                        ) 
+                               -> first();
+
+
+              if(!$offer){
+ 
+ 
+                return response()->json(['status' => false, 'errNum' => 4, 'msg' => $msg[4]]);
+             }
+
+
+             if($offer -> paid == "1" && $offer -> status == "2" && $offer -> publish == "1" )
+             {
+
+                unset($offer -> start_date);
+                unset($offer -> end_date);
+
+             }
+
+ 
+  
+				return response()->json(['status'=> true, 'errNum' => 0, 'msg' => $msg[0],'data' => $offer]);
+
+ 
+}
+
+public function updateProviderOffer(Request $request){
+
+
+
+   	$lang = $request->input('lang');
+		 
+		if($lang == "ar"){
+			$msg = array(
+				0 => 'تم  تعديل  العرض  بنجاح ',
+				1 => 'كل الحقول مطلوبه',
+ 				2 => 'توكن المستخدم غير موجود ',
+ 				3 => 'لابد من ادخال رقم   العرض  ',
+				4 =>  'عنوان العرض مطلوب',
+				5 => ' العرض  غير موجوده ',
+				6 => 'تاريخ  بدأ  ونهاية العرض لابد ان يكون علي الشكل  (yyyy-mm-dd H:i:s)' ,
+				7 => 'عنوان  العرض لابد ان يكون احرف ',
+				8 => 'اقصي عدد مسموح به من الاحرف  للعنوان هو 200',
+				9 => 'تاريخ بدا وانتهاء العرض  مطلوب',
+				10 => 'فشل في تحديث العرض '
+				
+			);
+		}else{
+			$msg = array(
+				0 => 'Job updated successfully',
+				1 => 'All fields are required',
+				2 => 'access_token required',
+				3 => 'offer id  required',
+				4 => 'Offer Title required',
+				5 => 'Offer Not found',
+				6 =>  'Start and end date  must be in format (yyyy-mm-dd H:i:s)',
+				7 => 'Offer title must be string',
+				8 => 'Title max character is 200 Char',
+				9 => 'offer start and end date required',
+				10=> 'Faild to update offer'
+  
+			);
+		}
+
+		$messages = array(
+						
+ 			'access_token.required'      => 2,
+			'offer_id.required'          => 3,
+			'offer_title.required'       => 4,
+			'offer_id.exists'            => 5,
+			'start_date.date_format'     => 6,
+			'end_date.date_format'       => 6,
+			'offer_title.string'         => 7,
+			'offer_title.max'            => 8,
+			'start_date.required'        => 9,
+			'end_date.required'          => 9
+
+		);
+
+       $rules=[
+			
+			'access_token'           => 'required',
+			'offer_id'               => 'required|exists:providers_offers,id', 
+			'offer_title'            => 'required|string|max:200',			
+			'start_date'             =>'date_format:Y-m-d H:i:s',
+			'end_date'               =>'date_format:Y-m-d H:i:s'
+			
+		];   
+
+
+		if($request -> start_date){
+
+			$rules['start_date']  ='required|date_format:Y-m-d H:i:s';
+			$rules['end_date']    ='required|date_format:Y-m-d H:i:s';
+			$inputs['start_date'] = $request -> start_date;
+		}
+
+		if($request -> end_date){
+
+			$rules['end_date']   ='required|date_format:Y-m-d H:i:s';
+			$rules['start_date'] ='required|date_format:Y-m-d H:i:s';
+			$inputs['end_date']  = $request -> end_date;
+		}
+ 
+
+		$validator = Validator::make($request->all(),$rules,$messages);
+
+
+		if($validator->fails()){
+			$error = $validator->errors()->first();
+			return response()->json(['status' => false, 'errNum' => $error, 'msg' => $msg[$error]]);
+		} 
+
+         
+
+
+         $inputs['provider_id']  =  $this->get_id($request,'providers','provider_id');
+         $inputs['offer_title']  =  $request -> offer_title;
+  
+              
+                    // cat_id
+
+              $offer = DB::table('providers_offers') 
+                                -> where ([
+                                	         'provider_id'   =>   $inputs['provider_id'],
+                                	         'id'            =>   $request -> offer_id
+
+                                         ]) ;
+
+
+             if(!$offer -> first()){
+ 
+                return response()->json(['status' => false, 'errNum' => 10, 'msg' => $msg[10]]);
+             }
+ 
+                
+			try {
+ 
+                   $offer -> update($inputs);     
+ 
+				return response()->json(['status'=> true, 'errNum' => 0, 'msg' => $msg[0]]);
+
+
+			} catch (Exception $e) {
+				return response()->json(['status'=> false, 'errNum' => 4, 'msg' => $msg[4]]);
+			}
+
+}
 
 
 	public function payProviderOffer(Request $request){
@@ -3442,7 +3658,8 @@ public function addProviderJob(Request $request){
 				0 => 'تم اضافه  الوظيفة  بنجاح ',
 				1 => 'كل الحقول مطلوبه',
  				2 => 'توكن المستخدم غير موجود ',
-				3 =>  'فشل في اضافه   الوظيفة  '
+				3 =>  'فشل في اضافه   الوظيفة  ',
+				4 => 'اقصي عدد احرف للعنوان هو 200 حرف والوصف هو 5000 حرف'
 			);
 		}else{
 			$msg = array(
@@ -3450,13 +3667,15 @@ public function addProviderJob(Request $request){
 				1 => 'All fields are required',
 				2 => 'access_token required',
 				3 => 'Failed to add Job',
+				4 => 'max job title is 200 char and discription is 5000 char'
 				 
 			);
 		}
 
 		$messages = array(
 			'required'                 => 1,
-			'access_token.rrequired'   => 2
+			'access_token.rrequired'   => 2,
+			'max'                      => 4
 		);
 
 		$validator = Validator::make($request->all(),[
@@ -3586,7 +3805,10 @@ public function updateProviderJob(Request $request){
  				2 => 'توكن المستخدم غير موجود ',
  				3 => 'لابد من ادخال رقم  الوظيفة  ',
 				4 =>  'فشل في  تعديل  الوظيفة  ',
-				5 => 'الوظيفه غير موجوده '
+				5 => 'الوظيفه غير موجوده ',
+				6 =>'عنوان  الوظيفة لابد ان يكون احرف ',
+				7 =>'اقصي عدد مسموح به من الاحرف  للعنوان هو 200',
+				8 =>'الوصف لابد الا يتجاوز 5000 حرف',
 			);
 		}else{
 			$msg = array(
@@ -3595,7 +3817,13 @@ public function updateProviderJob(Request $request){
 				2 => 'access_token required',
 				3 => 'job id  required',
 				4 => 'Failed to update job',
-				5 => 'Job Not found'
+				5 => 'Job Not found',
+				6 => 'job title must be string',
+				7 =>  'title max character i 200 Char',
+				8 =>  'job description max characters is 5000'  
+
+
+
 				 
 			);
 		}
@@ -3606,7 +3834,11 @@ public function updateProviderJob(Request $request){
 			'required'                 => 1,
 			'access_token.required'    => 2,
 			'job_id.required'          => 3,
-			'job_id.exists'            => 5
+			'job_id.exists'            => 5,
+			'job_title.string'         => 6,
+			'job_title.max'            => 7,
+			'job_desc.max'             => 8,
+
 			
 
 
