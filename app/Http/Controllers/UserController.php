@@ -2285,45 +2285,30 @@ public function search(Request $request){
 		if($lang == "ar"){
 			$msg = array(
 				0 => 'يوجد بيانات',
-				1 => 'لا يوجد نتائج لبحثك',
-				2 => 'يجب ان تختار التاريخ عند البحث بالوقت',
-				3 => 'يجب إرسال تفاصيل موقع المستخدم',
-				4 => 'المسافه يجب ان تكون بالأرقام',
-				5 => 'الوقت يجب ان يكون فى تنسيق h:i (09:05)',
-				6 => 'التاريخ يجب ان يكون فى تنسيق yyyy-mm-dd',
-				7 => 'يجب إختيار المدينة المراد البحث بها',
-				8 => 'type يجب ان يكون provider او meal'
+				1 => 'لايوجد نتائج لبحثك ',
+				2 => 'من فضلك اختر فئة ',
+				3 => 'الفئه غير موجوده',
+				 
 			);
 		}else{
 			$msg = array(
 				0 => 'Retrieved successfully',
 				1 => 'There is no result for your search',
-				2 => 'You must determine the date if you search with time',
-				3 => 'user longitude and latitude is required',
-				4 => 'distance must be in number',
-				5 => 'time must be in format H:i ex:- (09:05)',
-				6 => 'date must be in format yyyy-mm-dd',
-				7 => 'Please select city',
-				8 => 'type attribute must be provider or meal'
+				2 => 'Please Choose Category',
+				3 => 'Category no exists'
+
 			);
 		}
 
 		$messages = array(
-			'required' => 7,
-			'numeric'  => 4,
-			'time.date_format' => 5,
-			'date.date_format' => 6,
-			'required_with'    => 3,
-			'in' 			   => 8
+			'cat_id.required'     => 2,
+			'cat_id.exists'       => 3,
+
 		);
 
 		$validator = Validator::make($request->all(),[
-			'distance'       => 'nullable|numeric',
-			// 'time'   		 => 'sometimes|nullable|date_format:H:i',
-			'date'   		 => 'sometimes|nullable|date_format:Y-m-d',
-			'city'           => 'required',
-			'user_longitude'      => 'required_with:distance',
-			'user_latitude'       =>'required_with:distance'
+			 
+			'cat_id'                => 'required|exists:categories_stores,id'
 		], $messages);
 
 		if($validator->fails()){
@@ -2332,38 +2317,14 @@ public function search(Request $request){
 		}
 
 		$name     	 = $request->input('name');
-		$city     	 = $request->input('city');
-		$cat      	 = $request->input('cat_id');
-		$delivery 	 = $request->input('delivery_id');
-		$meals_count = $request->input('meals_count');
-		$date        = $request->input('date');
-		// $time 		 = $request->input('time');
-		$distance    = $request->input('distance');
-		$user_long   = $request->input('user_longitude');
-		$user_lat    = $request->input('user_latitude');
-		$type 		 = $request->input('type');
+ 		$cat      	 = $request->input('cat_id');
+      	$type 		 = $request->input('type');
 
-		// if(!empty($time) && empty($date)){
-		// 	return response()->json(['status' => false, 'errNum' => 2, 'msg' => $msg[2]]);
-		// }
-
-		// if(!empty($distance) && (empty($user_long) || empty($user_lat))){
-		// 	return response()->json(['status' => false, 'errNum' => 3, 'msg' => $msg[3]]);
-		// }
-
-		// $virtualTble = "SELECT meals.meal_id AS id, meals.meal_name AS name, CONCAT(',',meals.cat_id,',') AS cat, '' AS mealsCount, '' AS avail_date, '' AS avail_time, '' AS city, '' AS delivery, '' AS `long`, '' AS `lat`, meals.meal_rate AS rate, meals.main_image AS img, 'meal' AS type FROM `meals`
-		// 				UNION
-		// 				SELECT providers.provider_id AS id, providers.brand_name AS name, (SELECT CONCAT(',', GROUP_CONCAT(providers_categories.cat_id), ',') FROM providers_categories WHERE providers_categories.provider_id = providers.provider_id) AS cat, (SELECT COUNT(meal_id) FROM meals WHERE meals.provider_id = providers.provider_id) AS mealsCount,DATE(providers.avail_date) AS avail_date, time(providers.avail_date) AS avail_time , providers.city_id AS city, (SELECT CONCAT(',', GROUP_CONCAT(providers_delivery_methods.delivery_method), ',') FROM providers_delivery_methods WHERE providers_delivery_methods.provider_id = providers.provider_id) AS delivery, providers.longitude AS `long`, providers.latitude AS `lat`, providers.provider_rate AS rate,providers.profile_pic as img, 'provider' AS type FROM providers";
-
-		if(!empty($type) && $type == 'provider'){
-			$virtualTble = "SELECT providers.provider_id AS id, providers.brand_name AS name, (SELECT CONCAT(',', GROUP_CONCAT(providers_categories.cat_id), ',') FROM providers_categories WHERE providers_categories.provider_id = providers.provider_id) AS cat, '' AS mealsCount,DATE(providers.avail_date) AS avail_date, providers.allowed_from_time AS from_time, providers.allowed_to_time AS to_time, providers.city_id AS city, (SELECT CONCAT(',', GROUP_CONCAT(providers_delivery_methods.delivery_method), ',') FROM providers_delivery_methods WHERE providers_delivery_methods.provider_id = providers.provider_id) AS delivery, providers.longitude AS `long`, providers.latitude AS `lat`, providers.provider_rate AS rate,providers.profile_pic as img, -1 AS likes_count, providers.followers_count AS followers_count, 'provider' AS type, 0.00 AS price FROM providers";
-		}elseif(!empty($type) && $type == 'meal'){
-			$virtualTble = "SELECT meals.meal_id AS id, meals.meal_name AS name, CONCAT(',',meals.cat_id,',') AS cat, meals.allowed_number AS mealsCount, DATE(providers.avail_date) AS avail_date, providers.allowed_from_time AS from_time, providers.allowed_to_time AS to_time, (SELECT providers.city_id FROM providers WHERE providers.provider_id = meals.provider_id) AS city, (SELECT CONCAT(',', GROUP_CONCAT(delivery_method) ,',') FROM providers_delivery_methods WHERE providers_delivery_methods.provider_id = providers.provider_id) AS delivery, providers.longitude AS `long`, providers.latitude AS `lat`, meals.meal_rate AS rate, meals.main_image AS img, meals.likes_count AS likes_count, -1 AS followers_count, 'meal' AS type, CAST(meals.meal_rtp as decimal(10,2)) AS price FROM `meals` JOIN providers ON meals.provider_id = providers.provider_id";
-		}else{
-			$virtualTble = "SELECT meals.meal_id AS id, meals.meal_name AS name, CONCAT(',',meals.cat_id,',') AS cat, meals.allowed_number AS mealsCount, DATE(providers.avail_date) AS avail_date, providers.allowed_from_time AS from_time, providers.allowed_to_time AS to_time, (SELECT providers.city_id FROM providers WHERE providers.provider_id = meals.provider_id) AS city, '' AS delivery, providers.longitude AS `long`, providers.latitude AS `lat`, meals.meal_rate AS rate, meals.main_image AS img, meals.likes_count AS likes_count, -1 AS followers_count, 'meal' AS type, CAST(meals.meal_rtp as decimal(10,2)) AS price FROM `meals` JOIN providers ON meals.provider_id = providers.provider_id
+ 
+		$virtualTble = "SELECT meals.meal_id AS id, meals.meal_name AS name, CONCAT(',',meals.cat_id,',') AS cat, meals.allowed_number AS mealsCount, DATE(providers.avail_date) AS avail_date, providers.allowed_from_time AS from_time, providers.allowed_to_time AS to_time, (SELECT providers.city_id FROM providers WHERE providers.provider_id = meals.provider_id) AS city, '' AS delivery, providers.longitude AS `long`, providers.latitude AS `lat`, meals.meal_rate AS rate, meals.main_image AS img, meals.likes_count AS likes_count, -1 AS followers_count, 'meal' AS type, CAST(meals.meal_rtp as decimal(10,2)) AS price FROM `meals` JOIN providers ON meals.provider_id = providers.provider_id
 							UNION
 							SELECT providers.provider_id AS id, providers.brand_name AS name, (SELECT CONCAT(',', GROUP_CONCAT(providers_categories.cat_id), ',') FROM providers_categories WHERE providers_categories.provider_id = providers.provider_id) AS cat, '' AS mealsCount,DATE(providers.avail_date) AS avail_date, providers.allowed_from_time AS from_time, providers.allowed_to_time AS to_time, providers.city_id AS city, (SELECT CONCAT(',', GROUP_CONCAT(providers_delivery_methods.delivery_method), ',') FROM providers_delivery_methods WHERE providers_delivery_methods.provider_id = providers.provider_id) AS delivery, providers.longitude AS `long`, providers.latitude AS `lat`, providers.provider_rate AS rate,providers.profile_pic as img, -1 AS likes_count, providers.followers_count AS followers_count, 'provider' AS type, 0.00 AS price FROM providers";
-		}
+		
 
 		 //var_dump($virtualTble);
 		 //var_dump($request->all());
