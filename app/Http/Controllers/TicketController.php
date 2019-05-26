@@ -223,6 +223,7 @@ class TicketController extends Controller
                             "tickets.id",
                             "tickets.title",
                             "solved",
+                            "ticket_types.id AS type_id",
                             "ticket_types.".$name."_name AS ticket_Type" ,
                             DB::raw("DATE(tickets.created_at) AS create_date"),
                             DB::raw("Time(tickets.created_at) AS create_time")
