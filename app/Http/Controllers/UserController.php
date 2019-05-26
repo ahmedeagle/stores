@@ -2450,7 +2450,7 @@ public function prepareSearch(Request $request){
  			$cat_col 	  = "store_cat_en_name AS cat_name";
 		}
 
- 	return 	$categories = DB::table('categories_stores')
+ 	 	$categories = DB::table('categories_stores')
  		->where('categories_stores.publish', 1)
  		->join('products','categories_stores.id','=','products.category_id')
  		-> select('categories_stores.id',
