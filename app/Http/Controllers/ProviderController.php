@@ -2329,6 +2329,18 @@ public function updateProviderOffer(Request $request){
          $inputs['offer_title']  =  $request -> offer_title;
 
 
+         $offer = DB::table('providers_offers') 
+                                -> where ([
+                                	         'provider_id'   =>   $inputs['provider_id'],
+                                	         'id'            =>   $request -> offer_id
+
+                                         ]) ;
+        
+            if(!$offer -> first()){
+ 
+                return response()->json(['status' => false, 'errNum' => 10, 'msg' => $msg[10]]);
+             }
+
           if($request-> photo ){
 
 			           /* $image  = $request -> photo ;
@@ -2338,17 +2350,6 @@ public function updateProviderOffer(Request $request){
 						$inputs['photo'] =  $nameOfImage;*/
                         //save new image   64 encoded
  
-              $offer = DB::table('providers_offers') 
-                                -> where ([
-                                	         'provider_id'   =>   $inputs['provider_id'],
-                                	         'id'            =>   $request -> offer_id
-
-                                         ]) ;
- 
-             if(!$offer -> first()){
- 
-                return response()->json(['status' => false, 'errNum' => 10, 'msg' => $msg[10]]);
-             }
 
              $image = $this->saveImage($request -> photo,$request -> image_ext, 'offers/');
              $name = $offer -> first() -> photo;
