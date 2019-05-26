@@ -24,12 +24,19 @@ use Mail;
 use DateTime;
 use Carbon\Carbon;
 use Illuminate\Pagination\LengthAwarePaginator;
+use App\Traits\MainImage;
 
 class UserController extends Controller
 {
+
+	 use MainImage;
+
 	public function __construct(Request $request){
 		 
 	}
+
+
+
 
 	//method to prevent visiting any api link
 	public function echoEmpty(){
@@ -2281,7 +2288,9 @@ protected function checkIfAppliedBefore($userId,$job_id){
 
 public function search(Request $request){
 	    
- 		$lang = $request->input('lang');
+
+
+  		$lang = $request->input('lang');
 		if($lang == "ar"){
 			$msg = array(
 				0 => 'يوجد بيانات',
@@ -2307,8 +2316,7 @@ public function search(Request $request){
 		);
 
 		$validator = Validator::make($request->all(),[
-			 
-			'cat_id'                => 'required|exists:categories_stores,id'
+			'cat_id'                => 'exists:categories_stores,id'
 		], $messages);
 
 		if($validator->fails()){
@@ -2318,65 +2326,58 @@ public function search(Request $request){
 
 		$name     	 = $request->input('name');
  		$cat      	 = $request->input('cat_id');
-      	$type 		 = $request->input('type');
+ 		$rate        = $request->input('rate'); 
+            
+ 	   			$virtualTble = "SELECT products.id AS id, products.title AS name, products.category_id AS cat,  providers.longitude AS `long`, providers.latitude AS `lat`, products.product_rate AS rate, products.likes_count AS likes_count,CAST(products.price as decimal(10,2)) AS price FROM `products` JOIN providers ON products.provider_id = providers.provider_id";  
 
  
-		$virtualTble = "SELECT meals.meal_id AS id, meals.meal_name AS name, CONCAT(',',meals.cat_id,',') AS cat, meals.allowed_number AS mealsCount, DATE(providers.avail_date) AS avail_date, providers.allowed_from_time AS from_time, providers.allowed_to_time AS to_time, (SELECT providers.city_id FROM providers WHERE providers.provider_id = meals.provider_id) AS city, '' AS delivery, providers.longitude AS `long`, providers.latitude AS `lat`, meals.meal_rate AS rate, meals.main_image AS img, meals.likes_count AS likes_count, -1 AS followers_count, 'meal' AS type, CAST(meals.meal_rtp as decimal(10,2)) AS price FROM `meals` JOIN providers ON meals.provider_id = providers.provider_id
-							UNION
-							SELECT providers.provider_id AS id, providers.brand_name AS name, (SELECT CONCAT(',', GROUP_CONCAT(providers_categories.cat_id), ',') FROM providers_categories WHERE providers_categories.provider_id = providers.provider_id) AS cat, '' AS mealsCount,DATE(providers.avail_date) AS avail_date, providers.allowed_from_time AS from_time, providers.allowed_to_time AS to_time, providers.city_id AS city, (SELECT CONCAT(',', GROUP_CONCAT(providers_delivery_methods.delivery_method), ',') FROM providers_delivery_methods WHERE providers_delivery_methods.provider_id = providers.provider_id) AS delivery, providers.longitude AS `long`, providers.latitude AS `lat`, providers.provider_rate AS rate,providers.profile_pic as img, -1 AS likes_count, providers.followers_count AS followers_count, 'provider' AS type, 0.00 AS price FROM providers";
-		
-
-		 //var_dump($virtualTble);
-		 //var_dump($request->all());
-		//die();
-		
 		$conditions = array();
 
 		if(!empty($name) && $name !== 0 && $name !== 0.0 && $name !== "0.0"){
 			array_push($conditions, ['tble.name', 'like', '%'.$name.'%']);
 		}
-
-		if(!empty($city) && $city !== 0 && $city !== "0" && $city !== 0.0 && $city !== "0.0"){
-			array_push($conditions, ['tble.city', '=', $city]);
-		}
+ 
 
 		if(!empty($cat) && $cat !== 0 && $cat !== "0" && $cat !== 0.0 && $cat !== "0.0"){
-			array_push($conditions, ['tble.cat', 'like', '%'.$cat.'%']);
+			array_push($conditions, ['tble.cat', '=', $cat]);
 		}
 
-		if(!empty($delivery) && $delivery !== 0 && $delivery !== "0" && $delivery !== 0.0 && $delivery !== "0.0"){
-			array_push($conditions, ['tble.delivery', 'like', '%'.$delivery.'%']);
+		if(!empty($rate)){
+			array_push($conditions, ['tble.rate', '=', $rate]);
 		}
 
-		if(!empty($meals_count) && $meals_count !== 0 && $meals_count !== 0.0 && $meals_count !== "0.0"){
-			array_push($conditions, ['tble.mealsCount', '>=', $meals_count]);
-		}
-
-		if(!empty($date) && $date != "" && $date != NULL){
-			array_push($conditions, ['tble.avail_date', '<=', $date]);
-			// array_push($conditions, ['tble.type', '=', 'provider']);
-		}
-
-		// if(!empty($time) && $time != "" && $time != NULL){
-		// 	array_push($conditions, ['tble.from_time' , '<=', $time]);
-		// 	array_push($conditions, ['tble.to_time' , '>=', $time]);
-		// }
-
-		if(!empty($distance) && $distance !== 0 && $distance !== "0" && $distance !== 0.0 && $distance !== "0.0"){
-			$distanceCond = "(3959 * acos(cos(radians($user_lat)) *  cos(radians(tble.lat)) * cos(radians(tble.long) - radians($user_long)) + sin(radians($user_lat)) * sin(radians(tble.lat))))";
-			// $distanceCond = "(3959 * acos(cos(radians(tble.lat)) *  cos(radians($user_lat)) * cos(radians($user_long) - radians(tble.long)) + sin(radians(tble.lat)) * sin(radians($user_lat))))";
-			array_push($conditions, [DB::raw($distanceCond), '<=', $distance]);
-		}
-
+		   
 		if(!empty($conditions)){
 		 	$result = DB::table(DB::raw("(".$virtualTble.") AS tble"))
-						->select('tble.id', 'tble.name', 'tble.rate', 'tble.img', 'tble.likes_count', 'tble.followers_count', 'tble.type', 'tble.price')
+						->select('tble.id', 'tble.name', 'tble.rate', 'tble.price')
 						->where($conditions)->get();
+
 		}else{
 			$result = DB::table(DB::raw("(".$virtualTble.") AS tble"))
-						->select('tble.id', 'tble.name', 'tble.rate', 'tble.img', 'tble.likes_count', 'tble.followers_count', 'tble.type', 'tble.price')
+						->select('tble.id', 'tble.name', 'tble.rate',  'tble.price')
 						->get();
 		}
+
+
+						if(isset($result) && $result -> count() > 0){
+
+							 foreach ($result as $key => $product) {
+							 	  
+
+							 	  $mainImge = DB::table('product_images') -> where('product_id',$product -> id) -> select('image') -> first();
+							 	  if($mainImge){
+
+							 	  	  $product -> img = env('APP_URL').'/public/products/'.$mainImge -> image;
+   
+							 	  }else{
+                                       
+                                       $product -> img = '';
+
+							 	  }
+
+							 }
+						}
+
 
 		// if(!empty($result)){
 		// 	foreach($result AS $row){
@@ -2384,8 +2385,7 @@ public function search(Request $request){
 		// 		// $row->price = $row->price + 0.00;
 		// 	}
 		// }
-		
-		
+		 
 		
  		if(isset($result) && $result->count() > 0){
 			return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[0], 'result' => $result]);
