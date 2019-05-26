@@ -317,6 +317,7 @@ Route::group(['middleware' => ['api_auth'], 'prefix' => 'api'], function() {
 	Route::post('/addProviderOffer', 'ProviderController@addProviderOffer');
 	Route::get('/addProviderOffer', 'ProviderController@echoEmpty');
 
+
 	Route::post('/editProviderOffer', 'ProviderController@editProviderOffer');
 	Route::get('/editProviderOffer', 'ProviderController@echoEmpty');
 
