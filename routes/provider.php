@@ -188,10 +188,7 @@ Route::group(['middleware' => ['api_auth'], 'prefix' => 'api'], function() {
 	
 
 	
-	Route::post('/search', 'UserController@search');
-	Route::get('/search', 'UserController@echoEmpty');
-	Route::post('/prepareSearch', 'UserController@prepareSearch');
-	Route::get('/prepareSearch', 'UserController@echoEmpty');
+
 	Route::post('/preparePayment', 'UserController@preparePayment');
 	Route::get('/preparePayment', 'UserController@echoEmpty');
 	Route::post('/sms', 'UserController@sms');
