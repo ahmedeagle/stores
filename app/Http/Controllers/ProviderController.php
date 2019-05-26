@@ -650,7 +650,9 @@ class ProviderController extends Controller
 					    	
 					    		//get deliveries
 		                	$deliveries = DB::table("delivery_methods")->select('method_id AS delivery_id',$delivery_col,
-																DB::raw('IF((SELECT count(providers_delivery_methods.id) FROM providers_delivery_methods WHERE providers_delivery_methods.delivery_method = delivery_methods.method_id AND providers_delivery_methods.provider_id = '.$id.') > 0, 1, 0) AS choosen'))
+																DB::raw('IF((SELECT count(providers_delivery_methods.id) FROM providers_delivery_methods WHERE providers_delivery_methods.delivery_method = delivery_methods.method_id AND providers_delivery_methods.provider_id = '.$id.') > 0, 1, 0) AS choosen')
+
+															)
 													   ->get();
 													   
 													   

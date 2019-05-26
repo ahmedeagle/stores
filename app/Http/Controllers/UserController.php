@@ -2432,7 +2432,36 @@ public function search(Request $request){
 			return response()->json(['status' => false, 'errNum' => 1, 'msg' => $msg[1]]);
 		}
 	}
-	
+
+
+public function prepareSearch(Request $request){
+		$lang = $request->input('lang');
+		if($lang == "ar"){
+			$msg = array(
+				0 => 'يوجد بيانات',
+				1 => 'لا يوجد بيانات'
+			);
+ 			$cat_col	  = "store_cat_ar_name AS cat_name";
+		}else{
+			$msg = array(
+				0 => 'Retrieved successfully',
+				1 => 'There is no data'
+			);
+ 			$cat_col 	  = "store_cat_en_name AS cat_name";
+		}
+
+ 	return 	$categories = DB::table('categories_stores')
+ 		->where('categories_stores.publish', 1)
+ 		->join('products','categories_stores.id','=','products.category_id')
+ 		-> select('categories_stores.id',
+ 		 $cat_col,
+ 		  DB::raw("(SELECT count(products.id) FROM products WHERE products.category_id = categories_stores.id) AS product_count")
+ 		)->get();
+
+		return response()->json(['status'=>true, 'errNum' => 0, 'msg' => $msg[0], 'cats' => $categories]);
+	}
+
+
 	//method to add user order
 	public function addOrder(Request $request){
 	    
@@ -4132,31 +4161,6 @@ public function search(Request $request){
 		}
 	}
 
-	public function prepareSearch(Request $request){
-		$lang = $request->input('lang');
-		if($lang == "ar"){
-			$msg = array(
-				0 => 'يوجد بيانات',
-				1 => 'لا يوجد بيانات'
-			);
-			$city_col     = "city_ar_name AS city_name";
-			$delivery_col = "method_ar_name AS delivery_name";
-			$cat_col	  = "cat_ar_name AS cat_name";
-		}else{
-			$msg = array(
-				0 => 'Retrieved successfully',
-				1 => 'There is no data'
-			);
-			$city_col    = "city_en_name AS city_name";
-			$delivery_col = "method_en_name AS delivery_name"; 
-			$cat_col 	  = "cat_en_name AS cat_name";
-		}
-
-		$cities = DB::table('city')->select('city_id', $city_col)->get();
-		$deliveries = DB::table('delivery_methods')->select('method_id', $delivery_col)->get();
-		$categories = DB::table('categories')->where('publish', 1)->select('cat_id', $cat_col)->get();
-		return response()->json(['status'=>true, 'errNum' => 0, 'msg' => $msg[0], 'cities' => $cities, 'deliveries' => $deliveries, 'cats' => $categories]);
-	}
 
 	public function preparePayment(Request $request){
 		$lang = $request->input('lang');
