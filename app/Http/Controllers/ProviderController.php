@@ -2203,14 +2203,14 @@ public function editProviderOffer(Request $request){
 
                                          ])
                                -> select(
-                               	           'id',
+                               	           'id AS offer_id',
                                	           'offer_title',
                                	           'paid',
                                	           'status',
                                	           'publish',
                                	           DB::raw('DATE(start_date) AS start_date'),
                                	           DB::raw('DATE(end_date) AS end_date'),
-                               	           DB::raw("CONCAT('". url('/') ."','/offers/',providers_offers.photo) AS offer_image")                               
+                               	           DB::raw("CONCAT('". url('/') ."','/offers/',providers_offers.photo) AS offer_photo")                               
                                         ) 
                                -> first();
 
