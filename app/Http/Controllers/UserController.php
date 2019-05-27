@@ -2297,6 +2297,13 @@ public function search(Request $request){
 				1 => 'لايوجد نتائج لبحثك ',
 				2 => 'من فضلك اختر فئة ',
 				3 => 'الفئه غير موجوده',
+				4 => 'لابد من ادخل السعر من ',
+				5 => 'لابد من  ادخال السعر الي ',
+				6 => 'السعر من والي لابد ان يكون ارقام ',
+				7 => 'السعر الي لابد ان يكون اكبر من الصفر ',
+				8 => 'السعر الي لابد ان يكون اكبر من او يساوي السعر من ',
+				9 => 'السعر الي لابد ان يكون اكبر من 0 ',
+
 				 
 			);
 		}else{
@@ -2304,7 +2311,14 @@ public function search(Request $request){
 				0 => 'Retrieved successfully',
 				1 => 'There is no result for your search',
 				2 => 'Please Choose Category',
-				3 => 'Category no exists'
+				3 => 'Category no exists',
+				4 => 'min price required',
+				5 => 'max price required',
+				6 => 'min price and max price  must be numeric',
+				7 => 'max price must be greater than min price',
+				8 => 'max price must be greater than or equal to min price',
+				9 => 'max price must be greater than 0'
+
 
 			);
 		}
@@ -2312,12 +2326,45 @@ public function search(Request $request){
 		$messages = array(
 			'cat_id.required'     => 2,
 			'cat_id.exists'       => 3,
+			'min_price.required'  => 4,
+			'max_price.required'  => 5,
+			'min_price.numeric'   => 6,
+			'max_price.numeric'   => 6,
+			'max_price.not_in'    => 7,
+			'max_price.min'       => 8,
+			'max_price.not_in'    => 9,
+
 
 		);
 
-		$validator = Validator::make($request->all(),[
+        $rules =[
 			'cat_id'                => 'exists:categories_stores,id'
-		], $messages);
+		];
+
+		$conditions          = array();
+
+      if($request -> min_price &&  $request -> max_price){
+
+               //array_push($betweenConditions, ['tble.price', '>', $]);   
+
+      	      $rules['min_price'] = 'required|numeric';
+      	      $rules['max_price'] = 'required|numeric|not_in:0|min:'.$request -> min_price;
+ 
+      	      array_push($conditions, ['tble.price', '>=', $request -> min_price ]);
+      	      array_push($conditions, ['tble.price', '<=', $request -> max_price ]);
+ 
+		}elseif($request -> min_price &&  ($request -> max_price == 0 || $request -> max_price == null ||$request -> max_price == "" )){
+ 
+      	      $rules['min_price'] = 'required|numeric';
+      	      array_push($conditions, ['tble.price', '>=', $request -> min_price ]); 
+		}elseif($request -> max_price &&  ($request -> min_price == 0 || $request -> min_price == null ||$request -> min_price == "" )){
+ 
+      	      $rules['max_price'] = 'required|numeric|not_in:0';
+      	      array_push($conditions, ['tble.price', '<=', $request -> max_price ]); 
+		}
+
+
+		$validator = Validator::make($request->all(),$rules,$messages);
 
 		if($validator->fails()){
 			$error = $validator->errors()->first();
@@ -2327,15 +2374,19 @@ public function search(Request $request){
 		$name     	 = $request->input('name');
  		$cat      	 = $request->input('cat_id');
  		$rate        = $request->input('rate'); 
+ 		$min_price   = $request->input('min_price'); 
+ 		$max_price   = $request->input('max_price'); 
+
             
  	   			$virtualTble = "SELECT products.id AS id, products.title AS name, products.category_id AS cat,  providers.longitude AS `long`, providers.latitude AS `lat`, products.product_rate AS rate, products.likes_count AS likes_count,CAST(products.price as decimal(10,2)) AS price FROM `products` JOIN providers ON products.provider_id = providers.provider_id";  
 
  
-		$conditions = array();
-
+		
+ 
 		if(!empty($name) && $name !== 0 && $name !== 0.0 && $name !== "0.0"){
 			array_push($conditions, ['tble.name', 'like', '%'.$name.'%']);
 		}
+
  
 
 		if(!empty($cat) && $cat !== 0 && $cat !== "0" && $cat !== 0.0 && $cat !== "0.0"){
