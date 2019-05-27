@@ -2937,8 +2937,16 @@ public function getProducts(Request $request){
 	           
 	           
 	            $mainImage = DB::table('product_images') -> where('product_id',$product -> product_id) ->select('image') ->  first();  // get onlly the first image as main image of product
+	            if($mainImage){
+
+	            	 $product -> product_image = $mainImage -> image ? env('APP_URL').'/public/products/'.$mainImage -> image : "";
+
+	            }else{
+
+                   $product -> product_image = "";
+	            }
 	           
-	            $product -> product_image = $mainImage -> image ? env('APP_URL').'/public/products/'.$mainImage -> image : "";
+	            
 	            
  	       }
 	   }
