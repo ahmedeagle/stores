@@ -2950,7 +2950,7 @@ public function getProducts(Request $request){
 	   }
  
 
-  return response()->json(['status' => true, 'errNum' => 0, 'msg' => '','products' => $products]);
+  return response()->json(['status' => true, 'errNum' => 0, 'msg' => '','product' => $products]);
  
 
 }
