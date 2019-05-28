@@ -137,16 +137,12 @@ Route::group(['middleware' => ['api_auth'], 'prefix' => 'api'], function() {
 	Route::post('/prepareSearch', 'UserController@prepareSearch');
 	Route::get('/prepareSearch', 'UserController@echoEmpty');
 
-	/*Route::post('/activateUser', [
-		'uses' => 'UserController@activateUser', 
-		'as'   => 'activateUser'
-	]);
+	Route::post('/addOrder','UserController@addOrder');
+	Route::get('/addOrder','UserController@echoEmpty');
 
-	Route::get('/activateUser', [
-		'uses' => 'UserController@echoEmpty', 
-		'as'   => 'activateUserGet'
-	]);*/
-
+    Route::post('/orders','UserController@getUserOrders');
+	Route::get('/orders','UserController@echoEmpty');
+  
 	 
 
 
