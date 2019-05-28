@@ -1209,7 +1209,7 @@ class ProviderController extends Controller
 	 	  
 	 	
 	 	                    $id = $providerData ->provider_id;
-		                	$delivery_methods = DB::table("delivery_methods")->select('method_id AS delivery_id',$delivery_col,
+		                	$delivery_methods = DB::table("delivery_methods")->select('method_id AS method_id',$delivery_col,
 									DB::raw('IF((SELECT count(providers_delivery_methods.id) FROM providers_delivery_methods WHERE providers_delivery_methods.delivery_method = delivery_methods.method_id AND providers_delivery_methods.provider_id = '.$id.') > 0, 1, 0) AS choosen'))
 													   ->get();
 													   
@@ -4573,88 +4573,69 @@ if($providerRequest){
 		return response()->json(['status'=> true, 'errNum' => 0, 'msg' => $msg[0],'data' => $providerRequest]);
  
 }
- 
-
-
-
- 
+  
+  
 	public function fetchOrdersCounts(Request $request){
 		$lang = $request->input('lang');
 		if($lang == "ar"){
 			$msg = array(
 				0 => '',
-				1 => 'رقم مقدم الخدمه مطلوب'
+				1 => 'رقم مقدم الخدمه مطلوب',
+				2 => 'المتجر غير موجود'
 			);
 		}else{
 			$msg = array(
 				0 => '',
-				1 => 'provider_id is required'
+				1 => 'access_token is required',
+				2 => 'provider no found'
+
 			);
 		}
-
-		if(empty($request->input('provider_id'))){
+ 
+		if(empty($request->input('access_token'))){
 			return response()->json(['status' => false, 'errNum' => 1, 'msg' => $msg[1]]);
-		}else{
-			$provider_id = $request->input('provider_id');
 		}
+ 		
+		 $provider_id = $this->get_id($request,'providers','provider_id');
 
+		        if($provider_id == 0 ){
+		              return response()->json(['status' => false, 'errNum' => 2, 'msg' => $msg[2]]);
+		        }
 
-		$today = date("Y-m-d");
-		
-		 
-				$get_time_counter = DB::table("app_settings")->first();
-				if($get_time_counter != NULL){
-					$time_counter_in_hours = $get_time_counter->time_in_hours;
-					$time_counter_in_min    = $get_time_counter->time_in_min;
-					
- 				}
-			 else{
-				$time_counter_in_hours = 0;
-				$time_counter_in_min   = 0;
-			}
-			
-			
-			
-			
+		      $check = DB::table('providers')   -> where('provider_id',$provider_id) -> first();
+
+		      if(!$check){
+		      	return response()->json(['status' => false, 'errNum' => 2, 'msg' => $msg[2]]);
+		      }
+ 
+		   
 			 
 			
 		//get new orders count
-		$news    = DB::table('orders_headers')->where('provider_id', $provider_id)
+		$pendings    = DB::table('orders_headers')->where('provider_id', $provider_id)
 										   ->where('status_id', 1)
-										   /*->where(
-                                                         'orders_headers.created_at', '>', Carbon::now()->addHours(1)->subMinutes($time_counter_in_min)
-                                                    )*/
 										   ->count();
 
 
 		$current = DB::table('orders_headers')->where('provider_id', $provider_id)
-										   ->whereIn('status_id', [2,3,8])
-  										   ->where(DB::raw('DATE(expected_delivery_time)'), '<=',$today)
+										   ->whereIn('status_id', [1,2])
 										   ->count();
 
-		$futures = DB::table('orders_headers')->where('provider_id', $provider_id)
-										   ->whereIn('status_id', [2,3,8])
-										   ->where(DB::raw('DATE(expected_delivery_time)'), '>' ,$today)
- 										   ->count();
 
 		$old = DB::table('orders_headers')->where('provider_id', $provider_id)
-										   ->whereIn('status_id', [4,5,6,7])
+										   ->whereIn('status_id', [3,4])
 										   ->count();
-
-		$complains = DB::table('complains')->where('provider_id', $provider_id)
-										   ->where('delivery_id', 0)
-										   ->count();
+ 
 		return response()->json([
 									'status' => true,
 									'errNum' => 0,
 									'msg'    => $msg[0],
-									'new_orders_count'     => $news,
+									'pending_orders_count'     => $pendings,
 									'current_orders_count' => $current,
-									'future_orders_count'  => $futures,
-									'old_orders_count'     => $old,
-									'complains_count'      => $complains
-								]);
+ 									'old_orders_count'     => $old,
+ 								]);
 	}
+
 
 	public function getProviderOrders(Request $request){
 	    

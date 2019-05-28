@@ -29,139 +29,7 @@ Route::group(['middleware' => ['api_auth'], 'prefix' => 'api'], function() {
     
     	//crons
 	Route::get('/crons', 'Crons@cron_job');
-	 
-  	Route::get('/resetMealsQty', 'Crons@reset_meal_qty_crone');
- 	Route::get('/refuseMissedOrdes', 'Crons@refuse_missed_orders_crone');
-
-	/// route to change order status after 30 min if the provider didn't proccess it //////
-     Route::get("/prepare_limit" , "Crons@prepare_limit");
-
-    /// route to change the status of order after 15 min if the dekuvery didn't accept or reject  ////
-     Route::get("/delivery_accept_limit" , "Crons@delivery_accept_limit");
-
-
-	
-	Route::post('/getCats',[
-		'uses' => 'UserController@getCategories',
-		'as'   => 'getCats'
-	]);
-
-	Route::get('/getCats',[
-		'uses' => 'UserController@echoEmpty',
-		'as'   => 'getCatsGet'
-	]);
-
-	  
-	 
- 
-	Route::post('/providerReport', [
-		'uses' => 'UserController@makeReport', 
-		'as'   => 'report'
-	]);
-
-	Route::get('/providerReport', [
-		'uses' => 'UserController@echoEmpty', 
-		'as'   => 'reportGet'
-	]);
-
-	Route::post('/provider_evaluate', [
-		'uses' => 'UserController@provider_evaluate',
-		'as'   => 'provider.evaluate'
-	]);
-
-	Route::get('/provider_evaluate', [
-		'uses' => 'UserController@echoEmpty',
-		'as'   => 'provider.evaluateGet'
-	]);
-
-	Route::post('/delivery_evaluate', [
-		'uses' => 'UserController@delivery_evaluate',
-		'as'   => 'delivery.evaluate'
-	]);
-
-	Route::get('/delivery_evaluate', [
-		'uses' => 'UserController@echoEmpty',
-		'as'   => 'delivery.evaluateGet'
-	]);
-	Route::post('/addAttach', [
-		'uses' => 'UserController@addAttach', 
-		'as'   => 'addAttach'
-	]);
-
-	Route::get('/addAttach', [
-		'uses' => 'UserController@echoEmpty', 
-		'as'   => 'addAttachGet'
-	]);
-
-	Route::post('/deleteAttach', [
-		'uses' => 'UserController@deleteAttach', 
-		'as'   => 'deleteAttach'
-	]);
-
-	Route::get('/deleteAttach', [
-		'uses' => 'UserController@echoEmpty', 
-		'as'   => 'deleteAttachGet'
-	]);
-
-	Route::post('/complain', [
-		'uses' => 'UserController@addComplain', 
-		'as'   => 'complain'
-	]);
-
-	Route::get('/complain', [
-		'uses' => 'UserController@echoEmpty', 
-		'as'   => 'complainGet'
-	]);
-
-	Route::post('/timeLine', [
-		'uses' => 'UserController@fetchTimeLine',
-		'as'   => 'timeLine'
-	]);
-
-	Route::get('/timeLine', [
-		'uses' => 'UserController@echoEmpty',
-		'as'   => 'timeLineGet'
-	]);
-
-	
-
-	
-
-	Route::post('/preparePayment', 'UserController@preparePayment');
-	Route::get('/preparePayment', 'UserController@echoEmpty');
-	Route::post('/sms', 'UserController@sms');
-	Route::get('/sms', 'UserController@echoEmpty');
-	Route::post('/ttt', 'UserController@getFollowsAndLikes');
-	Route::get('/ttt', 'UserController@echoEmpty');
-	Route::post('/prepareSignUp', 'UserController@prepareSignUp');
-	Route::get('/prepareSignUp', 'UserController@echoEmpty');
-	Route::post('/orderDetails', 'UserController@getOrderDetails');
-	Route::get('/orderDetails', 'UserController@echoEmpty');
-	Route::post('/providerMeals', 'UserController@getProviderMeals');
-	Route::get('/providerMeals', 'UserController@echoEmpty');
-	Route::post('/edit_phone', 'UserController@edit_phone');
-	Route::get('/edit_phone', 'UserController@echoEmpty');
-	Route::post('/userCancelOrder', 'UserController@cancel_order');
-	Route::get('/userCancelOrder', 'UserController@echoEmpty');
-
-	Route::post('/userBalance', 'UserController@get_user_balance');
-	Route::get('/userBalance', 'UserController@echoEmpty');
-
-	Route::post('/userWithdraw', 'UserController@balance_withdraw');
-	Route::get('/userWithdraw', 'UserController@echoEmpty');
-	///////////// provider application /////////////
-	
- Route::get('/mmm',function(){
-
-        (new \App\Http\Controllers\SmsController())->send('dsdsdsdsdd' ,'01032878227');
-
-
- });
-	
-	     
-
-	     // ahmed emam
-	
+  
 	   // prepare signup first step  provider personal account apis 
 	Route::post('/getProviderSignUpFirstStep', 'ProviderController@prepareSignUp');
 	Route::get('/getProviderSignUpFirstStep', 'ProviderController@echoEmpty');
@@ -354,25 +222,13 @@ Route::group(['middleware' => ['api_auth'], 'prefix' => 'api'], function() {
     Route::post('/ProviderExcellenceRequestDetails', 'ProviderController@ExcellenceRequestDetails');
 	Route::get('/ProviderExcellenceRequestDetails', 'ProviderController@echoEmpty');
 
-
-
- 
-
-
- 
-
-
+  
 	Route::post('/editProviderPhone', 'ProviderController@update_provider_phone');
 	Route::get('/editProviderPhone', 'ProviderController@echoEmpty');
 
-	Route::post('/deleteMeal', 'ProviderController@delete_meal');
-	Route::get('/deleteMeal', 'ProviderController@echoEmpty');
+	     ////////////////////// orders routes ///////////////////////
 
- 
- 
-	
-
-	Route::post('/ordersCounts', 'ProviderController@fetchOrdersCounts');
+    Route::post('/ordersCounts', 'ProviderController@fetchOrdersCounts');
 	Route::get('/ordersCounts', 'ProviderController@echoEmpty');
 
 	Route::post('/getProviderOrders', 'ProviderController@getProviderOrders');
@@ -386,7 +242,10 @@ Route::group(['middleware' => ['api_auth'], 'prefix' => 'api'], function() {
 
 	Route::post('/changeOrderStatus', 'ProviderController@changeOrderStatus');
 	Route::get('/changeOrderStatus', 'ProviderController@echoEmpty');
+    
 
+	//------------------------------------------------------------------------------
+ 
 	Route::post('/getBalances', 'ProviderController@getProviderBalance');
 	Route::get('/getBalances', 'ProviderController@echoEmpty');
 

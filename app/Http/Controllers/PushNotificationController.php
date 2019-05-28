@@ -17,7 +17,7 @@ class PushNotificationController extends Controller
   //define firebase_keys
     protected $api_key;
     public $user_key     = "AAAA7oOKXvM:APA91bG-HKMnpy7QwuUKaPlA5cnC1vL8SS4yIdmfuuXJf_XaY0VqaNZIBaAeKSLINCG4pCFp9ntKfYgCl1dCdo2WhbWYtJxmFTv0rx0OL0-N9Wlx54fCKClLKh5QpmLcsySgqpk2Silu";
-    public $provider_key = "AAAA7GLiwxE:APA91bFPKw3EoQycXVFYho-GknoWCVlpTUoJShiWGxrhxqCIM0J_JhlhV_7-qKOOCAGZTtuA8Ry3DiAUaxtWp7DKSHAwYE_GP-sP117DGuRpuYPKIB06vl26beXTaKWim11uqqEYUBgj";
+    public $provider_key = "AAAAZa06vKA:APA91bHaC4Aj-I3DeT-Lc0cczqS1kMYZkSxKZ_JEYHp3o9O4id0lTKEsDZlmcZeRZF0qROs9HBB77tZ5twjokBFLL0qTowVek4Ws3LUlWojWBHN4x4Zjg1yiwA64s-q3yYepcnn-YQtN";
     public $delivery_key = "AAAACWiFdaE:APA91bFIKnRGXO4AQCRCg4FQxkFtC4tsPDfYjbzZA8O2PKR9huiVWWFdPj5lIS0D-wyHSbT95MgVv1mhUwd_LOnh7o3xOCRVoMLgitnWNOqxG0XsJ8E7d76g63xFLpSEi_-oTPbwQmZ_";
     protected $push_notif_icon      = '';
     

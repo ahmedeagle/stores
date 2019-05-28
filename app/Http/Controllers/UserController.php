@@ -25,6 +25,7 @@ use DateTime;
 use Carbon\Carbon;
 use Illuminate\Pagination\LengthAwarePaginator;
 use App\Traits\MainImage;
+use App\Http\Controllers\PushNotificationController as Push;
 
 class UserController extends Controller
 {
@@ -1446,7 +1447,7 @@ public function UpdateProfile(Request $request){
 						  ->join('users', 'product_comments.user_id', '=', 'users.user_id')
 						  ->select('users.full_name',
 						  	DB::raw("CONCAT('".env('APP_URL')."','/public/userProfileImages/',users.profile_pic) AS user_profile_pic"),
-						    'users.user_id', 'product_comments.comment', 'product_comments.id')
+						    'users.user_id', 'product_comments.comment', 'product_comments.id','product_comments.product_id')
 						  ->get();
 			$count_comment = $comments->count();
  
@@ -1458,54 +1459,24 @@ public function UpdateProfile(Request $request){
 			$sizes = DB::table('product_sizes') -> where('product_id',$productId)-> select('id','name','price') -> get();
 			//get product colors 
 			$colors = DB::table('product_colors') -> where('product_id',$productId)-> select('id','name','price') -> get();
-
  
 			//get user rate
-		 
-
-		 	$Userids = DB::table('products_rates')->where('product_id', $productId)
-													   ->pluck('user_id') -> toArray();
-			$ids = array_values($Userids);
-			
-								
-		    $Userrates = DB::table('products_rates')->where('product_id', $productId)
-													   ->pluck('rates') -> toArray();
-													   
-													   
-		     $rates = 	array_values($Userrates);										   
-													   
-													   
-				 					   
- 
-  						 
-             if(isset($comments) && $comments -> count() > 0){
-
+		   
+               if(isset($comments) && $comments -> count() > 0){
  
                  	foreach($comments as $index => $comment)
-                 	{         
-                 	    if(in_array($comment -> user_id,$ids)){
-                 	                
-                 	                
-                 	        if($comment -> user_id == $ids[$index])          
-                 	        {
-                 	            
-                 	            $comment -> userRate = $rates[$index];
-                 	            
-                 	        }
-                 	                 
-                 	               
-                 	    }else{
-                 	         
-                 	        $comment -> userRate = 0;
-                 	    }
-                 	        
-                 	     
-                                
-    
+                 	{     
+
+                 	    $productRate = DB::table('products_rates') -> where('product_id',$comment -> product_id) -> where('user_id',$comment -> user_id) -> select('rates') -> first();
+
+                 	    if($productRate)
+                 	    	 $comment -> userRate = $productRate -> rates;
+                 	    	else
+                 	    		$comment -> userRate = 0;
+ 
                  	}
              }
-
-			 
+ 
 
 			return response()->json(['status' => true, 'errNum' => 0,'product' => $productDetails, 'productImages' => $productImages, 'comments' => $comments,'comments_count' => $count_comment,'options' => $options ,'sizes' => $sizes,'colors' => $colors,'msg' => $msg[0]]);
 		
@@ -2479,124 +2450,129 @@ public function prepareSearch(Request $request){
 	    
   
 		$lang            = $request->input('lang');
-		$meals           = $request->input('meals');
-		$provider        = $request->input('provider_id');
-		$user 	         = $request->input('user_id');
-		$in_future       = $request->input('in_future');
-		$address         = $request->input('address');
-		$delivery_method = $request->input('delivery_method_id');
-		$payment_method  = $request->input('payment_method_id');
-		$delivery_time   = $request->input('delivery_time');
-		$balance_flag    = $request->input('balance_flag');
-		$totalQty        = 0;
-		$totalPrice      = 0;
-		$net 			 = 0;
-		$totalValue      = 0;
-		$totalDisc       = 0;
-	 
 		
 		if($lang == "ar"){
 			$msg = array(
 				0 => 'تمت العملية بنجاح',
-				1 => 'لا يوجد وجبات فى الطلب',
-				2 => 'خطأ فى وجبة ما',
-				3 => 'خطأ فى سعر وجبة ما',
-				4 => 'خطأ فى العدد من وجبة ما',
+				1 => 'لا يوجد  منتجات في الطلب',
+				2 => 'خطأ فى  منتج ما  عدم وجود رقم للمنتج ',
+				3 => 'خطأ فى سعر  منتج  ما',
+				4 => 'خطأ فى العدد من  منتج  ما',
 				5 => 'كل البيانات مطلوبه',
 				6 => 'خانة lang يجب ان تكون واحده من (ar, en)',
 				7 => 'خانة in_future يجب ان تكون واحده من (0, 1)',
 				8 => 'خانة delivery_time يجب ان تكون بنستيق (Y-m-d H:i:s)',
 				9 => 'حدث خطأ ما من فضلك حاول فى وقت لاحق',
-				10 => 'رقم الوجبه لا يمكن ان يتكرر',
+				10 => 'رقم المنتج  لا يمكن ان يتكرر',
 				11 => 'لا يوجد كمية كافية للعدد المطلوب فى هذه الوجبات',
 				12 => 'مقدم الخدمه لا يقوم بإستلام طلبات',
 				13 => 'الوجبات يجب ان تكون على شكل مصفوفه',
 				14 => 'خطأ فى العنوان',
 				15 => 'balance_flag يجب ان يكون 0 او 1',
-				16 => '  معفوا وقت الطلب خارج مواعيد عمل التاجر  '
+				16 => '  معفوا وقت الطلب خارج مواعيد عمل التاجر  ',
+				17 => 'موعدد الطلب لابد ان يكون اكبر من الان ',
+				18 => 'المستخدم غير موجود '
 			);
 			$push_notif_title   = "طلب جديد";
 			$push_notif_message = "تم إضافة طلب جديد خاص بك";
 		}else{
 			$msg = array(
 				0 => 'Process done successfully',
-				1 => 'There is no any meal in order',
-				2 => 'There is an error in some meal',
-				3 => 'There is an error in some meal price',
-				4 => 'There is an error in some meal count number',
+				1 => 'There is no any products in order',
+				2 => 'There is an error in some prodcut id',
+				3 => 'There is an error in some product price',
+				4 => 'There is an error in some product count number',
 				5 => 'All data is required',
 				6 => 'lang field must be one of (ar, en)',
-				7 => 'in_future field must be one of (0, 1)',
-				8 => 'delivery_time field must be in format (Y-m-d H:i:s)',
+ 				8 => 'delivery_time field must be in format (Y-m-d H:i:s)',
 				9 => 'There is something wrong, please try again later',
-				10 => 'meal_id can not be repeated',
+				10 => 'product_id can not be repeated',
 				11 => 'There is no enough quantaty for these meals',
 				12 => 'The provider doesn\'t receive orders',
 				13 => 'Meals must be an array',
 				14 => 'invalid address',
 				15 => 'balance_flag must be 0 or 1',
 				16 => 'The time of the request outside the merchant\'s working hour',
+				17 => 'delivery time must be greater or equal to now',
+				18 => 'login user not found'
+
 
 			);
 			$push_notif_title   = "New order";
 			$push_notif_message = "A new order has been added to you";
 		}
  
-     
-        
-		if(empty($meals)){
-			return response()->json(['status' => false, 'errNum' => 1, 'msg' => $msg[1]]); 
+        $products        = $request->input('products');
+		$provider        = $request->input('provider_id');
+		$user 	         = $this->get_id($request,'users','user_id');
+
+		if($user ==0){
+
+			 return response()->json(['status'=>false, 'errNum' => 18, 'msg' => $msg[18]]);
 		}
 
-		if(!is_array($meals)){
+
+ 		$address         = $request->input('address');
+		$delivery_method = $request->input('delivery_method_id');
+		$payment_method  = $request->input('payment_method_id');
+		$delivery_time   = $request->input('delivery_time');
+ 		$totalQty        = 0;
+		$totalPrice      = 0;
+		$net 			 = 0;
+		$totalValue      = 0;
+		$totalDisc       = 0;
+ 
+ 
+ 		if(empty($products)){
+			return response()->json(['status' => false, 'errNum' => 1, 'msg' => $msg[1]]); 
+		}
+  
+
+
+		if(!is_array($products)){
 			return response()->json(['status' => false, 'errNum' => 1, 'msg' => $msg[1]]);
 		}
-		$mealsArr 	  = array();
-        $invalidMeals = array();
-		for($i = 0; $i < count($meals); $i++){
-			array_push($mealsArr, $meals[$i]['meal_id']);
-			if(empty($meals[$i]['meal_id'])){
+
+   
+
+		$productsArr 	      = array();
+        $invalid_products     = array();
+
+             //first step need to validate all array indexs
+ 
+      for($i = 0; $i < count($products); $i++){
+			array_push($productsArr, $products[$i]['product_id']);
+
+			if(empty($products[$i]['product_id'])){
 				return response()->json(['status' => false, 'errNum' => 2, 'msg' => $msg[2]]);
 			}
 
-			if(empty($meals[$i]['price'])){
+			if(empty($products[$i]['price'])){
 				return response()->json(['status' => false, 'errNum' => 3, 'msg' => $msg[3]]);
 			}
 
-			if(empty($meals[$i]['qty'])){
+			if(empty($products[$i]['qty'])){
 				return response()->json(['status' => false, 'errNum' => 4, 'msg' => $msg[4]]);
 			}
 
-			if(empty($meals[$i]['discount']) || $meals[$i]['discount'] == "0" || $meals[$i]['discount'] == ""){
-				$meals[$i]['discount'] = 0;
+			if(empty($products[$i]['discount']) || $products[$i]['discount'] == "0" || $products[$i]['discount'] == ""){
+				$products[$i]['discount'] = 0;
 			}
+ 
+              //second step calculate total qty and price and disc   
+			$totalQty   += $products[$i]['qty'];
+			$totalPrice += $products[$i]['price'] * $products[$i]['qty'];
+			$totalDisc  += $products[$i]['discount'];
+			$net        += $products[$i]['qty'] * $products[$i]['price'];   // need to subtract the discount from the net value
 
-			//get meal available qty 
-			$check = Meals::where('meal_id', $meals[$i]['meal_id'])
-						  ->where('avail_number' , '<', $meals[$i]['qty'])
-						  ->first();
-			if($check != NULL){
-				$invalidMeals[]['meal_id'] 		 = $check->meal_id;
-				$invalidMeals[]['meal_name'] 	 = $check->meal_name;
-				$invalidMeals[]['meal_qty'] 	 = $check->avail_number;
-				$invalidMeals[]['requested_qty'] = $meals[$i]['qty'];
-			}
+		} //end foreach 
 
-			$totalQty   += $meals[$i]['qty'];
-			$totalPrice += $meals[$i]['price'] * $meals[$i]['qty'];
-			$totalDisc  += $meals[$i]['discount'];
-			$net        += $meals[$i]['qty'] * $meals[$i]['price'];   // need to subtract the discount from the net value
+		$uniqueProducts      = array_values(array_unique($productsArr));  // to avoid duplicate products id
 
-		}
-
-		$uniqueMeals = array_values(array_unique($mealsArr));
-		if(count($mealsArr) != count($uniqueMeals)){
+		if(count($productsArr) != count($uniqueProducts)){
 			return response()->json(['status' => false, 'errNum' => 10, 'msg' => $msg[10]]);
 		}
-
-		if(!empty($invalidMeals)){
-			return response()->json(['status' => false, 'errNum' => 11,'msg' => $msg[11], 'invalid_meals' => $invalidMeals]);
-		}
+ 
 
 		$messages  = array(
 			'required'		  => 5,
@@ -2604,7 +2580,8 @@ public function prepareSearch(Request $request){
 			'in_future.in'    => 7,
 			'date_format'     => 8,
 			'exists'		  => 14,
-			'balance_flag.in' => 15
+			'balance_flag.in' => 15,
+			'after_or_equal'  => 17,
 		);
 
 		$validator = Validator::make($request->all(), [
@@ -2615,7 +2592,7 @@ public function prepareSearch(Request $request){
 			'delivery_method_id' => 'required',
 			'payment_method_id'  => 'required',
 			'balance_flag' 		 => 'required|in:0,1',
-			'delivery_time'      => 'required|date_format:Y-m-d H:i:s'
+			//'delivery_time'      => 'required|date_format:Y-m-d H:i:s|after_or_equal:'.date('Y-m-d H:i:s'),
 		], $messages);
 
 		if($validator->fails()){
@@ -2627,156 +2604,56 @@ public function prepareSearch(Request $request){
 			$userAdress = DB::table('user_addresses')->where('address_id', $address)->first();
 			//chech if the provider accept orders or not
 			$conditions[] = ['provider_id', '=', $request->input("provider_id")];
-			$conditions[] = ['receive_orders', '=', 1];
+			//$conditions[] = ['receive_orders', '=', 1];			
 			
-			if($request->input('in_future') == 0 || $request->input('in_future') == "0"){
-				$conditions[] = ['current_orders', '=', 1];
-				
-			 $allowedTime =	$this -> CheckWorkingHoursForProvider($provider , $delivery_time,'current_orders');
-			 
-			 
-			 $msgTime=[];
-			 
-			  if($lang == "ar"){
-        			$msgTime = array(
-        			    
-	                       0 => 'عفوا مواعيد عمل التاجر من : '  .' '.$allowedTime['providerfromTime'].  'الي :'.' '.$allowedTime['providertoTime'],
-
-        				);
-        			 
-        		}else{
-        			$msgTime = array(
-        			 
-                   	0=>  'Sorry Working Hours From: '.' '.$allowedTime['providerfromTime'].'to:' .' '.$allowedTime['providertoTime'],        			);
-        		 
-        		}
-        		
-	    if($allowedTime['status'] == false){
-			     
-        	  
-        			      return response()->json(['status' => false, 'errNum' => 0, 'msg' => $msgTime[0]]);
-			      
-	     }
-				 
-         
-			}else{
-				$conditions[] = ['future_orders', '=', 1];
-				
-				  
-			  $allowedTime = $this -> CheckWorkingHoursForProvider($provider , $delivery_time,'future_orders');
-			  
-			  $msgTime=[];
-			  		 
-			  if($lang == "ar"){
-        			$msgTime = array(
-        			     
-        		              0 => 'عفوا مواعيد عمل التاجر من : '  .' '.$allowedTime['providerfromTime'].  'الي :'.' '.$allowedTime['providertoTime'],
-        		              
-                              1 => 'عفوا اقصي تاريخ لاستلام الطلبات للتاجر : '  .' '.$allowedTime['providerFutureDate'],
- 
-        				);
-        			 
-        		}else{
-        			$msgTime = array(
-        			 
-                      	0=>  'Sorry Working Hours From: '.' '.$allowedTime['providerfromTime'].'to:' .' '.$allowedTime['providertoTime'],        		
-                      	1 => 'sorry Max date For Provider is : '.' '.$allowedTime['providerFutureDate'],
-                      	
-                      	);
-        			 
-        		}
-        		
-					
-					if($allowedTime['status'] == false && $allowedTime['type'] ='current_order'){
-			       
-			             return response()->json(['status' => false, 'errNum' => 0, 'msg' => $msgTime[0]]);
-			      
-        			 }else{
-        			     
-        			     return response()->json(['status' => false, 'errNum' => 1, 'msg' => $msgTime[1]]);          
-        			 }
-					
-					
-			}
-			
+			$conditions[] = ['current_orders', '=', 1];				 	 			 
+		
 			$check = Providers::where($conditions)
 							  ->first();
-			if($check == NULL || !$check->count()){
+
+			if(!$check){
 				return response()->json(['status' => false, 'errNum' => 12,'msg' => $msg[12]]);
-			}else{
+			}
 				$provider_longitude      = $check->longitude;
 				$provider_latitude       = $check->latitude;
 				$provider_reg_id         = $check->device_reg_id;
 				$provider_delivery_price = $check->delivery_price;
 				$marketer_code 			 = $check->marketer_code;
 				$created 				 = date('Y-m-d', strtotime($check->created_at));
-			}
+			
 			$delivery_price = 0;
-			$orderCode   = mt_rand();
+			
 			//get app percentage 
 			$app_settings = DB::table('app_settings')->first();
-			if($app_settings != NULL){
+			if($app_settings){
 				$percentage          = $app_settings->app_percentage;
 				$kilo_price          = $app_settings->kilo_price;
 				$delivery_percentage = $app_settings->delivery_percentage;
-				$marketer_percentage = $app_settings->marketer_percentage; 
-				$initial_price       = $app_settings->initial_value_added_order_price;
-				$price_outside       = $app_settings->delivery_price_outside ;
-			}else{
+ 				$initial_price       = $app_settings->initial_value_added_order_price;
+ 			}else{
 				$percentage = 0;
 				$kilo_price = 0;
 				$delivery_percentage = 0;
-				$marketer_percentage = 0;
                 $initial_price = 0;
-                $price_outside = 0;
 			}
-
-			if($delivery_method == 1){
-				//calculating distance between provider and user 
-				$dKilos = $this->distance($userAdress->latitude, $userAdress->longitude, $provider_latitude, $provider_longitude, false);
-				$delivery_price = ROUND((($dKilos * $kilo_price) + $initial_price),2);
-			}elseif($delivery_method == 4){
+             
+              // 1 is recieve order from store no delivery fees 
+            if($delivery_method == 1){
 				$delivery_price = 0;
+				//2 store deliver order to users 
 			}elseif($delivery_method == 2){
 				$delivery_price = $provider_delivery_price;
-			}else{
-                $delivery_price = $price_outside;
-            }
-			// else if the delivery method outside add the
-			$app_value          = ($net * $percentage) / 100;
+			}
+ 
+ 			$app_value          = ($net * $percentage) / 100;
 			$delivery_app_value = ($delivery_price == 0) ? 0 : (($delivery_price * $delivery_percentage) / 100);
 			$total_value        = $net + $delivery_price;
 			$net                = $net - $app_value;
-			if($marketer_code != NULL && !is_null($marketer_code) && $marketer_code != ""){
-				$now = time();
-				$y1 = date('y', strtotime($created));
-				$y2 = date('y', $now);
-
-				$m1 = date('m', strtotime($created));
-				$m2 = date('m', $now);
-
-				$d1 = date('d', strtotime($created));
-				$d2 = date('d', $now);
-				$months = (($y2 - $y1) * 12) + ($m2 - $m1) + (($d2 - $d1) / 30);
-				if($months <= 1){
-					$data['provider_marketer_code'] = $marketer_code;
-					$provider_marketer_value = ($net * $marketer_percentage) / 100;
-					$net = $net - $provider_marketer_value;
-				}else{
-					$data['provider_marketer_code'] = "";
-					$provider_marketer_value = 0;
-				}
-			}else{
-				$data['provider_marketer_code'] = "";
+		 
+		        $data['provider_marketer_code'] = "";
 				$provider_marketer_value = 0;
-			}
-			//get user balance
-			$getUserPoints = User::where('user_id', $user)->first();
-			if($getUserPoints != NULL){
-				$points = $getUserPoints->points;
-			}else{
 				$points = 0;
-			}
+			 
 			//we will set this to zero till split payement method is activated
 			$split_value = 0;
 			try {
@@ -2796,32 +2673,26 @@ public function prepareSearch(Request $request){
 				$data['address']  	         = $userAdress->address;
 				$data['user_longitude']      = $userAdress->longitude;
 				$data['user_latitude']       = $userAdress->latitude;
-				$data['delivery_time']       = $delivery_time;
 				$data['payment_method']      = $payment_method;
 				$data['delivery_method']     = $delivery_method;
 				$data['orderCode'] 		     = $orderCode;
-				$data['in_future'] 		     = $in_future;
+				$data['in_future'] 		     = 0;
 				$data['split_value'] 	     = $split_value;
-				$data['meals'] 			     = $meals;
-				$data['balance_flag']        = $balance_flag;
+				$data['products'] 			 = $products;
+				$data['balance_flag']        = 0;   // this app not use poins and balances
 				$userInfo = User::where('user_id', $user)->first();
 
 				$data['phone'] = $userInfo->phone;
 				$data['email'] = $userInfo->email;
-				$data['marketer_percentage'] = $marketer_percentage;
-				$data['provider_marketer_value'] = $provider_marketer_value;
+				$data['marketer_percentage']     = 0;
+				$data['provider_marketer_value'] = 0;
 				$id = 0;
+
 				DB::transaction(function () use ($data, &$id) {
 				    //setting order header
-				    if($data['balance_flag'] == 1){
-				    	if($data['points'] <= $data['total_value']){
-				    		$used_points = $data['points'];
-				    	}else{
-				    		$used_points = $data['points'] - $data['total_value'];
-				    	}
-				    }else{
+				     
 				    	$used_points = 0;
-				    }
+				    
 					$id = DB::table('orders_headers')->insertGetId([
 						'total_price' 	         => $data['totalPrice'],
 						'total_qty'   	         => $data['totalQty'],
@@ -2839,10 +2710,9 @@ public function prepareSearch(Request $request){
 						'user_longitude'         => $data['user_longitude'],
 						'user_phone'             => $data['phone'],
 						'user_email'             => $data['email'],
-						'expected_delivery_time' => $data['delivery_time'],
 						'payment_type'           => $data['payment_method'],
 						'delivery_method'        => $data['delivery_method'],
-						'order_code' 			 => $data['orderCode'],
+
 						'in_future' 			 => $data['in_future'],
 						'split_value' 			 => $data['split_value'],
 						'delivery_app_value' 	 => $data['delivery_app_value'],
@@ -2852,41 +2722,34 @@ public function prepareSearch(Request $request){
 						'provider_marketer_code' => $data['provider_marketer_code']
 					]);
 					$serial = 1;
-					$mealArr = $data['meals'];
-					for($i = 0; $i < count($mealArr); $i++){
-						DB::table('order_details')->insert([
-							'order_id'   => $id, 
-							'order_code' => $data['orderCode'], 
-							'meal_id'    => $mealArr[$i]['meal_id'],
-							'meal_price' => $mealArr[$i]['price'],
-							'qty'        => $mealArr[$i]['qty'],
-							'discount'   => $mealArr[$i]['discount'],
-							'serial'     => $serial
+
+ 					$productsArr = $data['products'];
+					for($i = 0; $i < count($productsArr); $i++){
+						DB::table('order_products')->insert([
+							'order_id'         => $id, 
+ 							'product_id'       => $productsArr[$i]['product_id'],
+							'product_price'    => $productsArr[$i]['price'],
+							'qty'              => $productsArr[$i]['qty'],
+							'discount'         => $productsArr[$i]['discount'],
+							'serial'           => $serial
 						]);
-
-						Meals::where('meal_id', $mealArr[$i]['meal_id'])
-							 ->where(DB::raw('avail_number - '.$mealArr[$i]['qty']), ">=", 0)
-							 ->update(['avail_number' => DB::raw('avail_number - '.$mealArr[$i]['qty'])]);
-
+ 
 						$serial++;
 					}
-
-					//removing user balance 
-					if($data['balance_flag'] == 1){
-						User::where('user_id', $data['user'])->update(['points' => $used_points]);
-					}
+ 
 				});
 
 				$notif_data = array();
-				$notif_data['title']      = $push_notif_title;
-			    $notif_data['message']    = $push_notif_message;
+				$notif_data['title']              = $push_notif_title;
+			    $notif_data['message']            = $push_notif_message;
 			    $notif_data['order_id'] 	      = $id;
-			    $notif_data['notif_type'] = 'order';
+			    $notif_data['notif_type']         = 'order';
 			    $provider_token = Providers::where('provider_id', $data['provider'])->first();
-				if($provider_token != NULL){
-			    	$push_notif = $this->singleSend($provider_token->device_reg_id, $notif_data, $this->provider_key);
+				if($provider_token){
+			    	$push_notif =(new Push())->send($provider_token->device_reg_id, $notif_data,$this->provider_key);
 			    }
-				return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[0],'order_code' => $orderCode, 'order_id' => $id]);
+
+				return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[0] ,'order_id' => $id]);
 			} catch (Exception $e) {
 				return response()->json(['status' => false, 'errNum' => 9, 'msg' => $msg[9]]);
 			}
@@ -2894,7 +2757,140 @@ public function prepareSearch(Request $request){
 	}
 	
  
-	public function  CheckWorkingHoursForProvider($providerId , $delivery_time,$type){
+ 
+ public function getUserOrders(Request $request){
+		$lang = $request->input('lang');
+		$messages = array(
+			'required' => 2,
+			'numeric'  => 3,
+			'exists'   => 4
+		);
+
+		if($lang == "ar"){
+			$msg = array(
+				0 => 'يوجد بيانات',
+				1 => 'لا يوجد بيانات بعد',
+				2 => 'رقم المستخدم مطلوب',
+				3 => 'رقم المستخدم يجب ان يكون رقم',
+				4 => 'رقم المستخدم غير موجود'
+			);
+		}else{
+			$msg = array(
+				0 => 'Retrieved successfully',
+				1 => 'There is no orders yet!!',
+				2 => 'user_id is required',
+				3 => 'user_id must be a number',
+				4 => 'user_id is not exist'
+			);
+		}
+		$validator = Validator::make($request->all(), [
+			'access_token' => 'required'
+		], $messages);
+
+		if($validator->fails()){
+			$errors   = $validator->errors();
+			$error    = $errors->first();
+			return response()->json(['status' => false, 'errNum' => $error, 'msg' => $msg[$error]]);
+		} 
+
+            $user = $this->get_id($request,'users','user_id');
+
+
+		        if($user == 0 ){
+		              return response()->json(['status' => false, 'errNum' => 4, 'msg' => $msg[4]]);
+		        }
+
+		      $check = DB::table('users')   -> where('user_id',$user) -> first();
+
+		      if(!$check){
+		      	return response()->json(['status' => false, 'errNum' => 4, 'msg' => $msg[4]]);
+		      }
+ 
+
+			$counter = 0;
+			//get current users order
+			$today = date('Y-m-d');
+
+			if($lang == "ar"){
+				$status_col = 'order_status.ar_desc AS order_status';
+			}else{
+				$status_col = 'order_status.en_desc AS order_status';
+			}
+ 
+ 
+                //current order status 1 //pending , 2 //approved
+         	$CurrentOrders = DB::table('orders_headers')
+							    ->where('orders_headers.user_id', $user)
+							    ->whereNotIn('orders_headers.status_id', [1,2])
+							  //  ->where(DB::raw('DATE(orders_headers.expected_delivery_time)'), '<=',$today)
+								->join('order_status', 'orders_headers.status_id', '=', 'order_status.status_id')
+								->join('providers', 'orders_headers.provider_id', '=', 'providers.provider_id')
+                                //->join("complains" , "complains.order_id" , "orders_headers.order_id")
+								->select('orders_headers.order_id','orders_headers.total_value',
+									     'providers.provider_id', 'orders_headers.delivery_id',
+									     'providers.store_name AS store_name',
+									      'providers.provider_rate',
+									      DB::raw("CONCAT('".env('APP_URL')."','/public/providerProfileImages/', providers.profile_pic) AS profile_pic"),
+
+										    $status_col,
+										    
+								         DB::raw('DATE(orders_headers.created_at) AS created_date'), 
+								         DB::raw('TIME(orders_headers.created_at) AS created_time'))
+								->orderBy('orders_headers.order_id', 'DESC')
+								->get();
+
+			//$CurrentOrders["is_user_complain_provider"] = flase;
+			if($CurrentOrders->count()){
+				$counter++;
+			}
+ 
+ 			//get Finished orders status 3 // deliveried  4 //cancelled
+			$finishedOrders = DB::table('orders_headers')
+			 				    ->where('orders_headers.user_id', $user)
+							    ->whereIn('orders_headers.status_id', [3,4])
+								->join('order_status', 'orders_headers.status_id', '=', 'order_status.status_id')
+								->join('providers', 'orders_headers.provider_id', '=', 'providers.provider_id')
+								->select('orders_headers.order_id', 'orders_headers.order_code', 'orders_headers.total_value',
+									     'providers.provider_id','orders_headers.delivery_id','providers.full_name AS provider', 'providers.provider_rate', 
+									      DB::raw("CONCAT('".env('APP_URL')."','/public/providerProfileImages/', providers.profile_pic) AS profile_pic"),
+										 $status_col, 
+										 DB::raw('IFNULL(orders_headers.delivered_at, "") AS delivered_at') ,  
+										 DB::raw('TIME(orders_headers.delivered_at) AS delivered_time') , 
+										 'orders_headers.created_at',
+										  DB::raw('DATE(orders_headers.created_at) AS created_date'),
+										   DB::raw('TIME(orders_headers.created_at) AS created_time'))
+								->orderBy('orders_headers.order_id', 'DESC')
+								->get();
+			if($finishedOrders->count()){
+				$counter++;
+			}
+
+            if($finishedOrders !== null){
+
+                for($i = 0 ; $i <= count($finishedOrders) -1 ; $i++){
+                    $order_id_order_list = $finishedOrders[$i]->order_id;
+                    $provider_order_list = $finishedOrders[$i]->provider_id;
+                    $order_delivered_at = $finishedOrders[$i]->delivered_at;
+
+                  
+                    if($order_delivered_at == null){
+                        $finishedOrders[$i]->delivered_date = "";
+                        $finishedOrders[$i]->delivered_time = "";
+                    }
+                }
+            }
+
+			if($counter > 0){
+				return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[0], 'currentOrders' => $CurrentOrders, 'finishedOrders' => $finishedOrders]);
+			}else{
+				return response()->json(['status' => false, 'errNum' => 1, 'msg' => $msg[1]]);
+			}
+		 
+	}
+
+
+    
+    public function  CheckWorkingHoursForProvider($providerId , $delivery_time,$type){
 	    
 	    
 	    
@@ -2960,553 +2956,6 @@ public function prepareSearch(Request $request){
                  
  	    
 	}
-	
-
-	public function addVisitorOrder(Request $request){
-		$lang                 = $request->input('lang');
-		$meals                = $request->input('meals');
-		$provider             = $request->input('provider_id');
-		$in_future            = $request->input('in_future');
-		$address              = $request->input('address');
-		$delivery_method      = $request->input('delivery_method_id');
-		$payment_method       = $request->input('payment_method_id');
-		$delivery_time        = $request->input('delivery_time');
-		$visitor_phone        = $request->input('visitor_phone');
-		$visitor_country_code = $request->input('visitor_country_code');
-		$visitor_address      = $request->input('visitor_address');
-		$visitor_address_lat  = $request->input('visitor_address_lat');
-		$visitor_address_long = $request->input('visitor_address_long');
-		$visitor_email	      = $request->input('visitor_email');
-		$visitor_id 		  = $request->input('visitor_id');
-		$totalQty             = 0;
-		$totalPrice           = 0;
-		$net 			      = 0;
-		$totalValue           = 0;
-		$totalDisc            = 0;
-
-		if($lang == "ar"){
-			$msg = array(
-				0 => 'تمت العملية بنجاح',
-				1 => 'لا يوجد وجبات فى الطلب',
-				2 => 'خطأ فى وجبة ما',
-				3 => 'خطأ فى سعر وجبة ما',
-				4 => 'خطأ فى العدد من وجبة ما',
-				5 => 'كل البيانات مطلوبه',
-				6 => 'خانة lang يجب ان تكون واحده من (ar, en)',
-				7 => 'خانة in_future يجب ان تكون واحده من (0, 1)',
-				8 => 'خانة delivery_time يجب ان تكون بنستيق (Y-m-d H:i:s)',
-				9 => 'حدث خطأ ما من فضلك حاول فى وقت لاحق',
-				10 => 'رقم الوجبه لا يمكن ان يتكرر',
-				11 => 'لا يوجد كمية كافية للعدد المطلوب فى هذه الوجبات',
-				12 => 'مقدم الخدمه لا يقوم بإستلام طلبات',
-				13 => 'الوجبات يجب ان تكون على شكل مصفوفه',
-				14 => 'خطأ فى العنوان',
-				15 => 'خطأ فى صيغة البريد الإلكترونى',
-				16 => 'هذا البريد الإلكترونى مستخدم من قبل',
-				17 => 'رقم الجوال مستخدم من قبل'
-			);
-			$push_notif_title   = "طلب جديد";
-			$push_notif_message = "تم إضافة طلب جديد خاص بك";
-		}else{
-			$msg = array(
-				0 => 'Process done successfully',
-				1 => 'There is no any meal in order',
-				2 => 'There is an error in some meal',
-				3 => 'There is an error in some meal price',
-				4 => 'There is an error in some meal count number',
-				5 => 'All data is required',
-				6 => 'lang field must be one of (ar, en)',
-				7 => 'in_future field must be one of (0, 1)',
-				8 => 'delivery_time field must be in format (Y-m-d H:i:s)',
-				9 => 'There is something wrong, please try again later',
-				10 => 'meal_id can not be repeated',
-				11 => 'There is no enough quantaty for these meals',
-				12 => 'The provider doesn\'t receive orders',
-				13 => 'Meals must be an array',
-				14 => 'invalid address',
-				15 => 'Invalid e-mail format',
-				16 => 'This e-mail is used before',
-				17 => 'This phone number is used before'
-			);
-			$push_notif_title   = "New order";
-			$push_notif_message = "A new order has been added to you";
-		}
-
-		if(empty($meals)){
-			return response()->json(['status' => false, 'errNum' => 1, 'msg' => $msg[1]]);
-		}
-
-		if(!is_array($meals)){
-			return response()->json(['status' => false, 'errNum' => 1, 'msg' => $msg[1]]);
-		}
-		$mealsArr 	  = array();
-		$invalidMeals = array();
-		for($i = 0; $i < count($meals); $i++){
-			array_push($mealsArr, $meals[$i]['meal_id']);
-			if(empty($meals[$i]['meal_id'])){
-				return response()->json(['status' => false, 'errNum' => 2, 'msg' => $msg[2]]);
-			}
-
-			if(empty($meals[$i]['price'])){
-				return response()->json(['status' => false, 'errNum' => 3, 'msg' => $msg[3]]);
-			}
-
-			if(empty($meals[$i]['qty'])){
-				return response()->json(['status' => false, 'errNum' => 4, 'msg' => $msg[4]]);
-			}
-
-			if(empty($meals[$i]['discount']) || $meals[$i]['discount'] == "0" || $meals[$i]['discount'] == ""){
-				$meals[$i]['discount'] = 0;
-			}
-
-			//get meal available qty 
-			$check = Meals::where('meal_id', $meals[$i]['meal_id'])
-						  ->where('avail_number' , '<', $meals[$i]['qty'])
-						  ->first();
-			if($check != NULL){
-				$invalidMeals[]['meal_id'] 		 = $check->meal_id;
-				$invalidMeals[]['meal_name'] 	 = $check->meal_name;
-				$invalidMeals[]['meal_qty'] 	 = $check->avail_number;
-				$invalidMeals[]['requested_qty'] = $meals[$i]['qty'];
-			}
-
-			$totalQty   += $meals[$i]['qty'];
-			$totalPrice += $meals[$i]['price'];
-			$totalDisc  += $meals[$i]['discount'];
-			$net        += $meals[$i]['qty'] * $meals[$i]['price'];
-		}
-
-		
-
-		$uniqueMeals = array_values(array_unique($mealsArr));
-
-		if(count($mealsArr) != count($uniqueMeals)){
-			return response()->json(['status' => false, 'errNum' => 10, 'msg' => $msg[10]]);
-		}
-
-		if(!empty($invalidMeals)){
-			return response()->json(['status' => false, 'errNum' => 11,'msg' => $msg[11], 'invalid_meals' => $invalidMeals]);
-		}
-
-		$messages  = array(
-			'required'		 	   => 5,
-			'lang.in'        	   => 6,
-			'in_future.in'   	   => 7,
-			'date_format'    	   => 8,
-			'exists'		 	   => 14,
-			'email'          	   => 15,
-			'visitor_email.unique' => 16,
-			'visitor_phone.unique' => 17
-		);
-
-		$validator = Validator::make($request->all(), [
-			'provider_id'          => 'required',
-			'visitor_email'        => 'required|email|unique:users,email',
-			'visitor_phone'        => 'required|unique:users,phone',
-			'visitor_country_code' => 'required',
-			'visitor_address'      => 'required',
-			'visitor_address_lat'  => 'required',
-			'visitor_address_long' => 'required',
-			'in_future'            => 'required|in:0,1',
-			'delivery_method_id'   => 'required',
-			'payment_method_id'    => 'required',
-			'delivery_time'        => 'required|date_format:Y-m-d H:i:s'
-		], $messages);
-
-		$flag = 1;
-		if($validator->fails()){
-			$errors   = $validator->errors();
-			$error    = $errors->first();
-			if(!empty($visitor_id) && $visitor_id != 0 && $visitor_id != "0"){
-				if($error == 16 || $error == 17){
-					//get user phone and email
-					$visitorData = DB::table('users')->where('user_id', $visitor_id)->select('email', 'phone')->first();
-					if($visitorData != NULL){
-						if($visitor_email == $visitorData->email && $visitor_phone == $visitorData->phone){
-							$flag = 2;
-						}else{
-							return response()->json(['status' => false, 'errNum' => $error, 'msg' => $msg[$error]]);
-						}
-					}else{
-						return response()->json(['status' => false, 'errNum' => $error, 'msg' => $msg[$error]]);
-					}
-				}else{
-					return response()->json(['status' => false, 'errNum' => $error, 'msg' => $msg[$error]]);
-				}
-			}else{
-				return response()->json(['status' => false, 'errNum' => $error, 'msg' => $msg[$error]]);
-			}
-		}
-
-		//get user address data
-		// $userAdress = DB::table('user_addresses')->where('address_id', $address)->first();
-		//chech if the provider accept orders or not
-		$conditions[] = ['provider_id', '=', $request->input("provider_id")];
-		$conditions[] = ['receive_orders', '=', 1];
-		if($request->input('in_future') == 0 || $request->input('in_future') == "0"){
-			$conditions[] = ['current_orders', '=', 1];
-		}else{
-			$conditions[] = ['future_orders', '=', 1];
-		}
-		$check = Providers::where($conditions)
-						  ->first();
-		if($check == NULL || !$check->count()){
-			return response()->json(['status' => false, 'errNum' => 12,'msg' => $msg[12]]);
-		}else{
-			$provider_longitude      = $check->longitude;
-			$provider_latitude       = $check->latitude;
-			$provider_reg_id         = $check->device_reg_id;
-			$provider_delivery_price = $check->delivery_price;
-			$marketer_code 			 = $check->marketer_code;
-			$created 				 = date('Y-m-d', strtotime($check->created_at));
-		}
-		$delivery_price = 0;
-		$orderCode   = mt_rand();
-		//get app percentage 
-		$app_settings = DB::table('app_settings')->first();
-		if($app_settings != NULL){
-			$percentage          = $app_settings->app_percentage;
-			$kilo_price          = $app_settings->kilo_price;
-			$delivery_percentage = $app_settings->delivery_percentage;
-			$marketer_percentage = $app_settings->marketer_percentage; 
-		}else{
-			$percentage = 0;
-			$kilo_price = 0;
-			$delivery_percentage = 0;
-			$marketer_percentage = 0;
-		}
-
-		if($delivery_method == 1){
-			//calculating distance between provider and user 
-			$dKilos = $this->distance($visitor_address_lat, $visitor_address_long, $provider_latitude, $provider_longitude, false);
-			$delivery_price = ROUND(($dKilos * $kilo_price),2);
-		}elseif($delivery_method == 5){
-			$delivery_price = 0;
-		}else{
-			$delivery_price = $provider_delivery_price;
-		}
-		$app_value          = ($net * $percentage) / 100;
-		$delivery_app_value = ($delivery_price == 0) ? 0 : (($delivery_price * $delivery_percentage) / 100);
-		$total_value        = $net + $delivery_price;
-		$net                = $net - $app_value;  
-		if($marketer_code != NULL && !is_null($marketer_code) && $marketer_code != ""){
-			$now = time();
-			$y1 = date('y', strtotime($created));
-			$y2 = date('y', $now);
-
-			$m1 = date('m', strtotime($created));
-			$m2 = date('m', $now);
-
-			$d1 = date('d', strtotime($created));
-			$d2 = date('d', $now);
-			$months = (($y2 - $y1) * 12) + ($m2 - $m1) + (($d2 - $d1) / 30);
-			if($months <= 1){
-				$data['provider_marketer_code'] = $marketer_code;
-				$provider_marketer_value = ($net * $marketer_percentage) / 100;
-				$net = $net - $provider_marketer_value;
-			}else{
-				$data['provider_marketer_code'] = "";
-				$provider_marketer_value = 0;
-			}
-		}else{
-			$data['provider_marketer_code'] = "";
-			$provider_marketer_value = 0;
-		}
-		//we will set this to zero till split payement method is activated
-		$split_value = 0;
-		try {
-			$data['totalPrice']          = $totalPrice;
-			$data['totalQty']            = $totalQty;
-			$data['totalDisc']           = $totalDisc;
-			$data['net']			     = $net;
-			$data['delivery_price']      = $delivery_price;
-			$data['total_value']         = $total_value;
-			$data['app_value']           = $app_value;
-			$data['percentage']          = $percentage;
-			$data['delivery_percentage'] = $delivery_percentage;
-			$data['delivery_app_value']  = $delivery_app_value;
-			$data['provider']            = $provider;
-			$data['delivery_time']       = $delivery_time;
-			$data['payment_method']      = $payment_method;
-			$data['delivery_method']     = $delivery_method;
-			$data['orderCode'] 		     = $orderCode;
-			$data['in_future'] 		     = $in_future;
-			$data['split_value'] 	     = $split_value;
-			$data['meals'] 			     = $meals;
-			$data['visitor_address']     = $visitor_address;
-			$data['visitor_longitude']   = $visitor_address_long;
-			$data['visitor_latitude']    = $visitor_address_lat;
-			$data['visitor_country_code']= $visitor_country_code;
-			$data['visitor_phone']       = $visitor_phone;
-			$data['visitor_email']       = $visitor_email;
-			$data['marketer_percentage'] = $marketer_percentage;
-			$data['provider_marketer_value'] = $provider_marketer_value;
-			$data['lang']                    = $lang;
-			$data['flag']                    = $flag;
-			$data['visitor_id']              = $visitor_id;
-			$id = 0;
-			$visitor_id = 0;
-			$visitor_name = "";
-			DB::transaction(function () use ($data, &$id, &$visitor_id, &$visitor_name) {
-				$invitation_code = str_random(7);
-				if($data['flag'] == 1){
-					if($data['lang'] == 'ar'){
-						$default_name = 'زائر-'.time();
-					}else{
-						$default_name = 'visitor-'.time();
-					}
-				}else{
-					$default_name = "";
-				}
-				
-
-				if($data['flag'] == 1){
-					//adding visitor data to users table 
-					$user = DB::table('users')->insertGetId([
-						'full_name'    => $default_name,
-						'email'        => $data['visitor_email'],
-						'phone'        => $data['visitor_phone'],
-						'country_code' => $data['visitor_country_code'],
-						'invitation_code' => $invitation_code,
-						'type' 			  => 2,
-						'status' 		  => 1,
-						'profile_pic'     => url('userProfileImages/avatar_ic.png')
-					]);
-				}else{
-					$user = $data['visitor_id'];
-				}
-
-				if($data['flag'] == 1){
-					//adding user address
-					DB::table('user_addresses')->insert([
-						'user_id' => $user,
-						'address' => $data['visitor_address'],
-						'short_desc' => substr($data['visitor_address'], 0, 5),
-						'longitude'     => $data['visitor_longitude'],
-						'latitude'      => $data['visitor_latitude'],
-					]);
-				}
-			    //setting order header
-				$id = DB::table('orders_headers')->insertGetId([
-					'total_price' 	 => $data['totalPrice'],
-					'total_qty'   	 => $data['totalQty'],
-					'total_value' 	 => $data['total_value'],
-					'net_value' 	 => $data['net'],
-					'app_percentage' => $data['percentage'],
-					'app_value' 	 => $data['app_value'],
-					'delivery_price' => $data['delivery_price'],
-					'total_discount' => $data['totalDisc'],
-					'user_id'        => $user,
-					'provider_id'    => $data['provider'],
-					'address'        => $data['visitor_address'],
-					'user_latitude'  => $data['visitor_latitude'],
-					'user_longitude' => $data['visitor_longitude'],
-					'user_phone'     => $data['visitor_phone'],
-					'user_email'     => $data['visitor_email'],
-					'expected_delivery_time' => $data['delivery_time'],
-					'payment_type'           => $data['payment_method'],
-					'delivery_method'        => $data['delivery_method'],
-					'order_code' 			 => $data['orderCode'],
-					'in_future' 			 => $data['in_future'],
-					'split_value' 			 => $data['split_value'],
-					'delivery_app_value' 	 => $data['delivery_app_value'],
-					'delivery_app_percentage'=> $data['delivery_percentage'],
-					'marketer_percentage'    => $data['marketer_percentage'], 
-					'marketer_value'         => $data['provider_marketer_value'],
-					'provider_marketer_code' => $data['provider_marketer_code']
-				]);
-				$serial = 1;
-				$mealArr = $data['meals'];
-				for($i = 0; $i < count($mealArr); $i++){
-					DB::table('order_details')->insert([
-						'order_id'   => $id, 
-						'order_code' => $data['orderCode'], 
-						'meal_id'    => $mealArr[$i]['meal_id'],
-						'meal_price' => $mealArr[$i]['price'],
-						'qty'        => $mealArr[$i]['qty'],
-						'discount'   => $mealArr[$i]['discount'],
-						'serial'     => $serial
-					]);
-
-					Meals::where('meal_id', $mealArr[$i]['meal_id'])
-						 ->where(DB::raw('avail_number - '.$mealArr[$i]['qty']), ">=", 0)
-						 ->update(['avail_number' => DB::raw('avail_number - '.$mealArr[$i]['qty'])]);
-
-					$serial++;
-				}
-				$visitor_id = $user;
-				$visitor_name = $default_name;
-			});
-
-			$notif_data = array();
-			$notif_data['title']      = $push_notif_title;
-		    $notif_data['message']    = $push_notif_message;
-		    $notif_data['order_id'] 	      = $id;
-		    $notif_data['notif_type'] = 'order';
-		    $provider_token = Providers::where('provider_id', $data['provider'])->first();
-		    if($provider_token != NULL){
-		    	$push_notif = $this->singleSend($provider_token->device_reg_id, $notif_data, $this->provider_key);
-		    }
-			return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[0],'order_code' => $orderCode, 'order_id' => $id, 'visitor_id'=>$visitor_id, 'visitor_pic' => url('userProfileImages/avatar_ic.png'), 'visitor_name' => $visitor_name]);
-		} catch (Exception $e) {
-			return response()->json(['status' => false, 'errNum' => 9, 'msg' => $msg[9]]);
-		}
-		
-	}
-
-	public function getUserOrders(Request $request){
-		$user = $request->input('user_id');
-		$lang = $request->input('lang');
-		$messages = array(
-			'required' => 2,
-			'numeric'  => 3,
-			'exists'   => 4
-		);
-
-		if($lang == "ar"){
-			$msg = array(
-				0 => 'يوجد بيانات',
-				1 => 'لا يوجد بيانات بعد',
-				2 => 'رقم المستخدم مطلوب',
-				3 => 'رقم المستخدم يجب ان يكون رقم',
-				4 => 'رقم المستخدم غير موجود'
-			);
-		}else{
-			$msg = array(
-				0 => 'Retrieved successfully',
-				1 => 'There is no orders yet!!',
-				2 => 'user_id is required',
-				3 => 'user_id must be a number',
-				4 => 'user_id is not exist'
-			);
-		}
-		$validator = Validator::make($request->all(), [
-			'user_id' => 'required|numeric|exists:users,user_id'
-		], $messages);
-
-		if($validator->fails()){
-			$errors   = $validator->errors();
-			$error    = $errors->first();
-			return response()->json(['status' => false, 'errNum' => $error, 'msg' => $msg[$error]]);
-		}else{
-			$counter = 0;
-			//get current users order
-			$today = date('Y-m-d');
-			if($lang == "ar"){
-				$status_col = 'order_status.ar_desc AS order_status';
-			}else{
-				$status_col = 'order_status.en_desc AS order_status';
-			}
-
-//			$CurrentOrders = DB::table('orders_headers')
-//							    ->where('orders_headers.user_id', $user)
-//							    ->whereNotIn('orders_headers.status_id', [4,5,6,7,9])
-//							    ->where(DB::raw('DATE(orders_headers.expected_delivery_time)'), '<=',$today)
-//								->join('order_status', 'orders_headers.status_id', '=', 'order_status.status_id')
-//								->join('providers', 'orders_headers.provider_id', '=', 'providers.provider_id')
-//                                //->join("complains" , "complains.order_id" , "orders_headers.order_id")
-//								->select('orders_headers.order_id', 'orders_headers.order_code', 'orders_headers.total_value',
-//									     'providers.provider_id', 'orders_headers.delivery_id','providers.brand_name AS provider', 'providers.provider_rate', 'providers.profile_pic',
-//										 $status_col, DB::raw('IFNULL(orders_headers.delivered_at, "") AS delivered_at'), 'orders_headers.created_at', DB::raw('DATE(orders_headers.created_at) AS created_date'), DB::raw('TIME(orders_headers.created_at) AS created_time'))
-//								->orderBy('orders_headers.order_id', 'DESC')
-//								->get();
-         	$CurrentOrders = DB::table('orders_headers')
-							    ->where('orders_headers.user_id', $user)
-							    ->whereNotIn('orders_headers.status_id', [4,5,6,7,9])
-							    ->where(DB::raw('DATE(orders_headers.expected_delivery_time)'), '<=',$today)
-								->join('order_status', 'orders_headers.status_id', '=', 'order_status.status_id')
-								->join('providers', 'orders_headers.provider_id', '=', 'providers.provider_id')
-                                //->join("complains" , "complains.order_id" , "orders_headers.order_id")
-								->select('orders_headers.order_id', 'orders_headers.order_code', 'orders_headers.total_value',
-									     'providers.provider_id', 'orders_headers.delivery_id','providers.brand_name AS provider', 'providers.provider_rate', 'providers.profile_pic',
-										 $status_col,'orders_headers.expected_delivery_time AS delivered_at' , DB::raw('DATE(orders_headers.expected_delivery_time) AS delivered_date') , DB::raw('TIME(orders_headers.expected_delivery_time) AS delivered_time') , 'orders_headers.created_at', DB::raw('DATE(orders_headers.created_at) AS created_date'), DB::raw('TIME(orders_headers.created_at) AS created_time'))
-								->orderBy('orders_headers.order_id', 'DESC')
-								->get();
-
-			//$CurrentOrders["is_user_complain_provider"] = flase;
-			if($CurrentOrders->count()){
-				$counter++;
-			}
-
-            if($CurrentOrders !== null){
-
-                for($i = 0 ; $i <= count($CurrentOrders) -1 ; $i++){
-                    $CurrentOrders[$i]->is_user_complain_provider = false;
-                }
-            }
-
-			//get future users order
-			$futureOrders  = DB::table('orders_headers')
-			 				    ->where('orders_headers.user_id', $user)
-							    ->whereNotIn('orders_headers.status_id', [4,5,6,7,9])
-							    ->where(DB::raw('DATE(orders_headers.expected_delivery_time)'), '>', $today)
-								->join('order_status', 'orders_headers.status_id', '=', 'order_status.status_id')
-								->join('providers', 'orders_headers.provider_id', '=', 'providers.provider_id')
-								->select('orders_headers.order_id', 'orders_headers.order_code', 'orders_headers.total_value',
-									     'providers.provider_id','orders_headers.delivery_id','providers.brand_name AS provider', 'providers.provider_rate', 'providers.profile_pic',
-										 $status_col, 'orders_headers.expected_delivery_time AS delivered_at' , DB::raw('DATE(orders_headers.expected_delivery_time) AS delivered_date') , DB::raw('TIME(orders_headers.expected_delivery_time) AS delivered_time'), 'orders_headers.created_at', DB::raw('DATE(orders_headers.created_at) AS created_date'), DB::raw('TIME(orders_headers.created_at) AS created_time'))
-								->orderBy('orders_headers.order_id', 'DESC')
-								->get();
-			if($futureOrders->count()){
-				$counter++;
-			}
-
-            if($futureOrders !== null){
-
-                for($i = 0 ; $i <= count($futureOrders) -1 ; $i++){
-                    $futureOrders[$i]->is_user_complain_provider = false;
-                }
-            }
-			//get Finished orders
-			$finishedOrders = DB::table('orders_headers')
-			 				    ->where('orders_headers.user_id', $user)
-							    ->whereIn('orders_headers.status_id', [4,5,6,7,9])
-								->join('order_status', 'orders_headers.status_id', '=', 'order_status.status_id')
-								->join('providers', 'orders_headers.provider_id', '=', 'providers.provider_id')
-								->select('orders_headers.order_id', 'orders_headers.order_code', 'orders_headers.total_value',
-									     'providers.provider_id','orders_headers.delivery_id','providers.full_name AS provider', 'providers.provider_rate', 'providers.profile_pic',
-										 $status_col, DB::raw('IFNULL(orders_headers.delivered_at, "") AS delivered_at') , DB::raw('DATE(orders_headers.delivered_at) AS delivered_date') , DB::raw('TIME(orders_headers.delivered_at) AS delivered_time') , 'orders_headers.created_at', DB::raw('DATE(orders_headers.created_at) AS created_date'), DB::raw('TIME(orders_headers.created_at) AS created_time'))
-								->orderBy('orders_headers.order_id', 'DESC')
-								->get();
-			if($finishedOrders->count()){
-				$counter++;
-			}
-
-            if($finishedOrders !== null){
-
-                for($i = 0 ; $i <= count($finishedOrders) -1 ; $i++){
-                    $order_id_order_list = $finishedOrders[$i]->order_id;
-                    $provider_order_list = $finishedOrders[$i]->provider_id;
-                    $order_delivered_at = $finishedOrders[$i]->delivered_at;
-
-                    $complain = DB::table("complains")
-                                ->where("order_id" , $order_id_order_list)
-                                ->where("provider_id" , $provider_order_list)
-                                ->where("app" , "user")
-                                ->where("user_id" , $request->input("user_id"))
-                                ->first();
-                    if($complain !== null){
-                        $finishedOrders[$i]->is_user_complain_provider = true;
-                    }else{
-                        $finishedOrders[$i]->is_user_complain_provider = false;
-                    }
-
-                    if($order_delivered_at == null){
-                        $finishedOrders[$i]->delivered_date = "";
-                        $finishedOrders[$i]->delivered_time = "";
-                    }
-                }
-            }
-
-			if($counter > 0){
-				return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[0], 'currentOrders' => $CurrentOrders, 'futureOrders' => $futureOrders, 'finishedOrders' => $finishedOrders]);
-			}else{
-				return response()->json(['status' => false, 'errNum' => 1, 'msg' => $msg[1]]);
-			}
-		}
-	}
-
-
 
 	public function repareLikesAndFollowers(Request $request){
 		$type = $request->input('type');
