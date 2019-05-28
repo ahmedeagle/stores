@@ -51,71 +51,9 @@ Route::group(['middleware' => ['api_auth'], 'prefix' => 'api'], function() {
 		'as'   => 'getCatsGet'
 	]);
 
+	  
 	 
-	
-
-
-	Route::post('/addOrder',[
-		'uses' => 'UserController@addOrder',
-		'as'   => 'addOrder'
-	]);
-
-	Route::get('/addOrder',[
-		'uses' => 'UserController@echoEmpty',
-		'as'   => 'addOrderGet'
-	]);
-
-	Route::post('/addVisitorOrder',[
-		'uses' => 'UserController@addVisitorOrder',
-		'as'   => 'addVisitorOrder'
-	]);
-
-	Route::get('/addVisitorOrder',[
-		'uses' => 'UserController@echoEmpty',
-		'as'   => 'addVisitorOrderGet'
-	]);
-
-	Route::post('/orders', [
-		'uses' => 'UserController@getUserOrders', 
-		'as'   => 'orders'
-	]);
-
-	Route::get('/orders', [
-		'uses' => 'UserController@echoEmpty', 
-		'as'   => 'ordersGet'
-	]);
-  
-
-	Route::post('/addAddress', [
-		'uses' => 'UserController@addAdress', 
-		'as'   => 'addAdress'
-	]);
-
-	Route::get('/addAddress', [
-		'uses' => 'UserController@echoEmpty', 
-		'as'   => 'addAdressGet'
-	]);
-
-	Route::post('/getUserAddress', [
-		'uses' => 'UserController@getUserAddresses', 
-		'as'   => 'getUserAddress'
-	]);
-
-	Route::get('/getUserAddress', [
-		'uses' => 'UserController@echoEmpty', 
-		'as'   => 'getUserAddressGet'
-	]);
-
-	Route::post('/deleteUserAddress', [
-		'uses' => 'UserController@deleteUserAddress', 
-		'as'   => 'deleteAdd'
-	]);
-
-	Route::get('/deleteUserAddress', [
-		'uses' => 'UserController@echoEmpty', 
-		'as'   => 'deleteAddGet'
-	]);
-
+ 
 	Route::post('/providerReport', [
 		'uses' => 'UserController@makeReport', 
 		'as'   => 'report'
