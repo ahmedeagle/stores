@@ -1087,23 +1087,23 @@ class ProviderController extends Controller
 		if($lang == "ar"){
  			$country_col              = "country_ar_name AS country_name";
 			$city_col                 = "city_ar_name AS city_name";
-			$cat_col                  = "categories.cat_ar_name";
+			$cat_col                  = "categories.cat_ar_name AS cat_name";
  			$msg = array(
 				0 => '',
 				1 => 'توكن المستخدم مطلوب',
  				2 => 'لا يوجد بيانات'
 			);
-			$delivery_col = "delivery_methods.method_ar_name AS delivery_method";
+			$delivery_col = "delivery_methods.method_ar_name AS delivery_method_name";
 		}else{
  			$country_col = "country_en_name AS country_name";
 			$city_col    = "city_en_name AS city_name";
-			$cat_col     ="categories.cat_en_name";
+			$cat_col     ="categories.cat_en_name AS cat_name";
  			$msg = array(
 				0 => '',
 				1 => 'access_token is required',
  				2 => 'There is no data'
 			);
-			 $delivery_col = "delivery_methods.method_en_name AS delivery_method";
+			 $delivery_col = "delivery_methods.method_en_name AS delivery_method_name";
 		}
 
 		$messages = array(
@@ -1210,7 +1210,7 @@ class ProviderController extends Controller
 	 	
 	 	                    $id = $providerData ->provider_id;
 		                	$delivery_methods = DB::table("delivery_methods")->select('method_id AS delivery_id',$delivery_col,
-																DB::raw('IF((SELECT count(providers_delivery_methods.id) FROM providers_delivery_methods WHERE providers_delivery_methods.delivery_method = delivery_methods.method_id AND providers_delivery_methods.provider_id = '.$id.') > 0, 1, 0) AS choosen'))
+									DB::raw('IF((SELECT count(providers_delivery_methods.id) FROM providers_delivery_methods WHERE providers_delivery_methods.delivery_method = delivery_methods.method_id AND providers_delivery_methods.provider_id = '.$id.') > 0, 1, 0) AS choosen'))
 													   ->get();
 													   
  
