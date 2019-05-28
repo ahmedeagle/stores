@@ -1203,11 +1203,9 @@ class ProviderController extends Controller
 			                  	$city_col,
 			                  	 DB::raw('IF(city_id = '.$providerCity.', 1, 0) AS choosen')
 			                  	)->get();
-
-
+ 
 	        //get delivery Methods available 
 	 	  
-	 	
 	 	                    $id = $providerData ->provider_id;
 		                	$delivery_methods = DB::table("delivery_methods")->select('method_id AS method_id',$delivery_col,
 									DB::raw('IF((SELECT count(providers_delivery_methods.id) FROM providers_delivery_methods WHERE providers_delivery_methods.delivery_method = delivery_methods.method_id AND providers_delivery_methods.provider_id = '.$id.') > 0, 1, 0) AS choosen'))
@@ -2871,9 +2869,7 @@ public function updateProviderOffer(Request $request){
  
 }
 
-
-
-
+ 
 public function getProducts(Request $request){
 
    $lang = $request->input('lang');
@@ -2924,7 +2920,9 @@ public function getProducts(Request $request){
 							    	'products.id AS product_id',
 							    	 $cat_col,
 							    	 'products.description',
-							    	 'providers.provider_id'
+							    	 'providers.provider_id',
+							    	 'products.price'
+
 						    	   
 						    	)
 						    -> paginate(10);
@@ -4608,8 +4606,7 @@ if($providerRequest){
 		      	return response()->json(['status' => false, 'errNum' => 2, 'msg' => $msg[2]]);
 		      }
  
-		   
-			 
+		    
 			
 		//get new orders count
 		$pendings    = DB::table('orders_headers')->where('provider_id', $provider_id)
@@ -4646,7 +4643,8 @@ if($providerRequest){
 				1 => 'رقم مقدم الخدمه مطلوب',
 				2 => 'نوع الطلبات مطلوب',
 				3 => 'نوع العمليه يجب ان يكون 1 او 2 او 3 او 4',
-				4 => 'لا يوجد طلبات بعد'
+				4 => 'لا يوجد طلبات بعد',
+				5 =>  'المتجر غير موجود ',
 			);
 			$payment_col  = "payment_types.payment_ar_name AS payment_method";
 			$delivery_col = "delivery_methods.method_ar_name AS delivery_method";
@@ -4654,10 +4652,11 @@ if($providerRequest){
 		}else{
 			$msg = array(
 				0 => '',
-				1 => 'provider_id is required',
+				1 => 'access_token is required',
 				2 => 'type is required',
-				3 => 'type must be 1, 2, 3 or 4',
-				4 => 'There is no ordes yet'
+				3 => 'type must be 1, 2, 3 ',
+				4 => 'There is no ordes yet',
+				5 => 'Provider not Found'
 			);
 			$payment_col  = "payment_types.payment_en_name AS payment_method";
 			$delivery_col = "delivery_methods.method_en_name AS delivery_method";
@@ -4665,75 +4664,54 @@ if($providerRequest){
 		}
 
 		$messages  = array(
-			'provider_id.required' => 1,
-			'type.required'        => 2,
-			'in'                   => 3
+			'access_token.required' => 1,
+			'type.required'         => 2,
+			'in'                    => 3
 		);
+
 		$validator = Validator::make($request->all(), [
-			'provider_id' => 'required',
-			'type'        => 'required|in:1,2,3,4'
+			'access_token' => 'required',
+			'type'         => 'required|in:1,2,3'
 		], $messages);
+
 
 		if($validator->fails()){
 			$error = $validator->errors()->first();
 			return response()->json(['status' => false, 'errNum' => $error, 'msg' => $msg[$error]]);
-		}else{
-			$provider_id  = $request->input('provider_id');
-			$type 		  = $request->input('type');
-			$today        = date('Y-m-d');
+		}
+
+		 $provider_id = $this->get_id($request,'providers','provider_id');
+
+		        if($provider_id == 0 ){
+		              return response()->json(['status' => false, 'errNum' => 5, 'msg' => $msg[5]]);
+		        }
+
+		      $check = DB::table('providers')   -> where('provider_id',$provider_id) -> first();
+
+		      if(!$check){
+		      	return response()->json(['status' => false, 'errNum' => 5, 'msg' => $msg[5]]);
+		      }
+  
+
+
+ 			$type 		  = $request->input('type');
 			$conditions[] = ['providers.provider_id','=', $provider_id];
 			$inCondition = [];
 			if($type == 1){
-			    
-			     
-			    
-				$inCondition = [1];
-				$get_time_counter = DB::table("app_settings")->first();
-				if($get_time_counter != NULL){
-					$time_counter_in_hours = $get_time_counter->time_in_hours;
-					$time_counter_in_min    = $get_time_counter->time_in_min;
-					
- 				
-			}else{
-				$time_counter_in_hours = 0;
-				$time_counter_in_min   = 0;
-			}
-
-				
-			 
-			 
+			   
+				$inCondition = [1,2];
+			  
 			//  array_push($conditions, [DB::raw('orders_headers.created_at') , '>', Carbon::now()->addHours(1)->subMinutes($time_counter_in_min)]);
-				  
- 				
+				 
 			}elseif($type == 2){
-				$inCondition = [2,3,8];
-				array_push($conditions, [DB::raw('DATE(orders_headers.expected_delivery_time)') , '<=', $today]);
+				$inCondition = [3];
+				//array_push($conditions, [DB::raw('DATE(orders_headers.expected_delivery_time)') , '<=', $today]);
 			}elseif($type == 3){
-				$inCondition = [2,3,8];
-				array_push($conditions, ['orders_headers.status_id' , '!=', 1]);
-				array_push($conditions, [DB::raw('DATE(orders_headers.expected_delivery_time)') , '>', $today]);
-			}else{
-				$inCondition = [4,5,6,7];
-			}
-			
-			
-				//get allowed time to accept the order
-			if($type == 1){
-				$get_time_counter = DB::table("app_settings")->first();
-				if($get_time_counter != NULL){
-					$time_counter_in_hours = $get_time_counter->time_in_hours;
-					$time_counter_in_min    = $get_time_counter->time_in_min;
-					
- 				}
-			}else{
-				$time_counter_in_hours = 0;
-				$time_counter_in_min   = 0;
-			}
-
-			$today_date = date('Y-m-d');
-			$now        = date('h:i:s')  ;  
-			
-			
+				$inCondition = [4];
+				//array_push($conditions, ['orders_headers.status_id' , '!=', 1]);
+				//array_push($conditions, [DB::raw('DATE(orders_headers.expected_delivery_time)') , '>', $today]);
+			} 
+		 
 			//get orders
  	$orders = \App\Order_header::where($conditions) 
  	                     
@@ -4745,46 +4723,32 @@ if($providerRequest){
 						->join('order_status', 'orders_headers.status_id', '=', 'order_status.status_id')
 						->select(
 						            'orders_headers.order_id',
+						            'orders_headers.order_code',
                                     'orders_headers.delivery_id',
-                                    'providers.brand_name AS provider_name',
-                                    'orders_headers.address',
+                                    'providers.store_name AS store_name',
+                                     'orders_headers.address',
                                     'users.full_name AS user_name',
                                     'orders_headers.total_value',
                                     $payment_col, $delivery_col,
-                                    DB::raw("(SELECT count(order_details.id) FROM order_details WHERE order_details.order_id = orders_headers.order_id) AS meals_count"),
+                                    DB::raw("(SELECT count(order_products.id) FROM order_products WHERE order_products.order_id = orders_headers.order_id) AS products_count"),
                                     $status_col,DB::raw('DATE(orders_headers.created_at) AS created_date'),
                                     DB::raw('TIME(orders_headers.created_at) AS created_time')
                         )
                         
-                         
 						->orderBy('orders_headers.order_id', 'DESC')
 						->paginate(10);
-
-		
-		
-	$get_time_counter = DB::table("app_settings")->first();
-				if($get_time_counter != NULL){
-					$time_counter_in_hours = $get_time_counter->time_in_hours;
-					$time_counter_in_min    = $get_time_counter->time_in_min;
-					
- 				 
-			}else{
-				$time_counter_in_hours = 0;
-				$time_counter_in_min   = 0;
-			}
+ 
 			
 			return response()->json([
 										'status' 			    => true,
 										'errNum' 			    => 0,
 										'msg' 				    => $msg[0],
 										'orders' 			    => $orders,
-										'time_counter_in_min'   => $time_counter_in_min,
-										'time_counter_in_hours' => $time_counter_in_hours,
-										'today_date' 			=> $today_date,
-										'now' 					=> $now
+										 
 									]);
-		}
+		
 	}
+
 
 	public function orderAcceptance(Request $request){
 		$lang = $request->input('lang');
