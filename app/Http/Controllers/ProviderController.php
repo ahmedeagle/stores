@@ -1324,6 +1324,8 @@ class ProviderController extends Controller
                  return response()->json(['status' => false, 'errNum' => 15, 'msg' => $msg[15]]);
                 
             }
+
+
        
        
        
@@ -1352,6 +1354,8 @@ class ProviderController extends Controller
         }
 
 
+
+
         if($request -> profile_pic){
  
 
@@ -1360,13 +1364,39 @@ class ProviderController extends Controller
 
         } 
 
+
+ $validator = Validator::make($request->all(), $rules ,$messages);
+
+		if($validator->fails()){
+			  $error = $validator->errors() -> first();
+			return response()->json(['status' => false, 'errNum' => $error, 'msg' => $msg[$error]]);
+		}
+
 	if(in_array(2,$request -> delivery_method_id)){
                
-                  $rules['delivery_price'] = 'required';
-                  $input['delivery_price']     = $request-> delivery_price;                           
+                   $input['delivery_price']     = $request-> delivery_price;
+
+
+                  if(!$request ->  delivery_price){
+
+                      return response()->json(['status' => false, 'errNum' => 12, 'msg' => $msg[12]]);
+                  }
+
+                  if($request ->  delivery_price){
+
+                  	if(!is_numeric($request ->  delivery_price)){
+
+                             return response()->json(['status' => false, 'errNum' => 20, 'msg' => 'سعر التوصيل غير صحيح ' ]);
+
+                  	}
+
+                  }
 
 		}
-             
+        
+       
+
+     
              
               DB::table('providers_delivery_methods') ->  where('provider_id',$id) -> delete();
               
@@ -1388,13 +1418,7 @@ class ProviderController extends Controller
 		
 		 
  
-     	$validator = Validator::make($request->all(), $rules ,$messages);
-
-		if($validator->fails()){
-			  $error = $validator->errors() -> first();
-			return response()->json(['status' => false, 'errNum' => $error, 'msg' => $msg[$error]]);
-		}
-
+     	
         
          if($input['phone'] != $provider ->first() ->  phone){
 
@@ -2943,8 +2967,6 @@ public function getProducts(Request $request){
 
                    $product -> product_image = "";
 	            }
-	           
-	            
 	            
  	       }
 	   }
@@ -3105,8 +3127,7 @@ public function prepare_Product_Update(Request $request){
 
 
        if(!$provider){
-              
-
+               
            return response()->json(['status' => false, 'errNum' =>5 , 'msg' => $msg[5]]);
        }
 
@@ -3119,7 +3140,9 @@ public function prepare_Product_Update(Request $request){
 		             -> where('products.id', $request-> product_id)
 					 ->join('providers', 'products.provider_id', '=', 'providers.provider_id')
 					 -> where('providers.provider_id',$provider_id)
-					 ->select('products.title', 
+					 ->select(
+					 	      'products.id as product_id',
+					 	      'products.title', 
 					 	      'products.description',
 					 		  'products.price')
 					 ->first();
@@ -3146,20 +3169,28 @@ public function prepare_Product_Update(Request $request){
 		                                 )
 		                         -> get();
 
+        $options  = DB::table('product_options')  -> where('product_id',$request-> product_id) -> select('id as option_id','name','price') ->get();
+
+        $sizes  = DB::table('product_sizes')  -> where('product_id',$request-> product_id) -> select('id as option_id','name','price') ->get();
+
+        $colors  = DB::table('product_colors')  -> where('product_id',$request-> product_id) -> select('id as option_id','name','price') ->get();
  
 
 		return response()->json([
-								 'status' => true,
-								 'errNum' => 0,
-								 'msg' => '',
-								 'product' => $product,
-								 'images' => $images,
-								 'cats' => $categories
+								 'status'   => true,
+								 'errNum'   => 0,
+								 'msg'      => '',
+								 'product'  => $product,
+								 'images'   => $images,
+								 'cats'     => $categories,
+								 'options'  => $options,
+								 'sizes'    => $sizes,
+								 'colors'   => $colors,
+
 								]);
          
 }
-
-
+ 
 
 
 public function updateProduct(Request $request){
@@ -3365,11 +3396,9 @@ public function updateProduct(Request $request){
                             }       
   
                         }
-				        
-
+				       
 			    }
-			    
-			    
+			     
 			    
           $data=$request -> only('title','description','category_id','description','price');
 
@@ -3385,8 +3414,7 @@ public function updateProduct(Request $request){
 	
 				if( $request -> has('product_images')){
  
-  
-  
+   
                  $image_extensions = $request -> image_ext;
                  $products_images  = $request -> product_images;
                  
