@@ -2208,8 +2208,8 @@ public function editProviderOffer(Request $request){
                                	           'paid',
                                	           'status',
                                	           'publish',
-                               	           DB::raw('DATE(start_date) AS start_date'),
-                               	           DB::raw('DATE(end_date) AS end_date'),
+                               	           'start_date',
+                               	           'end_date',
                                	           DB::raw("CONCAT('". url('/') ."','/offers/',providers_offers.photo) AS offer_photo")                               
                                         ) 
                                -> first();
