@@ -112,10 +112,6 @@ class Crons extends Controller
                             
                         
                    }
-                   
-                  
-                    
-                 
                     
             }
         }

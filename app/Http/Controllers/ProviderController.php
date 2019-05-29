@@ -25,6 +25,7 @@ use Mail;
 use Storage;
 use DateTime;
 use Carbon\Carbon;
+use App\Http\Controllers\PushNotificationController as Push;
 
 class ProviderController extends Controller
 {
@@ -4780,6 +4781,8 @@ if($providerRequest){
 				4 => 'نوع العمليه يجب ان يكو (accept or reject)',
 				5 => 'فشلت العمليه من فضلك حاول فى وقت لاحق',
 				6 => 'ليس لديك صلاحية لتعديل هذا الطلب',
+				7 => 'لقد تم الغاء الطلب من قبل ',
+				8 => 'لقد تم قبول العرض من قبل '
 			);
 		}else{
 			$msg = array(
@@ -4789,7 +4792,10 @@ if($providerRequest){
 				3 => 'type is required',
 				4 => 'type must be (accept or reject)',
 				5 => 'Process failed please try again later',
-				6 => 'you can not access this order'
+				6 => 'you can not access this order',
+				7 => 'Order Rejected Before!',
+				8 => 'Order already Accepted before!',
+
 			);
 		}
 
@@ -4839,22 +4845,34 @@ if($providerRequest){
 			}else{
 				if($lang == 'ar'){
 					$push_notif_title   ='رفض الطلب';
-					$push_notif_message = 'قام مقدم الخدمه برفض طلبك';
+					$push_notif_message = 'قام مقدم الخدمه برفض طلبك  وتم استرجاع المبلغ برصيدك  '  .$request->input('order_id');
 				}else{
 					$push_notif_title   ='Order rejected';
-					$push_notif_message = 'The provider rejected your order';
+					$push_notif_message = 'The provider rejected your order and money return to your balance' .$request->input('order_id');
 				}
-				$status = 3;
+				$status = 4;
 			}
 			try {
  				$order_id    = $request->input('order_id');
 				//get order
 				$orderDetails = DB::table('orders_headers')->where('order_id', $order_id)->select(
-				    'user_id', 'payment_type', 'total_value' , 'provider_id')->first();
+				    'user_id', 'payment_type', 'total_value' , 'provider_id','status_id')->first();
                 //return "provider_id : " . var_dump($provider_id) . " order_id " . var_dump($orderDetails->provider_id);
 				if($provider_id != $orderDetails->provider_id){
                     return response()->json(['status' => false, 'errNum' => 6, 'msg' => $msg[6]]);
                 }
+
+
+               if(($orderDetails  -> status_id == 4 or $orderDetails  -> status_id == "4"  )&& $request -> type == 0){
+                    return response()->json(['status' => false, 'errNum' => 7, 'msg' => $msg[7]]);
+                }
+
+
+                  if(($orderDetails  -> status_id == 2 or $orderDetails  -> status_id == "2" )&& $request -> type == 1 ){
+                    return response()->json(['status' => false, 'errNum' => 8, 'msg' => $msg[8]]);
+                }
+
+ 
 				if($orderDetails){
 					$payment_type = $orderDetails->payment_type;
 					$total_value  = $orderDetails->total_value;
@@ -4870,17 +4888,32 @@ if($providerRequest){
 					date_default_timezone_set('Asia/Riyadh');
 
 					DB::table("orders_headers")->where('order_id', $order_id)->update(['provider_accept_order_date' => date("Y/m/d H:i:s", time())]);
+
+					DB::table("order_products")->where('order_id', $order_id)->update(['status' => $status]);
 					
-					DB::table("order_details")->where('order_id', $order_id)->update(['status' => $status]);
-					
-					if($status == 6 || $status == "6"){
+
+					  // if order reject and payment is VISA  
+					if($status == 4 || $status == "4"){
 						if($payment_type != 1 && $payment_type != "1"){
-							User::where('user_id', $user_id)->update([
-									'points' => DB::raw('points + '.$total_value)
-							]);
+							 
+ 					            $balance = DB::table("balances")
+					                ->where("actor_id", $order->user_id)
+					                ->where("actor_type", "user")
+					                ->first();
+
+					            if($balance){
+					                DB::table("balances")
+					                    ->where("actor_id", $order->user_id)
+					                    ->where("actor_type", "user")
+					                    ->update([
+					                        "balance" => $balance->balance + $order->total_value
+					                    ]);
+					            }
+ 
 						}
 					}
 				});
+
 				$notif_data = array();
 				$notif_data['title']      = $push_notif_title;
 			    $notif_data['message']    = $push_notif_message;
@@ -4890,12 +4923,29 @@ if($providerRequest){
 			    //device register for  firebase
 			    $user_token = User::where('orders_headers.order_id', $order_id)
 			    				  ->join('orders_headers', 'users.user_id', '=', 'orders_headers.user_id')
-			    				  ->select('users.device_reg_id')
+			    				  ->select('users.device_reg_id','users.user_id')
 			    				  ->first();
-			    				  
-			    if($user_token != NULL){
-			    	$push_notif = $this->singleSend($user_token->device_reg_id,$notif_data,$this->user_key);
+			    				
+			    	//send notification to mobile Firebase			  
+			    if($user_token){
+			    	$push_notif = (new Push())->send($user_token->device_reg_id,$notif_data,(new Push())->user_key);
 			    }
+
+
+			      DB::table("notifications")
+		            ->insert([
+		                "en_title"           => $push_notif_title,
+		                "ar_title"           => $push_notif_title,
+		                "en_content"         => $push_notif_message,
+		                "ar_content"         => $push_notif_message,
+		                "notification_type"  => 1,
+		                "actor_id"           => $user_token->user_id,
+		                "actor_type"         => "user",
+		                "action_id"          => $order_id
+
+		            ]);
+
+
 				return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[0]]);
 			} catch (Exception $e) {
 				return response()->json(['status' => false, 'errNum' => 5, 'msg' => $msg[5]]);
@@ -4907,8 +4957,7 @@ if($providerRequest){
  
 
 	public function changeOrderStatus(Request $request){
-		//Log::debug('data: ', $request->all());
-        /////////// define variables////////////
+		 
         $payment = "";
         $net = "";
         $app_value = "";
