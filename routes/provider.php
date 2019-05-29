@@ -233,8 +233,7 @@ Route::group(['middleware' => ['api_auth'], 'prefix' => 'api'], function() {
 
 	Route::post('/getProviderOrders', 'ProviderController@getProviderOrders');
 	Route::get('/getProviderOrders', 'ProviderController@echoEmpty');
-
-	 
+ 
 
 	Route::post('/orderAcceptance', 'ProviderController@orderAcceptance');
 	Route::get('/orderAcceptance', 'ProviderController@echoEmpty');
@@ -244,10 +243,12 @@ Route::group(['middleware' => ['api_auth'], 'prefix' => 'api'], function() {
 	Route::get('/changeOrderStatus', 'ProviderController@echoEmpty');
     
 
+    Route::post('/getBalances', 'ProviderController@getProviderBalance');
+	Route::get('/getBalances', 'ProviderController@echoEmpty');
+
 	//------------------------------------------------------------------------------
  
-	Route::post('/getBalances', 'ProviderController@getProviderBalance');
-	Route::get('/getBalances', 'ProviderController@echoEmpty');
+	
 
 	Route::post('/withdraw_request', 'ProviderController@withdraw');
 	Route::get('/withdraw_request', 'ProviderController@echoEmpty');

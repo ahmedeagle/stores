@@ -4973,7 +4973,8 @@ if($providerRequest){
 				2 => 'فشلت العمليه من فضلك حاول لاحقا',
 				3 => 'رقم الحالة يجب ان يكون 2 او 3 او 4 او 5',
 				4 => 'رقم الموصل مطلوب إذا كان رقم الحاله = 3 و طريقة التوصيل = 1',
-				5 => 'رقم الموصل خطأ'
+				5 => 'رقم الموصل خطأ',
+				6 => 'التاجر  غير موجود ',
 			);
 		}else{
 			$msg = array(
@@ -4982,7 +4983,8 @@ if($providerRequest){
 				2 => 'Process failed, please try again later',
 				3 => 'status_id must be 2,3,4 or 5',
 				4 => 'delivery id is required if status id = 3 AND delivery_method = 1',
-				5 => 'Invalid delivery_id'
+				5 => 'Invalid delivery_id',
+				6 => 'Provider not exists',
 			);
 		}
 
@@ -4992,9 +4994,9 @@ if($providerRequest){
 		);
 
 		$validator = Validator::make($request->all(), [
-			'order_id'        => 'required',
-			'provider_id'     => 'required',
-			'status_id'       => 'required|in:2,3,4,5'
+			'order_id'         => 'required',
+			'access_token'     => 'required',
+			'status_id'        => 'required|in:2,3,4'
 		], $messages);
 
 		if($validator->fails()){
@@ -5006,83 +5008,38 @@ if($providerRequest){
 
 		$order_id        = $request->input('order_id');
 		$status          = $request->input('status_id');
-		$provider_id     = $request->input('provider_id');
-		// $delivery_method = $request->input('delivery_method');
-		$delivery_id     = $request->input('delivery_id');
+		 $provider_id    = $this->get_id($request,'providers','provider_id');
+
+		        if($provider_id == 0 ){
+		              return response()->json(['status' => false, 'errNum' => 6, 'msg' => $msg[6]]);
+		        }
+
+		      $check = DB::table('providers')   -> where('provider_id',$provider_id) -> first();
+
+		      if(!$check){
+		      	return response()->json(['status' => false, 'errNum' => 6, 'msg' => $msg[6]]);
+		      }
+		 
 
 		$get = DB::table('orders_headers')
             ->where('order_id', $order_id)
-            ->select('delivery_method', 'marketer_percentage', 'delivery_price', 'delivery_app_value', 'marketer_value', 'marketer_delivery_value')
+            ->select('delivery_method', 'delivery_price', 'delivery_app_value')
             ->first();
             
-		$delivery_method = $get->delivery_method;
-		$marketer_percentage = $get->marketer_percentage;
-		$delivery_price = $get->delivery_price;
-		$provider_marketer_value = $get->marketer_value;
-		$marketer_delivery_value = $get->marketer_delivery_value;
-		if(($status == 3 || $status == "3") && ($delivery_method == 1 || $delivery_method == "1")){
-			if(empty($request->input('delivery_id')) || $request->input('delivery_id') == NULL){
-				return response()->json(['status' => false, 'errNum' => 4, 'msg' => $msg[4]]);
-			}
+		$delivery_method         = $get->delivery_method;
+ 		$delivery_price          = $get->delivery_price;
 
-			//check if selected delivery subscribe with marketer
-			$check = DB::table('deliveries')->where('delivery_id', $delivery_id)->first();
-			if($check != NULL){
-				$marketer_code = $check->marketer_code;
-				$created       = date('Y-m-d', strtotime($check->created_at));
-			}else{
-				return response()->json(['status' => false, 'errNum' => 5, 'msg' => $msg[5]]);
-			}
-
-
-			if($marketer_code != NULL && !is_null($marketer_code) && $marketer_code != ""){
-				//get marketer id
-				$marketer = DB::table('marketers')->where('marketer_code', $marketer_code)
-							  ->first();
-				if($marketer != NULL){
-					$marketerId = $marketer->marketer_id;
-				}else{
-					$marketerId = 0;
-				}
-				$now = time();
-				$y1 = date('y', strtotime($created));
-				$y2 = date('y', $now);
-
-				$m1 = date('m', strtotime($created));
-				$m2 = date('m', $now);
-
-				$d1 = date('d', strtotime($created));
-				$d2 = date('d', $now);
-				$months = (($y2 - $y1) * 12) + ($m2 - $m1) + (($d2 - $d1) / 30);
-				if($months <= 1){
-					$delivery_marketer_code = $marketer_code;
-					$delivery_marketer_value = ($delivery_price * $marketer_percentage) / 100;
-				}else{
-					$delivery_marketer_code = "";
-					$delivery_marketer_value = 0;
-				}
-			}else{
-				$delivery_marketer_code = "";
-				$delivery_marketer_value = 0;
-				$marketerId = 0;
-			}
-
-
-		}else{
-			$delivery_marketer_code = "";
-			$delivery_marketer_value= 0;
-			$marketerId = 0;
-		}
+		 
 
 
 
-		//get order payment method
-		if($status == 4){
+ 		//get order payment method  if order deliveried 
+		if($status == 3){
 			$orderCredits = DB::table('orders_headers')
 									->where("order_id", $order_id)
 									->select("payment_type",'net_value', 'app_percentage', 'app_value', 'delivery_app_value', 'user_id', 'total_value')
 									->first();
-			if($orderCredits != NULL){
+			if($orderCredits){
 				$payment   = $orderCredits->payment_type;
 				$net       = $orderCredits->net_value;
 				$app_value = $orderCredits->app_value;
@@ -5106,112 +5063,79 @@ if($providerRequest){
 
 
 		try {
-			DB::transaction(function() use ($delivery_app_value, $marketerId, $marketer_delivery_value, $provider_marketer_value, $order_id, $status, $provider_id, $payment, $totalVal, $userId,$net, $app_value, $delivery_method, $delivery_id, $lang, $delivery_marketer_value, $delivery_marketer_code){
-				$updates = array();
+			DB::transaction(function() use ($delivery_app_value, $order_id, $status, $provider_id, $payment, $totalVal, $userId,$net, $app_value, $delivery_method, $lang){
+
+				$updates =[];
 				$updates['status_id'] =  $status;
-				if(!empty($delivery_id) && $status == 3 && $delivery_method == 1){
-					$updates['delivery_id'] = $delivery_id;
-                    /*
-                       add the time now into database when the provider deliver order to delivery to calculate
-                       max time for delivery to accept or reject the order
-                     */
-                    date_default_timezone_set('Asia/Riyadh');
-                    $timestamp =  date("Y/m/d H:i:s", time());
-                    $updates["transfer_to_delivery_at"] = $timestamp;
-
-				}
-
-				if($delivery_marketer_value != 0){
-					$updates['delivery_marketer_value'] = $delivery_marketer_value;
-					$new_delivery_price = $delivery_price - $delivery_marketer_value;
-					$updates['delivery_price'] = $new_delivery_price;
-				}
-
-
-				if($delivery_marketer_code != ""){
-					$updates['delivery_marketer_code'] = $delivery_marketer_code;
-				}
-
-				DB::table('orders_headers')->where('order_id', $order_id)
-				  						   ->update($updates);
-				  						   
-				DB::table('order_details')->where('order_id', $order_id)
+				 
+    	  						   
+				DB::table('order_products')->where('order_id', $order_id)
 				  						  ->update(['status' => $status]);
 
-				if($status == 5 || $status == "5"){
-					if($payment != 1 && $payment != "1"){
-						User::where('user_id', $userId)->update([
-								'points' => DB::raw('points + '.$totalVal)
-						]);
-					}
+				if($status == 4 || $status == "4"){
+					 	 
+					 if($payment != 1){
+                                
+
+                       // money return to user balance if order rejected and payment by visa 
+						     
+			                 $userBalance = DB::table("balances")
+			                ->where("actor_id", $order->user_id)
+			                ->where("actor_type", "user")
+			                ->first();
+			                  if($userBalance){
+				                DB::table("balances")
+				                    ->where("actor_id", $order->user_id)
+				                    ->where("actor_type", "user")
+				                    ->update([
+				                        "balance" => $balance->balance + $order->total_value
+				                    ]);
+				               }
+ 
+					 }	else{    //payment COD
+                            
+                         //there is no change on any balances  to user or provider
+
+					 }
+  
 				}
 
-				if($status == 4){
-					if($payment != 1){
+				if($status == 3){
+					if($payment != 1){   // by visa 
+
 						DB::table("balances")->where("actor_id", $provider_id)
 											 ->where('type', 'provider')
 											 ->update([ 'current_balance' => DB::raw('current_balance + '. $net) ]);
-											 
-						if($delivery_method == 1 || $delivery_method == "1"){
+
+						//user balance not affect because there is no paid by  current balance 					 
+                            
+					    /*if($delivery_method == 1 || $delivery_method == "1"){   // COD
 							DB::table('balances')->where('actor_id', $delivery_id)
 												 ->where('type', 'delivery')
 												 ->update(['current_balance' => DB::raw('current_balance + '. $new_delivery_price)]);
-						}
+						}*/
+ 
+				}else{   //COD payment
+                               
+                            
+                             DB::table("balances")->where("actor_id", $provider_id)
+											 ->where('type', 'provider')
+											 ->update([ 'current_balance' => DB::raw('current_balance - '.  $app_value) ]);
+					  }
 
-						if($marketer_delivery_value != 0 && $marketer_delivery_value != "0"){
-							DB::table('balances')->where('actor_id', $marketerId)
-												 ->where('type', 'marketer')
-												 ->update(['current_balance' => DB::raw('current_balance + '. $marketer_delivery_value)]);
-						}
-					}else{
-					    
-					    
-					    date_default_timezone_set('Asia/Riyadh');
-					    
-					    
-					    	DB::table('balances')->where('actor_id', $marketerId)
-												 ->where('type', 'marketer')
-												 ->update(['current_balance' => DB::raw('current_balance + '. $net) ,'updated_at' => date('Y-m-d h:i:s')]);
-												 
-												 
-    												 
-    						DB::table("balances")->where("actor_id", $provider_id)
-    											 ->where('type', 'provider')
-    											 ->update([ 'due_balance' => DB::raw('due_balance + '. $app_value)  ,'updated_at' => date('Y-m-d h:i:s')]);
-    
-    						if($delivery_method == 1 || $delivery_method == "1"){
-    							DB::table('balances')->where('actor_id', $delivery_id)
-    												 ->where('type', 'delivery')
-    												 ->update(['current_balance' => DB::raw('due_balance + '. $marketer_delivery_value.' + '. $delivery_app_value),'updated_at' => date('Y-m-d h:i:s')]);
-    						}
-    
-    						if($marketer_delivery_value != 0 && $marketer_delivery_value != "0"){
-    							DB::table('balances')->where('actor_id', $marketerId)
-    												 ->where('type', 'marketer')
-    												 ->update(['current_balance' => DB::raw('current_balance + '. $marketer_delivery_value),'updated_at' => date('Y-m-d h:i:s')]);
-    						}
-    						
-    						
-    						
-						
-						
-						 
-						
-						
-					}
-				}
+             }
+			//get orderDetails and delivery, user reg id
+		  $order_data = DB::table('orders_headers')->where('orders_headers.order_id', $order_id)
+				   				 ->join('users', 'orders_headers.user_id', '=', 'users.user_id')
+				   				 ->select('orders_headers.order_id', 'orders_headers.user_id','orders_headers.order_code','orders_headers.address AS user_address','orders_headers.user_longitude',
+				   	        			  'orders_headers.user_latitude', 'users.device_reg_id')
+				   				 ->first();
 
-				//get orderDetails and delivery, user reg id
-				$order_data = DB::table('orders_headers')->where('orders_headers.order_id', $order_id)
-										   				 ->join('users', 'orders_headers.user_id', '=', 'users.user_id')
-										   				 ->select('orders_headers.order_id', 'orders_headers.order_code','orders_headers.address AS user_address','orders_headers.user_longitude',
-										   	        			  'orders_headers.user_latitude', 'users.device_reg_id AS user_token')
-										   				 ->first();
 				if($lang == "ar"){
-					$userTitle   = "تم تعديل حالة طلبك";
+					$userTitle   = "تم تعديل حالة طلبك" .$order_id;
 					$userMessage = "تم تعديل حالة طلبك";
 				}else{
-					$userTitle   = "Your order status has been updated";
+					$userTitle   = "Your order status has been updated" .$order_id;
 					$userMessage = "Your order status has been changed";
 				}
 				//send to user
@@ -5222,8 +5146,28 @@ if($providerRequest){
 			    $notif_data['notif_type'] = 'order';
 
 
-				$push_notif = $this->singleSend($order_data->user_token, $notif_data, $this->user_key);
-				if($status == 3 && $delivery_method == 1){
+							
+			    	//send notification to mobile Firebase			  
+			    if($order_data){
+			    	$push_notif = (new Push())->send($order_data->device_reg_id,$notif_data,(new Push())->user_key);
+			    }
+
+
+			      DB::table("notifications")
+		            ->insert([
+		                "en_title"           => $userTitle,
+		                "ar_title"           => $userTitle,
+		                "en_content"         => $userMessage,
+		                "ar_content"         => $userMessage,
+		                "notification_type"  => 1,
+		                "actor_id"           => $order_data->user_id,
+		                "actor_type"         => "user",
+		                "action_id"          => $order_id
+
+		            ]);
+
+
+			/*	if($status == 3 && $delivery_method == 1){
 					if($lang == "ar"){
 						$deliveryTitle   = "طلب جديد";
 						$deliveryMessage = "تم إرسال طلب جديد إليك";
@@ -5249,7 +5193,8 @@ if($providerRequest){
 				    $notif_data['user_address']	  = $order_data->user_address;
 				    $notif_data['notif_type']	  = 'order';
 					$push_notif = $this->singleSend($deliveryToken, $notif_data, $this->delivery_key);
-				}
+				}*/
+
 			});
 			return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[0]]);
 		} catch (Exception $e) {

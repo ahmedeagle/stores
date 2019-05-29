@@ -91,7 +91,7 @@ class Crons extends Controller
                     $notif_data['title']      = 'الاختار بحالة عرض';
                     $notif_data['message']    = 'لقد تم انتهاء مدة العرض الخاص بك بعنوان ' .$offer -> offer_title;
                     $notif_data['offer_id']   = $offer-> id;
-                    $notif_data['notif_type'] = 'offer_change_status';
+                    $notif_data['notif_type'] = 'offers';
                     
                      DB::table("notifications")
                         ->insert([
@@ -105,9 +105,7 @@ class Crons extends Controller
                             "action_id" => $notif_data['offer_id']
             
                         ]);
-                        
-                    
-                            
+                                
                     $push_provider_notif 	  = (new PushNotificationController()) ->send($offer -> device_reg_id, $notif_data, (new PushNotificationController())-> provider_key);
                             
                         
