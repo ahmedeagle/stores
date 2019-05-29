@@ -1248,7 +1248,8 @@ class ProviderController extends Controller
 				12 => 'لابد من ادخال سعر التوصيل',
 				13 => 'طرق التوصيل يجب ان تكون علي شكل مصفوفه ',
  				14=> 'لابد من اهتيار طريقه توصيل واحده ع الاقل ',
- 				15 => 'التاجر غير موجود '
+ 				15 => 'التاجر غير موجود ',
+ 				16 => 'رقم الهاتف موجود من قبل من فضلك ادخل رقم اخر '
 			);
 			
 			
@@ -1272,6 +1273,7 @@ class ProviderController extends Controller
     			13 => 'delivery method must be an array',
  				14=> 'must choose at least one delivery method',
  				15 => 'provider not exists ',
+ 				16 => 'phone number used before'
  				
   			);
   			
@@ -1293,9 +1295,8 @@ class ProviderController extends Controller
  			'regex'                     => 11,
  			'delivery_method_id.array'  => 13,
  			'delivery_method_id.min'     => 14,
- 			
- 			
-
+ 			'phone.unique'               => 16,
+ 		 
 
 		);
 
@@ -1312,6 +1313,7 @@ class ProviderController extends Controller
 			'category_id'      => 'required|exists:categories,cat_id',
             'city_id'          => 'required|exists:city,city_id',
             'delivery_method_id'     =>'required|array|min:1|exists:delivery_methods,method_id',
+
  
 		];
 
@@ -1325,10 +1327,7 @@ class ProviderController extends Controller
                 
             }
 
-
-       
-       
-       
+ 
       $provider = DB::table("providers") 
                            ->where('provider_id',$id);
       
@@ -1353,9 +1352,7 @@ class ProviderController extends Controller
 
         }
 
-
-
-
+ 
         if($request -> profile_pic){
  
 
@@ -1394,10 +1391,7 @@ class ProviderController extends Controller
 
 		}
         
-       
-
-     
-             
+        
               DB::table('providers_delivery_methods') ->  where('provider_id',$id) -> delete();
               
 		if($request -> delivery_method_id){
@@ -1441,16 +1435,11 @@ class ProviderController extends Controller
         }else{
             $isPhoneChanged = false;
         }
-
-         
-
+ 
  
         if($request-> profile_pic ){
-
-
-            $image  = $request -> profile_pic ;
-
  
+             $image  = $request -> profile_pic ;
             if($provider ->first() -> profile_pic != null && $provider ->first() -> profile_pic != ""){
                     
 		                //delete the previous image from storage 
@@ -1463,7 +1452,7 @@ class ProviderController extends Controller
  
 
               //save new image    64 encoded
-                    $image = $this->saveImage( $request -> profile_pic, $request->input('image_ext'), 'providerProfileImages/');
+                    $image = $this->saveImage( $request -> profile_pic, $request->image_ext, 'providerProfileImages/');
                                        
                                
       					
@@ -1474,7 +1463,7 @@ class ProviderController extends Controller
     							$errMsg = "Failed to upload image, please try again later";
     						}
     
-    						return response()->json(['status'=> false, 'errNum' => 15, 'msg' => $errMsg]);
+    						return response()->json(['status'=> false, 'errNum' => 20, 'msg' => $errMsg]);
     					}else{
     					    
             					 
@@ -4743,8 +4732,7 @@ if($providerRequest){
 			//get orders
  	$orders = \App\Order_header::where($conditions) 
  	                     
-						->whereIn('orders_headers.status_id', $inCondition)
-						->join('providers', 'orders_headers.provider_id', '=', 'providers.provider_id')
+ 						->join('providers', 'orders_headers.provider_id', '=', 'providers.provider_id')
 						->join('delivery_methods', 'orders_headers.delivery_method' ,'=', 'delivery_methods.method_id')
                         ->join('users', 'orders_headers.user_id', 'users.user_id')
 						->join('payment_types', 'orders_headers.payment_type', '=', 'payment_types.payment_id')
