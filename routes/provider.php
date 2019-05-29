@@ -234,11 +234,11 @@ Route::group(['middleware' => ['api_auth'], 'prefix' => 'api'], function() {
 	Route::post('/getProviderOrders', 'ProviderController@getProviderOrders');
 	Route::get('/getProviderOrders', 'ProviderController@echoEmpty');
 
+	 
+
 	Route::post('/orderAcceptance', 'ProviderController@orderAcceptance');
 	Route::get('/orderAcceptance', 'ProviderController@echoEmpty');
-
-	Route::post('/getComplains', 'ProviderController@getComplains');
-	Route::get('/getComplains', 'ProviderController@echoEmpty');
+ 
 
 	Route::post('/changeOrderStatus', 'ProviderController@changeOrderStatus');
 	Route::get('/changeOrderStatus', 'ProviderController@echoEmpty');
@@ -251,57 +251,13 @@ Route::group(['middleware' => ['api_auth'], 'prefix' => 'api'], function() {
 
 	Route::post('/withdraw_request', 'ProviderController@withdraw');
 	Route::get('/withdraw_request', 'ProviderController@echoEmpty');
-
-	Route::post('/order_properties', 'ProviderController@getProviderOrderProperties');
-	Route::get('/order_properties', 'ProviderController@echoEmpty');
-
-	Route::post('/save_order_properties', 'ProviderController@saveOrderProperties');
-	
-	Route::get('/save_order_properties', 'ProviderController@echoEmpty');
-
-	Route::post('/receiveOrderSwitch', 'ProviderController@receiveOrderSwitch');
-	Route::get('/receiveOrderSwitch', 'ProviderController@echoEmpty');
-
-	Route::post('/accept_video_file', 'ProviderController@accept_video_file');
-	Route::post('/pTest', 'ProviderController@test');
+ 
+  
 
 	Route::post('/getProviderFollowers', 'ProviderController@getProviderFollowers');
 	Route::post('/getDeliveries', 'ProviderController@getDeliveries');
 
-    ////  add route to get is delivery or allow recive order ////
-    Route::post('/isReceiveOrders', 'ProviderController@isReceiveOrders');
-    Route::get('/isReceiveOrders', 'ProviderController@echoEmpty');
-
-	//marketer
-	Route::post('/marketerSignUp', 'ProviderController@marketerSignUp');
-	Route::get('/marketerSignUp', 'ProviderController@echoEmpty');
-
-	Route::post('/activateMarketer', 'ProviderController@activate_marketer');
-	Route::get('/activateMarketer', 'ProviderController@echoEmpty');
-
-	Route::post('/marketerLogin', 'ProviderController@marketerLogin');
-	Route::get('/marketerLogin', 'ProviderController@echoEmpty');
-
-	Route::post('/marketerEditProfile', 'ProviderController@marketerEditProfile');
-	Route::get('/marketerEditProfile', 'ProviderController@echoEmpty');
-
-	Route::post('/editMarketerPhone', 'ProviderController@update_marketer_phone');
-	Route::get('/editMarketerPhone', 'ProviderController@echoEmpty');
-
-	Route::post('/getMarketerBalances', 'ProviderController@getMarketerBalance');
-	Route::get('/getMarketerBalances', 'ProviderController@echoEmpty');
-
-	Route::post('/getMarketerClients', 'ProviderController@getMarketerClients');
-	Route::get('/getMarketerClients', 'ProviderController@echoEmpty');
-
-	Route::post('/marketerBalanceDetails', 'ProviderController@marketerBalanceDetails');
-	Route::get('/marketerBalanceDetails', 'ProviderController@echoEmpty');
-
-    // route to get marketer data
-    Route::post("/prepareEditMarketerProfile" , "ProviderController@prepareEditMarketerProfile");
-    Route::get("/prepareEditMarketerProfile" , "ProviderController@echoEmpty");
-
-
+   
 
 	//deliveries
 	Route::post('/deliveryPrepareSignUp', 'DeliveryController@prepareSignUp');

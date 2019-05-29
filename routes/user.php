@@ -142,6 +142,10 @@ Route::group(['middleware' => ['api_auth'], 'prefix' => 'api'], function() {
 
     Route::post('/orders','UserController@getUserOrders');
 	Route::get('/orders','UserController@echoEmpty');
+
+
+	Route::post('/orderDetails', 'UserController@getOrderDetails');
+	Route::get('/orderDetails', 'UserController@echoEmpty');
   
 	 
 

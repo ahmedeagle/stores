@@ -2757,6 +2757,8 @@ public function prepareSearch(Request $request){
 	}
 	
  
+
+
  
  public function getUserOrders(Request $request){
 		$lang = $request->input('lang');
@@ -2889,7 +2891,163 @@ public function prepareSearch(Request $request){
 	}
 
 
-    
+    public function getOrderDetails(Request $request){
+
+		$lang = $request->input('lang');
+
+		if($lang == "ar"){
+			$msg = array(
+				0 => 'يوجد بيانات',
+				1 => 'لا يوجد تفاصيل ',
+				2 => 'رقم المستخدم مطلوب',
+				3 => 'لابد من ادخال رقم الطلب ',
+				4 => 'الطلب غير موجود '
+			);
+			$payment_col = "payment_types.payment_ar_name AS payment_method";
+			$delivery_col = "delivery_methods.method_ar_name AS delivery_method";
+ 			$status_col = 'order_status.ar_desc AS order_status';
+		}else{
+			$msg = array(
+				0 => 'Retrieved successfully',
+				1 => 'There is no order details!!',
+				2 => 'order_id is required',
+				3 => 'order not exists',
+ 			);
+			$payment_col = "payment_types.payment_en_name AS payment_method";
+			$delivery_col = "delivery_methods.method_en_name AS delivery_method";
+ 			$status_col = 'order_status.en_desc AS order_status';
+		}
+		
+
+		$messages = array(
+			'required' => 2,
+			'exists'   => 3
+		);
+ 
+		$validator = Validator::make($request->all(), [
+			'order_id' => 'required|exists:orders_headers,order_id'
+		], $messages);
+
+		if($validator->fails()){
+			$errors   = $validator->errors();
+			$error    = $errors->first();
+			return response()->json(['status' => false, 'errNum' => $error, 'msg' => $msg[$error]]);
+		} 
+		       //get order header
+	    	$order = DB::table('orders_headers')
+                    ->where('orders_headers.order_id', $request->input('order_id'))
+					->join('delivery_methods', 'orders_headers.delivery_method', '=', 'delivery_methods.method_id')
+					->join('payment_types', 'orders_headers.payment_type', '=', 'payment_types.payment_id')
+					->join('providers', 'orders_headers.provider_id', '=', 'providers.provider_id')
+					->join('users', 'orders_headers.user_id' ,'=', 'users.user_id')
+					->join('order_status', 'orders_headers.status_id', '=', 'order_status.status_id')
+					->select(  'orders_headers.order_code', 
+						       'orders_headers.order_id',
+						       'orders_headers.status_id',
+						       'orders_headers.status_id',
+                               $status_col,
+						       'orders_headers.total_value AS total',
+						       'orders_headers.delivery_price',
+						       'orders_headers.total_discount',
+						       'orders_headers.app_value',
+						       'orders_headers.address as user_address',
+						       'orders_headers.user_longitude', 
+						       'orders_headers.user_latitude',
+						       'orders_headers.user_phone',
+						       'orders_headers.user_email', 
+						        DB::raw('IFNULL(orders_headers.delivered_at, "") AS delivered_at'),
+						     $payment_col, 
+						      $delivery_col,
+						      'orders_headers.delivery_method AS delivery_method_id',
+						      'providers.store_name AS store_name', 
+						      'users.full_name AS user_name',
+						      DB::raw("CONCAT('".env('APP_URL')."','/public/providerProfileImages/',providers.profile_pic) AS store_image"),
+						        'providers.longitude AS provider_longitude', 
+						        'providers.latitude AS provider_latitude',
+						        'providers.membership_id',
+						         DB::raw('IFNULL(DATE(orders_headers.created_at), "") AS order_date'),
+					             DB::raw('IFNULL(TIME(orders_headers.created_at), "") AS order_time')
+
+					         )
+					->first();
+					
+					
+				//	dd($header);
+
+		$products = DB::table('order_products')->where('order_products.order_id', $request->input('order_id'))
+					 ->join('products', 'order_products.product_id', '=', 'products.id')
+					 ->select(
+					            'order_products.qty',
+                                'products.title',
+                                'products.description',
+                                'order_products.product_price',
+                                'order_products.discount'
+                     )
+					 ->get();
+        //return response()->json(["dataa" , $details]);
+
+		if($order){
+			$status = $order->status_id;
+		}else{
+			$status = "";
+		}
+
+
+		   //get rate only if order status is deliveried
+
+		if($status == 3 || $status == "3"){
+
+			$provider_order_rate = DB::table('provider_evaluation')
+                            ->where('order_id',$request->input('order_id'))
+						    ->select(
+						    	DB::raw("IFNULL(((quality + autotype + packing + maturity + ask_again) / 5), 0) AS order_rate") , 
+						    	DB::raw("IFNULL(((comment)), 0) AS comment"))
+						    ->first();
+
+			if($provider_order_rate){
+                $provider_order_rate = [
+                                        "rate" => $provider_order_rate->order_rate ,
+                                        "comment" => $provider_order_rate->comment
+                                        ];
+			}else{
+                $provider_order_rate = "";
+			}
+
+		}else{
+            $provider_order_rate = "";
+		}
+		  
+		$order_status = DB::table('order_status')->whereIn('status_id', [1,2,3])
+						   ->select(
+						   	'status_id', 
+						   	$status_col,
+						   	 DB::raw('IF(status_id = '.$order -> status_id.', true, false) AS choosen')
+						   )->get();
+ 
+		$percentage = DB::table('app_settings')->select('app_percentage')->first();
+
+		if($percentage){
+			$app_percentage = $percentage->app_percentage;
+		}else{
+			$app_percentage = 0;
+		}
+ 
+		return response()->json([
+		                            'status'    => true,
+                                    'errNum'    => 0, 
+                                    'msg'       =>'Retrieved successfully',
+                                    'order'     => $order,
+                                    'products'  => $products,
+                                    'app_percentage'      => $app_percentage,
+                                    'order_status'        => $order_status,
+                                     'provider_order_rate' => $provider_order_rate,
+
+                                ]);
+
+	}
+
+
+
     public function  CheckWorkingHoursForProvider($providerId , $delivery_time,$type){
 	    
 	    
@@ -3823,123 +3981,7 @@ public function prepareSearch(Request $request){
 		return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[0], 'countries' => $countries]);
 	}
 
-	public function getOrderDetails(Request $request){
-		$lang = $request->input('lang');
-		if($lang == "ar"){
-			$msg = array();
-			$payment_col = "payment_types.payment_ar_name AS payment_method";
-			$delivery_col = "delivery_methods.method_ar_name AS delivery_method";
-			$future       = "لاحقا";
-			$current      = "عادى";
-			$status_col = 'order_status.ar_desc AS order_status';
-		}else{
-			$msg = array();
-			$payment_col = "payment_types.payment_en_name AS payment_method";
-			$delivery_col = "delivery_methods.method_en_name AS delivery_method";
-			$future       = "in future";
-			$current      = "current";
-			$status_col = 'order_status.en_desc AS order_status';
-		}
-		
-		//get header
-	    	$header = DB::table('orders_headers')
-                    ->where('orders_headers.order_id', $request->input('order_id'))
-					->join('delivery_methods', 'orders_headers.delivery_method', '=', 'delivery_methods.method_id')
-					->join('payment_types', 'orders_headers.payment_type', '=', 'payment_types.payment_id')
-					->join('providers', 'orders_headers.provider_id', '=', 'providers.provider_id')
-					->join('users', 'orders_headers.user_id' ,'=', 'users.user_id')
-					->join('order_status', 'orders_headers.status_id', '=', 'order_status.status_id')
-					->select('orders_headers.order_code', 'orders_headers.total_value AS total', 'orders_headers.delivery_price','orders_headers.total_discount', 'orders_headers.app_value', 'orders_headers.marketer_delivery_value', 'marketer_value AS marketer_provider_value',
-							 'orders_headers.address as user_address', 'orders_headers.user_longitude', 'orders_headers.user_latitude','orders_headers.user_phone', 'orders_headers.user_email', DB::raw('IFNULL(orders_headers.delivered_at, "") AS delivered_at'),
-						     $payment_col, $delivery_col, 'orders_headers.delivery_method AS delivery_method_id','providers.brand_name AS provider_name', 'users.full_name AS user_name','providers.profile_pic', 'providers.address AS provider_address', 'providers.longitude AS provider_longitude', 'providers.latitude AS provider_latitude',
-						     DB::raw('IF(DATE(orders_headers.expected_delivery_time) = DATE(orders_headers.created_at), "'.$current.'", "'.$future.'") AS order_type'), $status_col, 'orders_headers.status_id', DB::raw('IFNULL(DATE(orders_headers.created_at), "") AS order_date'))
-					->first();
-					
-					
-				//	dd($header);
-
-		$details = DB::table('order_details')->where('order_details.order_id', $request->input('order_id'))
-					 ->join('meals', 'order_details.meal_id', '=', 'meals.meal_id')
-					 ->select(
-					            'order_details.qty',
-                                'meals.meal_name',
-                                'meals.meal_desc',
-                                'order_details.meal_price',
-                                'order_details.discount'
-                     )
-					 ->get();
-        //return response()->json(["dataa" , $details]);
-
-		if($header != NULL){
-			$status = $header->status_id;
-		}else{
-			$status = "";
-		}
-
-		if($status == 4 || $status == "4"){
-
-		    // get rate of provider rate
-            //$provider_rate_arr = [];
-            //$delivery_rate_arr = [];
-			$provider_order_rate = DB::table('provider_evaluation')
-                            ->where('order_id',$request->input('order_id'))
-						    ->select(DB::raw("IFNULL(((quality + autotype + packing + maturity + ask_again) / 5), 0) AS order_rate") , DB::raw("IFNULL(((comment)), 0) AS comment"))
-						    ->first();
-			if($provider_order_rate != NULL){
-                $provider_order_rate = [
-                                        "rate" => $provider_order_rate->order_rate ,
-                                        "comment" => $provider_order_rate->comment
-                                        ];
-			}else{
-                $provider_order_rate = "";
-			}
-
-			// get rate of delivery rate
-            $delivery_order_rate = DB::table('delivery_evaluation')
-                ->where('order_id',$request->input('order_id'))
-                ->select(DB::raw("IFNULL(((delivery_arrival + delivery_in_time + delivery_attitude) / 3), 0) AS order_rate"), DB::raw("IFNULL(((comment)), 0) AS comment"))
-                ->first();
-            if($delivery_order_rate != NULL){
-                $delivery_order_rate = [
-                                        "rate" => $delivery_order_rate->order_rate,
-                                        "comment" => $delivery_order_rate->comment
-                                        ];
-            }else{
-                $delivery_order_rate = "";
-            }
-
-		}else{
-            $provider_order_rate = "";
-            $delivery_order_rate = "";
-		}
-		
-
-		$type = $request->input('type');
-
-		$order_status = DB::table('order_status')->whereIn('status_id', [1,2,3,4,5])
-						   ->select('status_id', $status_col)->get();
-
-		$percentage = DB::table('app_settings')->select('app_percentage')->first();
-		if($percentage != NULL){
-			$app_percentage = $percentage->app_percentage;
-		}else{
-			$app_percentage = 0;
-		}
-
-		return response()->json([
-		                            'status' => true,
-                                    'errNum' => 0, 'msg' =>
-                                    'Retrieved successfully',
-                                    'header' => $header,
-                                    'details' => $details,
-                                    'app_percentage' => $app_percentage,
-                                    'order_status' => $order_status,
-                                    'delivery_order_rate' => $delivery_order_rate,
-                                    'provider_order_rate' => $provider_order_rate,
-
-                                ]);
-
-	}
+	
 
 	public function getProviderMeals(Request $request){
 		$lang = $request->input('lang');
