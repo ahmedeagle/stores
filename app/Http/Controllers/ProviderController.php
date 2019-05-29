@@ -4785,7 +4785,7 @@ if($providerRequest){
 			$msg = array(
 				0 => 'Process done successfully',
 				1 => 'order_id is required',
-				2 => 'provider_id is required',
+				2 => 'access_token is required',
 				3 => 'type is required',
 				4 => 'type must be (accept or reject)',
 				5 => 'Process failed please try again later',
@@ -4794,24 +4794,40 @@ if($providerRequest){
 		}
 
 		$messages = array(
-			'order_id.required'    => 1,
-			'provider_id.required' => 2,
-			'type.required'        => 3,
-			'in' 				   => 4
+			'order_id.required'     => 1,
+			'access_token.required' => 2,
+			'type.required'          => 3,
+			'in' 				     => 4
 		);
 
 		$validator = Validator::make($request->all(), [
-			'order_id' => 'required',
-			'provider_id' => 'required',
-			'type'        => 'required|in:accept,reject',
+			'order_id'      => 'required',
+			'access_token'  => 'required',
+			'type'          => 'required|in:0,1',
 		], $messages);
+
 
 		if($validator->fails()){
 			$error = $validator->errors()->first();
 			return response()->json(['status' => false, 'errNum' => $error, 'msg' => $msg[$error]]);
-		}else{
+		}
+
+		 $provider_id = $this->get_id($request,'providers','provider_id');
+
+		        if($provider_id == 0 ){
+		              return response()->json(['status' => false, 'errNum' => 6, 'msg' => $msg[6]]);
+		        }
+
+		      $check = DB::table('providers')   -> where('provider_id',$provider_id) -> first();
+
+		      if(!$check){
+		      	return response()->json(['status' => false, 'errNum' => 6, 'msg' => $msg[6]]);
+		      }
+ 
+
+
 			$type = $request->input('type');
-			if($type == "accept"){
+			if($type == "1"){
 				if($lang == 'ar'){
 					$push_notif_title   ='قبول الطلب';
 					$push_notif_message = 'قام مقدم الخدمة بقبول طلبك';
@@ -4828,11 +4844,10 @@ if($providerRequest){
 					$push_notif_title   ='Order rejected';
 					$push_notif_message = 'The provider rejected your order';
 				}
-				$status = 6;
+				$status = 3;
 			}
 			try {
-				$provider_id = $request->input('provider_id');
-				$order_id    = $request->input('order_id');
+ 				$order_id    = $request->input('order_id');
 				//get order
 				$orderDetails = DB::table('orders_headers')->where('order_id', $order_id)->select(
 				    'user_id', 'payment_type', 'total_value' , 'provider_id')->first();
@@ -4840,17 +4855,22 @@ if($providerRequest){
 				if($provider_id != $orderDetails->provider_id){
                     return response()->json(['status' => false, 'errNum' => 6, 'msg' => $msg[6]]);
                 }
-				if($orderDetails != NULL){
+				if($orderDetails){
 					$payment_type = $orderDetails->payment_type;
 					$total_value  = $orderDetails->total_value;
 					$user_id      = $orderDetails->user_id;
 				}else{
 					return response()->json(['status' => false, 'errNum' => 5, 'msg' => $msg[5]]);
 				}
+
 				DB::transaction(function() use ($status, $order_id, $provider_id, $payment_type, $total_value, $user_id){
+
 					DB::table("orders_headers")->where('order_id', $order_id)->update(['status_id' => $status]);
+
 					date_default_timezone_set('Asia/Riyadh');
+
 					DB::table("orders_headers")->where('order_id', $order_id)->update(['provider_accept_order_date' => date("Y/m/d H:i:s", time())]);
+					
 					DB::table("order_details")->where('order_id', $order_id)->update(['status' => $status]);
 					
 					if($status == 6 || $status == "6"){
@@ -4880,7 +4900,7 @@ if($providerRequest){
 			} catch (Exception $e) {
 				return response()->json(['status' => false, 'errNum' => 5, 'msg' => $msg[5]]);
 			}
-		}
+		
 	}
 
 	 
