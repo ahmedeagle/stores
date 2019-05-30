@@ -2981,9 +2981,32 @@ public function prepareSearch(Request $request){
                                 'products.title',
                                 'products.description',
                                 'order_products.product_price',
-                                'order_products.discount'
+                                'order_products.discount',
+                                'products.id as product_id'
                      )
 					 ->get();
+
+
+			if(isset($products) && $products -> count() > 0){
+                
+                foreach ($products as  $product) {
+                	  
+                     $image = DB::table('product_images') -> where('product_id',$product -> product_id) -> first();
+
+                     if($image){
+
+                     	 $product -> main_image =  env('APP_URL').'/public/providerProfileImages/'.$image -> image;
+
+                     }else{
+                      
+                         $product -> main_image ="";
+
+                     }
+
+                }
+ 
+			} 
+
         //return response()->json(["dataa" , $details]);
 
 		if($order){

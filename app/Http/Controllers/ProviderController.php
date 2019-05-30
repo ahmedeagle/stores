@@ -3069,7 +3069,7 @@ public function prepare_Product_Update(Request $request){
 			);
 
 
-			$cat_col = 'categories_stores.store_cat_ar_name';
+			$cat_col = 'categories_stores.cat_name';
 
 
 		}else{
@@ -3083,7 +3083,7 @@ public function prepare_Product_Update(Request $request){
 				 
 			);
 
-			$cat_col = 'categories_stores.store_cat_en_name';
+			$cat_col = 'categories_stores.cat_name';
 		}
 
 		$messages = array(
@@ -5062,17 +5062,16 @@ if($providerRequest){
 		}
 
 
-		try {
-			DB::transaction(function() use ($delivery_app_value, $order_id, $status, $provider_id, $payment, $totalVal, $userId,$net, $app_value, $delivery_method, $lang){
 
+		try {
+ 
 				$updates =[];
 				$updates['status_id'] =  $status;
-				 
-    	  						   
+     	  						   
 				DB::table('order_products')->where('order_id', $order_id)
 				  						  ->update(['status' => $status]);
 
-				if($status == 4 || $status == "4"){
+				if($status == 4 or $status == "4"){
 					 	 
 					 if($payment != 1){
                                 
@@ -5100,9 +5099,13 @@ if($providerRequest){
   
 				}
 
-				if($status == 3){
-					if($payment != 1){   // by visa 
 
+				if($status == 3  or $status == "3"){
+
+
+					if($payment != 1 ){   // by visa 
+
+ 
 						DB::table("balances")->where("actor_id", $provider_id)
 											 ->where('type', 'provider')
 											 ->update([ 'current_balance' => DB::raw('current_balance + '. $net) ]);
@@ -5130,6 +5133,8 @@ if($providerRequest){
 				   				 ->select('orders_headers.order_id', 'orders_headers.user_id','orders_headers.order_code','orders_headers.address AS user_address','orders_headers.user_longitude',
 				   	        			  'orders_headers.user_latitude', 'users.device_reg_id')
 				   				 ->first();
+
+				 DB::table('orders_headers') ->where('orders_headers.order_id', $order_id) -> update($updates);
 
 				if($lang == "ar"){
 					$userTitle   = "تم تعديل حالة طلبك" .$order_id;
@@ -5195,7 +5200,7 @@ if($providerRequest){
 					$push_notif = $this->singleSend($deliveryToken, $notif_data, $this->delivery_key);
 				}*/
 
-			});
+			
 			return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[0]]);
 		} catch (Exception $e) {
 			return response()->json(['status' => false, 'errNum' => 2, 'msg' => $msg[2]]);
