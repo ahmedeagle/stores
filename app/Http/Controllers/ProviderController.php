@@ -5071,6 +5071,14 @@ if($providerRequest){
 				DB::table('order_products')->where('order_id', $order_id)
 				  						  ->update(['status' => $status]);
 
+				  						  //get orderDetails and delivery, user reg id
+		  $order_data = DB::table('orders_headers')->where('orders_headers.order_id', $order_id)
+				   				 ->join('users', 'orders_headers.user_id', '=', 'users.user_id')
+				   				 ->select('orders_headers.order_id', 'orders_headers.user_id','orders_headers.order_code','orders_headers.address AS user_address','orders_headers.user_longitude',
+				   	        			  'orders_headers.user_latitude', 'users.device_reg_id','orders_headers.total_value')
+				   				 ->first();
+
+
 				if($status == 4 or $status == "4"){
 					 	 
 					 if($payment != 1){
@@ -5079,15 +5087,16 @@ if($providerRequest){
                        // money return to user balance if order rejected and payment by visa 
 						     
 			                 $userBalance = DB::table("balances")
-			                ->where("actor_id", $order->user_id)
-			                ->where("actor_type", "user")
+			                ->where("actor_id", $order_data->user_id)
+			                ->where("type", "user")
 			                ->first();
+
 			                  if($userBalance){
 				                DB::table("balances")
-				                    ->where("actor_id", $order->user_id)
-				                    ->where("actor_type", "user")
+				                    ->where("actor_id", $order_data ->user_id)
+				                    ->where("type", "user")
 				                    ->update([
-				                        "balance" => $balance->balance + $order->total_value
+				                        "current_balance" => $userBalance->current_balance + $order_data ->total_value
 				                    ]);
 				               }
  
@@ -5103,7 +5112,8 @@ if($providerRequest){
 				if($status == 3  or $status == "3"){
 
 
-					if($payment != 1 ){   // by visa 
+					if($payment == 2 or $payment == "2" ){   // by visa 
+
 
  
 						DB::table("balances")->where("actor_id", $provider_id)
@@ -5124,15 +5134,11 @@ if($providerRequest){
                              DB::table("balances")->where("actor_id", $provider_id)
 											 ->where('type', 'provider')
 											 ->update([ 'current_balance' => DB::raw('current_balance - '.  $app_value) ]);
+
 					  }
 
              }
-			//get orderDetails and delivery, user reg id
-		  $order_data = DB::table('orders_headers')->where('orders_headers.order_id', $order_id)
-				   				 ->join('users', 'orders_headers.user_id', '=', 'users.user_id')
-				   				 ->select('orders_headers.order_id', 'orders_headers.user_id','orders_headers.order_code','orders_headers.address AS user_address','orders_headers.user_longitude',
-				   	        			  'orders_headers.user_latitude', 'users.device_reg_id')
-				   				 ->first();
+			
 
 				 DB::table('orders_headers') ->where('orders_headers.order_id', $order_id) -> update($updates);
 
@@ -5212,12 +5218,16 @@ if($providerRequest){
 		if($lang == "ar"){
 			$msg = array(
 				0 => '',
-				1 => 'رقم مقدم الخدمه مطلوب'
+				1 => 'رقم مقدم الخدمه مطلوب',
+				2 => 'المتجر غير موجود',
 			);
 		}else{
 			$msg = array(
 				0 => '',
-				1 => 'provider_id is required'
+				1 => 'access_token is required',
+				2 => 'provider not exists'
+
+
 			);
 		}
 
@@ -5226,7 +5236,7 @@ if($providerRequest){
 		);
 
 		$validator = Validator::make($request->all(), [
-			'provider_id' => 'required'
+			'access_token' => 'required'
 		], $messages);
 
 		if($validator->fails()){
@@ -5240,18 +5250,33 @@ if($providerRequest){
                 ->where("actor_id" , $request->input("provider_id"))
                 ->where("type" , "provider")
                 ->get();
-                
-                
-                  
+               
+
+              
+               $provider_id    = $this->get_id($request,'providers','provider_id');
+
+		        if($provider_id == 0 ){
+		              return response()->json(['status' => false, 'errNum' => 2, 'msg' => $msg[2]]);
+		        }
+
+		      $check = DB::table('providers')   -> where('provider_id',$provider_id) -> first();
+
+		      if(!$check){
+		      	return response()->json(['status' => false, 'errNum' => 2, 'msg' => $msg[2]]);
+		      }
+		 
+
+
 
             //get balaces
             $balance = DB::table('balances')
-                ->where('actor_id', $request->input('provider_id'))
+                ->where('actor_id',  $provider_id)
                 ->where('type', 'provider')
                 ->select('current_balance', 'due_balance', 'updated_at' , 'forbidden_balance')
                 ->first();
 
-            if($balance != null && count($balance) != 0){
+ 
+            if($balance){
                 $current_balance = $balance->current_balance;
                 $due_balance     = $balance->due_balance;
                 $forbidden       = $balance->forbidden_balance;
@@ -5262,8 +5287,10 @@ if($providerRequest){
                 $forbidden       = "";
                 $updated         = "";
             }
+
+
             
-            if($get_provider_bank != null && count($get_provider_bank) != 0){
+            if(isset($get_provider_bank) && $get_provider_bank -> count() > 0){
                 //return empty($get_provider_bank);
                 
                 $last_entry = $get_provider_bank[count($get_provider_bank) -1 ];
@@ -5281,37 +5308,8 @@ if($providerRequest){
 
             return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[0],'balance' => ["current_balance"=>$current_balance , "due_balance" => $due_balance , "forbidden_balance" => $forbidden  , "updated_at" => $updated] , 'bank_name'=>$bank_name , 'bank_username'=>$bank_username , 'bank_phone'=>$bank_phone , 'account_num' =>$bank_account]);
 
-            //---------------------------------
-
-
-
-			//get current balance
-//            $current = DB::table('orders_headers')
-//                ->where('payment_type', 2)
-//                ->where('status_id', 4)
-//                ->where('provider_id', $request->input('provider_id'))
-//                ->where('balance_status', 1)
-//                ->where('provider_complain_flag', 0)
-//                ->sum('net_value');
-//
-//            //get due balance
-//            $due = DB::table('orders_headers')
-//                ->where('payment_type', 1)
-//                ->where('status_id', 4)
-//                ->where('provider_id', $request->input('provider_id'))
-//                ->where('balance_status', 1)
-//                ->sum('app_value');
-//
-//            //forbidden balance
-//            $forbidden = DB::table('orders_headers')
-//                ->where('payment_type', 2)
-//                ->where('status_id', 4)
-//                ->where('provider_id', $request->input('provider_id'))
-//                ->where('provider_complain_flag', 1)
-//                ->where('balance_status', 1)
-//                ->sum('net_value');
-//
-//            $balance = array('current_balance' => $current, 'due_balance' => $due, 'forbidden_balance' => $forbidden);
+             
+ 
 
 		}
 	}
