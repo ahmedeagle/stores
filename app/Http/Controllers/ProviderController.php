@@ -570,12 +570,38 @@ class ProviderController extends Controller
 			 
                         
 					}else{
- 
                                   $data['commercial_photo'] = "avatar_ic.png";
-
 					}
-				  
+ 
+					
 
+					if($request ->  invitationCode){
+
+						$data['invitationCode'] = $request ->  invitationCode;
+
+                          // owner of invitation code to add new balance  
+
+						$referalProvider = DB::table('providers') -> where('invitationCode', $data['invitationCode'] )  -> first();
+
+
+						    if($referalProvider){
+
+						    	$settings = DB::table('app_settings') -> first();
+
+						    	if($settings){                                         
+                                    $inviter_points =$settings -> inviter_points; 
+                                    $invited_points =$settings -> invited_points; 
+						    	}else{
+                                      $inviter_points =0;
+                                      $invited_points =0;
+						    	}
+ 
+						    DB::table('balances') -> where('actor_id',$referalProvider -> user_id) -> where('type','provider') -> update(['current_balance', DB::raw('current_balance + '. $inviter_points)]);
+
+						    }
+ 
+					}
+ 
                 $id = $this->get_id($request,'providers','provider_id');  
                 $provider = Providers::where('provider_id',$id);
                     
@@ -584,8 +610,7 @@ class ProviderController extends Controller
 		            
               	
 		if($request -> delivery_method_id){
-		    
-		    
+		     
 		    foreach($request -> delivery_method_id as $deliveryId){
 		        
 		        DB::table('providers_delivery_methods') -> insert([
@@ -600,12 +625,8 @@ class ProviderController extends Controller
 		    
 		   
 		}
-		
-		
-		
-		
 
-        
+		
              $data['status'] = 1;
              
 				try {
@@ -656,36 +677,24 @@ class ProviderController extends Controller
 															)
 													   ->get();
 													   
-													   
-					    	
-					    	
-					    
-
- 
+													  
 
 					return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[0], 'data' => $providerData,'deliveries' => $deliveries]);
 
 				} catch (Exception $e) {
 					return response()->json(['status' => false, 'errNum' => 8, 'msg' => $msg[8]]);
 				}
- 
-
+  
 			}
 			
 			
 	protected function checkCountryCodeFormate($str){
-	    
- 	    
-	    	   if(mb_substr(trim($str), 0, 1) === '+'){
-                        
-                          
-                          return  $str;
-                     
+	     
+	    	   if(mb_substr(trim($str), 0, 1) === '+'){                         
+                          return  $str;                     
                   }
-                  
-                  
-                  return '+'.$str;
-                  
+                    
+                  return '+'.$str;                  
 	}
    
 
