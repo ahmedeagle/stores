@@ -38,8 +38,10 @@ Route::group(['middleware' => ['api_auth'], 'prefix' => 'api'], function() {
 	Route::post('/providerSignUpFirstStep', 'ProviderController@signUp');
 	Route::get('/providerSignUpFirstStep', 'ProviderController@echoEmpty');
 
+    Route::post('/invitationCode', 'ProviderController@getInvitationCode');
+	Route::get('/invitationCode', 'ProviderController@echoEmpty');
 
-
+    
     Route::post('/activateAccount', 'ProviderController@activateAccount');
 	Route::get('/activateAccount', 'ProviderController@echoEmpty');
 

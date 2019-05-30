@@ -5213,7 +5213,71 @@ if($providerRequest){
 		}
 	}
 
-	public function getProviderBalance(Request $request){
+
+      public  function getInvitationCode(Request  $request){
+           
+            $lang = $request->input('lang');
+			if($lang == "ar"){
+				$msg = array(
+					0 => '',
+					1 => 'رقم مقدم الخدمه مطلوب',
+					2 => 'المتجر غير موجود',
+					3 => 'تم جلب البيانات '
+				);
+			}else{
+				$msg = array(
+					0 => '',
+					1 => 'access_token is required',
+					2 => 'provider not exists',
+					3 => 'data retrieved successfully'
+
+
+				);
+			}
+
+			$messages = array(
+				'required' => 1
+			);
+
+			$validator = Validator::make($request->all(), [
+				'access_token' => 'required'
+			], $messages);
+
+			if($validator->fails()){
+				$error = $validator->errors()->first();
+				return response()->json(['status' => false, 'errNum' => $error, 'msg' => $msg[$error]]);
+			}
+
+			 $provider_id    = $this->get_id($request,'providers','provider_id');
+
+		        if($provider_id == 0 ){
+		              return response()->json(['status' => false, 'errNum' => 2, 'msg' => $msg[2]]);
+		        }
+
+		      $check = DB::table('providers')   -> where('provider_id',$provider_id) -> first();
+
+		      if(!$check){
+		      	return response()->json(['status' => false, 'errNum' => 2, 'msg' => $msg[2]]);
+		      }
+		 
+ 
+		      if($check  -> invitationCode){
+
+		      	      return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[3] , 'invitationCode' => $check  -> invitationCode]);
+		      }
+                
+
+                  
+                  $randCode = $this->getRandomString(9);
+
+                  DB::table('providers')   -> where('provider_id',$provider_id) ->update(['invitationCode' => $randCode]);
+
+
+		        return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[3] , 'invitationCode' => $randCode]);
+              
+      }
+
+		public function getProviderBalance(Request $request){
 		$lang = $request->input('lang');
 		if($lang == "ar"){
 			$msg = array(
@@ -5313,488 +5377,8 @@ if($providerRequest){
 
 		}
 	}
-
-	public function withdraw(Request$request){
-		$lang = $request->input('lang');
-		if($lang == "ar"){
-			$msg = array(
-				0 => 'تمت العملية بنجاح',
-				1 => 'رقم صاحب الطلب مطلوب',
-				2 => 'الرصيد الحالى مطلوب',
-				3 => 'الرصيد المستحق مطلوب',
-				4 => 'فشلت العملية من فضلك حاول لاحقا',
-				5 => 'لديك طلبات لم يتم الرد عليها بعد',
-				6 => 'ادخل رقم الرصيد المستحق المراد سحبة',
-				7 => 'current_balance يجب ان يكون رقم',
-				8 => 'رقم الرصيد الحالى مطلوب',
-				9 => 'الاسم مطلوب',
-				10 => 'رقم الحساب مطلوب',
-				11 => 'رقم الهاتف مطلوب',
-				12 => 'ليس لديك رصيد كافى لاتمام هذة العملية',
-				13 => 'رصيدك الحالى اقل من الحد الادنى لسحب الرصيد',
-                14 => "النوع يجب ان يكون اما مقدم او مسوق",
-                15 => "النوع مطلوب",
-
-			);
-		}else{
-			$msg = array(
-				0 => 'Process done successfully',
-				1 => 'actor_id is required',
-				2 => 'current_balance is required',
-				3 => 'due_balance is required',
-				4 => 'Process failed, please try again later',
-				5 => 'You already have pending requests',
-				6 => 'Enter a valid current_balance number',
-				7 => 'current_balance must be a number',
-				8 => 'bank_name is required',
-				9 => 'name is required',
-				10 => 'account_num is required',
-				11 => 'phone is required',
-				12 => "You Don't have enough balance",
-				13 => "Your balance is less than minimum balance to withdraw",
-				14 => "type must be either provider or marketer",
-				15 => "type is required",
-				16 => "forbidden_balance is required",
-				17 => 'forbidden_balance must be a number'
-
-			);
-		}
-
-		$messages = array(
-			'actor_id.required'        => 1,
-			'current_balance.required' => 2,
-			'type.required'            => 15,
-			'current_balance.numeric'  => 7,
-			'due_balance.required'     => 3,
-			'bank_name.required'       => 8,
-			'name.required'            => 9,
-			'account_num.required'     => 10,
-			'phone.required'           => 11,
-			'forbidden_balance.required'       => 16,
-			'forbidden_balance.numeric'        => 17
-
-		);
-
-		$validator = Validator::make($request->all(), [
-			'actor_id'        => 'required',
-			'type'            => 'required',
-			'current_balance' => 'required|numeric',
-			'due_balance'     => 'required',
-            'bank_name'       => 'required',
-            'name'            => 'required',
-            'account_num'     => 'required',
-            'phone' 	      => 'required',
-            'forbidden_balance'       => 'required|numeric'
-		], $messages);
-
-		if($validator->fails()){
-			$error = $validator->errors()->first();
-			return response()->json(['status' => false, 'errNum' => $error, 'msg' => $msg[$error]]);
-		}else{
-
-		    $type = "";
-		    if($request->input("type") == "provider"){
-		        $type = "provider";
-            }elseif($request->input("type") == "marketer"){
-		        $type = "marketer";
-            }else{
-                return response()->json(['status' => false  , 'msg' => $msg[14]]);
-            }
-
-            // insert bank account data into database
-            $actor_bank_data = DB::table("withdraw_balance")
-                ->where("actor_id" , $request->input("actor_id"))
-                ->where("type" , $type)
-                ->first();
-		  //  if($actor_bank_data !== null){
-		  //      // update bank data
-    //             DB::table("withdraw_balance")
-    //                 ->where("actor_id" , $request->input("actor_id"))
-    //                 ->where("type" , $type)
-    //                 ->update([
-    //                     "name" => $request->input("name"),
-    //                     "phone" => $request->input("phone"),
-    //                     "bank_name" => $request->input("bank_name"),
-    //                     "account_num" => $request->input("account_num"),
-    //                     "updated_at" =>date('Y-m-d h:i:s')
-    //                 ]);
-
-    //         }else{
-		  //      // insert bank data
-    //             DB::table("withdraw_balance")
-    //                 ->insert([
-    //                     "actor_id" => $request->input("actor_id"),
-    //                     "type" => $type,
-    //                     "name" => $request->input("name"),
-    //                     "phone" => $request->input("phone"),
-    //                     "bank_name" => $request->input("bank_name"),
-    //                     "account_num" => $request->input("account_num"),
-    //                     "created_at" =>date('Y-m-d h:i:s')
-    //                 ]);
-    //         }
-            
-			//check if there is pending requests
-			$check  = DB::table('withdraw_balance')->where('actor_id', $request->input('actor_id'))
-												   ->where('type', $type)
-												   ->where('status', 1)
-												   ->first();
-			if($check != NULL){
-				return response()->json(['status' => false, 'errNum' => 5, 'msg' => $msg[5]]);
-			}
-
-            // check if the user requested blance is avaliable
-            $provider_balace = DB::table("balances")
-                                ->select("current_balance")
-                                ->where("actor_id" , $request->input("actor_id"))
-                                ->where("type" , $type)
-                                ->first();
-            $provider_current_balance = $provider_balace->current_balance;
-
-            if($request->input("current_balance") > $provider_current_balance){
-                return response()->json(['status' => false, 'errNum' => 12, 'msg' => $msg[12]]);
-            }
-
-
-            //check if the current balance is greater than min limit of withdrawing
-            $min_balance = DB::table("app_settings")
-                            ->select("min_balace_to_withdraw")
-                            ->first();
-            if($request->input("current_balance") < $min_balance->min_balace_to_withdraw){
-                return response()->json(['status' => false, 'errNum' => 13, 'msg' => $msg[13]]);
-            }
-
-
-			$insert = DB::table("withdraw_balance")->insert([
-						 'actor_id'        => $request->input('actor_id'),
-						 'current_balance' => $request->input('current_balance'),
-						 'due_balance'     => $request->input('due_balance'),
-                         'forbidden'       => $request->input('forbidden_balance'),
-						 'type' 		   => $type,
-                         'status'          =>  1,
-						 'bank_name' 	   => $request->input('bank_name'),
-						 'name' 		   => $request->input('name'),
-						 'account_num' 	   => $request->input('account_num'),
-						 'phone' 		   => $request->input('phone')
-
-					  ]);
-			if($insert){
-				return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[0]]);
-			}else{
-				return response()->json(['status' => false, 'errNum' => 4, 'msg' => $msg[4]]);
-			}
-		}
-	}
-
  
-   
  
-
-	public function getProviderFollowers(Request $request){
-		$lang = $request->input('lang');
-		if($lang == 'ar'){
-			$msg = array(
-				0 => '',
-				1 => 'يجب إرسال رقم مقدم الخدمه',
-				2 => 'رقم مقدم الخدمه غير صحيح',
-				3 => 'paginate_flag يجب ان يكون إما 1 او 2'
-			);
-		}else{
-			$msg = array(
-				0 => '',
-				1 => 'provider id is required',
-				2 => 'Invalid provider id',
-				3 => 'paginate_flag must be 0 or 1'
-			);
-		}
-
-		$messages = array(
-			'required' => 1,
-			'exists'   => 2,
-			'in'       => 3,
-		);
-
-		$validator = Validator::make($request->all(), [
-			'provider_id' => 'required|exists:providers',
-			'paginate_flag' => 'nullable|sometimes|in:0,1'
-		], $messages);
-
-		if($validator->fails()){
-			$error = $validator->errors()->first();
-			return response()->json(['status' => false, 'errNum' => $error, 'msg' => $msg[$error]]);
-		}
-
-		if($request->input('paginate_flag') == 1){
-			$followers = User::where('providers_followers.provider_id', $request->provider_id)
-						 ->join('providers_followers', 'users.user_id', '=', 'providers_followers.user_id')
-						 ->select('users.profile_pic', 'users.full_name', 'users.user_id')
-						 ->orderBy('providers_followers.id', 'DESC')
-						 ->paginate(10);
-		}else{
-			$followers = User::where('providers_followers.provider_id', $request->provider_id)
-						 ->join('providers_followers', 'users.user_id', '=', 'providers_followers.user_id')
-						 ->select('users.profile_pic', 'users.full_name', 'users.user_id')
-						 ->orderBy('providers_followers.id', 'DESC')
-						 ->get();
-		}
-
-		return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[0], 'followers' => $followers]);
-	}
-
-	public function getDeliveries(Request $request){
-		$city = $request->input('city_id');
-		$lang = $request->input('lang');
-		if($lang == "ar"){
-			$msg = "يجب إرسال مدينة مقدم الخدمه";
-		}else{
-			$msg = "Provider city is required";
-		}
-		if(empty($city) || $city == 0){
-			return response()->json(['status' => false, 'errNum' => 1, 'msg' => $msg]);
-		}
-		$deliveries = DB::table('deliveries')->where('publish', 1)
-											 ->where('status', 1)
-											 ->where('city_id', $city)
-											 ->select('delivery_id', 'full_name')
-											 ->get();
-
-		return response()->json(['status' => true, 'deliveries' => $deliveries,'errNum' => 0, 'msg' => '']);
-	}
-
-	 
-
-	public function withdrawReport(Request $request){
-		$lang = $request->input('lang');
-		if(empty($lang)){
-			$lang = 'en';
-		}
-
-		if($lang == "ar"){
-			$msg = array(
-				0 => '',
-				1 => 'رقم المستخدم مطلوب',
-				2 => 'النوع مطلوب',
-				3 => 'النوع يجب ان يكون فى provider, delivery, user',
-				4 => 'يجب ان يكون التاريخ بهذا التنسيق yyyy-mm-dd',
-				5 => 'إذا كنت تبحث بالمده فيجب توافر تاريخ البداية والنهاية معا',
-				6 => 'لا يوجد نتائج'
-			);
-		}else{
-			$msg = array(
-				0 => '',
-				1 => 'actor_id is required',
-				2 => 'type is required',
-				3 => 'type must be in provider, delivery, user',
-				4 => 'date format must be yyyy-mm-dd',
-				5 => 'from date required with to date in search with period',
-				6 => 'Empty result'
-			);
-		}
-
-		$messages = array(
-			'actor_id.required' => 1,
-			'type.required' => 2,
-			'in'       => 3,
-			'date_format' => 4,
-			'required_with' => 5
-		);
-
-		$validator = Validator::make($request->all(), [
-			'actor_id' => 'required',
-			'type'     => 'required|in:provider,delivery, user',
-			'from_date' => 'nullable|date_format:Y-m-d|required_with:to_date',
-			'to_date' => 'nullable|date_format:Y-m-d|required_with:from_date'
-		], $messages);
-
-		if($validator->fails()){
-			$error = $validator->errors()->first();
-			return response()->json(['status' => false, 'errNum' => $error, 'msg' => $msg[$error]]);
-		}
-
-
-		$requests = $this->withdrawRequest($request->input('actor_id'), $request->input('type'), $lang, $request->input('from_date') , $request->input('to_date'));
-
-		if($requests == false){
-			return response()->json(['status' => false, 'errNum' => 3, 'msg' => $msg[3]]);
-		}
-
-		if($requests->count()){
-			return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[0], 'requests' => $requests]);
-		}
-
-		return response()->json(['status' => false, 'errNum' => 6, 'msg' => $msg[6]]);
-	}
-
-	public function getIncome(Request $request){
-		$lang = $request->input('lang');
-		$type = $request->input('type');
-		if($lang == "ar"){
-			$msg = array(
-				0 => '',
-				1 => 'رقم المستخدم مطلوب',
-				2 => 'النوع مطلوب',
-				3 => 'النوع يجب ان يكون فى provider, delivery',
-				4 => 'يجب ان يكون التاريخ بهذا التنسيق yyyy-mm-dd',
-				5 => 'إذا كنت تبحث بالمده فيجب توافر تاريخ البداية والنهاية معا',
-				6 => 'لا يوجد نتائج'
-			);
-		}else{
-			$msg = array(
-				0 => '',
-				1 => 'actor_id is required',
-				2 => 'type is required',
-				3 => 'type must be in provider, delivery',
-				4 => 'date format must be yyyy-mm-dd',
-				5 => 'from date required with to date in search with period',
-				6 => 'Empty result'
-			);
-		}
-
-		$messages = array(
-			'actor_id.required' => 1,
-			'type.required' => 2,
-			'in'       => 3,
-			'date_format' => 4,
-			'required_with' => 5
-		);
-
-		$validator = Validator::make($request->all(), [
-			'actor_id' => 'required',
-			'type'     => 'required|in:provider,delivery',
-			'from_date' => 'nullable|date_format:Y-m-d|required_with:to_date',
-			'to_date' => 'nullable|date_format:Y-m-d|required_with:from_date'
-		], $messages);
-
-		if($validator->fails()){
-			$error = $validator->errors()->first();
-			return response()->json(['status' => false, 'errNum' => $error, 'msg' => $msg[$error]]);
-		}
-
-
-		if($type == 'provider'){
-            $table = 'providers';
-            $col   = 'providers.provider_id';
-            $cond  = 'orders_headers.provider_id';
-            $money = 'orders_headers.net_value AS credit';
-        }elseif($type == 'delivery'){
-            $table = 'deliveries';
-            $col   = 'deliveries.delivery_id';
-            $cond  = 'orders_headers.delivery_id';
-            $money = '(orders_headers.delivery_price - orders_headers.delivery_app_value) AS credit';
-        }else{
-            return response()->json(['status' => false, 'errNum' => 3, 'msg' => $msg[3]]);
-        }
-
-
-        $conditions[] = [$cond, '=', $request->input('actor_id')];
-        $conditions[] = ['orders_headers.status_id' , '=', 4];
-        if(!empty($request->input('from_date'))){
-        	$conditions[] = [DB::raw('DATE(orders_headers.created_at)'), '>=', $request->input('from_date')];
-        	$conditions[] = [DB::raw('DATE(orders_headers.created_at)'), '<=', $request->input('to_date')];
-        }
-	    $result = DB::table('orders_headers')->where($conditions)
-	        						         ->join($table, $cond, '=', $col)
-	        						         ->join('order_details', 'orders_headers.order_id', '=', 'order_details.order_id')
-	        						         ->select(
-			        						   		'orders_headers.order_code', 'orders_headers.total_qty', 'orders_headers.total_value', 'orders_headers.order_id AS invo_no',
-			        						   		DB::raw($money), DB::raw('COUNT(order_details.meal_id) AS mealsCount'), 'orders_headers.order_id'
-			        						  )
-	        						         ->groupBy('orders_headers.order_id')
-	        						         ->get();
-		if($result->count()){
-	    	return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[0], 'result' => $result]);
-	    }
-
-	    return response()->json(['status' => false, 'errNum' => 6, 'msg' => $msg[6]]);
-
-	}
-
-	public function getTotalIncome(Request $request){
-		$lang = $request->input('lang');
-		$type = $request->input('type');
-		if($lang == "ar"){
-			$msg = array(
-				0 => '',
-				1 => 'رقم المستخدم مطلوب',
-				2 => 'النوع مطلوب',
-				3 => 'النوع يجب ان يكون فى provider, delivery',
-				4 => 'يجب ان يكون التاريخ بهذا التنسيق yyyy-mm-dd',
-				5 => 'إذا كنت تبحث بالمده فيجب توافر تاريخ البداية والنهاية معا',
-				6 => 'لا يوجد بيانات'
-			);
-		}else{
-			$msg = array(
-				0 => '',
-				1 => 'actor_id is required',
-				2 => 'type is required',
-				3 => 'type must be in provider, delivery',
-				4 => 'date format must be yyyy-mm-dd',
-				5 => 'from date required with to date in search with period',
-				6 => 'Empty result'
-			);
-		}
-
-		$messages = array(
-			'actor_id.required' => 1,
-			'type.required' => 2,
-			'in'       => 3,
-			'date_format' => 4,
-			'required_with' => 5
-		);
-
-		$validator = Validator::make($request->all(), [
-			'actor_id' => 'required',
-			'type'     => 'required|in:provider,delivery',
-			'from_date' => 'nullable|date_format:Y-m-d|required_with:to_date',
-			'to_date' => 'nullable|date_format:Y-m-d|required_with:from_date'
-		], $messages);
-
-		if($validator->fails()){
-			$error = $validator->errors()->first();
-			return response()->json(['status' => false, 'errNum' => $error, 'msg' => $msg[$error]]);
-		}
-
-
-		if($type == 'provider'){
-            $table = 'providers';
-            $col   = 'providers.provider_id';
-            $cond  = 'orders_headers.provider_id';
-            $money = '(orders_headers.net_value + orders_headers.app_value) AS credit';
-        }elseif($type == 'delivery'){
-            $table = 'deliveries';
-            $col   = 'deliveries.delivery_id';
-            $cond  = 'orders_headers.delivery_id';
-            $money = '(orders_headers.delivery_price) AS credit';
-        }else{
-            return response()->json(['status' => false, 'errNum' => 3, 'msg' => $msg[3]]);
-        }
-
-
-        $conditions[] = [$cond, '=', $request->input('actor_id')];
-        $conditions[] = ['orders_headers.status_id' , '=', 4];
-        if(!empty($request->input('from_date'))){
-        	$conditions[] = [DB::raw('DATE(orders_headers.created_at)'), '>=', $request->input('from_date')];
-        	$conditions[] = [DB::raw('DATE(orders_headers.created_at)'), '<=', $request->input('to_date')];
-        }
-	    $result = DB::table('orders_headers')->where($conditions)
-	        						         ->join($table, $cond, '=', $col)
-	        						         ->join('order_details', 'orders_headers.order_id', '=', 'order_details.order_id')
-	        						         ->select(
-			        						   		'orders_headers.order_code',
-                                                    'orders_headers.order_id AS invo_no' ,
-                                                    'orders_headers.total_qty',
-                                                    'orders_headers.total_value',
-			        						   		DB::raw($money),
-                                                    DB::raw('COUNT(order_details.meal_id) AS mealsCount'),
-                                                    'orders_headers.order_id'
-			        						  )
-	        						         ->groupBy('orders_headers.order_id')
-	        						         ->get();
-	    if($result->count()){
-	    	return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[0], 'result' => $result]);
-	    }
-
-	    return response()->json(['status' => false, 'errNum' => 6, 'msg' => $msg[6]]);
-	}
 
 	 
 }
