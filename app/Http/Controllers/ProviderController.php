@@ -5927,9 +5927,9 @@ public function Providersearch(Request $request){
  	   	 ;  
 
 		  
-		/*if(!empty($user_name) && $user_name !== 0 && $user_name !== 0.0 && $user_name !== "0.0"){
-			array_push($conditions, ['tble.name', 'like', '%'.$name.'%']);
-		}*/
+		 if(!empty($user_name) && $user_name !== 0 && $user_name !== 0.0 && $user_name !== "0.0"){
+			array_push($conditions, ['tble.user_name', 'like', '%'.$user_name.'%']);
+		} 
 
  
        $conditions=[];
