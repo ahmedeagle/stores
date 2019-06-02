@@ -81,8 +81,6 @@ class Crons extends Controller
                 
                    if($offer -> expire_date  <  $now && $offer -> expire != 1){
                        
-                        
-                       
                        Offer::where('id', $offer -> id)
                         ->update(['expire' => 1]);
                                     

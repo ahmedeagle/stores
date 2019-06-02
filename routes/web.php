@@ -52,6 +52,12 @@ Route::group(['middleware' => ['api_auth'], 'prefix' => 'api'], function() {
     Route::post('/savenotificationSettings', 'ProviderController@saveNotificationSettings');
     Route::get('/savenotificationSettings', 'ProviderController@echoEmpty');
 
+    Route::post('/get_notifications', 'NotificationController@get_notifications');
+    Route::get('/get_notifications', 'ProviderController@echoEmpty');
+
+    Route::post('/GetUnreadNotificationsCount', 'NotificationController@UnreadNotifications');
+    Route::get('/GetUnreadNotificationsCount', 'ProviderController@echoEmpty');
+  
 
     Route::post('/withdraw_request', 'ProviderController@withdraw');
     Route::get('/withdraw_request', 'ProviderController@echoEmpty');
