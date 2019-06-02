@@ -5920,19 +5920,18 @@ public function Providersearch(Request $request){
  		$order_id            = $request->input('order_id'); 
 
             //(SELECT users.full_name FROM users WHERE orders_headers.user_id = users.user_id) AS user_name
- 	   	$virtualTble = "SELECT orders_headers.order_id , orders_headers.order_code, orders_headers.total_value,orders_headers.status_id  ,(SELECT order_status.ar_desc FROM order_status WHERE orders_headers.status_id = order_status.status_id) AS status_text,(SELECT users.full_name FROM users WHERE orders_headers.user_id = users.user_id) AS user_name
+ 	   	$virtualTble = "SELECT orders_headers.order_id , orders_headers.order_code, orders_headers.total_value,orders_headers.status_id ,orders_headers.user_id ,(SELECT order_status.ar_desc FROM order_status WHERE orders_headers.status_id = order_status.status_id) AS status_text,(SELECT users.full_name FROM users WHERE orders_headers.user_id = users.user_id) AS user_name
  	   	 FROM `orders_headers` WHERE orders_headers.provider_id ={$actor_id}"
-
-
  	   	 ;  
 
 		  
-		/* if(!empty($user_name) && $user_name !== 0 && $user_name !== 0.0 && $user_name !== "0.0"){
-			array_push($conditions, ['tble.user_name', 'like', '%'.$user_name.'%']);
-		} */
 
- 
-       $conditions=[];
+		  $conditions=[];
+		  
+		  if(!empty($user_name) && $user_name !== 0 && $user_name !== 0.0 && $user_name !== "0.0"){
+			array_push($conditions, ['tble.user_name', 'like', '%'.$user_name.'%']);
+		}  
+
 		if(!empty($status_id) && $status_id !== 0 && $status_id !== "0" && $status_id !== 0.0 && $status_id !== "0.0"){
 			array_push($conditions, ['tble.status_id', '=', $status_id]);
 		}
