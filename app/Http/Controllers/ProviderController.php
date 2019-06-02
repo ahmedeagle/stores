@@ -5392,7 +5392,7 @@ if($providerRequest){
             ->get();
 
 
-            
+
 
 
             return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[0],'balance' => ["current_balance"=>$current_balance , "due_balance" => $due_balance , "forbidden_balance" => $forbidden  , "updated_at" => $updated] , 'bank_name'=>$bank_name , 'bank_username'=>$bank_username , 'bank_phone'=>$bank_phone , 'account_num' =>$bank_account,'financialTransactions' => $financialTransactions]);
@@ -5818,6 +5818,150 @@ if($providerRequest){
 			}
 		
 	}
+
+
+public function prepareSearch(Request $request)
+{
+   $lang = $request->input('lang');
+		if($lang == "ar"){
+			$msg = array(
+				0 => 'يوجد بيانات',
+				1 => 'لا يوجد بيانات'
+			);
+ 			$cat_col	  = "order_status.ar_desc AS status_name";
+		}else{
+			$msg = array(
+				0 => 'Retrieved successfully',
+				1 => 'There is no data'
+			);
+ 			$cat_col 	  = "order_status.en_desc AS status_name";
+		}
+
+ 	 	$order_status = DB::table('order_status')
+  		-> select('order_status.status_id',
+ 		 $cat_col
+ 		)->get();
+
+		return response()->json(['status'=>true, 'errNum' => 0, 'msg' => $msg[0], 'order_status' => $order_status]);
+
+}
+
+public function Providersearch(Request $request){
+	      
+		$lang = $request->input('lang');
+		if($lang == "ar"){
+			$msg = array(
+				0 => 'يوجد بيانات',
+				1 => 'لا يوجد نتائج لبحثك',
+				2 => 'يجب ان تختار التاريخ عند البحث بالوقت',
+				3 => 'يجب إرسال تفاصيل موقع المستخدم',
+				4 => 'المسافه يجب ان تكون بالأرقام',
+				5 => 'الوقت يجب ان يكون فى تنسيق h:i (09:05)',
+				6 => 'التاريخ يجب ان يكون فى تنسيق yyyy-mm-dd',
+				7 => 'يجب إختيار المدينة المراد البحث بها',
+				8 => 'type يجب ان يكون provider او meal',
+				9 => 'access_token required',
+				10 => 'التاجر غير موجود '
+
+			);
+		}else{
+			$msg = array(
+				0 => 'Retrieved successfully',
+				1 => 'There is no result for your search',
+				2 => 'You must determine the date if you search with time',
+				3 => 'user longitude and latitude is required',
+				4 => 'distance must be in number',
+				5 => 'time must be in format H:i ex:- (09:05)',
+				6 => 'date must be in format yyyy-mm-dd',
+				7 => 'Please select city',
+				8 => 'type attribute must be provider or meal',
+				9 => 'access_token required' ,
+				10 => 'Provider not exists'
+
+			);
+		}
+
+  	$messages = array(
+			'access_token.required'    => 9,
+		);
+
+
+		$validator = Validator::make($request->all(), [
+			'access_token'    => 'required',
+		 
+
+		], $messages);
+
+		if($validator->fails()){
+			$error = $validator->errors()->first();
+			return response()->json(['status' => false, 'errNum' => $error, 'msg' => $msg[$error]]);
+		}
+
+             $type ="providers";
+             $colum ="provider_id";
+
+              $actor_id    = $this->get_id($request,$type,$colum);
+
+		        if($actor_id == 0 ){
+		              return response()->json(['status' => false, 'errNum' => 10, 'msg' => $msg[10]]);
+		        }
+
+		      $check = DB::table($type)   -> where($colum,$actor_id) -> first();
+
+		      if(!$check){
+		      	return response()->json(['status' => false, 'errNum' => 10, 'msg' => $msg[10]]);
+		      }
+
+
+
+
+		$user_name     	     = $request->input('user_name');
+ 		$status_id         	 = $request->input('status_id');
+ 		$order_id            = $request->input('order_id'); 
+
+            //(SELECT users.full_name FROM users WHERE orders_headers.user_id = users.user_id) AS user_name
+ 	   	$virtualTble = "SELECT orders_headers.order_id , orders_headers.order_code, orders_headers.total_value,orders_headers.status_id  ,(SELECT order_status.ar_desc FROM order_status WHERE orders_headers.status_id = order_status.status_id) AS status_text,(SELECT users.full_name FROM users WHERE orders_headers.user_id = users.user_id) AS user_name
+ 	   	 FROM `orders_headers` WHERE orders_headers.provider_id ={$actor_id}"
+
+
+ 	   	 ;  
+
+		  
+		/*if(!empty($user_name) && $user_name !== 0 && $user_name !== 0.0 && $user_name !== "0.0"){
+			array_push($conditions, ['tble.name', 'like', '%'.$name.'%']);
+		}*/
+
+ 
+       $conditions=[];
+		if(!empty($status_id) && $status_id !== 0 && $status_id !== "0" && $status_id !== 0.0 && $status_id !== "0.0"){
+			array_push($conditions, ['tble.status_id', '=', $status_id]);
+		}
+
+
+      if(!empty($order_id) && $order_id !== 0 && $order_id !== "0" && $order_id !== 0.0 && $order_id !== "0.0"){
+			array_push($conditions, ['tble.order_id', '=', $order_id]);
+		}
+		   
+		if(!empty($conditions)){
+		 	$result = DB::table(DB::raw("(".$virtualTble.") AS tble"))
+						->select('tble.order_id', 'tble.order_code', 'tble.total_value','tble.status_id','tble.status_text','tble.user_name')
+						->where($conditions)->get();
+
+		}else{
+			$result = DB::table(DB::raw("(".$virtualTble.") AS tble"))
+						->select('tble.order_id', 'tble.order_code', 'tble.total_value','tble.status_id','tble.status_text','tble.user_name')
+						->get();
+		}
+ 
+		
+ 		if(isset($result) && $result->count() > 0){
+			return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[0], 'result' => $result]);
+		}else{
+			return response()->json(['status' => false, 'errNum' => 1, 'msg' => $msg[1]]);
+		}
+	}
+
+
 
 
 	 

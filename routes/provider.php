@@ -249,6 +249,15 @@ Route::group(['middleware' => ['api_auth'], 'prefix' => 'api'], function() {
 	Route::get('/getBalances', 'ProviderController@echoEmpty');
 
 	//------------------------------------------------------------------------------
+
+
+    Route::post('/prepareProviderSearch', 'ProviderController@prepareSearch');
+	Route::get('/prepareProviderSearch', 'ProviderController@echoEmpty');
+
+	Route::post('/Providersearch', 'ProviderController@Providersearch');
+	Route::get('/Providersearch', 'ProviderController@Providersearch');
+	
+ 
  
 	 
 
