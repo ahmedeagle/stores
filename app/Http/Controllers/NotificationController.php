@@ -189,8 +189,7 @@ class NotificationController extends Controller
                                      break;
                              }
                                                          
-                              
-
+                               
                              unset($notification -> notification_type);
                              unset($notification -> action_id);
                         }

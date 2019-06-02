@@ -2059,7 +2059,8 @@ public function addProviderOffer(Request $request){
 				4 => 'صورة غير صالحة ',
 				5 =>   'تاريح بدا العرض اكبر من تاريخ انتهاء العرض ',
 				6 =>   'لابد ان يكون تاريج بدا العرض اكبر من او  يساوي تاريخ اليوم ' ,
-				7 =>  'فشل في اضافه  العرض '
+				7 =>  'فشل في اضافه  العرض ',
+				8 => 'المدينة غير موجوده ',
 			);
 		}else{
 			$msg = array(
@@ -2070,7 +2071,8 @@ public function addProviderOffer(Request $request){
 				4 =>  'image not valid' ,
 				5 => 'start date greater than end date ',
 				6 =>  'start date of the offer must greater  than or equal to  today',
-				7 =>'Failed to add Offers'
+				7 =>'Failed to add Offers',
+				8 => 'City not exists'
 				 
 			);
 		}
@@ -2082,7 +2084,8 @@ public function addProviderOffer(Request $request){
 			'date_format'             => 3,
 			'mimes'                   => 4,
 			'after'                   => 5,
-			'after_or_equal'          => 6
+			'after_or_equal'          => 6,
+			'city_id.exists'          => 8,
 
 		);
 
@@ -2093,8 +2096,9 @@ public function addProviderOffer(Request $request){
 			'offer_title'          => 'required',
  			'start_date'           => 'required|date_format:Y-m-d H:i:s|after_or_equal:'.date('Y-m-d'),
 			'end_date'             => 'required|date_format:Y-m-d H:i:s|after:start_date',
-			'photo'                => 'required'
-   
+			'photo'                => 'required',
+			'city_id'              => 'required|exists:city,city_id'
+ 
 		    ];
 
 
@@ -2107,7 +2111,7 @@ public function addProviderOffer(Request $request){
 		} 
 
  
-         $inputs = $request -> only('offer_title','start_date','end_date');
+         $inputs = $request -> only('offer_title','start_date','end_date','city_id');
 
          
          $inputs['provider_id']  =  $this->get_id($request,'providers','provider_id');

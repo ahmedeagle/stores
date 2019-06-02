@@ -2084,22 +2084,87 @@ public function UpdateProfile(Request $request){
 		if($validator->fails()){
 			$error = $validator->errors()->first();
 			return response()->json(['status' => false, 'errNum' => $error, 'msg' => $msg[$error]]);
-		}else{
+		}
 			$check = DB::table('user_addresses')->where('address_id', $request->input('address_id'))->delete();
 			if($check){
 				return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[0]]);
 			}else{
 				return response()->json(['status' => false, 'errNum' => 4, 'msg' => $msg[4]]);
 			}
-		}
+		
 	}
 
 
 
 	public function get_offers(Request $request){
 		$lang = $request->input('lang');
+		if($lang == 'ar'){
+			$msg = array(
+				0 => 'تم مسح العنوان',
+				1 => 'رقم العنوان مطلوب',
+				2 => 'رقم العنوان يجب ان يكون رقم',
+				3 => 'رقم العنوان غير موجود',
+				4 => 'فشلت العملية من فضلك حاول فى وقت لاحق',
+				5 => 'المستخدم غير موجود'
+			);
+		}else{
+			$msg = array(
+				0 => 'Deleted successfully',
+				1 => 'address_id is required',
+				2 => 'address_id must be a number',
+				3 => 'address_id is not exist',
+				4 => 'Proccess failed, please try again later',
+				5 => 'User Not exists'
+			);
+		}
+
+		$messages = array(
+			'required' => 1,
+			'numeric'  => 2,
+			'exists'   => 3
+		);
  
-	 	$offers =   DB::table('providers') -> join('providers_offers','providers.provider_id','providers_offers.provider_id') 
+
+      $conditions = [];
+      if($request -> access_token){
+
+          $userId    = $this->get_id($request,'users','user_id');
+    
+        if($userId == 0 ){
+              return response()->json(['status' => false, 'errNum' => 5, 'msg' => $msg[5]]);
+        }
+
+		      $check = DB::table('users')   -> where('user_id',$userId) -> first();
+
+		      if(!$check){
+		      	return response()->json(['status' => false, 'errNum' => 5, 'msg' => $msg[5]]);
+		      }
+		  
+		 $conditions['providers_offers.city_id'] = $check -> city_id;
+ 
+      }
+
+         
+         if($conditions){
+               
+               $offers =   DB::table('providers') -> join('providers_offers','providers.provider_id','providers_offers.provider_id') 
+ 						    ->whereExpire(0)
+ 						    ->wherePaid('1')
+ 						    ->where('providers_offers.publish',1)
+ 						    ->where($conditions)
+						    ->select(
+						        	'providers_offers.id AS offer_id',
+						    	 'providers_offers.offer_title',
+						    	 DB::raw("CONCAT('". url('/') ."','/offers/',providers_offers.photo) AS offer_photo"),
+						    	  'start_date',
+						    	  'end_date',
+						    	  'providers.provider_id'
+						    	  
+						    	)
+						    -> paginate(10);
+         }else{
+
+               $offers =   DB::table('providers') -> join('providers_offers','providers.provider_id','providers_offers.provider_id') 
  						    ->whereExpire(0)
  						    ->wherePaid('1')
  						    ->where('providers_offers.publish',1)
@@ -2114,6 +2179,8 @@ public function UpdateProfile(Request $request){
 						    	)
 						    -> paginate(10);
 
+         }
+	 	
 
 
 		return response()->json(['status' => true, 'errNum' => 0, 'msg' => '', 'offers' => $offers]);
