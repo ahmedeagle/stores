@@ -5379,7 +5379,23 @@ if($providerRequest){
                 $bank_phone = "";
             }
 
-            return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[0],'balance' => ["current_balance"=>$current_balance , "due_balance" => $due_balance , "forbidden_balance" => $forbidden  , "updated_at" => $updated] , 'bank_name'=>$bank_name , 'bank_username'=>$bank_username , 'bank_phone'=>$bank_phone , 'account_num' =>$bank_account]);
+
+
+            $financialTransactions = DB::table('withdraw_balance') 
+             -> join('providers', "providers.provider_id" , "withdraw_balance.actor_id") 
+            -> where('withdraw_balance.type','providers')
+            -> select(
+                                "withdraw_balance.*",
+                                "providers.full_name AS name"
+                                
+                    )
+            ->get();
+
+
+            
+
+
+            return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[0],'balance' => ["current_balance"=>$current_balance , "due_balance" => $due_balance , "forbidden_balance" => $forbidden  , "updated_at" => $updated] , 'bank_name'=>$bank_name , 'bank_username'=>$bank_username , 'bank_phone'=>$bank_phone , 'account_num' =>$bank_account,'financialTransactions' => $financialTransactions]);
 
              
  
@@ -5621,6 +5637,188 @@ if($providerRequest){
 
           
 	}
+
+
+		public function withdraw(Request$request){
+		$lang = $request->input('lang');
+		if($lang == "ar"){
+			$msg = array(
+				0 => 'تمت العملية بنجاح',
+				1 => 'رقم صاحب الطلب مطلوب',
+				2 => 'الرصيد الحالى مطلوب',
+				3 => 'الرصيد المستحق مطلوب',
+				4 => 'فشلت العملية من فضلك حاول لاحقا',
+				5 => 'لديك طلبات لم يتم الرد عليها بعد',
+				6 => 'ادخل رقم الرصيد المستحق المراد سحبة',
+				7 => 'current_balance يجب ان يكون رقم',
+				8 => 'رقم الرصيد الحالى مطلوب',
+				9 => 'الاسم مطلوب',
+				10 => 'رقم الحساب مطلوب',
+				11 => 'رقم الهاتف مطلوب',
+				12 => 'ليس لديك رصيد كافى لاتمام هذة العملية',
+				13 => 'رصيدك الحالى اقل من الحد الادنى لسحب الرصيد',
+                14 => "النوع يجب ان يكون اما مقدم او مسوق",
+                15 => "النوع مطلوب",
+                16 => "forbidden_balance  مطلوب ",
+                17 => "forbidden_balance لابد ان يكون ارقام ",
+                18 => "النوع لابد ان يكون  providers or deliveries ",
+                19 => "المستخدم غير موجود ",
+
+
+			);
+		}else{
+			$msg = array(
+				0 => 'Process done successfully',
+				1 => 'actor_id is required',
+				2 => 'current_balance is required',
+				3 => 'due_balance is required',
+				4 => 'Process failed, please try again later',
+				5 => 'You already have pending requests',
+				6 => 'Enter a valid current_balance number',
+				7 => 'current_balance must be a number',
+				8 => 'bank_name is required',
+				9 => 'name is required',
+				10 => 'account_num is required',
+				11 => 'phone is required',
+				12 => "You Don't have enough balance",
+				13 => "Your balance is less than minimum balance to withdraw",
+				14 => "type must be either provider or marketer",
+				15 => "type is required",
+				16 => "forbidden_balance is required",
+				17 => 'forbidden_balance must be a number',
+				18 => 'type must be only providers or deliveries ',
+				19 => "actor not found"
+
+			);
+		}
+
+		$messages = array(
+			'access_token.required'    => 1,
+			'current_balance.required' => 2,
+			'type.required'            => 15,
+			'current_balance.numeric'  => 7,
+			'due_balance.required'     => 3,
+			'bank_name.required'       => 8,
+			'name.required'            => 9,
+			'account_num.required'     => 10,
+			'phone.required'           => 11,
+			'forbidden_balance.required'       => 16,
+			'forbidden_balance.numeric'        => 17,
+			'type.in'                          => 18,
+
+		);
+
+		$validator = Validator::make($request->all(), [
+			'access_token'    => 'required',
+			'type'            => 'required|in:providers,deliveries',
+            'bank_name'       => 'required',
+            'name'            => 'required',
+            'account_num'     => 'required',
+            'phone' 	      => 'required',
+
+		], $messages);
+
+		if($validator->fails()){
+			$error = $validator->errors()->first();
+			return response()->json(['status' => false, 'errNum' => $error, 'msg' => $msg[$error]]);
+		}
+
+		    $type = "";
+		    if($request->input("type") == "providers"){
+		        $type  = "providers";
+		        $colum = "provider_id";
+            }elseif($request->input("type") == "deliveries"){
+		        $type = "deliveries";
+		        $colum = "delivery_id";
+            }else{
+                return response()->json(['status' => false  , 'msg' => $msg[14]]);
+            }
+
+
+               
+              $actor_id    = $this->get_id($request,$type,$colum);
+
+		        if($actor_id == 0 ){
+		              return response()->json(['status' => false, 'errNum' => 19, 'msg' => $msg[19]]);
+		        }
+
+		      $check = DB::table($type)   -> where($colum,$actor_id) -> first();
+
+		      if(!$check){
+		      	return response()->json(['status' => false, 'errNum' => 19, 'msg' => $msg[19]]);
+		      }
+
+
+            // insert bank account data into database
+            $actor_bank_data = DB::table("withdraw_balance")
+                ->where("actor_id" ,$actor_id)
+                ->where("type" , $type)
+                ->first();
+		  
+            
+			//check if there is pending requests
+			$check  = DB::table('withdraw_balance')->where('actor_id', $actor_id)
+												   ->where('type', $type)
+												   ->where('status', 1)
+					
+												   ->first();
+
+			   // cannot withdraw when has pending request 
+			if($check){
+				return response()->json(['status' => false, 'errNum' => 5, 'msg' => $msg[5]]);
+			}
+
+            if($type =="providers"){
+                  
+                  $balType ="provider";
+
+            }else{
+
+                    $balType ="delivery";            	
+            }
+
+ 
+            // check if the user requested blance is avaliable
+            $provider_balace = DB::table("balances")
+                                ->select("current_balance","due_balance","forbidden_balance")
+                                ->where("actor_id" ,$actor_id)
+                                ->where("type" , $balType)
+                                ->first();
+
+            $provider_current_balance = $provider_balace->current_balance;
+ 
+
+
+            //check if the current balance is greater than min limit of withdrawing
+            $min_balance = DB::table("app_settings")
+                            ->select("min_balace_to_withdraw")
+                            ->first();
+            if($provider_balace -> current_balance < $min_balance->min_balace_to_withdraw){
+                return response()->json(['status' => false, 'errNum' => 13, 'msg' => $msg[13]]);
+            }
+
+
+			$insert = DB::table("withdraw_balance")->insert([
+						 'actor_id'        => $actor_id,
+						 'current_balance' => $provider_balace -> current_balance ,
+						 'due_balance'     => $provider_balace -> due_balance ,
+                         'forbidden'       => $provider_balace ->forbidden_balance,
+						 'type' 		   => $type,
+                         'status'          =>  0,
+						 'bank_name' 	   => $request->input('bank_name'),
+						 'name' 		   => $request->input('name'),
+						 'account_num' 	   => $request->input('account_num'),
+						 'phone' 		   => $request->input('phone')
+
+					  ]);
+			if($insert){
+				return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[0]]);
+			}else{
+				return response()->json(['status' => false, 'errNum' => 4, 'msg' => $msg[4]]);
+			}
+		
+	}
+
 
 	 
 }
