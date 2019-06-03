@@ -8,6 +8,7 @@ namespace App\Http\Controllers;
   
  * @author Ahmed Emam <ahmedaboemam123@gmail.com>
  */
+
 use Log;
 use App\Http\Controllers\Controller;
 use App\User;
@@ -514,7 +515,9 @@ class ProviderController extends Controller
 
                //if delivery method is 2 this required price field in the request 
 
+ 
   $data=[];
+
 		if(in_array(2,$request -> delivery_method_id)){
                
                   $rules['delivery_price'] = 'required';
@@ -1025,7 +1028,7 @@ class ProviderController extends Controller
 		        	 'activate_phone_hash'   => $activate_phone_hash,
 		        ]);
 
-		        (new SmsController())->send($message , $provider ->first()->phone);
+		        (new SmsController())->send($message ,$provider ->first()->phone);
 
 		        return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[4] , "access_token" => $provider -> first() ->token]);
 
@@ -1976,8 +1979,6 @@ public function deleteProviderCategory(Request $request){
 	}
 
 
-
-
 ////////// provider offers apis ///////////////
 
 
@@ -2028,7 +2029,6 @@ public function deleteProviderCategory(Request $request){
 						    	'providers_offers.id AS offer_id',
 						    	 $cat_col,
 						    	 DB::raw("CONCAT('". url('/') ."','/offers/',providers_offers.photo) AS offer_photo"),
-
 						    	  'start_date',
 						    	  'end_date',
 						    	  'expire',
@@ -2039,8 +2039,7 @@ public function deleteProviderCategory(Request $request){
 						    	  
 						    	)
 						    -> get();
-
-
+ 
 
 		return response()->json(['status' => true, 'errNum' => 0, 'msg' => '', 'offers' => $providerOffers]);
 	}
@@ -3082,7 +3081,7 @@ public function prepare_Product_Update(Request $request){
 			);
 
 
-			$cat_col = 'categories_stores.cat_name';
+			$cat_col = 'categories_stores.store_cat_ar_name as cat_name';
 
 
 		}else{
@@ -3096,7 +3095,7 @@ public function prepare_Product_Update(Request $request){
 				 
 			);
 
-			$cat_col = 'categories_stores.cat_name';
+			$cat_col = 'categories_stores.store_cat_en_name as cat_name';
 		}
 
 		$messages = array(
