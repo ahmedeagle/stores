@@ -510,13 +510,38 @@ class ProviderController extends Controller
 			'access_token'           => 'required',
 
 		];
-
-               
-
+ 
                //if delivery method is 2 this required price field in the request 
 
+
+     if($request ->has('delivery_method_id')){
+
+
+     	  if(! is_array($request -> delivery_method_id)){
+
+     	  	return response()->json(['status' => false, 'errNum' => 9, 'msg' => $msg[9]]);
+
+     	  }
+
+     	}  
  
-  $data=[];
+
+     if(empty($request -> delivery_method_id) or !$request -> delivery_method_id){
+
+       return response()->json(['status' => false, 'errNum' => 1, 'msg' => $msg[1]]);
+
+     }
+ 
+
+        foreach ($request -> delivery_method_id as $method) {
+        	  
+        	  if(! is_numeric($method)){
+
+        	  	return response()->json(['status' => false, 'errNum' => 6, 'msg' => $msg[6]]);
+        	  }
+        }
+ 
+      $data=[];
 
 		if(in_array(2,$request -> delivery_method_id)){
                
