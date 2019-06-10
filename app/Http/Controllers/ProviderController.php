@@ -3171,11 +3171,11 @@ public function prepare_Product_Update(Request $request){
 		                                 )
 		                         -> get();
 
-        $options  = DB::table('product_options')  -> where('product_id',$request-> product_id) -> select('id as option_id','name','price') ->get();
+        $options  = DB::table('product_options')  -> where('product_id',$request-> product_id) -> select('id','name','price') ->get();
 
-        $sizes  = DB::table('product_sizes')  -> where('product_id',$request-> product_id) -> select('id as option_id','name','price') ->get();
+        $sizes  = DB::table('product_sizes')  -> where('product_id',$request-> product_id) -> select('id','name','price') ->get();
 
-        $colors  = DB::table('product_colors')  -> where('product_id',$request-> product_id) -> select('id as option_id','name','price') ->get();
+        $colors  = DB::table('product_colors')  -> where('product_id',$request-> product_id) -> select('id','name','price') ->get();
  
 
 		return response()->json([
