@@ -3121,12 +3121,10 @@ public function prepare_Product_Update(Request $request){
 		} 
          
 
-
           $provider_id = $this->get_id($request,'providers','provider_id');
 
           $provider    = DB::table("providers") 
                            ->where('provider_id',$provider_id);
-
 
        if(!$provider){
                
@@ -3158,7 +3156,22 @@ public function prepare_Product_Update(Request $request){
 						 	)->get();
 
 
+						
+         
 
+		         if(isset($images) &&  $images -> count() > 0 ){
+ 
+                       foreach ($images as $key => $image) {
+                       	  
+                       	    $type = pathinfo($image -> product_image, PATHINFO_EXTENSION);
+							$data = file_get_contents($image -> product_image);
+							$base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
+
+							$image -> product_image = $base64;
+                       }
+                 
+		         }
+  
 		$categories = DB::table('categories_stores') 
 		                         ->join('providers','categories_stores.provider_id','providers.provider_id')
 		                         ->where('categories_stores.provider_id',$provider_id)
