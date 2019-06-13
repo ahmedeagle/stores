@@ -5460,7 +5460,7 @@ if($providerRequest){
 				4 => 'النوع لابد ان يكون providers , users ,deliveries ',
 				5 => 'المستهدم غير موجود ',
 				6 => 'تم جلب البينات ',
-				7 => 'فشل في جلب البينات '
+				7 => 'لا يوجد اعدادات محفوظه حتي الان '
 			);
 		}else{
 			$msg = array(
@@ -5471,7 +5471,7 @@ if($providerRequest){
 				4 => 'Type must be only providers , users , deliveries',
 				5 => 'Provider not exists ',
 				6 => 'Successfully retrieved data',
-				7 => 'Failed to retrieve data'
+				7 => 'ther is no setting info. uptil now'
 			);
 		}
 
@@ -5532,15 +5532,16 @@ if($providerRequest){
 		      if(!$check){
 		      	return response()->json(['status' => false, 'errNum' => 5, 'msg' => $msg[5]]);
 		      }
-				$notificationSettings = DB::table('notification_settings') -> where('type',$actor)  -> where('actor_id',$actor_id) ->first();
+			 	$notificationSettings = DB::table('notification_settings') -> where('type',$actor)  -> where('actor_id',$actor_id) ->get();
+				 
 
 				  if($notificationSettings){
-                         
                          unset($notificationSettings -> id);
                        return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[6],'settings' =>  $notificationSettings]);   
 				  }
+				 
 
-             return response()->json(['status' => true, 'errNum' => 7, 'msg' => $msg[7]]);                      
+             return response()->json(['status' => true, 'errNum' => 7, 'msg' => $msg[7] ,'settings' => []]);                      
 	}
 
 

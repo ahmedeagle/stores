@@ -45,6 +45,8 @@ Route::group(['middleware' => ['api_auth'], 'prefix' => 'api'], function() {
 
  //////////////////////////////////// notification settings ///////////////////////////
  
+        
+
 
     Route::post('/notificationSettings', 'ProviderController@getNotificationSettings');
     Route::get('/notificationSettings', 'ProviderController@echoEmpty');
