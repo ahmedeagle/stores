@@ -5532,7 +5532,7 @@ if($providerRequest){
 		      if(!$check){
 		      	return response()->json(['status' => false, 'errNum' => 5, 'msg' => $msg[5]]);
 		      }
-			 	$notificationSettings = DB::table('notification_settings') -> where('type',$actor)  -> where('actor_id',$actor_id) ->get();
+			 	$notificationSettings = DB::table('notification_settings') -> where('type',$actor)  -> where('actor_id',$actor_id) ->first();
 				 
 
 				  if($notificationSettings){
