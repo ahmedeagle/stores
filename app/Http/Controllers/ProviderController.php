@@ -73,7 +73,23 @@ class ProviderController extends Controller
                         			// Log::debug("image_string: ". $data);
                         			$data = str_replace('\n', "", $data);
                         			$data = base64_decode($data);
-                        			$im   = imagecreatefromstring($data);
+
+                        			 try{
+
+                                        $im   = imagecreatefromstring($data);
+
+                        			 }catch(\Throwable $e)
+                        			 {
+
+
+			    							$errMsg = "Failed to upload image, please try again later";
+			    						 
+			    
+			    						return response()->json(['status'=> false, 'errNum' => 30, 'msg' => $errMsg]);
+
+                        			 }
+
+                        			 
                         			if ($im !== false) {
                         				$name = 'img-'.str_random(25).'.'.$image_ext;
                         				if ($image_ext == "png"){
@@ -86,9 +102,7 @@ class ProviderController extends Controller
                         			} else {
                         				return "";
                         			}
-                        			
-			
-			       
+                        		 
                             }catch(Exception $e){
                                 
                                 return response()->json(['status'=> false, 'errNum' => 30, 'msg' =>$errMsg]);
@@ -2156,7 +2170,7 @@ public function addProviderOffer(Request $request){
                    //save new image   64 encoded
                      
                                 
-                      $image = $this->saveImage($request -> photo,$request -> image_ext, 'offers/');
+                       $image = $this->saveImage($request -> photo,$request -> image_ext, 'offers/');
                                  
       					
     					if($image == ""){
