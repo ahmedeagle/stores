@@ -5536,11 +5536,10 @@ if($providerRequest){
 				 
 
 				  if($notificationSettings){
-                         unset($notificationSettings -> id);
+                         unset($notificationSettings -> id);//
                        return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[6],'settings' =>  $notificationSettings]);   
 				  }
-				 
-
+			
              return response()->json(['status' => true, 'errNum' => 7, 'msg' => $msg[7] ,'settings' => []]);                      
 	}
 
