@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 /**
  * Class ProviderController.
  * it is a class to manage all provider functionalities
-  
  * @author Ahmed Emam <ahmedaboemam123@gmail.com>
  */
 
@@ -76,7 +75,7 @@ class ProviderController extends Controller
                         			$data = base64_decode($data);
                         			$im   = imagecreatefromstring($data);
                         			if ($im !== false) {
-                        				$name = 'img-'.str_random(4).'.'.$image_ext;
+                        				$name = 'img-'.str_random(25).'.'.$image_ext;
                         				if ($image_ext == "png"){
                         					imagepng($im, $path . $name, 9);
                         				}else{
