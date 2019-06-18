@@ -75,8 +75,7 @@ Route::group(['middleware' => ['api_auth'], 'prefix' => 'api'], function() {
 	Route::post('/GetCategoryProviders', 'UserController@get_nearest_providers_inside_main_sub_categories');
 	Route::get('/GetCategoryProviders', 'UserController@GetCategoryProviders');
 
- 
-
+  
 
 	Route::post('/getProviderPage','UserController@prepareProviderPage');
 
@@ -140,12 +139,17 @@ Route::group(['middleware' => ['api_auth'], 'prefix' => 'api'], function() {
 	Route::post('/addOrder','UserController@addOrder');
 	Route::get('/addOrder','UserController@echoEmpty');
 
-    Route::post('/orders','UserController@getUserOrders');
-	Route::get('/orders','UserController@echoEmpty');
+    Route::post('/GetOrders','UserController@get_list_of_orders');
+	Route::get('/GetOrders','UserController@echoEmpty');
 
 
 	Route::post('/orderDetails', 'UserController@getOrderDetails');
 	Route::get('/orderDetails', 'UserController@echoEmpty');
+
+	Route::post('/CancelOrder', 'UserController@cancel_order');
+	Route::get('/CancelOrder', 'UserController@echoEmpty');
+
+	
   
 	 
 

@@ -562,11 +562,8 @@ class ProviderController extends Controller
                   $data['delivery_price']     = $request-> delivery_price;                           
 
 		}
-		
-	
-
+		 
 		$validator = Validator::make($request->all(),$rules, $messages);
-
  
 
 		if($validator->fails()){
@@ -5520,7 +5517,7 @@ if($providerRequest){
              		 $colum = 'user_id';
             		break;
             	
-            	   case 'users':
+            	   case 'deliveries':
              		 $actor = 'deliveries';
              		 $table = 'deliveries';
              		 $colum = 'delivery_id';
@@ -5636,7 +5633,7 @@ if($providerRequest){
              		 $colum = 'user_id';
             		break;
             	
-            	   case 'users':
+            	   case 'deliveries':
              		 $actor = 'deliveries';
              		 $table = 'deliveries';
              		 $colum = 'delivery_id';

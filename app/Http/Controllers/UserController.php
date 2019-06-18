@@ -1203,13 +1203,15 @@ public function UpdateProfile(Request $request){
 		}        
  		 
 
- 	    $rates = DB::table('providers_rates')
+ 	     $rates = DB::table('providers_rates')
                     ->where('providers_rates.provider_id' , $providerId)
                     ->select(
                         DB::raw("IFNULL(COUNT(providers_rates.id),0)  AS number_of_rates"),
-                        DB::raw("IFNULL(COUNT(providers_rates.rates),0) AS sum_of_rates")
+                        DB::raw("IFNULL(SUM(providers_rates.rates),0) AS sum_of_rates")
                      )
                     ->first();
+
+
 
                 $numberOfRates = $rates->number_of_rates;
                 $sumRate   = $rates->sum_of_rates;
@@ -1218,7 +1220,9 @@ public function UpdateProfile(Request $request){
                 }else{
                     $totalAverage = 0;
                 }
-			 
+
+
+ 			 
 			//get provider data 
 			$provider = Providers::where('provider_id',$providerId)
 								  ->select('provider_id',
@@ -2514,8 +2518,14 @@ public function prepareSearch(Request $request){
 
 	//method to add user order
 	public function addOrder(Request $request){
-	    
-  
+
+
+
+    //  total price is total price of order products 
+	//  total value is  total price + delivery_price 
+	// net value is product value - app value   net which provider earn
+
+
 		$lang            = $request->input('lang');
 		
 		if($lang == "ar"){
@@ -2538,7 +2548,12 @@ public function prepareSearch(Request $request){
 				15 => 'balance_flag يجب ان يكون 0 او 1',
 				16 => '  معفوا وقت الطلب خارج مواعيد عمل التاجر  ',
 				17 => 'موعدد الطلب لابد ان يكون اكبر من الان ',
-				18 => 'المستخدم غير موجود '
+				18 => 'المستخدم غير موجود ',
+				19 => 'خطا ببيانات المستخدم ',
+				20 => 'حجم  المنتج  غير موجود ',
+				21 => 'لون المنتج غير موجود ',
+				22 => 'الاضافات غير موجوده ',
+				23 => 'القيمه المدفوعه لا تساوي قيمه الطلب '
 			);
 			$push_notif_title   = "طلب جديد";
 			$push_notif_message = "تم إضافة طلب جديد خاص بك";
@@ -2561,7 +2576,12 @@ public function prepareSearch(Request $request){
 				15 => 'balance_flag must be 0 or 1',
 				16 => 'The time of the request outside the merchant\'s working hour',
 				17 => 'delivery time must be greater or equal to now',
-				18 => 'login user not found'
+				18 => 'login user not found',
+				19 => 'User Data Error',
+				20 => 'product_size not exists',
+				21 => 'product_color not exists',
+				22 => 'product_options not exist',
+				23 => 'Paid amount not equal to order amount '
 
 
 			);
@@ -2579,8 +2599,8 @@ public function prepareSearch(Request $request){
 		}
 
 
- 		$address         = $request->input('address');
-		$delivery_method = $request->input('delivery_method_id');
+ 		$address         = $request->input('address'); // user address id 
+		$delivery_method = $request->input('delivery_method_id');  
 		$payment_method  = $request->input('payment_method_id');
 		$delivery_time   = $request->input('delivery_time');
  		$totalQty        = 0;
@@ -2602,6 +2622,8 @@ public function prepareSearch(Request $request){
 
    
 
+
+ 
 		$productsArr 	      = array();
         $invalid_products     = array();
 
@@ -2622,17 +2644,116 @@ public function prepareSearch(Request $request){
 				return response()->json(['status' => false, 'errNum' => 4, 'msg' => $msg[4]]);
 			}
 
+           // if product  with size  the price will change
+			 $productPrice = $products[$i]['price'];
+             $productSize  = 0;
+             $productColor = 0;
+
+            if(empty($products[$i]['size'])){
+  
+            }else{
+
+                $size_id = DB::table("product_sizes")
+                        ->where("id" ,$products[$i]['size'])
+                        ->where("product_id" , $products[$i]['product_id'])
+                        ->select("id" , "price")
+                        ->first();
+                            
+                if(!$size_id){
+                    return response()->json([
+                        "status" => false,
+                        "errNum" => 20,
+                        "msg"    =>$msg[20]
+                    ]);
+                }
+                $productPrice = $size_id->price;
+                $productSize  = $size_id->id;
+            }
+
+ 
+             // if product  with color the price will change			  
+            if(empty($products[$i]['color'])){
+                 $productSize  = 0;
+            }else{
+
+                $color_id = DB::table("product_colors")
+                        ->where("id" ,$products[$i]['color'])
+                        ->where("product_id" , $products[$i]['product_id'])
+                        ->select("id" , "price")
+                        ->first();
+                            
+                if(!$color_id){
+                    return response()->json([
+                        "status" => false,
+                        "errNum" => 21,
+                        "msg"    =>$msg[21]
+                    ]);
+                }
+                $productPrice  += $color_id->price ;
+                $productColor  = $color_id->id;
+            }
+
+
+               // if there are any other adds then some add prices to default product price 
+            $options_arr = [];
+            $options_added_price = 0;
+
+          //  products[0][options][0][id]
+
+
+         
+            if(!empty($products[$i]['options']) && is_array($products[$i]['options'])){
+                foreach($products[$i]['options'] as $option){
+ 
+                    if(empty($option['id'])){
+                        return response()->json([
+                            "status" => false,
+                            "errNum" => 5,
+                            "msg"    =>$msg[5]    // improve error message  in future
+                        ]);
+                    }
+
+
+                    $option_id = DB::table("product_options")
+                                ->where("id" , $option['id'])
+                                ->where("product_id" ,$products[$i]['product_id'])
+                                ->select("id" , "price")
+                                ->first();
+                                
+                    if(!$option_id){
+                        return response()->json([
+                            "status" => false,
+                            "errNum" => 22,
+                            "msg"    =>$msg[22]
+                        ]);
+                    }
+                    $options_arr[] = [
+                            "id"  => $option_id->id,
+                            "added_price" => $option_id->price
+                    ] ;
+                    $options_added_price += $option_id-> price;
+                }
+            }
+            
+
+
+
+
 			if(empty($products[$i]['discount']) || $products[$i]['discount'] == "0" || $products[$i]['discount'] == ""){
 				$products[$i]['discount'] = 0;
 			}
  
               //second step calculate total qty and price and disc   
 			$totalQty   += $products[$i]['qty'];
-			$totalPrice += $products[$i]['price'] * $products[$i]['qty'];
+			$totalPrice += ($productPrice + $options_added_price) * $products[$i]['qty'];
 			$totalDisc  += $products[$i]['discount'];
-			$net        += $products[$i]['qty'] * $products[$i]['price'];   // need to subtract the discount from the net value
+			$net        += $products[$i]['qty'] * ($productPrice + $options_added_price);   // need to subtract the discount from the net value
 
 		} //end foreach 
+
+
+
+         
 
 		$uniqueProducts      = array_values(array_unique($productsArr));  // to avoid duplicate products id
 
@@ -2651,29 +2772,39 @@ public function prepareSearch(Request $request){
 			'after_or_equal'  => 17,
 		);
 
-		$validator = Validator::make($request->all(), [
+
+       $rules=[
 			'provider_id'        => 'required',
-			'user_id'            => 'required',
-			'in_future'          => 'required|in:0,1',
+			'access_token'      => 'required',
+			//'in_future'          => 'required|in:0,1',
 			'address'            => 'required|exists:user_addresses,address_id',
 			'delivery_method_id' => 'required',
 			'payment_method_id'  => 'required',
-			'balance_flag' 		 => 'required|in:0,1',
+			//'balance_flag' 		 => 'required|in:0,1',
 			//'delivery_time'      => 'required|date_format:Y-m-d H:i:s|after_or_equal:'.date('Y-m-d H:i:s'),
-		], $messages);
+		];
+
+
+  if($request->input("payment_method") == 2 || $request->input("payment_method") == 3){
+            $rules['total_paid_amount']  = "required";
+            $rules['process_number']     = "required";
+        }
+        
+		$validator = Validator::make($request->all(),$rules, $messages);
 
 		if($validator->fails()){
 			$errors   = $validator->errors();
 			$error    = $errors->first();
 			return response()->json(['status' => false, 'errNum' => $error, 'msg' => $msg[$error]]);
-		}else{
+		}
+
 			//get user address data
 			$userAdress = DB::table('user_addresses')->where('address_id', $address)->first();
 			//chech if the provider accept orders or not
 			$conditions[] = ['provider_id', '=', $request->input("provider_id")];
 			//$conditions[] = ['receive_orders', '=', 1];			
 			
-			$conditions[] = ['current_orders', '=', 1];				 	 			 
+			//$conditions[] = ['current_orders', '=', 1];				 	 			 
 		
 			$check = Providers::where($conditions)
 							  ->first();
@@ -2687,14 +2818,26 @@ public function prepareSearch(Request $request){
 				$provider_delivery_price = $check->delivery_price;
 				$marketer_code 			 = $check->marketer_code;
 				$created 				 = date('Y-m-d', strtotime($check->created_at));
+
+				$visitor_address_lat      = $userAdress -> latitude;
+				$visitor_address_long      = $userAdress -> longitude;
 			
 			$delivery_price = 0;
+			$orderCode   = mt_rand();
 			
+
+			/*delivery has three cases 
+               1- recieve from store so delivery_price =0 
+               2- recieve via store delivery  then delivery_price = this provider delivery price 
+               3- app delivery    then   delivery_price = admin delivery_price value 
+ 
+			*/
+
 			//get app percentage 
 			$app_settings = DB::table('app_settings')->first();
 			if($app_settings){
 				$percentage          = $app_settings->app_percentage;
-				$kilo_price          = $app_settings->kilo_price;
+				$kilo_price          = $app_settings->kilo_price;   
 				$delivery_percentage = $app_settings->delivery_percentage;
  				$initial_price       = $app_settings->initial_value_added_order_price;
  			}else{
@@ -2707,21 +2850,45 @@ public function prepareSearch(Request $request){
               // 1 is recieve order from store no delivery fees 
             if($delivery_method == 1){
 				$delivery_price = 0;
+
 				//2 store deliver order to users 
 			}elseif($delivery_method == 2){
 				$delivery_price = $provider_delivery_price;
+			}elseif($delivery_method == 3){
+
+		       $dKilos = $this->distance($visitor_address_lat, $visitor_address_long, $provider_latitude, $provider_longitude, false);
+			$delivery_price = ROUND(($dKilos * $kilo_price),2);
 			}
  
  			$app_value          = ($net * $percentage) / 100;
+
+ 			 // app get 2% of delivery 
 			$delivery_app_value = ($delivery_price == 0) ? 0 : (($delivery_price * $delivery_percentage) / 100);
+
 			$total_value        = $net + $delivery_price;
 			$net                = $net - $app_value;
 		 
 		        $data['provider_marketer_code'] = "";
 				$provider_marketer_value = 0;
 				$points = 0;
+
+
+
+	  // if payment by visa must ensure paid amount equal order total value
+		  if($payment == 2 || $payment == 3){
+            if($request->input("total_paid_amount") != $paid_price){
+                return response()->json([           
+                        "status" => false,
+                        "errNum" => 23,
+                        "msg"    =>$msg[23]
+                    ]);
+            }
+            $processNumber = $request->input("process_number");
+        }
+
+ 
 			 
-			//we will set this to zero till split payement method is activated
+			//we will set this to zero till split payment method is activated
 			$split_value = 0;
 			try {
 				$data['totalPrice']          = $totalPrice;
@@ -2747,15 +2914,24 @@ public function prepareSearch(Request $request){
 				$data['split_value'] 	     = $split_value;
 				$data['products'] 			 = $products;
 				$data['balance_flag']        = 0;   // this app not use poins and balances
-				$userInfo = User::where('user_id', $user)->first();
+				$data['process_number']       = $processNumber;
 
+				$userInfo = DB::table('user_addresses') -> join('users','user_addresses.user_id','=','users.user_id') ->  where('user_addresses.user_id', $user)->select('user_addresses.phone','user_addresses.address','users.email') ->first();
+
+				if(!$userInfo){
+                   
+                   return response()->json(['status' => false, 'errNum' => 19, 'msg' => $msg[19]]); 
+
+				}
+
+                 
 				$data['phone'] = $userInfo->phone;
 				$data['email'] = $userInfo->email;
 				$data['marketer_percentage']     = 0;
 				$data['provider_marketer_value'] = 0;
 				$id = 0;
 
-				DB::transaction(function () use ($data, &$id) {
+				DB::transaction(function () use ($data,$options_arr,&$id) {
 				    //setting order header
 				     
 				    	$used_points = 0;
@@ -2773,13 +2949,13 @@ public function prepareSearch(Request $request){
 						'user_id'                => $data['user'],
 						'provider_id'            => $data['provider'],
 						'address'                => $data['address'],
+						'order_code'             => $data['orderCode'],
 						'user_latitude'          => $data['user_latitude'],
 						'user_longitude'         => $data['user_longitude'],
 						'user_phone'             => $data['phone'],
 						'user_email'             => $data['email'],
 						'payment_type'           => $data['payment_method'],
 						'delivery_method'        => $data['delivery_method'],
-
 						'in_future' 			 => $data['in_future'],
 						'split_value' 			 => $data['split_value'],
 						'delivery_app_value' 	 => $data['delivery_app_value'],
@@ -2803,162 +2979,337 @@ public function prepareSearch(Request $request){
  
 						$serial++;
 					}
+
+
+                   if(!empty($options_arr)){
+
+					  foreach($options_arr as $insertOptions){
+                            DB::table("order_products_options")
+                                    ->insert([
+                                         "order_id"              => $id,
+                                         "option_id"             => $insertOptions['id'],
+                                         "option_price"          => $insertOptions['added_price']
+                                    ]);
+                        }
+                   }
+
  
 				});
 
 				$notif_data = array();
-				$notif_data['title']              = $push_notif_title;
+				$notif_data['title']              = $push_notif_title .'-'. $id ;
 			    $notif_data['message']            = $push_notif_message;
 			    $notif_data['order_id'] 	      = $id;
 			    $notif_data['notif_type']         = 'order';
 			    $provider_token = Providers::where('provider_id', $data['provider'])->first();
 				if($provider_token){
-			    	$push_notif =(new Push())->send($provider_token->device_reg_id, $notif_data,$this->provider_key);
+			    	$push_notif =(new Push())->send($provider_token->device_reg_id, $notif_data,(new Push())->provider_key);
 			    }
 
 				return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[0] ,'order_id' => $id]);
 			} catch (Exception $e) {
 				return response()->json(['status' => false, 'errNum' => 9, 'msg' => $msg[9]]);
 			}
-		}
+		
 	}
 	
- 
 
+  public function get_list_of_orders(Request $request){
 
- 
- public function getUserOrders(Request $request){
-		$lang = $request->input('lang');
-		$messages = array(
-			'required' => 2,
-			'numeric'  => 3,
-			'exists'   => 4
-		);
-
+          $lang = $request->input('lang');
 		if($lang == "ar"){
 			$msg = array(
-				0 => 'يوجد بيانات',
-				1 => 'لا يوجد بيانات بعد',
-				2 => 'رقم المستخدم مطلوب',
-				3 => 'رقم المستخدم يجب ان يكون رقم',
-				4 => 'رقم المستخدم غير موجود'
+				0 => '',
+				1 => 'رقم مقدم الخدمه مطلوب',
+				2 => 'نوع الطلبات مطلوب',
+				3 => 'نوع العمليه يجب ان يكون  0,1',
+				4 => 'لا يوجد طلبات بعد',
+				5 =>  ' المستخدم  غير موجود ',
 			);
+			$payment_col  = "payment_types.payment_ar_name AS payment_method";
+			$delivery_col = "delivery_methods.method_ar_name AS delivery_method";
+			$status_col	  = "order_status.ar_desc AS status_text";
 		}else{
 			$msg = array(
-				0 => 'Retrieved successfully',
-				1 => 'There is no orders yet!!',
-				2 => 'user_id is required',
-				3 => 'user_id must be a number',
-				4 => 'user_id is not exist'
+				0 => '',
+				1 => 'access_token is required',
+				2 => 'type is required',
+				3 => 'type must be 0,1 ',
+				4 => 'There is no ordes yet',
+				5 => 'user not Found'
 			);
+			$payment_col  = "payment_types.payment_en_name AS payment_method";
+			$delivery_col = "delivery_methods.method_en_name AS delivery_method";
+			$status_col	  = "order_status.en_desc AS status_text";
 		}
+
+		$messages  = array(
+			'access_token.required' => 1,
+			'type.required'         => 2,
+			'in'                    => 3
+		);
+
 		$validator = Validator::make($request->all(), [
-			'access_token' => 'required'
+			'access_token' => 'required',
+			'type'         => 'required|in:0,1'
+		], $messages);
+
+
+        if($validator->fails()){
+			$error = $validator->errors()->first();
+			return response()->json(['status' => false, 'errNum' => $error, 'msg' => $msg[$error]]);
+		}
+
+       $user_id = $this->get_id($request,'users','user_id');
+
+        if($user_id == 0 ){
+		              return response()->json(['status' => false, 'errNum' => 5, 'msg' => $msg[5]]);
+		        }
+
+		      $check = DB::table('users')   -> where('user_id',$user_id) -> first();
+
+		      if(!$check){
+		      	return response()->json(['status' => false, 'errNum' => 5, 'msg' => $msg[5]]);
+		      }
+  
+        $type = $request->input("type");
+        // 0 -> current   "1" -> pendings   and  "2"  -> approved
+        // 1 -> Previous  "3" -> delivered  and "4"  ->  cancelled
+ 
+        $inCondition = [];
+			if($type == 0){
+			   
+				$inCondition = [1,2];
+			  
+			//  array_push($conditions, [DB::raw('orders_headers.created_at') , '>', Carbon::now()->addHours(1)->subMinutes($time_counter_in_min)]);
+				 
+			}elseif($type == 1){
+				$inCondition = [3,4];
+				//array_push($conditions, [DB::raw('DATE(orders_headers.expected_delivery_time)') , '<=', $today]);
+			} 
+
+        $conditions[] = ['users.user_id','=', $user_id];
+
+        //get orders
+ 	$orders = \App\Order_header::where($conditions) 
+ 	                     ->whereIn('orders_headers.status_id', $inCondition)
+ 						->join('providers', 'orders_headers.provider_id', '=', 'providers.provider_id')
+						->join('delivery_methods', 'orders_headers.delivery_method' ,'=', 'delivery_methods.method_id')
+                        ->join('users', 'orders_headers.user_id', 'users.user_id')
+						->join('payment_types', 'orders_headers.payment_type', '=', 'payment_types.payment_id')
+						->join('order_status', 'orders_headers.status_id', '=', 'order_status.status_id')
+						->select(
+						            'orders_headers.order_id',
+						            'orders_headers.order_code',
+                                    'orders_headers.delivery_id',
+                                    'providers.store_name AS store_name',
+                                     DB::raw("CONCAT('".env('APP_URL')."','/public/providerProfileImages/', providers.profile_pic) AS store_image"),
+                                    'orders_headers.address',
+                                    'users.full_name AS user_name',
+                                    'orders_headers.total_value',
+                                    $payment_col, 
+                                    $delivery_col,
+                                    DB::raw("(SELECT count(order_products.id) FROM order_products WHERE order_products.order_id = orders_headers.order_id) AS products_count"),
+                                    $status_col,
+                                    'orders_headers.status_id',
+                                    DB::raw('DATE(orders_headers.created_at) AS created_date'),
+                                    DB::raw('TIME(orders_headers.created_at) AS created_time')
+                        )
+                        
+						->orderBy('orders_headers.order_id', 'DESC')
+						->paginate(10);
+ 
+			
+                                return response()->json([
+										'status' 			    => true,
+										'errNum' 			    => 0,
+										'msg' 				    => $msg[0],
+										'orders' 			    => $orders,
+										 
+									]);
+    }
+
+
+public function cancel_order(Request $request){
+		$lang = $request->input('lang');
+		if($lang == "ar"){
+			$msg = array(
+				0 => 'تمت إلغاء الطلب',
+				1 => 'order_id مطلوب',
+				2 => 'user_id مطلوب',
+				3 => 'فشل إلغاء الطلب حاول مره اخرى',
+				4 => 'لا يمكنك إلغاء إلا طلباتك',
+				5 => 'عفوا لا يمكن إلغاء  بعد موافقه التاجر عليها ',
+				6 => 'عفوا لا يمكن إلغاء طلب منتهى',
+				7 => 'المستخدم غير موجود ',
+				8 => 'النوع مطلوب ',
+				9 => 'النوع لابد ان يكون  providers, users',
+				10 => 'الطلب غير موجود ',
+				11 => 'لقج تم الغاء الطلب مسبقا '
+			);
+			$push_notif_title = 'إلغاء طلب';
+			$push_notif_message = 'تم إلغاء  الطلب رقم  بسبب ';
+		}else{
+			$msg = array(
+				0 => 'Order has been canceled',
+				1 => 'order_id is required',
+				2 => 'user_id is required',
+				3 => 'Failed to cancel the order, try again',
+				4 => 'Sorry it is not your order to cancel',
+				5 => 'Sorry you can\'t cancel Order Approved By provider',
+				6 => 'Sorry you can\'t cancel finished order',
+				7 => 'User Not Found',
+				8 => 'Type Field required',
+				9 => 'Type must be in providers , users',
+				10 => 'Order not found',
+				11 => 'Order Already cancelled'
+			);
+			$push_notif_title = 'Order canceled';
+			$push_notif_message = 'the order has been cancelled  because ';
+		}
+
+		$messages = array(
+			'order_id.required'         => 1,
+			'access_token.required'     => 2,
+			'type.required'             => 8,
+			'type.in'                   => 9,
+			'reason.required'           => 11,
+		);
+
+		$validator = Validator::make($request->all(), [
+			'order_id'     => 'required', 
+			'access_token' => 'required',
+			'type'         => 'required|in:users,providers,deliveries'
+
 		], $messages);
 
 		if($validator->fails()){
-			$errors   = $validator->errors();
-			$error    = $errors->first();
+			$error = $validator->errors()->first();
 			return response()->json(['status' => false, 'errNum' => $error, 'msg' => $msg[$error]]);
-		} 
+		}
 
-            $user = $this->get_id($request,'users','user_id');
+             
+            $type = $request -> input('type') ;
 
+            switch ($type) {
+            	case 'providers':
+             		 $actor = 'providers';
+             		 $table = 'providers';
+             		 $colum             = 'provider_id';
+             		 $key               = 'provider_key';
+             		 $notify_actor_type = 'provider';
+            		break;
 
-		        if($user == 0 ){
-		              return response()->json(['status' => false, 'errNum' => 4, 'msg' => $msg[4]]);
+            		case 'users':
+             		 $actor = 'users';
+             		 $table = 'users';
+             		 $colum = 'user_id';
+             		 $key   = 'user_key';
+             		  $notify_actor_type = 'user';
+            		break;
+            	 
+            	default:
+            		     $actor = 'users';
+	             		 $table = 'users';
+	             		 $colum = 'user_id';
+	             		 $key   = 'user_key';
+	             		  $notify_actor_type = 'user';
+
+            		break;
+            }
+     
+               $actor_id    = $this->get_id($request,$table,$colum);
+
+		        if($actor_id == 0 ){
+		              return response()->json(['status' => false, 'errNum' => 7, 'msg' => $msg[7]]);
 		        }
 
-		      $check = DB::table('users')   -> where('user_id',$user) -> first();
+		      $check = DB::table($table)   -> where($colum,$actor_id) -> first();
 
 		      if(!$check){
-		      	return response()->json(['status' => false, 'errNum' => 4, 'msg' => $msg[4]]);
+		      	return response()->json(['status' => false, 'errNum' => 7, 'msg' => $msg[7]]);
 		      }
+			   
+		//make sure that the order is the user/provider whoes cancel  order
+		$check = DB::table('orders_headers')->where($colum,$actor_id)
+											->where('order_id', $request->input('order_id'))
+											->select('status_id','user_id','provider_id', 'payment_type', 'total_value')
+											->first();
+
+
+
+ 		if(!$check){
+			return response()->json(['status' => false, 'errNum' => 10, 'msg' => $msg[10]]);
+		}
+		          
+			 
+				if($check->status_id == 3 || $check->status_id == 4){
+					
+					return response()->json(['status' => false, 'errNum' => 6, 'msg' => $msg[6]]);
+
+				}elseif($check->status_id == 2){
+
+					return response()->json(['status' => false, 'errNum' => 5, 'msg' => $msg[5]]);
+				}
+
+				 
+ 				$actor_id     = $check -> $colum;
+				$payment_type = $check->payment_type;
+				$total_value  = $check->total_value;
+			  
+
+		try {
  
+ 			$order_id = $request->input('order_id');
+			$status   = 4;   // cancel status
 
-			$counter = 0;
-			//get current users order
-			$today = date('Y-m-d');
+			DB::transaction(function() use ($status, $order_id, $actor_id, $payment_type, $total_value){
 
-			if($lang == "ar"){
-				$status_col = 'order_status.ar_desc AS order_status';
-			}else{
-				$status_col = 'order_status.en_desc AS order_status';
-			}
+				DB::table("orders_headers")->where('order_id', $order_id)->update(['status_id' => $status]);
+
+				DB::table("order_products")->where('order_id', $order_id)->update(['status' => $status]);
+
+			});
+
+			$notif_data = array();
+			$notif_data['title']      = $push_notif_title .'-'.$order_id ;
+		    $notif_data['message']    = $push_notif_message.'-'.$request -> reason;
+		    $notif_data['order_id']   = $order_id;
+		    $notif_data['notif_type'] = 'cancel_order';
+
+ 		     $actor_token = DB::table($table) -> where($colum,$actor_id) -> first();
+
+		    if(!$actor_token){
  
- 
-                //current order status 1 //pending , 2 //approved
-         	$CurrentOrders = DB::table('orders_headers')
-							    ->where('orders_headers.user_id', $user)
-							    ->whereNotIn('orders_headers.status_id', [1,2])
-							  //  ->where(DB::raw('DATE(orders_headers.expected_delivery_time)'), '<=',$today)
-								->join('order_status', 'orders_headers.status_id', '=', 'order_status.status_id')
-								->join('providers', 'orders_headers.provider_id', '=', 'providers.provider_id')
-                                //->join("complains" , "complains.order_id" , "orders_headers.order_id")
-								->select('orders_headers.order_id','orders_headers.total_value',
-									     'providers.provider_id', 'orders_headers.delivery_id',
-									     'providers.store_name AS store_name',
-									      'providers.provider_rate',
-									      DB::raw("CONCAT('".env('APP_URL')."','/public/providerProfileImages/', providers.profile_pic) AS profile_pic"),
+		    	$push_notif = (new Push())->send($actor_token->device_reg_id,$notif_data,(new Push())-> key);
 
-										    $status_col,
-										    
-								         DB::raw('DATE(orders_headers.created_at) AS created_date'), 
-								         DB::raw('TIME(orders_headers.created_at) AS created_time'))
-								->orderBy('orders_headers.order_id', 'DESC')
-								->get();
+		    }
 
-			//$CurrentOrders["is_user_complain_provider"] = flase;
-			if($CurrentOrders->count()){
-				$counter++;
-			}
- 
- 			//get Finished orders status 3 // deliveried  4 //cancelled
-			$finishedOrders = DB::table('orders_headers')
-			 				    ->where('orders_headers.user_id', $user)
-							    ->whereIn('orders_headers.status_id', [3,4])
-								->join('order_status', 'orders_headers.status_id', '=', 'order_status.status_id')
-								->join('providers', 'orders_headers.provider_id', '=', 'providers.provider_id')
-								->select('orders_headers.order_id', 'orders_headers.order_code', 'orders_headers.total_value',
-									     'providers.provider_id','orders_headers.delivery_id','providers.full_name AS provider', 'providers.provider_rate', 
-									      DB::raw("CONCAT('".env('APP_URL')."','/public/providerProfileImages/', providers.profile_pic) AS profile_pic"),
-										 $status_col, 
-										 DB::raw('IFNULL(orders_headers.delivered_at, "") AS delivered_at') ,  
-										 DB::raw('TIME(orders_headers.delivered_at) AS delivered_time') , 
-										 'orders_headers.created_at',
-										  DB::raw('DATE(orders_headers.created_at) AS created_date'),
-										   DB::raw('TIME(orders_headers.created_at) AS created_time'))
-								->orderBy('orders_headers.order_id', 'DESC')
-								->get();
-			if($finishedOrders->count()){
-				$counter++;
-			}
 
-            if($finishedOrders !== null){
+			      DB::table("notifications")
+		            ->insert([
+		                "en_title"           => $push_notif_title .'-'.$order_id ,
+		                "ar_title"           => $push_notif_title.'-'.$order_id ,
+		                "en_content"         => $push_notif_message.'-'.$request -> reason,
+		                "ar_content"         => $push_notif_message.'-'.$request -> reason,
+		                "notification_type"  => 1,
+		                "actor_id"           => $actor_token-> $colum,
+		                "actor_type"         => $notify_actor_type,
+		                "action_id"          => $order_id
 
-                for($i = 0 ; $i <= count($finishedOrders) -1 ; $i++){
-                    $order_id_order_list = $finishedOrders[$i]->order_id;
-                    $provider_order_list = $finishedOrders[$i]->provider_id;
-                    $order_delivered_at = $finishedOrders[$i]->delivered_at;
+		            ]);
 
-                  
-                    if($order_delivered_at == null){
-                        $finishedOrders[$i]->delivered_date = "";
-                        $finishedOrders[$i]->delivered_time = "";
-                    }
-                }
-            }
 
-			if($counter > 0){
-				return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[0], 'currentOrders' => $CurrentOrders, 'finishedOrders' => $finishedOrders]);
-			}else{
-				return response()->json(['status' => false, 'errNum' => 1, 'msg' => $msg[1]]);
-			}
-		 
+
+			return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[0]]);
+		} catch (Exception $e) {
+			return response()->json(['status' => false, 'errNum' => 3, 'msg' => $msg[3]]);
+		}
 	}
+  
 
 
-    public function getOrderDetails(Request $request){
+  public function getOrderDetails(Request $request){
 
 		$lang = $request->input('lang');
 
@@ -3014,9 +3365,13 @@ public function prepareSearch(Request $request){
 						       'orders_headers.status_id',
                                $status_col,
 						       'orders_headers.total_value AS total',
+						       'orders_headers.net_value AS net_value',   // order price with out any delivery price just products with options 
+						       'orders_headers.app_value AS app_value',
 						       'orders_headers.delivery_price',
+						        'orders_headers.delivery_app_value',
+						        'orders_headers.delivery_app_percentage',
+						        'orders_headers.app_percentage',
 						       'orders_headers.total_discount',
-						       'orders_headers.app_value',
 						       'orders_headers.address as user_address',
 						       'orders_headers.user_longitude', 
 						       'orders_headers.user_latitude',
@@ -3136,6 +3491,7 @@ public function prepareSearch(Request $request){
 
 	}
 
+ 
 
 
     public function  CheckWorkingHoursForProvider($providerId , $delivery_time,$type){
@@ -3200,578 +3556,11 @@ public function prepareSearch(Request $request){
 	          $result['status']  = false;
                     
                 return $result;
-                 
-                 
+                            
  	    
 	}
-
-	public function repareLikesAndFollowers(Request $request){
-		$type = $request->input('type');
-		$pass = $request->input('pass');
-
-		if($pass == "Moh@mmed"){
-			//1 for likes && 2 for followers
-			if($type == 1 || $type == "1"){
-				$meals = Meals::all();
-				if($meals->count()){
-					foreach($meals AS $meal){
-						$likesCount = DB::table('meal_likes')->where('meal_id', $meal->meal_id)->count();
-
-						if($likesCount){
-							$count = $likesCount;
-						}else{
-							$count = 0;
-						}
-						Meals::where('meal_id', $meal->meal_id)->update(['likes_count' => $count]);
-					}
-				}
-
-				return response()->json(['status' => true]);
-			}elseif($type == 2 || $type == "2"){
-				$providers = Providers::all();
-				if($providers->count()){
-					foreach($providers AS $provider){
-						$followersCount = DB::table('providers_followers')->where('provider_id', $provider->provider_id)->count();
-						if($followersCount){
-							$count = $followersCount;
-						}else{
-							$count = 0;
-						}
-
-						DB::table('providers')->where('provider_id', $provider->provider_id)->update(['followers_count' => $count]);
-					}
-				}
-
-				return response()->json(['status' => true]);
-			}else{
-				return response()->json(['status' => false, 'errNum' => 2, 'msg' => 'Type must be 1 or 2']);
-			}
-		}else{
-			return response()->json(['status' => false, 'errNum' => 1, 'msg' => 'You are not allowed to access this API']);
-		}
-	}
-
-	
-
-	public function delivery_evaluate(Request $request){
-		$lang = $request->input('lang');
-		if($lang == "ar"){
-			$msg = array(
-				0 => 'تم التقييم بنجاح',
-				1 => 'كل التقييم مطلوب',
-				2 => 'يجب ان ينحصر قيمة التقييم بين ال 1 و ال 5',
-				3 => 'فشل التقييم من فضلك حاول فى وقت لاحق',
-				4 => 'خانة التعليق لا يجب ان تزيد عن 140 حرف'
-			);
-		}else{
-			$msg = array(
-				0 => 'Evaluated successfully',
-				1 => 'All the evaluation fileds are required',
-				2 => 'Evaluate values must be between 1 and 5',
-				3 => 'Failed to evaluate, please try again later',
-				4 => 'Comment can not be more than 140 characters'
-			);
-		}
-
-		$messages = array(
-			'required' => 1,
-			'in'       => 1,
-			'max'      => 4
-		);
-
-		$validator = Validator::make($request->all(), [
-			'arrival'  => 'required|in:1,2,3,4,5',
-			'inTime'   => 'required|in:1,2,3,4,5',
-			'attitude' => 'required|in:1,2,3,4,5',
-			'comment'  => 'max:140',
-			'user_id'  => 'required',
-			'order_id' => 'required'
-		], $messages);
-
-		if($validator->fails()){
-			$error = $validator->errors()->first();
-			return response()->json(['status' => false, 'errNum' => $error, 'msg' => $msg[$error]]);
-		}else{
-			//get delivery 
-			$delivery = DB::table('orders_headers')->where('order_id', $request->input('order_id'))->select('delivery_id')->first();
-			if($delivery != NULL){
-				if($delivery->delivery_id != 0 && $delivery->delivery_id != "0" && !is_null($delivery->delivery_id) && !empty($delivery->delivery_id)){
-					$data['delivery_id'] = $delivery->delivery_id;
-				}else{
-					return response()->json(['status' => false, 'errNum' => 3, 'msg' => $msg[3]]);
-				}
-			}else{
-				return response()->json(['status' => false, 'errNum' => 3, 'msg' => $msg[3]]);
-			}
-
-			$data['arrival']  = $request->input('arrival');
-			$data['inTime']   = $request->input('inTime');
-			$data['attitude'] = $request->input('attitude');
-			$data['comment']  = $request->input('comment');
-			$data['orderId']  = $request->input('order_id');
-			$data['userId']    = $request->input('user_id');
-
-			$sumOfDelivery = $data['arrival'] + $data['inTime'] + $data['attitude'];
-
-			$data['deliveryAverage'] = $sumOfDelivery / 3;
-
-			try {
-					DB::transaction(function() use ($data){
-						DB::table('delivery_evaluation')->insert([
-							'delivery_arrival' => $data['arrival'],
-							'delivery_in_time' => $data['inTime'],
-							'delivery_attitude'=> $data['attitude'],
-							'comment' 		   => $data['comment'],
-							'user_id'          => $data['userId'],
-							'order_id'         => $data['orderId'],
-							'delivery_id'      => $data['delivery_id']
-						]);
-
-						
-						DB::table('deliveries_rates')->insert([
-							'order_id'    => $data['orderId'],
-							'delivery_id' => $data['delivery_id'],
-							'user_id'     => $data['userId'],
-							'rates'       => $data['deliveryAverage']
-						]);
-
-						//get sum and count for the provider
-						$getData = DB::table('deliveries_rates')
-						             ->where('delivery_id', $data['delivery_id'])
-						             ->select(DB::raw('count(id) AS c'), DB::raw('sum(rates) as s'))
-						             ->first();
-						if($getData != NULL){
-							$sum   = $getData->s;
-							$count = $getData->c;
-							if($count != 0){
-								$overAllRate = (int)$sum / (int)$count;
-								DB::table('deliveries')->where('delivery_id', $data['delivery_id'])->update(['delivery_rate' => $overAllRate]);
-							}
-						}
-
-					});
-					return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[0]]);
-				} catch (Exception $e) {
-					return response()->json(['status' => false, 'errNum' => 3, 'msg' => $msg[3]]);
-				}	
-		}
-	}
-
-	//method to add attachment
-	public function addAttach(Request $request){
-		$data      = $request->input('image_str');
-		$image_ext = $request->input('image_ext');
-		$attachId  = $request->input('attach_no');
-		$lang      = $request->input('lang');
-		if(empty($attachId) || $attachId == "" || $attachId == NULL || $attachId == "0"){
-			$attachId = 0;
-		}
-		if($lang == "ar"){
-			$msg = array(
-				0 => 'تم إضافة المرفق',
-				1 => 'يجب رفع الصوره',
-				2 => 'يجب تحديد نوع الصوره',
-				3 => 'رقم المرفق يجب ان يكون رقم',
-				4 => 'فشل إضافة المرفق من فضلك حاول فى وقت لاحق',
-				5 => 'فشل فى إضافة المرفق',
-				6 => 'رقم المرفق مطلوب'
-			);
-		}else{
-			$msg = array(
-				0 => 'uploaded successfully',
-				1 => 'Image is required',
-				2 => 'image_ext is required',
-				3 => 'attach_no must be number',
-				4 => 'Failed to upload please try again later',
-				5 => 'Failed to add the file',
-				6 => 'attach_no is required'
-			);
-		}
-
-		$messages  = array(
-			'image_str.required' => 1,
-			'image_ext.required' => 2, 
-			'attach_no.numeric'  => 3,
-			'attach_no.required' => 6
-		);
-
-		$validator = Validator::make($request->all(), [
-			'image_str' => 'required',
-			'image_ext' => 'required',
-			'attach_no' => 'required|numeric',
-		], $messages);
-
-		if($validator->fails()){
-			$error = $validator->errors()->first();
-			return response()->json(['status' => false, 'errNum' => $error, 'msg' => $msg[$error]]);
-		}else{
-			$image = $this->saveImage($data, $image_ext, 'complainsImages/');
-			if($image == ""){
-				return response()->json(['status' => false, 'errNum' => 4, 'msg' => $msg[4]]);
-			}else{
-				$imageName = explode("/", $image)[1];
-				$image = url($image);
-			}
-
-			//get attach_no
-			if($attachId == 0){
-				$attach = DB::table('attachments')->select(DB::raw("(SELECT (IFNULL(MAX(attach_id),0) + 1) FROM attachments) AS newAttachId"))->first()->newAttachId;
-			}else{
-				$attach = $attachId;
-			}
-
-			$id = DB::table('attachments')->insertGetId([
-				'attach_id' => $attach,
-				'attach_name' => $imageName,
-				'attach_path' => $image
-			]);
-
-			if($id){
-				return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[0], 'file_id' => $id, 'attach_no' => $attach]);
-			}else{
-				return response()->json(['status' => false, 'errNum' => 5, 'msg' => $msg[5]]);
-			}
-		}
-	}
-
-	//method to delete the attachment 
-	public function deleteAttach(Request $request){
-		$lang = $request->input('lang');
-		if($lang == "ar"){
-			$msg = array(
-				0 => 'تم حذف المرفق',
-				1 => 'رقم الملف مطلوب',
-				2 => 'رقم الملف يجب ان يكون رقم',
-				3 => 'رقم المرفقات مطلوب',
-				4 => 'رقم المرفقات يجب ان يكون رقم',
-				5 => 'فشل فى حذف الملف من فضلك حاول فى وقت لاحق'
-			);
-		}else{
-			$msg = array(
-				0 => 'Removed successfully',
-				1 => 'file_id is required',
-				2 => 'file_id must be a number',
-				3 => 'attach_no is required',
-				4 => 'attach_no must be a number',
-				5 => 'Failed to remove the file, please try again later'
-			);
-		}
-
-		$messages  = array(
-			'file_id.required'   => 1,
-			'file_id.numeric'    => 2,
-			'attach_no.required' => 3,
-			'attach_no.numeric'  => 4
-		);
-
-		$validator = Validator::make($request->all(), [
-			'file_id'   => 'required|numeric',
-			'attach_no' => 'required|numeric'
-		],$messages);
-
-		if($validator->fails()){
-			$error = $validator->errors()->first();
-			return response()->json(['status' => false, 'errNum' => $error, 'msg' => $msg[$error]]);
-		}else{
-			$data['file_id']   = $request->input('file_id');
-			$data['attach_no'] = $request->input('attach_no');
-			$newAttachNo = $request->input('attach_no');
-			DB::transaction(function() use ($data, &$newAttachNo){
-				DB::table('attachments')->where('id', $data['file_id'])->delete();
-				$check = DB::table('attachments')->where('attach_id', $data['attach_no'])->get();
-				if(!$check->count()){
-					$newAttachNo = 0;
-				}
-			});
-
-			return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[0], 'attach_no' => $newAttachNo]);
-		}
-	}
-
-	//method to add complain
-	// public function addComplain(Request $request){
-	// 	$lang = $request->input('lang');
-	// 	if($lang == "ar"){
-	// 		$msg = array(
-	// 			0 => 'تم عمل الشكوى بنجاح',
-	// 			1 => 'خطأ فى البيانات المرسله',
-	// 			2 => 'فشلت إضافة الشكوى من فضلك حاول فى وقت لاحق',
-	// 		);
-	// 	}else{
-	// 		$msg = array(
-	// 			0 => 'Process done successfully',
-	// 			1 => 'Invalid parameters',
-	// 			2 => 'Process failed, please try again later'
-	// 		);
-	// 	}
-
-	// 	$messages = array(
-	// 		'required' => 1,
-	// 		'numeric'  => 1
-	// 	);
-
-	// 	$validator = Validator::make($request->all(), [
-	// 		'provider_id' => 'required|numeric|exists:providers,provider_id',
-	// 		'order_id'    => 'required|numeric|exists:orders_headers,order_id',
-	// 		'attach_no'   => 'sometimes|nullable|numeric',
-	// 		'complain'    => 'required',
-	// 		'user_id'     => 'required|numeric|exists:users,user_id'
-	// 	], $messages);
-
-	// 	if($validator->fails()){
-	// 		$error = $validator->errors()->first();
-	// 		return response()->json(['status' => false, 'errNum' => $error, 'msg' => $msg[$error]]);
-	// 	}else{
-	// 		DB::table('complains')->insert([
-	// 			'user_id'     => $request->input('user_id'),
-	// 			'provider_id' => $request->input('provider_id'),
-	// 			'order_id'    => $request->input('order_id'),
-	// 			'complain'    => $request->input('complain'),
-	// 			'attach_no'   => $request->input('attach_no')
-	// 		]);
-
-	// 		return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[0]]);
-	// 	}
-	// }
-
-	public function addComplain(Request $request){
-		$lang = $request->input('lang');
-		$attachId = 0;
-		if($lang == "ar"){
-			$msg = array(
-				0 => 'تم عمل الشكوى بنجاح',
-				1 => 'خطأ فى البيانات المرسله',
-				2 => 'فشلت إضافة الشكوى من فضلك حاول فى وقت لاحق',
-				3 => 'عدد الملفات المرسله يجب ان يساوى عدد الإمتدادات المرسله',
-				4 => 'فشل فى رفع المفلات من فضلك حاول فى وقت لاحق',
-				5 => 'الصور المرسله يجب ان تكون فى مصفوفه',
-                6 => 'لديك شكوى سابقة على هذا الطلب'
-			);
-		}else{
-			$msg = array(
-				0 => 'Process done successfully',
-				1 => 'Invalid parameters',
-				2 => 'Process failed, please try again later',
-				3 => 'count of files must be equal to count of extensions',
-				4 => 'Failed to upload files, please try again later',
-				5 => 'Files suppose to be an array, string received',
-                6 => 'you already have previouse complain'
-			);
-		}
-
-		$messages = array(
-			'required' => 1,
-			'numeric'  => 1,
-			'exists'   => 1,
-			'in'	   => 1
-		);
-
-		$validator = Validator::make($request->all(), [
-			'subject_id' => 'required|numeric',
-			'order_id'   => 'required|numeric|exists:orders_headers,order_id',
-			'complain'   => 'required',
-			'actor_id'   => 'required|numeric',
-			'complaint'	 => 'required|in:provider,delivery',
-			'app' 		 => 'required|in:user,provider'
-		], $messages);
-
-		if($validator->fails()){
-			$error = $validator->errors()->first();
-			return response()->json(['status' => false, 'errNum' => $error, 'msg' => $msg[$error]]);
-		}else{
-			if($request->input('subject_id') == 0 || $request->input('subject_id') == "0"){
-				return response()->json(['status' => false, 'errNum' => 1, 'msg' => $msg[1]]);
-			}
-			$files      = $request->input('files');
-			$extentions = $request->input('extentions');
-			$types      = $request->input('types');
-
-			if(!empty($files)){
-				if(is_array($files)){
-					if(count($files) != count($extentions)){
-						return response()->json(['status' => false, 'errNum' => 3, 'msg' => $msg[3]]);
-					}
-
-					if(count($files) != count($types)){
-						return response()->json(['status' => false, 'errNum' => 3, 'msg' => $msg[3]]);
-					}
-					$counter = 0;
-					foreach($files AS $value){
-						if($types[$counter] == "image"){
-							$file = $this->saveImage($value, $extentions[$counter], 'complainsImages/');
-						}else{
-							$file = $this->saveVideo($value, 'complainsImages/');
-						}
-
-						if($file == ""){
-							return response()->json(['status' => false, 'errNum' => 4, 'msg' => $msg[4]]);
-						}else{
-							$fileName = explode("/", $file)[1];
-							$file = url($file);
-						}
-
-						//get attach_no
-						if($attachId == 0){
-							$attachId = DB::table('attachments')->select(DB::raw("(SELECT (IFNULL(MAX(attach_id),0) + 1) FROM attachments) AS newAttachId"))->first()->newAttachId;
-						}
-
-						$check = DB::table('attachments')->insert([
-							'attach_id'   => $attachId,
-							'attach_name' => $fileName,
-							'attach_path' => $file
-						]);
-						$counter++;
-					}
-				}else{					
-					return response()->json(['status' => false, 'errNum' => 5, 'msg' => $msg[5]]);
-				}
-			}
-			$inserts = array();
-			if($request->input('complaint') == 'provider'){
-				$inserts['provider_id'] = $request->input('subject_id'); 
-			}else{
-				$inserts['delivery_id'] = $request->input('subject_id');
-			}
-			if($request->input('app') == 'user'){
-				$inserts['user_id'] = $request->input('actor_id');
-			}else{
-				$inserts['provider_id'] = $request->input('actor_id');
-			}
-
-			$inserts['app']       = $request->input('app');
-			$inserts['order_id']  = $request->input('order_id');
-			$inserts['complain']  = $request->input('complain');
-			$inserts['attach_no'] = $attachId;
-			$complaint = $request->input('complaint');
-			$subject   = $request->input('subject_id');
-
-			// check if there is previouse complains
-            if($request->input('app') == "user"){
-                // user want to complain
-                if($request->input('complaint') == "provider"){
-                    // user want to complain provider
-                    $check_complain = DB::table("complains")
-                                        ->where("app" , "user")
-                                        ->where("provider_id" , $request->input("subject_id"))
-                                        ->where("order_id" , $request->input("order_id"))
-                                        ->where("user_id" , $request->input("actor_id"))
-                                        ->first();
-                    if($check_complain !== null){
-                        return response()->json(['status' => false, 'errNum' => 6, 'msg' => $msg[6]]);
-                    }
-
-                }else{
-                    // user want to compalin delivery
-                    $check_complain = DB::table("complains")
-                        ->where("app" , "user")
-                        ->where("delivery_id" , $request->input("subject_id"))
-                        ->where("order_id" , $request->input("order_id"))
-                        ->where("user_id" , $request->input("actor_id"))
-                        ->first();
-                    if($check_complain !== null){
-                        return response()->json(['status' => false, 'errNum' => 6, 'msg' => $msg[6]]);
-                    }
-                }
-            }else{
-                // provider want to complain delivery
-                $check_complain = DB::table("complains")
-                    ->where("app" , "provider")
-                    ->where("delivery_id" , $request->input("subject_id"))
-                    ->where("order_id" , $request->input("order_id"))
-                    ->where("provider_id" , $request->input("actor_id"))
-                    ->first();
-                if($check_complain !== null){
-                    return response()->json(['status' => false, 'errNum' => 6, 'msg' => $msg[6]]);
-                }
-            }
-			DB::transaction(function() use($inserts, $complaint, $subject){
-                $check = DB::table('complains')->insert($inserts);
-                //get order details
-                $orderDetail = DB::table('orders_headers')->where('order_id',$inserts['order_id'])->first();
-                if($orderDetail != NULL){
-                    if($complaint == 'provider'){
-                        $money = $orderDetail->net_value;
-                        $updated_col = 'provider_complain_flag';
-                        $balance_type = 'provider';
-                    }else{
-                        $money = $orderDetail->delivery_price;
-                        $updated_col = 'delivery_complain_flag';
-                        $balance_type = 'delivery';
-                    }
-                    $updates[$updated_col] = 1;
-                    DB::table('orders_headers')->where('order_id', $inserts['order_id'])->update($updates);
-                    DB::table('balances')->where('actor_id', $subject)->where('type', $balance_type)->update([
-                        'forbidden_balance' => DB::raw('forbidden_balance + '.$money)
-                    ]);
-                }
-
-            });
-			return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[0]]);
-		}
-	}
-
-	public function fetchTimeLine(Request $request){
-		$lang = $request->input('lang');
-		if($lang == "ar"){
-			$msg = array(
-				0 => 'يوجد بيانات',
-				1 => 'خطأ فى البيانات المرسله',
-				2 => 'لا يوجد بيانات'
-			);
-		}else{
-			$msg = array(
-				0 => 'Retrieved successfully',
-				1 => 'Invalid parameters',
-				2 => 'There is no any data'
-			);
-		}
-
-		$messages = array(
-			'required' => 1,
-			'numeric'  => 1,
-			'exists'   => 1,
-		);
-
-		$validator = Validator::make($request->all(), [
-			'user_id' => 'required|numeric|exists:users,user_id',
-		], $messages);
-
-		if($validator->fails()){
-			$error = $validator->errors()->first();
-			return response()->json(['status' => false, 'errNum' => $error, 'msg' => $msg[$error]]);
-		}else{
-			if($lang == "ar"){
-				$desc_col = "notifications.notif_ar_desc AS notif_desc";
-				$cat_col  = "categories.cat_ar_name AS cat_name";
-			}else{
-				$desc_col = "notifications.notif_en_desc AS notif_desc";
-				$cat_col  = "categories.cat_en_name AS cat_name";
-			}
-			$getTimeLines = DB::table('notifications')
-			                  ->where('notifications.user_id', $request->input('user_id'))
-			                  ->where('notifications.status', 1)
-			                  ->join('providers', 'notifications.provider_id', '=', 'providers.provider_id')
-			                  ->join('meals', 'notifications.meal_id', '=', 'meals.meal_id')
-			                  ->join('categories', 'meals.cat_id', '=', 'categories.cat_id')
-			                  ->distinct()
-			                  ->select('meals.meal_id','notifications.created_at', $desc_col, 'meals.main_image AS meal_main_img', 
-			                  		   'meals.meal_rtp', 'meals.meal_msrp',
-			                  		   'providers.profile_pic AS provider_image', 'providers.brand_name AS provider_name', 
-			                  		   'meals.meal_name', 'meals.meal_rate', 'categories.cat_img', 'categories.cat_id', $cat_col)
-			                  ->orderBy('created_at', 'DESC')
-			                  ->paginate(10);
-			if($getTimeLines->count()){
-				return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[0], 'notifications' => $getTimeLines]);
-			}else{
-				return response()->json(['status' => false, 'errNum' => 2, 'msg' => $msg[2]]);
-			}
-		}
-	}
-
-
-
-	
-
+ 
+  
 	public function getCountries(Request $request){
 		$lang = $request->input('lang');
 		if($lang == "ar"){
@@ -3796,6 +3585,7 @@ public function prepareSearch(Request $request){
 			return response()->json(['status' => false, 'errNum' => 1, $msg[1]]);
 		}
 	}
+
 
 	public function countryCityies(Request $request){
 		$lang    = $request->input('lang');
@@ -3938,113 +3728,8 @@ public function prepareSearch(Request $request){
 		return response()->json(['status'=>true, 'errNum' => 0, 'msg' => $msg[0], 'addresses' => $addresses, 'deliveries' => $deliveries , "is_provider_allow_future_orders" => $provider_info->future_orders]);
 	}
 
-	public function sms(Request $request){
-		$lang = $request->input('lang');
-		$phone_number = $request->input('phone');
-		$code = mt_rand(100000, 999999);
-		if($lang == "ar"){
-	    	$msg = array(
-	    		0 => 'تم إرسال الكود', 
-	    		1 => 'فشل إرسال الرساله',
-	    		2 => 'رقم الهاتف مطلوب',
-	    		3 => 'لا يوجد رسائل متبقية'
-	    	);
-	    	// $body = "كود التفعيل الخاص بك هو: ". $code;
-	    	$body = "Your activation code is: ".$code;
-	    }else{
-	    	$msg = array(
-	    		0 => 'Message sent successfully', 
-	    		1 => 'Failed to send the message',
-	    		2 => 'Phone is required',
-	    		3 => 'There is no more messages'
-	    	);
-	    	$body = "Your activation code is: ".$code;
-	    }
-
-		if(!empty($phone_number)){
-			
-		    // Textlocal account details
-		    // $username = "mohamed.radwan@wisyst.com";
-		    // $hash     = "Unhaw589673";
-		    // $username = "mradwan.dev@gmail.com";
-		    // $hash     = "Mradwan1234";
-		    // $username = "mohamed.radwan191@gmail.com";
-		    // $hash     = "Mradwan1234";
-		    // $username = "odm@al-yasser.com.sa";
-		    // $hash     = "fd8534lQ3Fkmaa";
-		    $username = "wisystzad@gmail.com";
-		    $hash     = "Alyasser1234";
-		    // Message details
-		    // $numbers = array(201128265463,201094896758);
-		    $sender = urlencode("Mathaq");
-		    
-		    $message = rawurlencode($body);
-
-		    // $numbers = implode(",", $numbers);
-		    $number = $phone_number;
-            $apiKey = urlencode('ca0ucwo8dFU-PeyvfCSQYgVMrwsewylNAsVdFd2LhT');
-
-		    // Prepare data for POST request
-		    //$data = array("username" => $username, "hash" => $hash, "numbers" => $number, "sender" => $sender, "message" => $message);
-		    $data = array('apikey' => $apiKey, "numbers" => $number, "sender" => $sender, "message" => $message);
-
-		    // Send the POST request with cURL
-		    $ch = curl_init("http://api.txtlocal.com/send/");
-		    curl_setopt($ch, CURLOPT_POST, true);
-		    curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
-		    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-		    $response = utf8_decode(curl_exec($ch));
-		    $response = json_decode($response);
-		    curl_close($ch);
-		    
-		    if($response->status == 'success'){
-		    	return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[0] , 'code' => $code]);
-		    }else{
-		    	// $err = $response->errors[0]->code;
-		    	// if($err == 7){
-		    	// 	return response()->json(['status' => false, 'errNum' => 3, 'msg' => $msg[3]]);
-		    	// }else{
-		    	// 	return response()->json(['status' => false, 'errNum' => 1, 'msg' => $msg[1]]);
-		    	// }
-		    	return response()->json(['status' => false, 'errNum' => 1, 'msg' => $msg[1]]);
-		    }
-		}else{
-			return response()->json(['status' => false, 'errNum' => 2, 'msg' => $msg[2]]);
-		}
-	}
-
-	// public function getFollowsAndLikes(Request $request){
-	// 	$lang  = $request->input('lang');
-	// 	$user  = $request->input('user_id');
-	// 	$type  = $request->input('type');
-
-	// 	if($type == 1 || $type == "1"){
-	// 			$data['favorites'] = DB::table('meal_likes')->where('meal_likes.user_id', $user)
-	// 			                               ->join('meals', 'meal_likes.meal_id', '=', 'meals.meal_id')
-	// 			                               ->join('providers', 'meals.provider_id', '=', 'providers.provider_id')
-	// 			                               ->select('meals.meal_id', 'meals.main_image', 'meals.meal_name', 'meals.likes_count','meals.meal_rate', 'providers.brand_name AS full_name')
-	// 			                               ->paginate(10);
-	// 	}elseif($type == "2" || $type == 2){
-	// 			$data['follows'] = DB::table('providers_followers')->where('providers_followers.user_id', $user)
-	// 												   ->join('providers', 'providers_followers.provider_id', '=', 'providers.provider_id')
-	// 												   ->select('providers.provider_id', 'providers.followers_count', 'providers.profile_pic', 'providers.brand_name AS full_name', 'providers.provider_rate')
-	// 												   ->paginate(10);
-	// 	}else{
-	// 		$data['favorites'] = DB::table('meal_likes')->where('meal_likes.user_id', $user)
-	// 	                               ->join('meals', 'meal_likes.meal_id', '=', 'meals.meal_id')
-	// 	                               ->join('providers', 'meals.provider_id', '=', 'providers.provider_id')
-	// 	                               ->select('meals.meal_id', 'meals.main_image', 'meals.meal_name', 'meals.likes_count','meals.meal_rate', 'providers.brand_name AS full_name')
-	// 	                               ->paginate(10);
-				                               
-	// 		$data['follows'] = DB::table('providers_followers')->where('providers_followers.user_id', $user)
-	// 											   ->join('providers', 'providers_followers.provider_id', '=', 'providers.provider_id')
-	// 											   ->select('providers.provider_id', 'providers.followers_count', 'providers.profile_pic', 'providers.brand_name AS full_name', 'providers.provider_rate')
-	// 											   ->paginate(10);
-	// 	}
-
-	// 	return response()->json(['status' => true, 'errNum' => 0, 'msg' => 'kkk' , 'dataInfo' => $data]);
-	// }
-
+	 
+ 
 	public function prepareSignUp(Request $request){
 		$lang = $request->input('lang');
 		if($lang == "ar"){
@@ -4072,208 +3757,9 @@ public function prepareSearch(Request $request){
 	}
 
 	
+ 
 
-	public function getProviderMeals(Request $request){
-		$lang = $request->input('lang');
-		$catId = $request->input('cat_id');
-		$providerId = $request->input('provider_id');
-		$userId     = $request->input('user_id');
-		if(empty($catId) || $catId == NULL || $catId == ""){
-			$catId = 0;
-		}
-
-		if(empty($userId) || $userId === 0 || $userId === "0"){
-			$likeFlag = '0 as likeFlag';
-		}else{
-			$likeFlag = 'IF ((SELECT count(id) FROM meal_likes WHERE meal_likes.user_id = '.$userId.' AND meal_likes.meal_id = meals.meal_id) > 0, 1, 0) as likeFlag';
-		}
-		if($catId != 0){
-			$meals = Meals::where('meals.provider_id', $providerId)
-						         ->where('meals.cat_id', $catId)
-						         ->where('meals.publish', 1)
-						         ->select('meals.meal_id', 'meals.meal_name', 'meals.meal_desc','meals.meal_rtp', 'meals.meal_msrp', 'meals.main_image', 'meals.likes_count', 'meals.meal_rate', 
-						         		   DB::raw($likeFlag))
-						         ->paginate(10);
-		}else{
-			$meals = Meals::where('meals.provider_id', $providerId)
-						         ->where('meals.publish', 1)
-						         ->select('meals.meal_id', 'meals.meal_name', 'meals.meal_desc','meals.meal_rtp', 'meals.meal_msrp','meals.main_image', 'meals.likes_count', 'meals.meal_rate', 
-						         		   DB::raw($likeFlag))
-						         ->orderBy('meals.created_at', 'DESC')
-						         ->paginate(10);
-		}
-
-		return response()->json(['status' => true, 'errNum' => 0, 'msg' => 'Retrieved successfully', 'meals' => $meals]);
-	}
-
-	public function test(Request $request){
-		$meals = $request->input('meals');
-		$json = '{"key": [{"key1":1,"key2":2},{"key1":1,"key2":2}]}';
-
-		var_dump($json);
-		$x = json_decode($json);
-		var_dump((array)$x);
-		die();
-		var_dump(json_decode($meals, true));
-		var_dump($meals);
-	}
-
-	public function edit_phone(Request $request){
-	 //   return response()->json($request);
-		$lang = $request->input('lang');
-		if($lang == "ar"){
-			$msg = array(
-				0 => 'تم التعديل بنجاح',
-				1 => 'كل البيانات مطلوبه',
-				2 => 'app يجب ان يكون فى (users, providers, deliveries)',
-				3 => 'فشلت العلميه من فضلك حاول فى وقت لاحق',
-				4 => 'رقم الجوال مكرر'
-			);
-		}else{
-			$msg = array(
-				0 => 'Phone updated successfully',
-				1 => 'All fields are required',
-				2 => 'app must be in (users,providers, deliveries)',
-				3 => 'Failed to update, please try again later',
-				4 => 'Phone number is already exist'
-			);
-		}
-
-		$messages = array(
-			'required' => 1,
-			'in' 	   => 2,
-			'unique'   => 4
-		);
-
-		$table = $request->input('app');
-		if($table == "users"){
-			$condition_col = 'user_id';
-		}elseif($table == "providers"){
-			$condition_col = 'provider_id';
-		}elseif($table == "deliveries"){
-			$condition_col = 'delivery_id';
-		}else{
-			return response()->json(['status' => false, 'errNum' => 1, 'msg' => $msg[1]]);
-		}
-		$validator = Validator::make($request->all(), [
-			'actor_id'     => 'required',
-			'app'          => 'required|in:users,providers,deliveries',
-			'country_code' => 'required',
-			'phone'        => 'required|unique:'.$table.',phone,'.$request->input('actor_id').','.$condition_col
-		], $messages);
-
-		if($validator->fails()){
-			$error = $validator->errors()->first();
-			return response()->json(['status' => false, 'errNum' => $error, 'msg' => $msg[$error]]);
-		}else{
-			//update 
-
-			$update =  DB::table($table)->where($condition_col, $request->input('actor_id'))
-							            ->update([
-									 		'country_code' => '+'.$request->input('country_code'),
-									 		'phone'        => $request->input('phone')
-							            ]);
-			if($update){
-				return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[0]]);
-			}else{
-				return response()->json(['status' => false, 'errNum' => 3, 'msg' => $msg[3]]);
-			}
-		}
-	}
-
-	public function cancel_order(Request $request){
-		$lang = $request->input('lang');
-		if($lang == "ar"){
-			$msg = array(
-				0 => 'تمت إلغاء الطلب',
-				1 => 'order_id مطلوب',
-				2 => 'user_id مطلوب',
-				3 => 'فشل إلغاء الطلب حاول مره اخرى',
-				4 => 'لا يمكنك إلغاء إلا طلباتك',
-				5 => 'عفوا لا يمكن إلغاء الطلب بعد طلب التوصيل',
-				6 => 'عفوا لا يمكن إلغاء طلب منتهى'
-			);
-			$push_notif_title = 'إلغاء طلب';
-			$push_notif_message = 'تم إلغاء طلب من قبل المستخدم';
-		}else{
-			$msg = array(
-				0 => 'Order has been canceled',
-				1 => 'order_id is required',
-				2 => 'user_id is required',
-				3 => 'Failed to cancel the order, try again',
-				4 => 'Sorry it is not your order to cancel',
-				5 => 'Sorry you can\'t cancel order with delivery man',
-				6 => 'Sorry you can\'t cancel finished order'
-			);
-			$push_notif_title = 'Order canceled';
-			$push_notif_message = 'User has been canceled order';
-		}
-
-		$messages = array(
-			'order_id.required'    => 1,
-			'user_id.required'     => 2
-		);
-
-		$validator = Validator::make($request->all(), [
-			'order_id' => 'required', 
-			'user_id' => 'required'
-		], $messages);
-
-		if($validator->fails()){
-			$error = $validator->errors()->first();
-			return response()->json(['status' => false, 'errNum' => $error, 'msg' => $msg[$error]]);
-		}
-
-		//make sure that the order is the user order
-		$check = DB::table('orders_headers')->where('user_id', $request->input('user_id'))
-											->where('order_id', $request->input('order_id'))
-											->select('status_id', 'provider_id', 'payment_type', 'total_value')
-											->first();
-		if($check == NULL){
-			return response()->json(['status' => false, 'errNum' => 4, 'msg' => $msg[4]]);
-		}else{
-			if($check->status_id > 2){
-				if($check->status_id == 3 || $check->status_id == 8){
-					$e = 5;
-				}else{
-					$e = 6;
-				}
-				return response()->json(['status' => false, 'errNum' => $e, 'msg' => $msg[$e]]);
-			}else{
-				$provider_id  = $check->provider_id;
-				$payment_type = $check->payment_type;
-				$total_value  = $check->total_value;
-			}
-		}
-
-		try {
-			$user_id  = $request->input('user_id');
-			$order_id = $request->input('order_id');
-			$status   = 9;
-			DB::transaction(function() use ($status, $order_id, $user_id, $payment_type, $total_value){
-				DB::table("orders_headers")->where('order_id', $order_id)->update(['status_id' => $status]);
-				DB::table("order_details")->where('order_id', $order_id)->update(['status' => $status]);
-				if($payment_type != 1 && $payment_type != "1"){
-					User::where('user_id', $user_id)->update([
-							'points' => DB::raw('points + '.$total_value)
-					]);
-				}
-			});
-
-			$notif_data = array();
-			$notif_data['title']      = $push_notif_title;
-		    $notif_data['message']    = $push_notif_message;
-		    $notif_data['order_id']   = $order_id;
-		    $notif_data['notif_type'] = 'cancel_order';
-		    $provider_token = Providers::where('provider_id', $provider_id)->first();
-		    if($provider_token != NULL){
-		    	$push_notif = $this->singleSend($provider_token->device_reg_id, $notif_data, $this->provider_key);
-		    }
-			return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[0]]);
-		} catch (Exception $e) {
-			return response()->json(['status' => false, 'errNum' => 3, 'msg' => $msg[3]]);
-		}
-	}
+	
 
 	public function get_user_balance(Request $request)
 	{
