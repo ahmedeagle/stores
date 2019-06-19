@@ -2875,7 +2875,7 @@ public function prepareSearch(Request $request){
 
 
 	  // if payment by visa must ensure paid amount equal order total value
-		  if($payment == 2 || $payment == 3){
+		  if($payment_method == 2 || $payment_method == 3){
             if($request->input("total_paid_amount") != $paid_price){
                 return response()->json([           
                         "status" => false,
@@ -2883,7 +2883,7 @@ public function prepareSearch(Request $request){
                         "msg"    =>$msg[23]
                     ]);
             }
-            $processNumber = $request->input("process_number");
+             	$data['process_number'] = $request->input("process_number");
         }
 
  
@@ -2914,7 +2914,7 @@ public function prepareSearch(Request $request){
 				$data['split_value'] 	     = $split_value;
 				$data['products'] 			 = $products;
 				$data['balance_flag']        = 0;   // this app not use poins and balances
-				$data['process_number']       = $processNumber;
+			
 
 				$userInfo = DB::table('user_addresses') -> join('users','user_addresses.user_id','=','users.user_id') ->  where('user_addresses.user_id', $user)->select('user_addresses.phone','user_addresses.address','users.email') ->first();
 
