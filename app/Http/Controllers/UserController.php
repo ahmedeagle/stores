@@ -3254,9 +3254,7 @@ public function cancel_order(Request $request){
      
                $actor_id    = $this->get_id($request,$table,$colum);
 
-               return $table.' '.$actor_id.' '.$colum;
-
-
+              
 		        if($actor_id == 0 ){
 		              return response()->json(['status' => false, 'errNum' => 7, 'msg' => $msg[7]]);
 		        }
