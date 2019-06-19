@@ -3163,7 +3163,8 @@ public function cancel_order(Request $request){
 				8 => 'النوع مطلوب ',
 				9 => 'النوع لابد ان يكون  providers, users',
 				10 => 'الطلب غير موجود ',
-				11 => 'لقج تم الغاء الطلب مسبقا '
+				11 => 'لقج تم الغاء الطلب مسبقا ',
+				12 => 'لابد من ادخال سبب الرفض '
 			);
 			$push_notif_title = 'إلغاء طلب';
 			$push_notif_message = 'تم إلغاء  الطلب رقم  بسبب ';
@@ -3180,7 +3181,8 @@ public function cancel_order(Request $request){
 				8 => 'Type Field required',
 				9 => 'Type must be in providers , users',
 				10 => 'Order not found',
-				11 => 'Order Already cancelled'
+				11 => 'Order Already cancelled',
+				12 => 'Must Enter Cancellation reason'
 			);
 			$push_notif_title = 'Order canceled';
 			$push_notif_message = 'the order has been cancelled  because ';
@@ -3191,7 +3193,7 @@ public function cancel_order(Request $request){
 			'access_token.required'     => 2,
 			'type.required'             => 8,
 			'type.in'                   => 9,
-			'reason.required'           => 11,
+			'reason.required'           => 12,
 		);
 
 
