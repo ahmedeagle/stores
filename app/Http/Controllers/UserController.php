@@ -3006,6 +3006,24 @@ public function prepareSearch(Request $request){
 			    	$push_notif =(new Push())->send($provider_token->device_reg_id, $notif_data,(new Push())->provider_key);
 			    }
 
+
+                 DB::table("notifications")
+		            ->insert([
+		                "en_title"           => $push_notif_title.'-'. $id,
+		                "ar_title"           => $push_notif_title.'-'. $id,
+		                "en_content"         => $push_notif_message,
+		                "ar_content"         => $push_notif_message,
+		                "notification_type"  => 1,
+		                "actor_id"           => $data['provider'],
+		                "actor_type"         => "provider",
+		                "action_id"          => $id
+
+		            ]);
+
+
+
+
+
 				return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[0] ,'order_id' => $id]);
 			} catch (Exception $e) {
 				return response()->json(['status' => false, 'errNum' => 9, 'msg' => $msg[9]]);
