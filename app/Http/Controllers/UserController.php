@@ -3193,13 +3193,13 @@ public function cancel_order(Request $request){
 			'type.in'                   => 9,
 			'reason.required'           => 11,
 		);
-		
+
 
 		$validator = Validator::make($request->all(), [
 			'order_id'        => 'required', 
 			'access_token'    => 'required',
 			'type'            => 'required|in:users,providers,deliveries',
-			'reason.required' => 'required'
+			'reason'          => 'required'
 
 
 		], $messages);
