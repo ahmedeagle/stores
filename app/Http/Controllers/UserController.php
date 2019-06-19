@@ -3193,7 +3193,7 @@ public function cancel_order(Request $request){
 			'type.in'                   => 9,
 			'reason.required'           => 11,
 		);
-		dfldf
+		
 
 		$validator = Validator::make($request->all(), [
 			'order_id'        => 'required', 
