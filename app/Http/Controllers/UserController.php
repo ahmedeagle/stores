@@ -3219,24 +3219,35 @@ public function cancel_order(Request $request){
              		 $actor = 'providers';
              		 $table = 'providers';
              		 $colum             = 'provider_id';
-             		 $key               = 'provider_key';
-             		 $notify_actor_type = 'provider';
+             		 $key               = 'user_key';
+             		 $notify_actor_type = 'user';
+             		 $notify_type_table = 'users';
+             		 $notify_column     = 'user_id';
+
+
             		break;
 
             		case 'users':
              		 $actor = 'users';
              		 $table = 'users';
              		 $colum = 'user_id';
-             		 $key   = 'user_key';
-             		  $notify_actor_type = 'user';
+             		 $key   = 'provider_key';
+             		   $notify_actor_type = 'provider';
+             		 $notify_type_table   = 'providers';
+             		 $notify_column       = 'provider_id';
+
+
             		break;
             	 
             	default:
             		     $actor = 'users';
 	             		 $table = 'users';
 	             		 $colum = 'user_id';
-	             		 $key   = 'user_key';
-	             		  $notify_actor_type = 'user';
+	             		 $key   = 'provider_key';
+	             		  
+	             		     $notify_actor_type = 'provider';
+		             		 $notify_type_table   = 'providers';
+		             		 $notify_column       = 'provider_id';
 
             		break;
             }
@@ -3276,7 +3287,7 @@ public function cancel_order(Request $request){
 				}
 
 				 
- 				$actor_id     = $check -> $colum;
+ 				$actor_id     = $check -> $notify_column;
 				$payment_type = $check->payment_type;
 				$total_value  = $check->total_value;
 			  
@@ -3300,11 +3311,15 @@ public function cancel_order(Request $request){
 		    $notif_data['order_id']   = $order_id;
 		    $notif_data['notif_type'] = 'cancel_order';
 
- 		     $actor_token = DB::table($table) -> where($colum,$actor_id) -> first();
+
+
+
+
+ 		     $actor_token = DB::table($notify_type_table) -> where($notify_column,$actor_id) -> first();
 
 		    if(!$actor_token){
  
-		    	$push_notif = (new Push())->send($actor_token->device_reg_id,$notif_data,(new Push())-> key);
+		    	$push_notif = (new Push())->send($actor_token->device_reg_id,$notif_data,(new Push())->$key);
 
 		    }
 
@@ -3316,7 +3331,7 @@ public function cancel_order(Request $request){
 		                "en_content"         => $push_notif_message.'-'.$request -> reason,
 		                "ar_content"         => $push_notif_message.'-'.$request -> reason,
 		                "notification_type"  => 1,
-		                "actor_id"           => $actor_token-> $colum,
+		                "actor_id"           => $actor_token-> $notify_column,
 		                "actor_type"         => $notify_actor_type,
 		                "action_id"          => $order_id
 
