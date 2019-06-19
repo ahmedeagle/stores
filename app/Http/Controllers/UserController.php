@@ -3195,9 +3195,11 @@ public function cancel_order(Request $request){
 		);
 
 		$validator = Validator::make($request->all(), [
-			'order_id'     => 'required', 
-			'access_token' => 'required',
-			'type'         => 'required|in:users,providers,deliveries'
+			'order_id'        => 'required', 
+			'access_token'    => 'required',
+			'type'            => 'required|in:users,providers,deliveries',
+			'reason.required' => 'required'
+
 
 		], $messages);
 
