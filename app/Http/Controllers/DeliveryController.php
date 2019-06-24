@@ -1315,6 +1315,7 @@ public function newOrders(Request $request){
                            }
 
                             $order -> status = " بأنتظار الموافقه ";
+                             unset($order -> delivery_id);  
         
 						   
 						}
@@ -1323,7 +1324,7 @@ public function newOrders(Request $request){
 			}		
 
 
-     // accepted orders by login deliveries 
+     // current orders  
 	   if($type == 2){
 
            if(isset($orders) && $orders -> count() > 0){                       
@@ -1338,6 +1339,7 @@ public function newOrders(Request $request){
                              }
 
                              $order -> status = "موافق عليه ";
+                              unset($order -> delivery_id);  
 						}                            
 					}
 	   }
@@ -1350,15 +1352,26 @@ public function newOrders(Request $request){
  
                        foreach ($orders as $key => $order){
  
-                           $cancelFromThisDeliveryBefore = DB::table('rejectedorders_delivery') -> where('order_id',$order -> order_id) -> where('delivery_id',$delivery_id) -> where('status',0)-> first();
+                           $cancelFromThisDeliveryBefore = DB::table('rejectedorders_delivery') ->where([
+                                    'order_id'     => $order -> order_id,
+                                    'delivery_id' =>$delivery_id
+
+                           ]) -> whereIn('status',[0,2])-> first();
 
                            if(!$cancelFromThisDeliveryBefore){
 
                                    $orders -> forget($key);
-                                   //unset($orders[$key]);  
+                                   
                            }
 
-                           $order -> status = "ملغي";
+                          if($order -> delivery_id == 0 ) {
+                            $order -> status = "ملغي";
+                        }
+                           else{
+                           	$order -> status = "تم التسليم ";
+                           	}
+
+                           unset($order -> delivery_id);  
   
 						}
                     
@@ -1629,6 +1642,7 @@ public function OrderDetails(Request $request){
 			'order_id'         => 'required',
 			'access_token'     => 'required|exists:deliveries,token',
 			'status_id'        => 'required|in:0,1,2'
+
 		], $messages);
 
 		if($validator->fails()){
@@ -1665,7 +1679,6 @@ public function OrderDetails(Request $request){
         {
 
             if($get -> delivery_id != 0){
-
 
 	            if($get -> delivery_id ==  $delivery_id){
 	 			     return response()->json(['status' => false, 'errNum' => 10 , 'msg' => $msg[10]]);
@@ -1781,6 +1794,8 @@ public function OrderDetails(Request $request){
  
  		}else{
  
+ 
+
             //order deliveried
             if($status == 2){
                
@@ -1803,6 +1818,26 @@ public function OrderDetails(Request $request){
                 	return response()->json(['status' => false, 'errNum' => 15 , 'msg' => $msg[15]]);
 
                 }
+
+ 
+                  DB::table('rejectedorders_delivery') -> where([
+	 		  	 	'order_id'     => $order_id,
+	 		  	 	'delivery_id'  => $delivery_id
+
+	 		  	  ]) -> update(['status' => 2 ]);
+
+
+                     //update order status to provider to 3 // delivered status
+	 		  	  DB::table('orders_headers') -> where('order_id',$order_id) -> update(['status_id' => 3]);
+
+
+	 		  	  if($lang == 'ar'){
+					$push_notif_title   ='تم توصيل الطلب ';
+					$push_notif_message = "تم توصيل الطلب برقم  {$order_id}من الموصل  {$delivery_id}";
+				}else{
+					$push_notif_title   ='Order Deliveried';
+					$push_notif_message = "order number {$order_id}  has been delivered by delivery  {$delivery_id}";
+				}
 
             }
 

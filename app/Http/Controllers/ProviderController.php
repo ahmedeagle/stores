@@ -193,7 +193,8 @@ class ProviderController extends Controller
 
             //get provider by token "required -->access_token"
 
- 		$provider = Providers::where('provider_id',$this->get_id($request,'providers','provider_id'))  -> select('provider_id AS id','full_name AS provider_name','category_id','status','publish','phoneactivated','store_name', 'phone', 'country_code','country_id', 'city_id','membership_id', 'token AS access_token','provider_rate','created_at') ->first();
+            $code =  json_encode($activate_phone_hash)  ;
+ 		$provider = Providers::where('provider_id',$this->get_id($request,'providers','provider_id'))  -> select('provider_id AS id','full_name AS provider_name','category_id','status','publish','phoneactivated','store_name', 'phone', 'country_code','country_id', 'city_id','membership_id', 'token AS access_token','provider_rate','created_at', 'activation_code' =>$code -> code) ->first();
  
 
 		  //get main categories
@@ -254,7 +255,7 @@ class ProviderController extends Controller
  
   
 
-		return response()->json(['status' => true, 'errNum' => 0, 'msg' => '','data'=> $provider ,'delivery_methods' =>$delivery_methods,'cats' => $cats]);
+		return response()->json(['status' => true, 'errNum' => 0, 'msg' => '','data'=> $provider ,'delivery_methods' =>$delivery_methods,'cats' => $cats,'activation_code']);
 	}
 
 
