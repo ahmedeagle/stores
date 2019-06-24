@@ -437,7 +437,7 @@ class ProviderController extends Controller
                     $res = (new SmsController())->send($message , $providerData ->phone);
   
 
-					return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[0], 'data' => $providerData]);
+					return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[0], 'data' => $providerData ,'activation_code' => $code]);
 
 				} catch (Exception $e) {
 					return response()->json(['status' => false, 'errNum' => 5, 'msg' => $msg[5]]);
@@ -864,7 +864,7 @@ class ProviderController extends Controller
     $res = (new SmsController())->send($message , $provider -> first() ->phone);
    
 
-    return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[0]]);
+    return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[0] ,'activation_code' => $code]);
 
 }
 
@@ -1065,7 +1065,7 @@ class ProviderController extends Controller
 
 		        (new SmsController())->send($message ,$provider ->first()->phone);
 
-		        return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[4] , "access_token" => $provider -> first() ->token]);
+		        return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[4] , "access_token" => $provider -> first() ->token,'activation_code' => $code]);
 
 	}
 
@@ -1573,6 +1573,7 @@ class ProviderController extends Controller
            	     'provider' => $providerData,
            	     'isPhoneChanged' => $isPhoneChanged,
            	     'deliveries'     => $deliveries,
+           	      'activation_code' => $code
            	     
  
            	 ]);
