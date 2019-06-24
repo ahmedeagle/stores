@@ -250,7 +250,7 @@ class UserController extends Controller
 			}
 			
   
- 
+ $profile_pic= "avatar_ic.png";
             if($request->input('profile_pic')){
                      
                      //save new image   64 encoded
@@ -273,8 +273,7 @@ class UserController extends Controller
 
  
             }
-            
-            $profile_pic= "avatar_ic.png";
+             
 
       
                           // send activation code to provider 
@@ -613,6 +612,7 @@ class UserController extends Controller
 
 		        //select proser vider base on his/her phone number if exists
 		        $userData = DB::table("users")->where("phone" , $request->input("phone"))->select("user_id")->first();
+		        
 
 		        $user = User::where('user_id',$userData -> user_id);
                  
@@ -3356,10 +3356,9 @@ public function cancel_order(Request $request){
 			$msg = array(
 				0 => 'يوجد بيانات',
 				1 => 'لا يوجد تفاصيل ',
-				2 => 'رقم المستخدم مطلوب',
-				3 => 'لابد من ادخال رقم الطلب ',
-				4 => 'الطلب غير موجود '
-			);
+				2 => 'رقم  الاوردر  مطلوب',
+				3 => 'الطلب غير موجود ',
+ 			);
 			$payment_col = "payment_types.payment_ar_name AS payment_method";
 			$delivery_col = "delivery_methods.method_ar_name AS delivery_method";
  			$status_col = 'order_status.ar_desc AS order_status';

@@ -5,11 +5,8 @@ namespace App\Http\Controllers;
 /**
  * Class DeliveryController.
  * it is a class to manage all delivery functionalities
- * Zad delivery sign up
- * Zad delivery log in
- * Zad delivery forget password
- * ..etc.
- * @author Mohamed Salah <mohamedsalah7191@gmail.com>
+  
+ * @author Ahmed Emam <ahmedaboemam123@gmail.com>
  */
 use Log;
 use App\Http\Controllers\Controller;
@@ -24,28 +21,15 @@ use Illuminate\Support\MessageBag;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\DB;
 use Mail;
+use Carbon\Carbon;
 use DateTime;
+use App\Http\Controllers\PushNotificationController as Push;
 
 class DeliveryController extends Controller
 {
-	protected $api_auth_email;
-	protected $api_auth_password;
+	 
 	public function __construct(Request $request){
-		$this->api_auth_email    = "api_user@authentication.com";
-		$this->api_auth_password = "M*y@H0tSu9_o";
-		$method = $request->method();
-		if($method != "GET"){
-			$api_email    = $request->input('api_email');
-			$api_password = $request->input('api_password');
-			$get = DB::table('api_users')->where('api_email', $api_email)
-					   					 ->where('api_pass', md5($api_password))
-					   					 ->first();
-			if(!$get || $get == NULL){
-				$response = array('status' => false, 'errNum' => 500,'msg' => 'Authentication failed');
-				echo json_encode($response);
-				die();
-			}
-		}
+		 
 	}
 
 	//method to prevent visiting any api link
@@ -54,9 +38,7 @@ class DeliveryController extends Controller
 		echo "";
 	}
  
-
-
-  
+ 
 	protected function getCountries($lang, $selected = NULL){
 		if($lang == "ar"){
 			$country_col = "country_ar_name AS country_name";
@@ -100,10 +82,15 @@ class DeliveryController extends Controller
 
                 return Deliveries::where('deliveries.delivery_id', $id)
                     ->join('city', 'deliveries.city_id', 'city.city_id')
-                    ->select('deliveries.delivery_id', 'deliveries.full_name AS delivery_name','deliveries.firstname',
-                        'deliveries.secondname','deliveries.receive_orders' , 'deliveries.thirdname', 'deliveries.lastname', 'deliveries.profile_pic', 'car_img1', 'car_img2', 'car_img3', 'id_img','id_date', 'insurance_img', 'authorization_img', 'license_img','license_date',
-                        'deliveries.status', 'deliveries.phone', 'deliveries.country_code', 'deliveries.email','deliveries.device_reg_id',
-                        'deliveries.longitude', 'deliveries.latitude', 'deliveries.attach_id','deliveries.car_type','deliveries.country_id', 'deliveries.delivery_rate','deliveries.city_id',$city_col, DB::raw('DATE(deliveries.created_at) AS created'),DB::raw('DATE(deliveries.admin_activation_time) AS admin_activation_date') , DB::raw('TIME(deliveries.admin_activation_time) AS admin_activation_time') , 'admin_activation_time AS Test_Full_Time')
+                    ->select('deliveries.delivery_id', 'deliveries.full_name AS delivery_name','deliveries.receive_orders' ,   'deliveries.publish','account_activated', 'deliveries.phone', 'deliveries.country_code','deliveries.device_reg_id',
+                        'deliveries.longitude', 'deliveries.latitude','deliveries.car_number','deliveries.country_id', 'deliveries.delivery_rate','deliveries.city_id',$city_col,'token',
+                        DB::raw('DATE(deliveries.created_at) AS created'),
+                         DB::raw("CONCAT('".env('APP_URL')."','/public/deliveryImages/',deliveries.license_img) AS license_img"), 
+                         DB::raw("CONCAT('".env('APP_URL')."','/public/deliveryImages/',deliveries.car_form_img) AS car_form_img"), 
+                         DB::raw("CONCAT('".env('APP_URL')."','/public/deliveryImages/',deliveries.Insurance_img) AS Insurance_img"), 
+                         DB::raw("CONCAT('".env('APP_URL')."','/public\deliveryImages/',deliveries.authorization_img) AS authorization_img"), 
+                         DB::raw("CONCAT('".env('APP_URL')."','/public/deliveryImages/',deliveries.national_img) AS national_img")
+                         )
                     ->first();
 
 		}elseif($action == "login"){
@@ -113,10 +100,15 @@ class DeliveryController extends Controller
 						           ->orWhere(DB::raw('CONCAT(deliveries.country_code,deliveries.phone)'), $phone);
 						     })
 					         ->join('city', 'deliveries.city_id', 'city.city_id')
-					         ->select('deliveries.delivery_id', 'deliveries.full_name AS delivery_name', 'deliveries.firstname',
-					         	      'deliveries.secondname', 'deliveries.receive_orders' , 'deliveries.thirdname', 'deliveries.lastname', 'deliveries.profile_pic', 'car_img1', 'car_img2', 'car_img3', 'id_img','id_date', 'insurance_img', 'authorization_img', 'license_img','license_date',
-					       			  'deliveries.status', 'deliveries.phone', 'deliveries.country_code', 'deliveries.email', 
-					       			  'deliveries.longitude', 'deliveries.latitude', 'deliveries.attach_id','deliveries.car_type','deliveries.country_id', 'deliveries.delivery_rate', 'deliveries.city_id',$city_col, DB::raw('DATE(created_at) AS created'))
+					         ->select('deliveries.delivery_id', 'deliveries.full_name AS delivery_name','deliveries.receive_orders' ,   'deliveries.publish','account_activated', 'deliveries.phone', 'deliveries.country_code','deliveries.device_reg_id',
+                        'deliveries.longitude', 'deliveries.latitude','deliveries.car_number','deliveries.country_id', 'deliveries.delivery_rate','deliveries.city_id',$city_col,'token',
+                        DB::raw('DATE(deliveries.created_at) AS created'),
+                         DB::raw("CONCAT('".env('APP_URL')."','/public/deliveryImages/',deliveries.license_img) AS license_img"), 
+                         DB::raw("CONCAT('".env('APP_URL')."','/public/deliveryImages/',deliveries.car_form_img) AS car_form_img"), 
+                         DB::raw("CONCAT('".env('APP_URL')."','/public/deliveryImages/',deliveries.Insurance_img) AS Insurance_img"), 
+                         DB::raw("CONCAT('".env('APP_URL')."','/public\deliveryImages/',deliveries.authorization_img) AS authorization_img"), 
+                         DB::raw("CONCAT('".env('APP_URL')."','/public/deliveryImages/',deliveries.national_img) AS national_img")
+                     )
 					         ->first();
 		}else{
 			return NULL;
@@ -138,26 +130,16 @@ class DeliveryController extends Controller
 
 	public function prepareSignUp(Request $request){
 		$lang = $request->input('lang');
-		
-		if($lang == "ar"){
-			$cat_col 	 = "cat_ar_name AS cat_name";
-			$country_col = "country_ar_name AS country_name";
-		}else{
-			$cat_col 	 = "cat_en_name AS cat_name";
-			$country_col = "country_en_name AS country_name";
-		}
-		
-
+		 
         $countries = $this->getCountries($lang);
-
-        //get categories
-		$cats = Categories::where('publish', 1)->select('cat_id', $cat_col)->get();
-		
-		return response()->json(['status' => true, 'errNum' => 0, 'msg' => '', 'countries' => $countries,'cats' => $cats]);
+ 
+		return response()->json(['status' => true, 'errNum' => 0, 'msg' => '', 'countries' => $countries]);
 	}
 
+	
 	protected function saveImage($data, $image_ext, $path){
 		if(!empty($data)){
+			 
 			$data = str_replace('\n', "", $data);
 			$data = base64_decode($data);
 			$im   = imagecreatefromstring($data);
@@ -169,7 +151,7 @@ class DeliveryController extends Controller
 					imagejpeg($im, $path . $name, 100);
 				}
 
-				return $path.$name;
+				return $name;
 			} else {
 				return "";
 			}
@@ -177,24 +159,11 @@ class DeliveryController extends Controller
 			return "";
 		}
 	}
+      
 
-	public function uploadDeliveryImages($img, $ext, $path){
-		if(!empty($img)){
-			$link = $this->saveImage($img, $ext, $path);
-			if($link != ""){
-				$link = url($link);
-			}else{
-				return false;
-			}
-		}else{
-			$link = '';
-		}
-
-		return $link;
-	}
+	 
 
 	public function signUp(Request $request){
-	    
 	    
 	  //  return response() -> json($request);
 		$lang = $request->input('lang');
@@ -211,6 +180,15 @@ class DeliveryController extends Controller
 				8 => 'رقم الجوال مستخدم من قبل',
 				9 => 'جميع الصوره المطلوبه يجب ان تكون فى صيغة jpeg او png',
 			    10 => 'التصنيفات مطلوبه',
+			    11 =>  'الدولة غير موجوده ',
+				12 => 'المدينة غير موجوده',
+				13 => ' صيغه الهاتف غير  صحيحه لابد انت تبدا ب 5 , 05',
+				14 => 'كلمتي المرور غير متطابقتان ',
+				15 => 'license_img_ext is required',
+				16 => 'car_form_ext is required',
+				17 => 'Insurance_img_ext is required',
+				18 => 'authorization_img_ext is required',
+				19 => 'national_img_ext is required',
 			);
 		}else{
 			$msg = array(
@@ -225,378 +203,380 @@ class DeliveryController extends Controller
 				8 => 'Repeated phone',
 				9 => 'Requested images must be jpeg or png type',
 				10 => 'Categories are required',
+				11 =>  'Country not exists',
+				12 => 'City not exists',
+				13 => 'phone format invalid must start with 5 or 05',
+				14 => 'password not confirmed',
+				15 => 'license_img_ext is required',
+				16 => 'car_form_ext is required',
+				17 => 'Insurance_img_ext is required',
+				18 => 'authorization_img_ext is required',
+				19 => 'national_img_ext is required',
+				
+
 			);
 		}
 
 		$messages = array(
-			'required'       => 1,
-			'numeric'        => 2,
-			'email'          => 3,
-			'min'            => 4,
-			'email.unique'   => 7,
-			'phone.unique'   => 8,
-			'mimes' 		 => 9
+
+			'required'                           => 1,
+			'numeric'                            => 2,
+			'email'                              => 3,
+			'min'                                => 4,
+ 			'phone.unique'                       => 8,
+			'mimes' 		                     => 9,
+			'country_id.exists'                  => 11,
+			'city_id.exists'                     => 12,
+			'phone.regex'                        => 13,
+			'password.confirmed'                 => 14,
+			'license_img_ext.required_with'      => 15,
+			'car_form_ext.required_with'         => 16,
+			'Insurance_img_ext'                  => 17,
+			'authorization_img_ext'              => 18,
+			'national_img_ext'                   => 19,
+ 
+
 		);
 
 		$validator = Validator::make($request->all(), [
-			'firstname'    		=> 'required',
-			'secondname'   		=> 'required',
-			'thirdname'    		=> 'required',
-			'lastname'     		=> 'required',
-			'country_id'   		=> 'required|numeric',
-			'city_id'      		=> 'required|numeric',
-			'email' 	   		=> 'required|email|unique:deliveries',
-			'phone' 	   		=> 'required|unique:deliveries',
-			'country_code' 		=> 'required',
-			'password'     		=> 'required|min:8',
-			'car_type'     		=> 'required',
-			'longitude'    		=> 'required',
-			'latitude'     		=> 'required',
-			'profile_pic'  		=> 'sometimes|nullable',
-			'image_ext'    		=> 'required_with:profile_pic',
-			'id_img'       		=> 'required',
-			'id_date'       	=> 'required',
-			'car_img1'       	=> 'required',
-			'car_img2' 	        => 'required',
-			'car_img3'  	    => 'required',
-			'license_img'    	=> 'required',
-			'license_date'    	=> 'required',
-			'authorization_img' => 'required',
-			'insurance_img'     => 'required',
-			'token'	            => 'required'
+			'full_name'    		=> 'required',
+			'country_id'   		=> 'required|exists:country,country_id',
+			'city_id'    		=> 'required|exists:city,city_id',
+			'phone'     		=> array('required','unique:deliveries,phone','regex:/^(05|5)([0-9]{8})$/'),
+
+			'country_code'   		=> 'required',
+			'car_number'      		=> 'required',
+ 			'longitude'    		    => 'required',
+			'latitude'     		    => 'required',
+			'device_reg_id'  	          	=> 'required',
+			'password_confirmation'    		=> 'required',
+			'password'       		=> 'required|min:8|confirmed',
+			'license_img'       	=> 'required',
+			'license_img_ext'       => 'required_with:license_img',
+			'car_form_img'       	=> 'required',
+			'car_form_ext'          => 'required_with:car_form_img',
+			'Insurance_img'       	=> 'required',
+			'Insurance_img_ext'     => 'required_with:Insurance_img',
+			'authorization_img'     => 'required',
+			'authorization_img_ext' => 'required_with:authorization_img',
+			'national_img'       	=> 'required',
+			'national_img_ext'      => 'required_with:national_img',
 
 		], $messages);
 
 		if($validator->fails()){
+
+			$error = $validator->errors()->first();
+			return response()->json(['status' => false, 'errNum' => $error, 'msg' => $msg[$error]]);
 	 
-		}else{
+		}
 
 
 
-              if(empty($request->input('cats'))){
-    				return response()->json(['status' => false, 'errNum' => 10, 'msg' => $msg[10]]);
-    			}
-    			
-			// if(empty($request->input('images'))){
-			// 	return response()->json(['status' => false, 'errNum' => 1, 'msg' => $msg[1]]);
-			// }else{
-			// 	$images = $request->input('images');
-			// }
-			// if(in_array("", $request->input('images'))){
-			// 	return response()->json(['status' => false, 'errNum' => 1, 'msg' => $msg[1]]);
-			// }
-			//upload profile picture
-			if(!empty($request->input('profile_pic'))){
-				$profile_image = $this->saveImage($request->input('profile_pic'), $request->input('image_ext'), 'deliveryImages/');
-				if($profile_image != ""){
-					$profile_image = url($profile_image);
-				}else{
-					return response()->json(['status' => false, 'errNum' => 5, 'msg' => $msg]);
-				}
-			}else{
-				$profile_image = url('providerProfileImages/avatar_ic.png');
-			}
+ $data=[];
 
-			$car_img1 = $this->uploadDeliveryImages($request->input('car_img1'), 'jpeg', 'deliveryImages/');
-			if($car_img1 == false){
-				return response()->json(['status' => false, 'errNum' => 5, 'msg' => $msg]);
-			}
+  $data = $request -> only('full_name','country_id','city_id','phone','car_number','latitude','longitude','device_reg_id');
 
-			$car_img2 = $this->uploadDeliveryImages($request->input('car_img2'), 'jpeg', 'deliveryImages/');
-			if($car_img2 == false){
-				return response()->json(['status' => false, 'errNum' => 5, 'msg' => $msg]);
-			}
 
-			$car_img3 = $this->uploadDeliveryImages($request->input('car_img3'), 'jpeg', 'deliveryImages/');
-			if($car_img3 == false){
-				return response()->json(['status' => false, 'errNum' => 5, 'msg' => $msg]);
-			}
+		$license_img= "";
+  if($request->input('license_img')){
+                     
+                     //save new image   64 encoded
+                    $image = $this->saveImage( $request -> license_img, $request->input('license_img_ext'), 'deliveryImages/');
+                                 
+    					if($image == ""){
+    						if($lang == "ar"){
+    							$errMsg = "فشل فى رفع الصورة حاول فى وقت  لاحق";
+    						}else{
+    							$errMsg = "Failed to upload image, please try again later";
+    						}
+    
+    						return response()->json(['status'=> false, 'errNum' => 30, 'msg' => $errMsg]);
+    					}else{
+    					     
+        	                      $data['license_img']= $image;
+    					}
+ 
+            }
 
-			$insurance_img = $this->uploadDeliveryImages($request->input('insurance_img'), 'jpeg', 'deliveryImages/');
-			if($insurance_img == false){
-				return response()->json(['status' => false, 'errNum' => 5, 'msg' => $msg]);
-			}
 
-			$authorization_img = $this->uploadDeliveryImages($request->input('authorization_img'), 'jpeg', 'deliveryImages/');
-			if($authorization_img == false){
-				return response()->json(['status' => false, 'errNum' => 5, 'msg' => $msg]);
-			}
+            $car_form_img= "";
+  if($request->input('car_form_img')){
+                     
+                     //save new image   64 encoded
+                    $image = $this->saveImage( $request -> car_form_img, $request->input('car_form_ext'), 'deliveryImages/');
+                                 
+    					if($image == ""){
+    						if($lang == "ar"){
+    							$errMsg = "فشل فى رفع الصورة حاول فى وقت  لاحق";
+    						}else{
+    							$errMsg = "Failed to upload image, please try again later";
+    						}
+    
+    						return response()->json(['status'=> false, 'errNum' => 30, 'msg' => $errMsg]);
+    					}else{
+    					     
+        	                      $data['car_form_img']= $image;
+    					}
+ 
+            }
 
-			$license_img = $this->uploadDeliveryImages($request->input('license_img'), 'jpeg', 'deliveryImages/');
-			if($license_img == false){
-				return response()->json(['status' => false, 'errNum' => 5, 'msg' => $msg]);
-			}
+$Insurance_img= "";
+  if($request->input('Insurance_img')){
+                     
+                     //save new image   64 encoded
+                    $image = $this->saveImage( $request -> Insurance_img, $request->input('Insurance_img_ext'), 'deliveryImages/');
+                                 
+    					if($image == ""){
+    						if($lang == "ar"){
+    							$errMsg = "فشل فى رفع الصورة حاول فى وقت  لاحق";
+    						}else{
+    							$errMsg = "Failed to upload image, please try again later";
+    						}
+    
+    						return response()->json(['status'=> false, 'errNum' => 30, 'msg' => $errMsg]);
+    					}else{
+    					     
+        	                      $data['Insurance_img']= $image;
+    					}
+ 
+            }
 
-			$id_img = $this->uploadDeliveryImages($request->input('id_img'), 'jpeg', 'deliveryImages/');
-			if($id_img == false){
-				return response()->json(['status' => false, 'errNum' => 5, 'msg' => $msg]);
-			}
-			//uploading image if exist
-			// $attachId = 0;
-			// $counter  = 0;
-			// foreach($images AS $image){
-			// 	$paper = $this->saveImage($image['image'], $image['ext'], 'deliveryImages/');
+            $authorization_img= "";
+  if($request->input('authorization_img')){
+                     
+                     //save new image   64 encoded
+                    $image = $this->saveImage( $request -> authorization_img, $request->input('authorization_img_ext'), 'deliveryImages/');
+                                 
+    					if($image == ""){
+    						if($lang == "ar"){
+    							$errMsg = "فشل فى رفع الصورة حاول فى وقت  لاحق";
+    						}else{
+    							$errMsg = "Failed to upload image, please try again later";
+    						}
+    
+    						return response()->json(['status'=> false, 'errNum' => 30, 'msg' => $errMsg]);
+    					}else{
+    					     
+        	                      $data['authorization_img']= $image;
+    					}
+ 
+            }
 
-			// 	if($paper == ""){
-			// 		return response()->json(['status' => false, 'errNum' => 5, 'msg' => $msg]);
-			// 	}else{
-			// 		$imageName = explode("/", $paper)[1];
-			// 		$paper     = url($paper);
-			// 		//get attach_no
-			// 		if($attachId == 0){
-			// 			$attachId = DB::table('attachments')->select(DB::raw("(SELECT (IFNULL(MAX(attach_id),0) + 1) FROM attachments) AS newAttachId"))->first()->newAttachId;
-			// 		}
-			// 		$inserts[$counter]['attach_id']   = $attachId;
-			// 		$inserts[$counter]['attach_name'] = $imageName;
-			// 		$inserts[$counter]['attach_path'] = $paper;
-			// 		$counter++;
-			// 	}
-			// }
 
-			// if(!empty($inserts)){
-			// 	$check = DB::table('attachments')->insert($inserts);
-			// 	if(!$check){
-			// 		return response()->json(['status' => false, 'errNum' => 5, 'msg' => $msg]);
-			// 	}
-			// }
+             $national_img= "";
+  if($request->input('national_img')){
+                     
+                     //save new image   64 encoded
+                    $image = $this->saveImage( $request -> national_img, $request->input('national_img_ext'), 'deliveryImages/');
+                                 
+    					if($image == ""){
+    						if($lang == "ar"){
+    							$errMsg = "فشل فى رفع الصورة حاول فى وقت  لاحق";
+    						}else{
+    							$errMsg = "Failed to upload image, please try again later";
+    						}
+    
+    						return response()->json(['status'=> false, 'errNum' => 30, 'msg' => $errMsg]);
+    					}else{
+    					     
+        	                      $data['national_img']= $image;
+    					}
+ 
+            }
 
-            
-              
-        			
-        			
-			$data['firstname']    		  = $request->input('firstname');
-			$data['secondname']   		  = $request->input('secondname');
-			$data['thirdname']    		  = $request->input('thirdname');
-			$data['lastname']     		  = $request->input('lastname');
-			$data['country_id']   		  = $request->input('country_id');
-			$data['city_id']      		  = $request->input('city_id');
-			$data['email']        		  = $request->input('email');
-			$data['phone']        		  = $request->input('phone');
-			$data['country_code'] 		  = '+'.$request->input('country_code');
-			$data['password']     		  = $request->input('password');
-			$data['car_type']     		  = $request->input('car_type');
-			$data['longitude']    		  = $request->input('longitude');
-			$data['latitude']     		  = $request->input('latitude');
-			$data['full_name']    		  = $data['firstname']." ".$data['secondname']." ".$data['thirdname']." ".$data['lastname'];
-			$data['image']        		  = $profile_image;
-			$data['car_img1']       	  = $car_img1;
-			$data['car_img2']       	  = $car_img2;
-			$data['car_img3']       	  = $car_img3;
-			$data['license_img']          = $license_img;
-			$data['authorization_img']    = $authorization_img;
-			$data['insurance_img']        = $insurance_img;
-			$data['id_img']        		  = $id_img;
-			$data['token']        		  = $request->input('token');
-			$data['id_date']              = $request->input('id_date');
-			$data['license_date']         = $request->input('license_date');
-			$data['cats']                 = $request->input('cats');
-			
-			if(!empty($request->input('marketer_code'))){
-				$data['marketer_code'] = $request->input('marketer_code');
-			}else{
-				$data['marketer_code'] = "";
-			}
+           
+
+ 
+  $data['password']        = md5($request->input('password'));
+  $data['country_code']    = $this -> checkCountryCodeFormate($request->input('country_code'));
+  
+
+   // send activation code to provider 
+	    $code                   = $this->generate_random_number(4);
+        $data['token']          = $this -> getRandomString(128);
+
+        $data['activation_code'] = json_encode([
+            'code'   => $code,
+            'expiry' => Carbon::now()->addDays(1)->timestamp,
+        ]);
+        
+        $message = (App()->getLocale() == "en")?
+                    "Your Activation Code is :- " . $code :
+                     "رقم الدخول الخاص بك هو :- " .$code ;
+ 
+		 
+
 			try {
 				$id = 0;
 				DB::transaction(function() use ($data, &$id){
-					$id = DB::table('deliveries')->insertGetId([
-						'full_name'     	  => $data['full_name'],
-						'firstname'     	  => $data['firstname'],
-						'secondname'    	  => $data['secondname'],
-						'thirdname'     	  => $data['thirdname'],
-						'lastname'      	  => $data['lastname'],
-						'country_id'    	  => $data['country_id'],
-						'city_id'       	  => $data['city_id'],
-						'email' 	    	  => $data['email'],
-						'phone' 	    	  => $data['phone'],
-						'country_code'  	  => $data['country_code'],
-						'password'      	  => md5($data['password']),
-						'car_type'      	  => $data['car_type'],
-						'longitude'     	  => $data['longitude'],
-						'latitude'      	  => $data['latitude'],
-						'profile_pic'   	  => $data['image'],
-						'car_img1'   		  => $data['car_img1'],
-						'car_img2'   		  => $data['car_img2'],
-						'car_img3'   		  => $data['car_img3'],
-						'insurance_img'   	  => $data['insurance_img'],
-						'authorization_img'   => $data['authorization_img'],
-						'id_img'  			  => $data['id_img'],
-						'id_date'  			  => $data['id_date'],
-						'license_img'  		  => $data['license_img'],
-						'license_date'        => $data['license_date'],
-						'device_reg_id'		  => $data['token'],
-						'marketer_code'       => $data['marketer_code']
-					]);
-					
+					$id = DB::table('deliveries')->insertGetId($data);					
 					 
-					  if($id){
-							$inserts = array();
-							for($i = 0; $i < count($data['cats']); $i++){
-								$inserts[$i]['delivery_id'] = $id;
-								$inserts[$i]['cat_id']      = $data['cats'][$i];
-							}
-							DB::table('deliveries_categories')->insert($inserts);
- 
-						}else{
-						    
+					  if(!$id)  
 							return response()->json(['status' => false, 'errNum' => 6, 'msg' => $msg[6]]);
-						}
-						
+						  
 						 
 					DB::table('balances')->insert(['actor_id' => $id, 'current_balance' => 0, 'due_balance' => 0, 'type' => 'delivery']);
 				});
 				
 				$delivery = $this->getDeliveryData($id, $lang, "get");
-				// $delivery = DB::table('deliveries')->where('delivery_id', $id)
-				// 			  ->select('delivery_id', 'profile_pic', 'car_img1', 'car_img2', 'car_img3', 'insurance_img', 'authorization_img', 'license_img', 'id_img', DB::raw('created_at AS created'))
-				// 			  ->first();
+				 
 				return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[0], 'delivery' => $delivery]);
 			} catch (Exception $e) {
 				return response()->json(['status' => false, 'errNum' => 6, 'msg' => $msg[6]]);
 			}
-		}
+		
 	}
+
+public function checkCountryCodeFormate($str){
+		     
+		    	   if(mb_substr(trim($str), 0, 1) === '+'){
+	                          return  $str;
+	                  }
+	                  
+	                  return '+'.$str;	                  
+		}
+
 
 	public function activateDelivery(Request $request){
-		$lang = $request->input('lang');
-		if($lang == "ar"){
+		 $lang = $request->input('lang');
+
+          if($lang == "ar"){
 			$msg = array(
-				0 => 'تم التفعيل بنجاح وبإنتظار تفعيل الإدارة',
-				1 => 'رقم التوصيل مطلوب',
-				2 => 'فشل التفعيل حاول فى وقت لاحق',
-				3 => 'نوع العملية يجب ان يكون فى (register, edit)'
-			);
-			$city_col = "city.city_ar_name AS city_name";
-		}else{
-			$msg = array(
-				0 => 'Activated successfully, and waitting for management approval',
-				1 => 'delivery_id is required',
-				2 => 'Failed to activate, please try again later',
-				3 => 'type must be in (register, edit)'
-			);
-			$city_col = "city.city_en_name AS city_name";
-		}
-		if(!empty($request->input('delivery_id'))){
-			if(empty($request->input('type'))){
-				$status = 2;
-			}elseif($request->input('type') == 'register'){
-				$status = 2;
-			}elseif($request->input('type') == 'edit'){
-				$status = 1;
-			}else{
-				return response()->json(['status'=> false, 'errNum' => 4, 'msg' => $msg[4]]);
-			}
-			$check = Deliveries::where('delivery_id', $request->input('delivery_id'))->update(['status' => $status]);
-			if($check){
-				$getDelivery = $this->getDeliveryData($request->input('delivery_id'), $lang);
-				return response()->json(['status'=> true, 'errNum' => 0, 'msg' => $msg[0], 'delivery' => $getDelivery]); 
-			}else{
-				return response()->json(['status'=> false, 'errNum' => 2, 'msg' => $msg[2]]);
-			}
-		}else{
-			return response()->json(['status'=> false, 'errNum' => 1, 'msg' => $msg[1]]);
-		}
-	}
-
-	//method to redirect to reset passwrod page
-	public function dforgetPassView($deliveryId){
-		return view('dforgetPass', ['delivery_id' => $deliveryId, 'api_email' => $this->api_auth_email, 'api_pass' => $this->api_auth_password]);
-	}
-
-	//method to update password
-	public function dForgetPassAction(Request $request){
-		$validator = Validator::make($request->all(), [
-			'password' => 'required|min:8',
-			'password_confirmation' => 'required|min:8|same:password',
-			'delivery_id'  => 'required|numeric'
-		]);
-
-		if($validator->fails()){
-			return redirect()
-						->back()
-                        ->withErrors($validator)
-                        ->withInput();
-		}else{
-			$check = Deliveries::where('delivery_id', $request->input('delivery_id'))
-						 ->update(['password' => md5($request->input('password'))]);
-			if($check){
-				return redirect()->back()->with('success', 'Your password updated successfully');
-			}else{
-				return redirect()->back()->with('err', 'Proccess failed, please try again later');
-			}
-		}
-	}
-
-	public function sendMailApi(Request $request){
-		$lang  = $request->input('lang');
-		if($lang == "ar"){
-			$msg = array(
-				0 => 'قم بتفقد البريد الإلكترونى الخاص بك لإعادة ضبط كلمة السر الخاصه بك',
-				1 => 'البريد الإلكترونى مطلوب',
-				2 => 'يجب ان يكون البريد الإلكترونى فى صيغة البيرد الإلكترونى',
-				3 => 'هذا البريد الإلكترونى غير موجود',
-				4 => 'فشل فى إرسال الميل من فضلك حاول فى وقت لاقح'
+				0 => 'تم التفعيل ',
+				1 => 'كود غير صحيح ',
+				2 => 'لابد من  ادخال الكود ',
+				3 =>  'لابد من توكن المستخدم ',
+				4 =>  'فشل التفعيل من فضلك حاول لاقحا',
+				5=> 'كود تفعيل غير صحيح ',
 			);
 		}else{
 			$msg = array(
-				0 => 'Please check your mail to reset your password',
-				1 => 'Delivery email is required',
-				2 => 'Delivery email must be in email format',
-				3 => 'This email is not exist',
-				4 => 'Failed to send, please try again later'
+				0 => 'Activated successfully',
+				1 => 'incorrect code',
+			    2 => 'code is required',
+				3 => 'access_token required',
+				4 => 'Failed to activate, please try again later',
+				5 => 'Code is not Correct',
 			);
 		}
 
 		$messages = array(
-			'required' => 1,
-			'email'    => 2, 
-			'unique'   => 3
+			'code.required'         => 2,
+			'access_token.required' => 3
 		);
 
-
-		$validator = Validator::make($request->all(),[
-			'email' => 'required|email|unique:deliveries'
+		$validator = Validator::make($request->all(), [
+			'access_token' => 'required',
+			'code'         => 'required'
 		], $messages);
-
-		if($validator->fails()){
-			$errors = $validator->errors();
-			$error  = $errors->first();
-			if($error != 3){
-				return response()->json(['status' => false, 'errNum' => $error, 'msg' => $msg[$error]]);
-			}else{
-				//get user id
-				$email = $request->input('email');
-				$delivery  = Deliveries::where('email', $email)->first();
-				if($delivery->count()){
-					$deliveryId = $delivery->delivery_id;
-					//here we gonna send email
-					$subject = "Mathaq reset password link";
-					$link    = "zad.al-yasser.info/public/api/dForgetPass/".$deliveryId;
-					if($lang == "ar"){
-						$message = "قم بزيارة الرابط التالى لإعادة ضبط كلمة السر الخاصة بك \n ".$link." \n\n ملحوظة إذا لم تقم بطلب إعادة ضبط كلمة السر الخاصة بك من فضلك تجاهل هذه الرسالة";
-					}else{
-						$message = "Please visit the next url to reset your password \n ".$link>" \n\n Note:- if you didn't request to reset your password, please ignore this email";
-					}
-					Mail::send('mail-template', ['content' => $message], function ($m) use ($delivery) {
-			            $m->from('info@zad.al-yasser.info', 'Mathaq user application');
-			            $m->to($delivery->email, $delivery->full_name)->subject("Mathaq reset password link");
-			        });
-
-			        if(count(Mail::failures()) > 0) {
-					   return response()->json(['status' => false, 'errNum' => 4, 'msg' => $msg[4]]);
-					} else {
-					    return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[0]]);
-					}
-			        
-				}else{
-					return response()->json(['status' => false, 'errNum' => 3, 'msg' => $msg[3]]);
-				}
-			}
-		}else{
-			return response()->json(['status' => false, 'errNum' => 3, 'msg' => $msg[3]]);
+ 
+        if($validator->fails()){
+			$error = $validator->errors()->first();
+			return response()->json(['status' => false, 'errNum' => $error, 'msg' => $msg[$error]]);
 		}
+  
+
+         $delivery_id = $this->get_id($request,'deliveries','delivery_id');
+         if($delivery_id ==0 ){
+
+         	   return response()->json(['status' => false, 'errNum' => 3, 'msg' => $msg[3]]);
+         }
+
+         $delivery = Deliveries::where('delivery_id',$delivery_id);
+
+        $activate_phone_hash = $delivery -> first() -> activation_code;
+		$code                = json_decode($activate_phone_hash) -> code;
+
+		 if($code  != $request -> code)
+		  {
+             return response()->json(['status' => false, 'errNum' => 5, 'msg' => $msg[5]]);
+		  }
+  
+        $data['account_activated']           = 1;
+        $data['status']                      = 1;
+        $data['activation_code']             = null;
+
+        $delivery -> update($data);
+ 
+        return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[0]]);
+
+
+		 
 	}
 
+
+
+	 public function resendActivationCode(Request $request){
+ 
+    	 $lang = $request->input('lang');
+
+          if($lang == "ar"){
+			$msg = array(
+				0 => 'تم  ارسال الكود بنجاح ',
+ 				1 =>  'لابد من توكن المستخدم ',
+ 				2 => 'فشل من فضلك حاول مجددا ',
+			);
+		}else{
+			$msg = array(
+				0 => 'code sent successfully',
+ 				1 => 'access_token required',
+ 				2 => 'failed try again later',
+			);
+		}
+
+  
+
+		$messages = array(
+ 			'access_token.required' => 1
+		);
+
+		$validator = Validator::make($request->all(), [
+			'access_token' => 'required',
+ 		], $messages);
+
+
+
+        if($validator->fails()){
+			$error = $validator->errors()->first();
+			return response()->json(['status' => false, 'errNum' => $error, 'msg' => $msg[$error]]);
+		}
+ 
+
+     $data=[];
+
+     $delivery_id = $this->get_id($request,'deliveries','delivery_id');
+     if($delivery_id == 0){
+
+     	 return response()->json(['status' => false, 'errNum' => 2, 'msg' => $msg[2]]);
+     }
+
+    $delivery = Deliveries::where('delivery_id',$delivery_id )  ;
+ 
+    $code          = $this->generate_random_number(4);
+ 
+    $data['activation_code'] = json_encode([
+        'code'   => $code,
+        'expiry' => Carbon::now()->addDays(1)->timestamp,
+    ]);
+ 
+
+     $delivery -> update($data);
+
+    $message = (App()->getLocale() == "en")?
+                "Your Activation Code is :- " . $code :
+                 "رقم الدخول الخاص بك هو :- " .$code ;
+  
+    $res = (new SmsController())->send($message , $delivery -> first() ->phone);
+   
+
+    return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[0]]);
+
+}
+
+
+
+	  
 	public function deliveryLogin(Request $request){
 		$lang = $request->input('lang');
 		if($lang == "ar"){
@@ -620,33 +600,36 @@ class DeliveryController extends Controller
 				4 => 'Wrong data',
 				5 => 'You need to activate your account',
 				6 => 'Waitting for management activation',
-				7 => 'token is required'
+				7 => 'dev_reg_id is required'
 			);
 			$city_col = "city.city_en_name AS city_name";
 		}
 		$messages = array(
-				'phone.required'    => 1,
-				'password.required' => 3,
-				'token.required' 	=> 7
+				'phone.required'        => 1,
+				'password.required'     => 3,
+				'dev_reg_id.required' 	=> 7
 
 			);
 		$validator = Validator::make($request->all(), [
-			'phone'    => 'required',
-			'password' => 'required',
-			'token'    => 'required'
+			'phone'          => 'required',
+			'password'       => 'required',
+			'dev_reg_id'     => 'required'
 		], $messages);
 
 		if($validator->fails()){
 			$errors   = $validator->errors();
 			$error    = $errors->first();
 			return response()->json(['status'=> false, 'errNum' => $error, 'msg' => $msg[$error]]); 
-		}else{
+		}
+
 			$getDelivery = $this->getDeliveryData(0, $lang, "login", $request->input('password'), $request->input('phone'));
+
 			if($getDelivery != NULL && !empty($getDelivery) && $getDelivery->count()){
-				Deliveries::where('delivery_id', $getDelivery->delivery_id)->update(['device_reg_id' => $request->input('token')]);
-				if($getDelivery->status == 0 || $getDelivery->status == "0" || $getDelivery->status == 3 || $getDelivery->status == "3"){
+
+				Deliveries::where('delivery_id', $getDelivery->delivery_id)->update(['device_reg_id' => $request->input('device_reg_id')]);
+				if($getDelivery-> 	account_activated == 0 || $getDelivery-> 	account_activated == "0"){
 					return response()->json(['status'=> false, 'errNum' => 5, 'delivery' => $getDelivery, 'msg' => $msg[5]]);
-				}elseif($getDelivery->status == 2 || $getDelivery->status == "2"){
+				}elseif($getDelivery-> publish == 0 || $getDelivery->publish == "0"){
 				    return response()->json(['status'=> false, 'errNum' => 6, 'delivery' => $getDelivery, 'msg' => $msg[6]]);
 				}
 				
@@ -654,8 +637,1238 @@ class DeliveryController extends Controller
 			}else{
 				return response()->json(['status'=> false, 'errNum' => 4, 'msg' => $msg[4]]); 
 			}
-		}
+		 
 	}
+
+
+
+
+public function forgetPassword(Request $request){
+		   
+		    $lang = $request->input('lang');
+ 
+
+		if($lang == "ar"){
+			$msg = array(
+ 				1 => 'رقم الهاتف مطلوب ',
+				2 => 'رقم هاتف غير صحيح ',
+				3 => 'رقم الهاتف غير موجود ',
+				4 => 'تم ارسال كود تفعيل الي هاتفك ',
+				5 => 'رقم الهاتف غير مفعل ',
+				6 => 'ؤ'
+				
+			);
+			 
+		}else{
+			$msg = array(
+ 				1 => 'Phone is required',
+				2 => 'Wrong phone number',
+				3 => 'phone doesn\'t exists',
+				4 => 'activation code sent successfully',
+  				5 => 'phone not active'    ,
+			);
+			 
+		}
+	        $rules    = [
+                   "phone" => "required|numeric|exists:deliveries,phone"
+		        ];
+
+		        $messages = [
+		                "required" => 1,
+		                "numeric"  => 2,
+		                "exists"   => 3
+		        ];
+		        
+		        $validator  = Validator::make($request->all(), $rules, $messages);
+
+		        if($validator->fails()){
+		            $error = $validator->errors()->first();
+		            return response()->json(['status' => false, 'errNum' => (int)$error, 'msg' => $msg[$error]]);
+		        }
+
+		        //select proser vider base on his/her phone number if exists
+		        $DeliveryData = DB::table("deliveries")->where("phone" , $request->input("phone"))->select("delivery_id")->first();
+ 
+
+		        $delivery = Deliveries::where('delivery_id',$DeliveryData -> delivery_id);
+                 
+
+ 		        if($delivery -> first()->  account_activated == '0' or  $delivery -> first()->  account_activated == 0){
+
+		            return response()->json(['status' => false, 'errNum' => 5, 'msg' => $msg[5]]);
+
+		        }
+
+
+		        $code = $this -> generate_random_number(4);
+
+		        $message = (App()->getLocale() == "en")?
+		            "Your Activation Code is :- " . $code :
+		            $code . "رقم الدخول الخاص بك هو :- " ;
+
+		        $activation_code = json_encode([
+		            'code'   => $code,
+		            'expiry' => Carbon::now()->addDays(1)->timestamp,
+		        ]);
+
+		        $delivery -> update([
+		        	 'activation_code'   => $activation_code,
+		        ]);
+
+		        (new SmsController())->send($message , $delivery ->first()->phone);
+
+		        return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[4] , "access_token" => $delivery -> first() ->token]);
+
+	}
+
+	 
+
+	   public function updatePassword(Request $request){
+
+           $lang = $request->input('lang');
+
+        $rules      = [
+            "password"      => "required|min:8|confirmed",
+            "access_token"  => "required"
+        ];
+
+        $messages   = [
+            "password.required"     => 1,
+            "password.required"     => 1,
+            'password.min'          => 2,
+            'password.confirmed'    => 3,
+            'access_token.required' => 5
+        ];
+
+
+
+		if($lang == "ar"){
+			$msg = array(
+ 				1 => 'لابد من ادخال كلمة المرور ',
+				2 => 'كلمه المرور  8 احرف ع الاقل ',
+				3 => 'كلمة المرور غير متطابقه ',
+ 				4 => 'تم تغيير كلمة  المرور بنجاح ',
+ 				5 => 'توكن غالموصل ير موجود'
+				
+			);
+			 
+		}else{
+			$msg = array(
+ 				1 => 'password field required',
+				2 => 'password minimum characters is 8',
+				3 => 'password not confirmed',
+   				4 => 'password successfully updated'    ,
+   				5=>  'Delivery token required'
+			);
+			 
+		}
+
+       
+        $validator  = Validator::make($request->all(), $rules, $messages);
+
+        if($validator->fails()){
+            $error = $validator->errors()->first();
+            return response()->json(['status' => false, 'errNum' => (int)$error, 'msg' => $msg[$error]]);
+        }
+
+        $user = Deliveries::where('delivery_id',$this->get_id($request,'deliveries','delivery_id'))
+                        -> update([
+                                      
+                                         'password'              =>  md5($request->input('password')),
+                                         'activation_code'       => null
+                                 ]);
+
+        return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[4]]);
+    }
+
+
+
+public function editProfile(Request $request){
+	    
+		$lang = $request->input('lang');
+		
+		if($lang == "ar"){
+		    
+		   	$cat_col     = "cat_ar_name AS cat_name";
+			$country_col = "country_ar_name AS country_name";
+			$city_col    = "city_ar_name AS city_name";
+			
+			$msg = array(
+				0 => '',
+				1 => 'رقم الموصل مطلوب',
+				2 => 'الموصل غير موجود '
+			);
+		}else{
+		    
+		    $cat_col     = "cat_en_name AS cat_name";
+			$country_col = "country_en_name AS country_name";
+			$city_col    = "city_en_name AS city_name";
+			
+			$msg = array(
+				0 => '',
+				1 => 'access_token is required',
+				2 =>'Delivery Not Found' 
+			);
+		}
+
+		if(empty($request->input('access_token'))){
+			return response()->json(['status' => false, 'errNum' => 1, 'msg' => $msg[1]]);
+		} 
+
+		     $delivery_id = $this->get_id($request,'deliveries','delivery_id');
+		     if($delivery_id == 0){
+
+		     	 return response()->json(['status' => false, 'errNum' => 2, 'msg' => $msg[2]]);
+		     }
+
+			$id = $delivery_id;
+		 
+
+		$delivery        = $this->getDeliveryData($id, $lang, $action = "get");
+		$deliveryCountry = $delivery->country_id;
+		$deliveryCity    = $delivery->city_id;
+
+		$countries       = DB::table('country')->where('publish', 1)->select('country_id', $country_col, DB::raw('IF(country_id = '.$deliveryCountry.', true, false) AS chosen'), 'country_code')->get();
+
+		$cities          = DB::table('city')->select('city_id', $city_col, DB::raw('IF(city_id = '.$deliveryCity.', 1, 0) AS chosen'))->get();
+ 	 			 											 	
+
+		return response()->json([
+									'status' => true, 
+									'errNum' => 0, 
+									'msg'    => $msg[0], 
+									'countries' => $countries, 
+									'cities'    => $cities, 
+ 									'delivery'  => $delivery,
+ 								]);
+	}
+
+
+
+	public function updateProfile(Request $request){
+
+		     
+	  //  return response() -> json($request);
+		$lang = $request->input('lang');
+		if($lang == "ar"){
+			$msg = array(
+				0 => 'تم  تحديث الملف نجاح',
+				1 => 'كل الحقول مطلوبه',
+				2 => 'كلا من المدينه و الدوله يجب ان تكون ارقاما',
+				3 => 'صيغة البريد الإلكترونى غير صحيحة',
+				4 => 'الرقم السرى لا يجب ان يقل عن 8 حروف',
+				5 => 'فشل فى رفع الصور',
+				6 => 'فشل التسجيل، من فضلك حاول فى وقت لاحق',
+				7 => 'البريد الإلكترونى مستخدم من قبل',
+				8 => 'رقم الجوال مستخدم من قبل',
+				9 => 'جميع الصوره المطلوبه يجب ان تكون فى صيغة jpeg او png',
+			    10 => 'التصنيفات مطلوبه',
+			    11 =>  'الدولة غير موجوده ',
+				12 => 'المدينة غير موجوده',
+				13 => ' صيغه الهاتف غير  صحيحه لابد انت تبدا ب 5 , 05',
+				14 => 'كلمتي المرور غير متطابقتان ',
+				15 => 'license_img_ext is required',
+				16 => 'car_form_ext is required',
+				17 => 'Insurance_img_ext is required',
+				18 => 'authorization_img_ext is required',
+				19 => 'national_img_ext is required',
+				20 => 'السائق غير موجود ',
+			);
+		}else{
+			$msg = array(
+				0 => 'Profile Updated successfully',
+				1 => 'All fields are required',
+				2 => 'country and city must be numeric',
+				3 => 'E-mail must be in email format',
+				4 => 'Password can not be less than 8 characters',
+				5 => 'Failed to upload images',
+				6 => 'Failed to  update profile, please try again later',
+				7 => 'Repeated email',
+				8 => 'Repeated phone',
+				9 => 'Requested images must be jpeg or png type',
+				10 => 'Categories are required',
+				11 =>  'Country not exists',
+				12 => 'City not exists',
+				13 => 'phone format invalid must start with 5 or 05',
+				14 => 'password not confirmed',
+				15 => 'license_img_ext is required',
+				16 => 'car_form_ext is required',
+				17 => 'Insurance_img_ext is required',
+				18 => 'authorization_img_ext is required',
+				19 => 'national_img_ext is required',
+				20 => 'Delivery Not Found',
+				
+
+			);
+		}
+
+		$messages = array(
+
+			'required'                           => 1,
+			'numeric'                            => 2,
+			'email'                              => 3,
+			'min'                                => 4,
+ 			'phone.unique'                       => 8,
+			'mimes' 		                     => 9,
+			'country_id.exists'                  => 11,
+			'city_id.exists'                     => 12,
+			'phone.regex'                        => 13,
+			'password.confirmed'                 => 14,
+			'license_img_ext.required_with'      => 15,
+			'car_form_ext.required_with'         => 16,
+			'Insurance_img_ext'                  => 17,
+			'authorization_img_ext'              => 18,
+			'national_img_ext'                   => 19,
+ 
+
+		);
+
+
+
+   $rules = [
+           	'access_token'      => 'required_with',
+			'full_name'    		=> 'required',
+			'country_id'   		=> 'required|exists:country,country_id',
+			'city_id'    		=> 'required|exists:city,city_id',
+			'country_code'   		=> 'required',
+			'car_number'      		=> 'required',
+   			'license_img'       	=> 'sometimes|nullable',
+			'license_img_ext'       => 'required_with:license_img',
+			'car_form_img'       	=> 'sometimes|nullable',
+			'car_form_ext'          => 'required_with:car_form_img',
+			'Insurance_img'       	=> 'sometimes|nullable',
+			'Insurance_img_ext'     => 'required_with:Insurance_img',
+			'authorization_img'     => 'sometimes|nullable',
+			'authorization_img_ext' => 'required_with:authorization_img',
+			'national_img'       	=> 'sometimes|nullable',
+			'national_img_ext'      => 'required_with:national_img',
+
+		];
+
+
+		
+		$validator = Validator::make($request->all(),$rules, $messages);
+
+		if($validator->fails()){
+
+			  $error = $validator->errors() ->first();
+			return response()->json(['status' => false, 'errNum' => $error, 'msg' => $msg[$error]]);
+	 
+		}
+
+
+
+		  $deliveryId     =  $this->get_id($request,'deliveries','delivery_id');
+
+		        if($deliveryId == 0 ){
+		              return response()->json(['status' => false, 'errNum' => 20, 'msg' => $msg[20]]);
+		        }
+
+
+           $inputs = $request -> only('full_name','country_id','city_id','phone','car_number');
+
+	      $delivery = DB::table("deliveries") ->where('delivery_id',$deliveryId) -> select('phone','license_img','car_form_img','Insurance_img','authorization_img','national_img') -> first();
+
+
+	      if(!$delivery)
+	      {
+
+	      	return response()->json(['status' => false, 'errNum' => 20, 'msg' => $msg[20]]);
+	      }
+
+
+	 if($inputs['phone'] != $delivery -> phone){
+
+            $rules['phone']        = array('required','numeric','regex:/^(05|5)([0-9]{8})$/','unique:deliveries,phone');
+
+             $inputs['account_activated'] = "0";
+             $inputs['status']            = "0";
+
+              $code = $this -> generate_random_number(4);
+
+            $inputs['activation_code'] = json_encode([
+                'code'   => $code,
+                'expiry' => Carbon::now()->addDays(1)->timestamp,
+            ]);
+
+ 
+            $message = (App()->getLocale() == "en")?
+                "Your Activation Code is :- " . $code :
+                $code . "رقم الدخول الخاص بك هو :- " ;
+
+            (new SmsController())->send($message , $delivery ->  phone);
+
+            $isPhoneChanged = true;
+             
+
+        }else{
+
+             $rules['phone'] = array('required','numeric','regex:/^(05|5)([0-9]{8})$/');
+
+             $isPhoneChanged = false;
+ 
+        }
+ 
+  
+
+    if($request -> latitude)
+    {
+
+         $inputs['latitude'] =  $request -> latitude;
+    }
+
+
+    if($request ->  longitude){
+           
+        $inputs['longitude'] =  $request -> longitude;
+         
+    } 
+
+
+   if($request->input('license_img')){
+                     
+                     //save new image   64 encoded
+                    $image = $this->saveImage( $request -> license_img, $request->input('license_img_ext'), 'deliveryImages/');
+                                 
+    					if($image == ""){
+    						if($lang == "ar"){
+    							$errMsg = "فشل فى رفع الصورة حاول فى وقت  لاحق";
+    						}else{
+    							$errMsg = "Failed to upload image, please try again later";
+    						}
+    
+    						return response()->json(['status'=> false, 'errNum' => 30, 'msg' => $errMsg]);
+    					}else{
+    					     
+        	                      $inputs['license_img']= $image;
+    					}
+
+    					 if(Storage::disk('deliveries')->exists($delivery -> license_img))
+			               {
+			                     
+			                     Storage::disk('deliveries')->delete($delivery  -> license_img);
+
+			               }
+ 
+            }
+
+
+   if($request->input('car_form_img')){
+                     
+                     //save new image   64 encoded
+                    $image = $this->saveImage( $request -> car_form_img, $request->input('car_form_ext'), 'deliveryImages/');
+                                 
+    					if($image == ""){
+    						if($lang == "ar"){
+    							$errMsg = "فشل فى رفع الصورة حاول فى وقت  لاحق";
+    						}else{
+    							$errMsg = "Failed to upload image, please try again later";
+    						}
+    
+    						return response()->json(['status'=> false, 'errNum' => 30, 'msg' => $errMsg]);
+    					}else{
+    					     
+        	                      $inputs['car_form_img']= $image;
+    					}
+
+    					 if(Storage::disk('deliveries')->exists($delivery -> car_form_img))
+			               {
+			                     
+			                     Storage::disk('deliveries')->delete($delivery  -> car_form_img);
+
+			               }
+
+ 
+            }
+
+   if($request->input('Insurance_img')){
+                     
+                     //save new image   64 encoded
+                    $image = $this->saveImage( $request -> Insurance_img, $request->input('Insurance_img_ext'), 'deliveryImages/');
+                                 
+    					if($image == ""){
+    						if($lang == "ar"){
+    							$errMsg = "فشل فى رفع الصورة حاول فى وقت  لاحق";
+    						}else{
+    							$errMsg = "Failed to upload image, please try again later";
+    						}
+    
+    						return response()->json(['status'=> false, 'errNum' => 30, 'msg' => $errMsg]);
+    					}else{
+    					     
+        	                      $inputs['Insurance_img']= $image;
+    					}
+
+
+    					if(Storage::disk('deliveries')->exists($delivery -> Insurance_img))
+			               {
+			                     
+			                     Storage::disk('deliveries')->delete($delivery  -> Insurance_img);
+
+			               }
+
+ 
+            }
+
+   if($request->input('authorization_img')){
+                     
+                     //save new image   64 encoded
+                    $image = $this->saveImage( $request -> authorization_img, $request->input('authorization_img_ext'), 'deliveryImages/');
+                                 
+    					if($image == ""){
+    						if($lang == "ar"){
+    							$errMsg = "فشل فى رفع الصورة حاول فى وقت  لاحق";
+    						}else{
+    							$errMsg = "Failed to upload image, please try again later";
+    						}
+    
+    						return response()->json(['status'=> false, 'errNum' => 30, 'msg' => $errMsg]);
+    					}else{
+    					     
+        	                      $inputs['authorization_img']= $image;
+    					}
+
+
+    					if(Storage::disk('deliveries')->exists($delivery -> authorization_img))
+			               {
+			                     
+			                     Storage::disk('deliveries')->delete($delivery  -> authorization_img);
+
+			               }
+ 
+            }
+
+   if($request->input('national_img')){
+                     
+                     //save new image   64 encoded
+                    $image = $this->saveImage( $request -> national_img, $request->input('national_img_ext'), 'deliveryImages/');
+                                 
+    					if($image == ""){
+    						if($lang == "ar"){
+    							$errMsg = "فشل فى رفع الصورة حاول فى وقت  لاحق";
+    						}else{
+    							$errMsg = "Failed to upload image, please try again later";
+    						}
+    
+    						return response()->json(['status'=> false, 'errNum' => 30, 'msg' => $errMsg]);
+    					}else{
+    					     
+        	                      $inputs['national_img']= $image;
+    					}
+
+    					if(Storage::disk('deliveries')->exists($delivery -> national_img))
+			               {
+			                     
+			                     Storage::disk('deliveries')->delete($delivery  -> national_img);
+
+			               }
+ 
+            }
+
+   
+ 
+   $inputs['country_code']    = $this -> checkCountryCodeFormate($request->input('country_code'));
+    
+
+			try {
+			
+				DB::transaction(function() use ($inputs, $deliveryId){
+					  DB::table('deliveries')-> where('delivery_id',$deliveryId) -> update($inputs);		 
+				});
+
+				
+ 				 
+				return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[0], 'isPhoneChanged' => $isPhoneChanged]);
+			} catch (Exception $e) {
+				return response()->json(['status' => false, 'errNum' => 6, 'msg' => $msg[6]]);
+			}
+	}
+
+
+
+
+public function newOrders(Request $request){
+
+
+	$lang = $request->input('lang');
+		if($lang == "ar"){
+			$msg = array(
+				0 => '',
+				1 => 'رقم مقدم الخدمه مطلوب',
+				2 => 'نوع الطلبات مطلوب',
+				3 => 'نوع العمليه يجب ان يكون 1 او 2 او 3 او 4',
+				4 => 'لا يوجد طلبات بعد',
+				5 =>  'الموصل  غير موجود ',
+			);
+			$payment_col  = "payment_types.payment_ar_name AS payment_method";
+			$delivery_col = "delivery_methods.method_ar_name AS delivery_method";
+			$status_col	  = "order_status.ar_desc AS status_text";
+		}else{
+			$msg = array(
+				0 => '',
+				1 => 'access_token is required',
+				2 => 'type is required',
+				3 => 'type must be 1, 2, 3 ',
+				4 => 'There is no ordes yet',
+				5 => 'delivery not Found'
+			);
+			$payment_col  = "payment_types.payment_en_name AS payment_method";
+			$delivery_col = "delivery_methods.method_en_name AS delivery_method";
+			$status_col	  = "order_status.en_desc AS status_text";
+		}
+
+		$messages  = array(
+			'access_token.required' => 1,
+			'type.required'         => 2,
+			'in'                    => 3
+		);
+
+		$validator = Validator::make($request->all(), [
+			'access_token' => 'required',
+			'type'         => 'required|in:1,2,3'
+		], $messages);
+
+		// 1 -> new orders 2-> current accepted  orders 3-> cancelled orders + deliveried orders
+
+
+		if($validator->fails()){
+			$error = $validator->errors()->first();
+			return response()->json(['status' => false, 'errNum' => $error, 'msg' => $msg[$error]]);
+		}
+
+		 $delivery_id = $this->get_id($request,'deliveries','delivery_id');
+
+		        if($delivery_id == 0 ){
+		              return response()->json(['status' => false, 'errNum' => 5, 'msg' => $msg[5]]);
+		        }
+
+		      $check = DB::table('deliveries')   -> where('delivery_id',$delivery_id) -> first();
+
+		      if(!$check){
+		      	return response()->json(['status' => false, 'errNum' => 5, 'msg' => $msg[5]]);
+		      }
+  
+
+
+ 			$type 		  = $request->input('type');
+			
+			$conditions[] = ['orders_headers.delivery_method','=',3];  // delivery method  is "by delivery"
+
+ 
+			$inCondition = [];
+			if($type == 1){
+			   
+				$inCondition = [2];
+				$conditions[] = ['orders_headers.delivery_id','=',0];  // delivery method  is "by 
+			  
+			//  array_push($conditions, [DB::raw('orders_headers.created_at') , '>', Carbon::now()->addHours(1)->subMinutes($time_counter_in_min)]);
+				 
+			}elseif($type == 2){
+				$inCondition = [2];
+				$conditions[] = ['orders_headers.order_id','>',0];
+				//array_push($conditions, [DB::raw('DATE(orders_headers.expected_delivery_time)') , '<=', $today]);
+			}elseif($type == 3){
+				$inCondition = [1,2,3];
+				$conditions[] = ['orders_headers.order_id','>',0];
+				//$conditions[] = ['orders_headers.delivery_id','=',$delivery_id];
+				//array_push($conditions, ['orders_headers.status_id' , '!=', 1]);
+				//array_push($conditions, [DB::raw('DATE(orders_headers.expected_delivery_time)') , '>', $today]);
+			} 
+		 
+			//get orders
+ 	$orders = \App\Order_header::where($conditions) 
+ 	                     ->whereIn('orders_headers.status_id', $inCondition)
+ 						->join('providers', 'orders_headers.provider_id', '=', 'providers.provider_id')
+						->join('delivery_methods', 'orders_headers.delivery_method' ,'=', 'delivery_methods.method_id')
+
+                        ->join('users', 'orders_headers.user_id', 'users.user_id')
+						->join('payment_types', 'orders_headers.payment_type', '=', 'payment_types.payment_id')
+						->join('order_status', 'orders_headers.status_id', '=', 'order_status.status_id')
+						->select(
+						            'orders_headers.order_id',
+						            'orders_headers.order_code',
+                                    'orders_headers.delivery_id',
+                                     'orders_headers.total_value'
+                          )
+                        
+						->orderBy('orders_headers.order_id', 'DESC')
+						->paginate(10); 
+
+
+              // if return new orders 
+              if($type == 1){
+ 
+ 					if(isset($orders) && $orders -> count() > 0){                       
+
+                       foreach ($orders as $key => $order){
+
+                           $approvedBefore = DB::table('rejectedorders_delivery') -> where('order_id',$order -> order_id) -> where('status',1)-> first();
+
+ 
+                           $cancelFromThisDeliveryBefore = DB::table('rejectedorders_delivery') -> where('order_id',$order -> order_id) -> where('delivery_id',$delivery_id) -> where('status',0)-> first();
+
+  
+                           if ($approvedBefore or $cancelFromThisDeliveryBefore) {
+                           	 
+                                  $orders -> forget($key);
+                                 
+                           }
+
+                            $order -> status = " بأنتظار الموافقه ";
+        
+						   
+						}
+                            
+					}
+			}		
+
+
+     // accepted orders by login deliveries 
+	   if($type == 2){
+
+           if(isset($orders) && $orders -> count() > 0){                       
+                       foreach ($orders as $key => $order){
+
+                             $approvedBefore = DB::table('rejectedorders_delivery') -> where('order_id',$order -> order_id) -> where('status',1)-> where('delivery_id',$delivery_id) ->  first();
+
+                             if(!$approvedBefore){
+
+                                  $orders -> forget($key);
+                                   
+                             }
+
+                             $order -> status = "موافق عليه ";
+						}                            
+					}
+	   }
+
+
+	    // previous  orders (cancelled by delivery + deliveried by delivery ) 
+	   if($type == 3){
+
+           if(isset($orders) && $orders -> count() > 0){  
+ 
+                       foreach ($orders as $key => $order){
+ 
+                           $cancelFromThisDeliveryBefore = DB::table('rejectedorders_delivery') -> where('order_id',$order -> order_id) -> where('delivery_id',$delivery_id) -> where('status',0)-> first();
+
+                           if(!$cancelFromThisDeliveryBefore){
+
+                                   $orders -> forget($key);
+                                   //unset($orders[$key]);  
+                           }
+
+                           $order -> status = "ملغي";
+  
+						}
+                    
+					}
+
+	   }			
+
+			
+
+			return response()->json([
+										'status' 			    => true,
+										'errNum' 			    => 0,
+										'msg' 				    => $msg[0],
+										'orders' 			    => $orders,
+										 
+									]);
+}
+
+
+public function OrderDetails(Request $request){
+
+
+	$lang = $request->input('lang');
+
+		if($lang == "ar"){
+			$msg = array(
+				0 => 'يوجد بيانات',
+				1 => 'لا يوجد تفاصيل ',
+				2 => 'رقم   الطلب  مطلوب',
+				3 => 'الطلب غير موجود ',
+				4 => ' الموصل  غير موجود '
+			);
+			$payment_col = "payment_types.payment_ar_name AS payment_method";
+			$delivery_col = "delivery_methods.method_ar_name AS delivery_method";
+ 			$status_col = 'order_status.ar_desc AS order_status';
+		}else{
+			$msg = array(
+				0 => 'Retrieved successfully',
+				1 => 'There is no order details!!',
+				2 => 'order_id is required',
+				3 => 'order not exists',
+				4 => 'Delivery Not Exists'
+ 			);
+			$payment_col = "payment_types.payment_en_name AS payment_method";
+			$delivery_col = "delivery_methods.method_en_name AS delivery_method";
+ 			$status_col = 'order_status.en_desc AS order_status';
+		}
+		
+
+		$messages = array(
+			'required'            => 2,
+			'exists'              => 3,
+ 
+		);
+ 
+		$validator = Validator::make($request->all(), [
+			'order_id'       => 'required|exists:orders_headers,order_id',
+ 
+		], $messages);
+
+		if($validator->fails()){
+			$errors   = $validator->errors();
+			$error    = $errors->first();
+			return response()->json(['status' => false, 'errNum' => $error, 'msg' => $msg[$error]]);
+		} 
+		       //get order header
+	    	$order = DB::table('orders_headers')
+                    ->where('orders_headers.order_id', $request->input('order_id'))
+					->join('delivery_methods', 'orders_headers.delivery_method', '=', 'delivery_methods.method_id')
+					->join('payment_types', 'orders_headers.payment_type', '=', 'payment_types.payment_id')
+					->join('providers', 'orders_headers.provider_id', '=', 'providers.provider_id')
+					->join('users', 'orders_headers.user_id' ,'=', 'users.user_id')
+					->join('order_status', 'orders_headers.status_id', '=', 'order_status.status_id')
+					->select(  'orders_headers.order_code', 
+						       'orders_headers.order_id',
+						       'orders_headers.status_id',
+						       'orders_headers.status_id',
+                               $status_col,
+						       'orders_headers.total_value AS total',
+						       'orders_headers.net_value AS net_value',   // order price with out any delivery price just products with options 
+						       'orders_headers.app_value AS app_value',
+						       'orders_headers.delivery_price',
+						        'orders_headers.delivery_app_value',
+						        'orders_headers.delivery_app_percentage',
+						        'orders_headers.app_percentage',
+						       'orders_headers.total_discount',
+						       'orders_headers.address as user_address',
+						       'orders_headers.user_longitude', 
+						       'orders_headers.user_latitude',
+						       'orders_headers.user_phone',
+						       'orders_headers.user_email', 
+						        DB::raw('IFNULL(orders_headers.delivered_at, "") AS delivered_at'),
+						     $payment_col, 
+						      $delivery_col,
+						      'orders_headers.delivery_method AS delivery_method_id',
+						      'providers.store_name AS store_name',
+						      'users.full_name AS user_name',
+						      DB::raw("CONCAT('".env('APP_URL')."','/public/providerProfileImages/',providers.profile_pic) AS store_image"),
+						        'providers.longitude AS provider_longitude', 
+						        'providers.latitude AS provider_latitude',
+						        'providers.membership_id',
+						         DB::raw('IFNULL(DATE(orders_headers.created_at), "") AS order_date'),
+					             DB::raw('IFNULL(TIME(orders_headers.created_at), "") AS order_time'),
+					             DB::raw('IF(orders_headers.delivery_id = 0, 0, 1) AS allowed')
+
+					         )
+					->first();
+					
+					
+				//	dd($header);
+
+		$products = DB::table('order_products')->where('order_products.order_id', $request->input('order_id'))
+					 ->join('products', 'order_products.product_id', '=', 'products.id')
+					 ->select(
+					            'order_products.qty',
+                                'products.title',
+                                'products.description',
+                                'order_products.product_price',
+                                'order_products.discount',
+                                'products.id as product_id'
+                     )
+					 ->get();
+
+
+			if(isset($products) && $products -> count() > 0){
+                
+                foreach ($products as  $product) {
+                	  
+                     $image = DB::table('product_images') -> where('product_id',$product -> product_id) -> first();
+
+                     if($image){
+
+                     	 $product -> main_image =  env('APP_URL').'/public/providerProfileImages/'.$image -> image;
+
+                     }else{
+                      
+                         $product -> main_image ="";
+
+                     }
+
+                }
+ 
+			} 
+
+        //return response()->json(["dataa" , $details]);
+
+		if($order){
+			$status = $order->status_id;
+		}else{
+			$status = "";
+		}
+
+
+		   //get rate only if order status is deliveried
+
+		if($status == 3 || $status == "3"){
+
+			$provider_order_rate = DB::table('provider_evaluation')
+                            ->where('order_id',$request->input('order_id'))
+						    ->select(
+						    	DB::raw("IFNULL(((quality + autotype + packing + maturity + ask_again) / 5), 0) AS order_rate") , 
+						    	DB::raw("IFNULL(((comment)), 0) AS comment"))
+						    ->first();
+
+			if($provider_order_rate){
+                $provider_order_rate = [
+                                        "rate" => $provider_order_rate->order_rate ,
+                                        "comment" => $provider_order_rate->comment
+                                        ];
+			}else{
+                $provider_order_rate = "";
+			}
+
+		}else{
+            $provider_order_rate = "";
+		}
+		  
+		$order_status = DB::table('order_status')->whereIn('status_id', [1,2,3,4])
+						   ->select(
+						   	'status_id', 
+						   	$status_col,
+						   	 DB::raw('IF(status_id = '.$order -> status_id.', true, false) AS choosen')
+						   )->get();
+ 
+		$percentage = DB::table('app_settings')->select('app_percentage')->first();
+
+		if($percentage){
+			$app_percentage = $percentage->app_percentage;
+		}else{
+			$app_percentage = 0;
+		}
+ 
+		return response()->json([
+		                            'status'    => true,
+                                    'errNum'    => 0, 
+                                    'msg'       =>'Retrieved successfully',
+                                    'order'     => $order,
+                                    'products'  => $products,
+                                    'app_percentage'      => $app_percentage,
+                                    //'order_status'        => $order_status,
+                                     'provider_order_rate' => $provider_order_rate,
+
+                                ]);
+
+
+}
+
+
+
+	public function changeOrderStatus(Request $request){
+		 
+        $payment = "";
+        $net = "";
+        $app_value = "";
+        $delivery_app_value = "";
+        $totalVal = "";
+        $userId = "";
+
+		$lang = $request->input('lang');
+		if($lang == "ar"){
+			$msg = array(
+				0 => 'تمت العمليه بنجاح',
+				1 => 'كل الحقول مطلوبه',
+				2 => 'فشلت العمليه من فضلك حاول لاحقا',
+				3 => 'رقم الحالة يجب ان يكون  0 او 1 او 2',
+				4 => 'رقم الموصل مطلوب إذا كان رقم الحاله = 3 و طريقة التوصيل = 1',
+				5 => 'رقم الموصل خطأ',
+				6 => 'التاجر  غير موجود ',
+				7 => 'الموصل غير موجود ',
+				8 => 'عفوا لقدم تم الموافقه علي هذا الطلب من قبل موصل اخر ',
+				9 => 'عفوا لا يمكن توصيل هذا الطلب ',
+				10 => 'عفوا لقد تم قبول الطلب من قبلكم مسبقا ',
+				11 => 'لابد من الموافقه علي الطلب اولا ومن قم الغاءه ',
+				12 => 'لايمكنك هذا الاجراء جيث تم العاء هذا الطلب من قبل ',
+				13 => 'عفوا  لقد تم الغاء الطلب مسبقا ',
+				14 => 'لابد من الموافقه علي الطلب اولا ',
+				15 =>'لا يمكن تسليم هذا الطلب '
+
+			);
+		}else{
+			$msg = array(
+				0 => 'Process done successfully',
+				1 => 'All fields are required',
+				2 => 'Process failed, please try again later',
+				3 => 'status_id must be 0 ,1 or 2',
+				4 => 'delivery id is required if status id = 3 AND delivery_method = 1',
+				5 => 'Invalid delivery_id',
+				6 => 'Provider not exists',
+				7 => 'delivery not exists',
+				8 => 'Sorry Order Approved by another delivery',
+				9 => 'Sorry cann\'t deliver this order' ,
+				10 => 'Sorry you accept order before',
+				11 => 'Sorry You cannot cancel order before approved it firstly',
+				12 => 'Sorry You cannot do this operation because you cancelled this order before',
+				13 => 'Sorry You cancelled Order Before',
+				14 =>'You Must accept order First',
+				15 =>'Cannot deliver this order'
+			);
+		}
+
+		$messages = array(
+			'required'           => 1,
+			'in'                 => 3,
+			'access_token.exists'=> 7,
+		);
+
+		$validator = Validator::make($request->all(), [
+			'order_id'         => 'required',
+			'access_token'     => 'required|exists:deliveries,token',
+			'status_id'        => 'required|in:0,1,2'
+		], $messages);
+
+		if($validator->fails()){
+
+
+			$error = $validator->errors()->first();
+			return response()->json(['status' => false, 'errNum' => $error, 'msg' => $msg[$error]]);
+		}
+
+		$order_id        = $request->input('order_id');
+		$status          = $request->input('status_id');
+		$delivery_id     = $this->get_id($request,'deliveries','delivery_id');
+		$updates         =[];
+ 	    $updates['delivery_id'] =  $delivery_id;
+ 	    $notif_data = array();
+     	  	 
+		$get = DB::table('orders_headers')
+		    ->join('providers','providers.provider_id','=','orders_headers.provider_id')
+		    ->join('users','users.user_id','=','orders_headers.user_id')
+            ->where('order_id', $order_id)
+            ->select('delivery_method', 'delivery_id','status_id','orders_headers.user_id','orders_headers.provider_id','providers.device_reg_id as provider_device_reg','users.device_reg_id as user_device_reg')
+            ->first();
+
+
+            if($get -> delivery_method !=  3){
+
+            	return response()->json(['status' => false, 'errNum' => 9 , 'msg' => $msg[9]]);
+            }
+
+
+
+     
+        if($status == 1)
+        {
+
+            if($get -> delivery_id != 0){
+
+
+	            if($get -> delivery_id ==  $delivery_id){
+	 			     return response()->json(['status' => false, 'errNum' => 10 , 'msg' => $msg[10]]);
+	 	        	}else{
+	              
+	                  return response()->json(['status' => false, 'errNum' => 8 , 'msg' => $msg[8]]);
+ 		 		 }
+	 		  }else{
+
+                
+	 		  	$acceptedBefore =  DB::table('rejectedorders_delivery') -> where([
+	 		  	 	'order_id'     => $order_id,
+	 		  	 	'delivery_id'  => $delivery_id	 		  	 	 
+
+	 		  	  ]) ->  select('status')-> first();
+
+
+                if($acceptedBefore){
+
+                  if($acceptedBefore -> status  == 0 )
+
+	 		  	   return response()->json(['status' => false, 'errNum' => 12 , 'msg' => $msg[12]]);
+
+		 		  	elseif($acceptedBefore -> status  == 1){
+	                   
+	                   return response()->json(['status' => false, 'errNum' => 10 , 'msg' => $msg[10]]);
+
+		 		  	 }
+
+	 		  	 }
+
+
+	 		  	 DB::table('rejectedorders_delivery') -> insert(['order_id' => $order_id,'delivery_id' => $delivery_id,"status" => 1]);
+
+	             DB::table('orders_headers')->where('order_id', $order_id)
+					  						  ->update($updates);		  						  
+
+			  
+				if($lang == 'ar'){
+					$push_notif_title   ='موافقه الموصل ';
+					$push_notif_message = "قد نم قبول الطلب  {$order_id}من الموصل  {$delivery_id}";
+				}else{
+					$push_notif_title   ='Delivery accepted';
+					$push_notif_message = "order number {$order_id}  accepted by delivey id {$delivery_id}";
+				}
+					  						  
+
+			     
+	 		}  
+
+ 		}elseif($status == 0){
+                
+                // here delivery cancel orders 
+
+ 			   //send notify to order's provider and user
+ 				if($lang == 'ar'){
+					$push_notif_title   ='رفض الموصل ';
+					$push_notif_message = "لقد نم  رفض الطلب  {order_id}من الموصل  {$delivery_id}";
+				}else{
+					$push_notif_title   ='Delivery cancelled';
+					$push_notif_message = "order number {$order_id}  cancelled by delivey id {$delivery_id}";
+				}
+			 
+
+
+              if($get -> delivery_id != $delivery_id){
+
+                return response()->json(['status' => false, 'errNum' => 11 , 'msg' => $msg[11]]);
+
+              }
+
+           
+           	$rejectedBefore =  DB::table('rejectedorders_delivery') -> where([
+	 		  	 	'order_id'     => $order_id,
+	 		  	 	'delivery_id'  => $delivery_id
+
+	 		  	  ]) -> select('status') -> first();
+
+
+                if($rejectedBefore){
+
+                	if($rejectedBefore -> status == 0){
+
+		 		  	   return response()->json(['status' => false, 'errNum' => 13 , 'msg' => $msg[13]]);
+		 		     	}elseif($rejectedBefore -> status == 1){
+
+		 		     			$rejectedBefore =  DB::table('rejectedorders_delivery') -> where([
+				 		  	 	'order_id'     => $order_id,
+				 		  	 	'delivery_id'  => $delivery_id
+
+				 		  	  ]) -> update(['status' => 0]);
+
+		 		     			 DB::table('orders_headers')->where('order_id', $order_id)
+								  						  ->update(['delivery_id'=> 0]);
+
+ 
+
+		 		     	}
+
+		 		  	 }else{
+
+
+			          DB::table('orders_headers')->where('order_id', $order_id)
+								  						  ->update(['delivery_id'=> 0]);
+					   DB::table('rejectedorders_delivery')->insert([
+
+					   	  'order_id'      => $order_id,
+					   	  'delivery_id'   => $delivery_id,
+					   	  'status'        => 0,
+			 
+					   ]);	
+		 		  	 }
+ 
+ 		}else{
+ 
+            //order deliveried
+            if($status == 2){
+               
+                $checkIfApprovedBefore = DB::table('rejectedorders_delivery') -> where([
+	 		  	 	'order_id'     => $order_id,
+	 		  	 	'delivery_id'  => $delivery_id
+
+	 		  	  ]) -> select('status') -> first();
+
+                if($checkIfApprovedBefore){
+
+                	if($checkIfApprovedBefore -> status != 1){
+
+                       return response()->json(['status' => false, 'errNum' => 14 , 'msg' => $msg[14]]);
+                	}
+
+
+                }else{
+
+                	return response()->json(['status' => false, 'errNum' => 15 , 'msg' => $msg[15]]);
+
+                }
+
+            }
+
+
+ 		}
+	 		    
+
+ //send notify to order's provider and user
+				
+				$notif_data['title']      = $push_notif_title;
+			    $notif_data['message']    = $push_notif_message;
+			    $notif_data['order_id']   = $order_id;
+			    $notif_data['notif_type'] = 'order';
+			    
+			    
+			 (new Push())->send($get->provider_device_reg,$notif_data,(new Push())->provider_key);
+
+			 (new Push())->send($get->user_device_reg,$notif_data,(new Push())->user_key);
+			     
+  
+			      DB::table("notifications")
+		            ->insert([
+		                "en_title"           => $notif_data['title'],
+		                "ar_title"           => $notif_data['title'],
+		                "en_content"         => $notif_data['message'],
+		                "ar_content"         => $notif_data['message'],
+		                "notification_type"  => 1,
+		                "actor_id"           => $get->user_id,
+		                "actor_type"         => "user",
+		                "action_id"          => $order_id
+
+		            ]);
+
+
+                    DB::table("notifications")
+		            ->insert([
+		                "en_title"           => $notif_data['title'],
+		                "ar_title"           => $notif_data['title'],
+		                "en_content"         => $notif_data['message'],
+		                "ar_content"         => $notif_data['message'],
+		                "notification_type"  => 1,
+		                "actor_id"           => $get->provider_id,
+		                "actor_type"         => "provider",
+		                "action_id"          => $order_id
+
+		            ]);
+
+  
+
+  return response()->json(['status' => false, 'errNum' => 0 , 'msg' => $msg[0]]);
+
+			 
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 	public function fetchOrdersCounts(Request $request){
 		$lang = $request->input('lang');
@@ -802,402 +2015,8 @@ class DeliveryController extends Controller
 		return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[0], 'data' => $data]);
 	}
 
-	public function getProfileData(Request $request){
-	    
-		$lang = $request->input('lang');
-		
-		if($lang == "ar"){
-		    
-		   	$cat_col     = "cat_ar_name AS cat_name";
-			$country_col = "country_ar_name AS country_name";
-			$city_col    = "city_ar_name AS city_name";
-			
-			$msg = array(
-				0 => '',
-				1 => 'رقم الموصل مطلوب'
-			);
-		}else{
-		    
-		    $cat_col     = "cat_en_name AS cat_name";
-			$country_col = "country_en_name AS country_name";
-			$city_col    = "city_en_name AS city_name";
-			
-			$msg = array(
-				0 => '',
-				1 => 'delivery_id is required'
-			);
-		}
+	
 
-		if(empty($request->input('delivery_id'))){
-			return response()->json(['status' => false, 'errNum' => 1, 'msg' => $msg[1]]);
-		}else{
-			$id = $request->input('delivery_id');
-		}
-
-		$delivery = $this->getDeliveryData($id, $lang, $action = "get");
-
-		if($delivery != NULL){
-			$country = $delivery->country_id;
-			$attach  = $delivery->attach_id;
-		}else{
-			$country = 0;
-			$attach  = 0;
-		}
-
-		$countries = $this->getCountries($lang);
-		$cities    = $this->getCountryCities($lang, $country);
-
-		$attaches  = DB::table('attachments')->where('attach_id', $attach)
-											 ->select('id', 'attach_path')
-											 ->get();
-											 
-											 
-		$cats            = DB::table('categories')->where('publish', 1)->select('cat_id', $cat_col, DB::raw('IF((SELECT COUNT(id) FROM 	deliveries_categories WHERE 	deliveries_categories.cat_id =  categories.cat_id AND delivery_id = '.$request->input('delivery_id').') > 0, 1, 0) AS chosen'))->get();
-											 	
-											 	
-
-		return response()->json([
-									'status' => true, 
-									'errNum' => 0, 
-									'msg'    => $msg[0], 
-									'countries' => $countries, 
-									'cities'    => $cities, 
-									'attaches'  => $attaches,
-									'delivery'  => $delivery,
-									'cats'  	   => $cats
-								]);
-	}
-
-	public function editProfile(Request $request){
-
-		$lang = $request->input('lang');
-		if($lang == "ar"){
-			$msg = array(
-				0 => 'تم تعديل البيانات بنجاح',
-				1 => 'كل الحقول ماعدا كلمة السر و صورة البورفايل مطلوبه',
-				2 => 'كلا من المدينه و الدوله يجب ان تكون ارقاما',
-				3 => 'صيغة البريد الإلكترونى غير صحيحة',
-				4 => 'الرقم السرى لا يجب ان يقل عن 8 حروف',
-				5 => 'فشل فى رفع الصور',
-				6 => 'فشل تعديل البيانات من فضلك حاول فى وقت لاحق',
-				7 => 'البريد الإلكترونى مستخدم من قبل',
-				8 => 'رقم الجوال مستخدم من قبل',
-				9 => 'غير مسموح لك بتعديل الاسم بعد مرور 24 ساعة من تاريخ التفعيل',
-				10 => 'تاريخ انتهاء اثبات الشخصية مطلوب',
-				11 => 'تاريخ انتهاء الرخصة مطلوب',
-				12 => 'التصنيفات مطلوبه',
-			);
-		}else{
-			$msg = array(
-				0 => 'updated successfully',
-				1 => 'All fields but password and profile pic are required',
-				2 => 'country and city must be numeric',
-				3 => 'E-mail must be in email format',
-				4 => 'Password can not be less than 8 characters',
-				5 => 'Failed to upload images',
-				6 => 'Failed to update, please try again later',
-				7 => 'Repeated email',
-				8 => 'Repeated phone',
-				9 => 'You can not update your name after 24H of activation',
-				10 => 'id exp date is requires',
-				11 => 'license exp date is requires',
-				12 => 'Categories is required',
-				
-			);
-		}
-
-		$messages = array(
-			'required' => 1,
-			'numeric'  => 2, 
-			'email'    => 3,
-			'min'      => 4,
-			'email.unique'   => 7,
-			'phone.unique'   => 8
-		);
-
-		$validator = Validator::make($request->all(), [
-			'delivery_id'  => 'required',
-			'firstname'    => 'required',
-			'secondname'   => 'required',
-			'thirdname'    => 'required',
-			'lastname'     => 'required',
-			'country_id'   => 'required|numeric',
-			'city_id'      => 'required|numeric',
-			'email' 	   => 'required|email|unique:deliveries,email,'.$request->input('delivery_id').',delivery_id',
-			'password'     => 'sometimes|nullable|min:8',
-			'car_type'     => 'required',
-			'longitude'    => 'required',
-			'latitude'     => 'required',
-			'profile_pic'  => 'sometimes|nullable',
-			'image_ext'    => 'required_with:profile_pic'
-		], $messages);
-
-		if($validator->fails()){
-			$error = $validator->errors()->first();
-			return response()->json(['status' => false, 'errNum' => $error, 'msg' => $msg[$error]]);
-		}else{
-		    
-		    $cats = $request->input('cats');
-			if(empty($cats)){
-				return response()->json(['status' => false, 'errNum' => 12, 'msg' => $msg[12]]);
-			}
-
-
-
-			$status = 1;
-			$delivery = Deliveries::where('delivery_id', $request->input('delivery_id'))
-								   ->select('attach_id', DB::raw("created_at AS created") , "admin_activation_time", 'full_name')
-								   ->first();
-			$attachId = $delivery->attach_id;
-			$created  = strtotime($delivery->admin_activation_time);
-		
-
-			$old_name = $delivery->full_name;
-
-			$new_name = $request->input('firstname')." ".$request->input('secondname')." ".$request->input('thirdname')." ".$request->input('lastname');
-			//date_default_timezone_set('Asia/Riyadh');
-			$now_saudi = (time()+10800);
-			$now      = strtotime(date('Y-m-d h:i:s'));
-			$createdPlus24 = strtotime('+24 hours', $created);
-			if($now_saudi <= $createdPlus24){
-				$allow = "yes";
-			}else{
-				$allow = "no";
-			}
-			if($new_name != $old_name && $allow == "no"){
-				return response()->json(['status' => false, 'errNum' => 9, 'msg' => $msg[9]]);
-			}
-			// $images = $request->input('images');
-			// if(!empty($request->input('images'))){
-			// 	$status = 2;
-			// }
-
-			// if(!empty($request->input('images')) && in_array("", $request->input('images'))){
-			// 	return response()->json(['status' => false, 'errNum' => 1, 'msg' => $msg[1]]);
-			// }
-
-			//upload profile picture
-			if(!empty($request->input('profile_pic'))){
-				$profile_image = $this->saveImage($request->input('profile_pic'), $request->input('image_ext'), 'deliveryImages/');
-				if($profile_image != ""){
-					$profile_image = url($profile_image);
-				}else{
-					return response()->json(['status' => false, 'errNum' => 5, 'msg' => $msg]);
-				}
-			}else{
-				$profile_image = "";
-			}
-
-			if(!empty($request->input('id_img'))){
-
-			    if($request->input("id_date") == "" || $request->input("id_date" == null)){
-			        // return error
-                    return response()->json(['status' => false, 'msg' => $msg[10]]);
-                }
-				$status = 2;
-				$id_img = $this->saveImage($request->input('id_img'), 'jpeg', 'deliveryImages/');
-				if($id_img != ""){
-					$id_img = url($id_img);
-				}else{
-					return response()->json(['status' => false, 'errNum' => 5, 'msg' => $msg]);
-				}
-			}else{
-				$id_img = "";
-			}
-
-			if(!empty($request->input('car_img1'))){
-				$status = 2;
-				$car_img1 = $this->saveImage($request->input('car_img1'), 'jpeg', 'deliveryImages/');
-				if($car_img1 != ""){
-					$car_img1 = url($car_img1);
-				}else{
-					return response()->json(['status' => false, 'errNum' => 5, 'msg' => $msg]);
-				}
-			}else{
-				$car_img1 = "";
-			}
-
-			if(!empty($request->input('car_img2'))){
-				$status = 2;
-				$car_img2 = $this->saveImage($request->input('car_img2'), 'jpeg', 'deliveryImages/');
-				if($car_img2 != ""){
-					$car_img2 = url($car_img2);
-				}else{
-					return response()->json(['status' => false, 'errNum' => 5, 'msg' => $msg]);
-				}
-			}else{
-				$car_img2 = "";
-			}
-
-			if(!empty($request->input('car_img3'))){
-				$status = 2;
-				$car_img3 = $this->saveImage($request->input('car_img3'), 'jpeg', 'deliveryImages/');
-				if($car_img3 != ""){
-					$car_img3 = url($car_img3);
-				}else{
-					return response()->json(['status' => false, 'errNum' => 5, 'msg' => $msg]);
-				}
-			}else{
-				$car_img3 = "";
-			}
-
-			if(!empty($request->input('license_img'))){
-			    if($request->input("license_date") == "" || $request->input("license_date")== null){
-                    return response()->json(['status' => false, 'msg' => $msg[11]]);
-                }
-				$status = 2;
-				$license_img = $this->saveImage($request->input('license_img'), 'jpeg', 'deliveryImages/');
-				if($license_img != ""){
-					$license_img = url($license_img);
-				}else{
-					return response()->json(['status' => false, 'errNum' => 5, 'msg' => $msg]);
-				}
-			}else{
-				$license_img = "";
-			}
-
-			if(!empty($request->input('authorization_img'))){
-				$status = 2;
-				$authorization_img = $this->saveImage($request->input('authorization_img'), 'jpeg', 'deliveryImages/');
-				if($authorization_img != ""){
-					$authorization_img = url($authorization_img);
-				}else{
-					return response()->json(['status' => false, 'errNum' => 5, 'msg' => $msg]);
-				}
-			}else{
-				$authorization_img = "";
-			}
-
-			if(!empty($request->input('insurance_img'))){
-				$status = 2;
-				$insurance_img = $this->saveImage($request->input('insurance_img'), 'jpeg', 'deliveryImages/');
-				if($insurance_img != ""){
-					$insurance_img = url($insurance_img);
-				}else{
-					return response()->json(['status' => false, 'errNum' => 5, 'msg' => $msg]);
-				}
-			}else{
-				$insurance_img = "";
-			}
-
-			// if(!empty($request->input('deleted_images'))){
-			// 	$status = 2;
-			// 	$deleted_images = $request->input('deleted_images');
-			// 	DB::table('attachments')->whereIn('id', $deleted_images)->delete();
-			// 	$get = DB::table('attachments')->where('attach_id', $attachId)->first();
-			// 	if($get == NULL){
-			// 		$attachId = 0;
-			// 	}
-			// }
-			//uploading image if exist
-			// $counter  = 0;
-			// foreach($images AS $image){
-			// 	$paper = $this->saveImage($image['image'], $image['ext'], 'deliveryImages/');
-			// 	if($paper == ""){
-			// 		return response()->json(['status' => false, 'errNum' => 5, 'msg' => $msg]);
-			// 	}else{
-			// 		$imageName = explode("/", $paper)[1];
-			// 		$paper     = url($paper);
-			// 		//get attach_no
-			// 		if($attachId == 0){
-			// 			$attachId = DB::table('attachments')->select(DB::raw("(SELECT (IFNULL(MAX(attach_id),0) + 1) FROM attachments) AS newAttachId"))->first()->newAttachId;
-			// 		}
-			// 		$inserts[$counter]['attach_id']   = $attachId;
-			// 		$inserts[$counter]['attach_name'] = $imageName;
-			// 		$inserts[$counter]['attach_path'] = $paper;
-			// 		$counter++;
-			// 	}
-			// }
-
-			// if(!empty($inserts)){
-			// 	$check = DB::table('attachments')->insert($inserts);
-			// 	if(!$check){
-			// 		return response()->json(['status' => false, 'errNum' => 5, 'msg' => $msg]);
-			// 	}
-			// }
-
-			if($allow == 'yes'){
-				$data['firstname']    = $request->input('firstname');
-				$data['secondname']   = $request->input('secondname');
-				$data['thirdname']    = $request->input('thirdname');
-				$data['lastname']     = $request->input('lastname');
-				$data['full_name']    = $data['firstname']." ".$data['secondname']." ".$data['thirdname']." ".$data['lastname'];
-			}
-			
-			$data['country_id']     = $request->input('country_id');
-			$data['city_id']        = $request->input('city_id');
-			$data['email']          = $request->input('email');
-
-            $date_id_date        = DateTime::createFromFormat('Y-m-d', $request->input("id_date"));
-            $data['id_date']     = $date_id_date;
-
-            $date_license_date = DateTime::createFromFormat('Y-m-d', $request->input("license_date"));
-            $data['license_date']        = $date_license_date;
-
-
-
-			if(!empty($request->input('password'))){
-				$data['password']     = md5($request->input('password'));
-			}
-			$data['car_type']     = $request->input('car_type');
-			$data['longitude']    = $request->input('longitude');
-			$data['latitude']     = $request->input('latitude');
-			$data['status']       = $status;
-			if($profile_image != ""){
-				$data['profile_pic'] = $profile_image;
-			}
-
-			if($id_img != ""){
-				$data['id_img'] = $id_img;
-			}
-
-			if($car_img1 != ""){
-				$data['car_img1'] = $car_img1;
-			}
-
-			if($car_img2 != ""){
-				$data['car_img2'] = $car_img2;
-			}
-
-			if($car_img3 != ""){
-				$data['car_img3'] = $car_img3;
-			}
-
-			if($license_img != ""){
-				$data['license_img'] = $license_img;
-			}
-
-			if($authorization_img != ""){
-				$data['authorization_img'] = $authorization_img;
-			}
-
-			if($insurance_img != ""){
-				$data['insurance_img'] = $insurance_img;
-			}
-			try {
-				$id = $request->input('delivery_id');
-				DB::table('deliveries')->where('delivery_id', $id)->update($data);
-				
-			   DB::table('deliveries_categories')->where('delivery_id', $id)->delete();
-			   
-			   
-			   $inserts = array();
-					for($i = 0; $i < count($cats); $i++){
-						$inserts[$i]['delivery_id'] = $id;
-						$inserts[$i]['cat_id']      = $cats[$i];
-					}
-					
-				DB::table('deliveries_categories')->insert($inserts);
-					
-					 
-
-				$delivery = $this->getDeliveryData($id, $lang);
-				return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[0], 'delivery' => $delivery]);
-			} catch (Exception $e) {
-				return response()->json(['status' => false, 'errNum' => 6, 'msg' => $msg[6]]);
-			}
-		}
-	}
 
 	public function getDeliveryOrders(Request $request){
 		$lang     = $request->input('lang');
