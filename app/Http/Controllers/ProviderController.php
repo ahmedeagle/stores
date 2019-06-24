@@ -969,12 +969,12 @@ class ProviderController extends Controller
 		                	$deliveries = DB::table("delivery_methods")->select('method_id AS delivery_id',$delivery_col,
 																DB::raw('IF((SELECT count(providers_delivery_methods.id) FROM providers_delivery_methods WHERE providers_delivery_methods.delivery_method = delivery_methods.method_id AND providers_delivery_methods.provider_id = '.$id.') > 0, 1, 0) AS choosen'))
 													   ->get();
-													   
+				$code = json_encode($getProvider -> activate_phone_hash );									   
 
                
                //need to activate account by verfiy phone number
 				if($getProvider-> status == 0 || $getProvider->status == 0){
-					return response()->json(['status'=> false, 'errNum' => 7, 'data' => $providerData,'deliveries' => $deliveries, 'msg' => $msg[7]]);
+					return response()->json(['status'=> false, 'errNum' => 7, 'data' => $providerData,'deliveries' => $deliveries, 'msg' => $msg[7],'activation_code' =>  $code -> code]);
 				}
 
 
@@ -984,8 +984,8 @@ class ProviderController extends Controller
 				}
 
 			
-
-				return response()->json(['status'=> true, 'errNum' => 0, 'data' => $providerData,'deliveries' => $deliveries, 'msg' => $msg[0]]);
+                  
+				return response()->json(['status'=> true, 'errNum' => 0, 'data' => $providerData,'deliveries' => $deliveries, 'msg' => $msg[0] ,'activation_code' =>  $code -> code]);
 			}else{
 				return response()->json(['status'=> false, 'errNum' => 4, 'msg' => $msg[4]]);
 			}
