@@ -974,7 +974,7 @@ class ProviderController extends Controller
                
                //need to activate account by verfiy phone number
 				if($getProvider-> status == 0 || $getProvider->status == 0){
-					return response()->json(['status'=> false, 'errNum' => 7, 'data' => $providerData,'deliveries' => $deliveries, 'msg' => $msg[7],'activation_code' =>  $code -> code]);
+					return response()->json(['status'=> false, 'errNum' => 7, 'data' => $providerData,'deliveries' => $deliveries, 'msg' => $msg[7]]);
 				}
 
 
@@ -985,7 +985,7 @@ class ProviderController extends Controller
 
 			
                   
-				return response()->json(['status'=> true, 'errNum' => 0, 'data' => $providerData,'deliveries' => $deliveries, 'msg' => $msg[0] ,'activation_code' =>  $code -> code]);
+				return response()->json(['status'=> true, 'errNum' => 0, 'data' => $providerData,'deliveries' => $deliveries, 'msg' => $msg[0]]);
 			}else{
 				return response()->json(['status'=> false, 'errNum' => 4, 'msg' => $msg[4]]);
 			}
