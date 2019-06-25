@@ -3353,7 +3353,7 @@ public function updateProduct(Request $request){
  			
   			'product_images' => 'required',
  			'product_images'   => 'required|array',
-            //'product_images.*' => 'required',  that means all of them must pass value
+          //  //'product_images.*' => 'required',  that means all of them must pass value
             'image_ext'        => 'required|array',
             'image_ext.*'      => 'required',
             
