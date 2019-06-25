@@ -1893,14 +1893,138 @@ public function OrderDetails(Request $request){
 	}
 
 
+public function prepareSearch(Request $request){
+		$lang = $request->input('lang');
+		if($lang == "ar"){
+			$msg = array(
+				0 => 'يوجد بيانات',
+				1 => 'لا يوجد بيانات'
+			);
+ 			$cat_col	  = "store_cat_ar_name AS cat_name";
+		}else{
+			$msg = array(
+				0 => 'Retrieved successfully',
+				1 => 'There is no data'
+			);
+ 			$cat_col 	  = "store_cat_en_name AS cat_name";
+		}
+
+ 	 	 $order_status = DB::table('delivery_orders_status') -> get();
+		return response()->json(['status'=>true, 'errNum' => 0, 'msg' => $msg[0], 'order_status' => $order_status]);
+	}
 
 
+	public function search(Request $request){
+	    
+         $lang = $request->input('lang');
+		if($lang == "ar"){
+			$msg = array(
+				0 => 'يوجد بيانات',
+				1 => 'لا يوجد نتائج لبحثك',
+				2 => 'يجب ان تختار التاريخ عند البحث بالوقت',
+				3 => 'يجب إرسال تفاصيل موقع المستخدم',
+				4 => 'المسافه يجب ان تكون بالأرقام',
+				5 => 'الوقت يجب ان يكون فى تنسيق h:i (09:05)',
+				6 => 'التاريخ يجب ان يكون فى تنسيق yyyy-mm-dd',
+				7 => 'يجب إختيار المدينة المراد البحث بها',
+				8 => 'type يجب ان يكون provider او meal',
+				9 => 'access_token required',
+				10 => ' الموصل  غير موجود '
+
+			);
+
+			$status_col ="ar_desc";
+		}else{
+			$msg = array(
+				0 => 'Retrieved successfully',
+				1 => 'There is no result for your search',
+				2 => 'You must determine the date if you search with time',
+				3 => 'user longitude and latitude is required',
+				4 => 'distance must be in number',
+				5 => 'time must be in format H:i ex:- (09:05)',
+				6 => 'date must be in format yyyy-mm-dd',
+				7 => 'Please select city',
+				8 => 'type attribute must be provider or meal',
+				9 => 'access_token required' ,
+				10 => 'Delivery not exists'
+
+			);
+			$status_col ="en_desc";
+		}
+
+  	$messages = array(
+			'access_token.required'    => 9,
+		);
 
 
+		$validator = Validator::make($request->all(), [
+			'access_token'    => 'required',
+		 
+
+		], $messages);
+
+		if($validator->fails()){
+			$error = $validator->errors()->first();
+			return response()->json(['status' => false, 'errNum' => $error, 'msg' => $msg[$error]]);
+		}
+
+             $type ="deliveries";
+             $colum ="delivery_id";
+
+              $actor_id    = $this->get_id($request,$type,$colum);
+
+		        if($actor_id == 0 ){
+		              return response()->json(['status' => false, 'errNum' => 10, 'msg' => $msg[10]]);
+		        }
+
+		      $check = DB::table($type)   -> where($colum,$actor_id) -> first();
+
+		      if(!$check){
+		      	return response()->json(['status' => false, 'errNum' => 10, 'msg' => $msg[10]]);
+		      }
+ 
+
+  		$status_id         	 = $request->input('id');
+ 		$order_id            = $request->input('order_id'); 
+
+            //(SELECT users.full_name FROM users WHERE orders_headers.user_id = users.user_id) AS user_name
+ 	   	$virtualTble = "SELECT orders_headers.order_id , orders_headers.order_code, orders_headers.total_value ,orders_headers.user_id ,(SELECT users.full_name FROM users WHERE orders_headers.user_id = users.user_id) AS user_name
+ 	   	 ,(SELECT rejectedorders_delivery.status   FROM rejectedorders_delivery WHERE orders_headers.order_id  = rejectedorders_delivery.order_id AND orders_headers.delivery_id = rejectedorders_delivery.delivery_id) FROM `orders_headers`"
+ 	   	 ;  
 
 
+ 
+		  $conditions=[]; 
+
+		if(!empty($status_id) && $status_id !== 0 && $status_id !== "0" && $status_id !== 0.0 && $status_id !== "0.0"){
+			array_push($conditions, ['tble.status', '=', $status_id]);
+		}
 
 
+      if(!empty($order_id) && $order_id !== 0 && $order_id !== "0" && $order_id !== 0.0 && $order_id !== "0.0"){
+			array_push($conditions, ['tble.order_id', '=', $order_id]);
+		}
+		   
+		if(!empty($conditions)){
+		 	$result = DB::table(DB::raw("(".$virtualTble.") AS tble"))
+						->select('tble.order_id', 'tble.order_code', 'tble.total_value','tble.status_id','tble.status','tble.user_name')
+						->where($conditions)->get();
+
+		}else{
+			$result = DB::table(DB::raw("(".$virtualTble.") AS tble"))
+						->select('tble.order_id', 'tble.order_code', 'tble.total_value', 'tble.user_name')
+						->get();
+		}
+ 
+		
+ 		if(isset($result) && $result->count() > 0){
+			return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[0], 'result' => $result]);
+		}else{
+			return response()->json(['status' => false, 'errNum' => 1, 'msg' => $msg[1]]);
+		}
+	}
+
+	 
 
 
 

@@ -52,6 +52,13 @@ Route::group(['middleware' => ['api_auth'], 'prefix' => 'api'], function() {
          	Route::post('/deliveryChangeOrderStatus', 'DeliveryController@changeOrderStatus');
          	Route::get('/deliveryChangeOrderStatus', 'DeliveryController@echoEmpty');
 
+         	Route::post('/deliveryPrepareSearch', 'DeliveryController@prepareSearch');
+			Route::get('/deliveryPrepareSearch', 'DeliveryController@echoEmpty');
+
+         	Route::post('/deliverySearch', 'DeliveryController@search');
+			Route::get('/deliverySearch', 'DeliveryController@echoEmpty');
+
+			
          	
 
          	
