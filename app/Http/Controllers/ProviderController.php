@@ -3195,10 +3195,7 @@ public function prepare_Product_Update(Request $request){
 						 	)->get();
 
 
-						
-         
-
-		         if(isset($images) &&  $images -> count() > 0 ){
+		      /*   if(isset($images) &&  $images -> count() > 0 ){
  
                        foreach ($images as $key => $image) {
                        	  
@@ -3209,7 +3206,7 @@ public function prepare_Product_Update(Request $request){
 							$image -> product_image = $base64;
                        }
                  
-		         }
+		         }*/
   
 		$categories = DB::table('categories_stores') 
 		                         ->join('providers','categories_stores.provider_id','providers.provider_id')

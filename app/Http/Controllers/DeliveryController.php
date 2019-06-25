@@ -1929,7 +1929,12 @@ public function prepareSearch(Request $request){
 				7 => 'يجب إختيار المدينة المراد البحث بها',
 				8 => 'type يجب ان يكون provider او meal',
 				9 => 'access_token required',
-				10 => ' الموصل  غير موجود '
+				10 => ' الموصل  غير موجود ',
+				11 => 'جديد',
+				12 => 'ملغي',
+				13 => 'تم التسليم ',
+				14 => 'موافق عليه',
+
 
 			);
 
@@ -1946,7 +1951,12 @@ public function prepareSearch(Request $request){
 				7 => 'Please select city',
 				8 => 'type attribute must be provider or meal',
 				9 => 'access_token required' ,
-				10 => 'Delivery not exists'
+				10 => 'Delivery not exists',
+				11 => 'new',
+				12 => 'cancelled',
+				13 => 'deliveried',
+				14 => 'approved',
+
 
 			);
 			$status_col ="en_desc";
@@ -1989,13 +1999,12 @@ public function prepareSearch(Request $request){
 
             //(SELECT users.full_name FROM users WHERE orders_headers.user_id = users.user_id) AS user_name
  	   	$virtualTble = "SELECT orders_headers.order_id , orders_headers.order_code, orders_headers.total_value ,orders_headers.user_id ,(SELECT users.full_name FROM users WHERE orders_headers.user_id = users.user_id) AS user_name
- 	   	 ,(SELECT rejectedorders_delivery.status   FROM rejectedorders_delivery WHERE orders_headers.order_id  = rejectedorders_delivery.order_id AND orders_headers.delivery_id = rejectedorders_delivery.delivery_id) FROM `orders_headers`"
+ 	   	 ,(SELECT rejectedorders_delivery.status   FROM rejectedorders_delivery WHERE orders_headers.order_id  = rejectedorders_delivery.order_id AND orders_headers.delivery_id = rejectedorders_delivery.delivery_id) FROM `orders_headers` "
  	   	 ;  
-
-
+      
+           $conditions=[];
+           array_push($conditions, ['rejectedorders_delivery.delivery_id', '=', $actor_id]);
  
-		  $conditions=[]; 
-
 		if(!empty($status_id) && $status_id !== 0 && $status_id !== "0" && $status_id !== 0.0 && $status_id !== "0.0"){
 			array_push($conditions, ['tble.status', '=', $status_id]);
 		}
@@ -2006,19 +2015,51 @@ public function prepareSearch(Request $request){
 		}
 		   
 		if(!empty($conditions)){
-		 	$result = DB::table(DB::raw("(".$virtualTble.") AS tble"))
-						->select('tble.order_id', 'tble.order_code', 'tble.total_value','tble.status_id','tble.status','tble.user_name')
-						->where($conditions)->get();
+		 	$orders =  DB::table('orders_headers') 
+		 	   	->whereIn('orders_headers.status_id',[2,3,4])
+		 	   	->join('rejectedorders_delivery','orders_headers.order_id','=','rejectedorders_delivery.order_id') 
+		 	   	->join('users','users.user_id','=','orders_headers.user_id')
+		 	   	->join('providers','providers.provider_id','=','orders_headers.provider_id')
+		 	   	->select('users.full_name','orders_headers.order_id' , 'orders_headers.order_code', 'orders_headers.total_value' ,'orders_headers.user_id','rejectedorders_delivery.status','rejectedorders_delivery.delivery_id')  
+		 	   	->where($conditions) 
+		 	   	-> get();
 
 		}else{
-			$result = DB::table(DB::raw("(".$virtualTble.") AS tble"))
-						->select('tble.order_id', 'tble.order_code', 'tble.total_value', 'tble.user_name')
-						->get();
+			$orders =  DB::table('orders_headers') 
+		 	   	->whereIn('orders_headers.status_id',[2,3,4])
+		 	   	->join('rejectedorders_delivery','orders_headers.order_id','=','rejectedorders_delivery.order_id') 
+		 	   	->join('users','users.user_id','=','orders_headers.user_id')
+		 	   	->join('providers','providers.provider_id','=','orders_headers.provider_id')
+		 	   	->select('users.full_name','orders_headers.order_id' , 'orders_headers.order_code', 'orders_headers.total_value' ,'orders_headers.user_id','rejectedorders_delivery.status')  
+		 	   	-> get();
 		}
  
-		
- 		if(isset($result) && $result->count() > 0){
-			return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[0], 'result' => $result]);
+
+
+ 		if(isset($orders) && $orders->count() > 0){
+
+ 			foreach ($orders as $key => $order) {
+
+
+ 				if($order -> status = 0 ){
+
+ 					$msg[12]
+ 
+ 				}elseif($order -> status = 1){
+ 
+                       $msg[14]
+ 
+ 				}elseif($order -> status = 2){
+                    
+                    $msg[13]
+                     
+ 
+ 				}else{
+
+ 					$status_text ="";
+ 				}
+ 			}
+			return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[0], 'result' => $orders]);
 		}else{
 			return response()->json(['status' => false, 'errNum' => 1, 'msg' => $msg[1]]);
 		}
