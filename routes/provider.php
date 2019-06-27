@@ -111,7 +111,7 @@ Route::group(['middleware' => ['api_auth'], 'prefix' => 'api'], function() {
    
 
 
-        // provider Offers APIs
+        // provider Offers APIs//
  
    
      Route::post('/getProviderOffers', 'ProviderController@getProviderOffers');

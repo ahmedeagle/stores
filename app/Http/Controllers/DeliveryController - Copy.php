@@ -1454,7 +1454,6 @@ public function OrderDetails(Request $request){
 						       'orders_headers.net_value AS net_value',   // order price with out any delivery price just products with options 
 						       'orders_headers.app_value AS app_value',
 						       'orders_headers.delivery_price',
-						       'orders_headers.delivery_id',
 						        'orders_headers.delivery_app_value',
 						        'orders_headers.delivery_app_percentage',
 						        'orders_headers.app_percentage',
@@ -1476,13 +1475,14 @@ public function OrderDetails(Request $request){
 						        'providers.membership_id',
 						         DB::raw('IFNULL(DATE(orders_headers.created_at), "") AS order_date'),
 					             DB::raw('IFNULL(TIME(orders_headers.created_at), "") AS order_time'),
-					             DB::raw('IF(orders_headers.delivery_id = 0, 1, 0) AS allowed')
+					             DB::raw('IF(orders_headers.delivery_id = 0, 0, 1) AS allowed')
 
 					         )
 					->first();
 					
 					
- 
+				//	dd($header);
+
 		$products = DB::table('order_products')->where('order_products.order_id', $request->input('order_id'))
 					 ->join('products', 'order_products.product_id', '=', 'products.id')
 					 ->select(
@@ -2019,8 +2019,9 @@ public function prepareSearch(Request $request){
  		if(!empty($conditions)){
 
 			   //get cancelled  , approved and deliveried orders
- 
-   		    	   $orders =  DB::table('orders_headers') 
+ // return $conditions;
+
+   		    	 $orders =  DB::table('orders_headers') 
 					 	   	->whereIn('orders_headers.status_id',[2,3,4])
 					 	   	->join('rejectedorders_delivery','orders_headers.order_id','=','rejectedorders_delivery.order_id') 
 					 	   	 -> where('rejectedorders_delivery.delivery_id',45)
@@ -2029,12 +2030,84 @@ public function prepareSearch(Request $request){
 			 		 	   	-> where($conditions)
 					 	   	-> get();
 
+ 
+                    // news + rejected orders 
+ 		    $newOrders_rejected = DB::table('orders_headers') 
+							 	   	->whereIn('orders_headers.status_id',[2,3,4])
+							 	   	->where('orders_headers.delivery_id',0)
+					    		 	->select('orders_headers.order_id' , 'orders_headers.order_code', 'orders_headers.total_value')
+					    		   	-> get();
 
 
-                 
-                    if(isset($orders) && $orders->count() > 0){
+				if(isset($newOrders_rejected) && $newOrders_rejected -> count() > 0 ){
 
-                    	foreach ($orders as $key => $order) {
+					foreach ($newOrders_rejected as $key => $order) {
+						 
+                         if($this -> checknewOrdersRefuseByDelivery($order -> order_id, $actor_id)){
+
+                                     $newOrders_rejected -> forget($key);
+                         }
+
+                         $order -> status = 3;
+
+					}
+				}
+ 
+
+				if( !$request -> has('id')  && !$request -> has('order_id')  ){
+
+					 $newOrders_rejected;
+                        
+			   		 $result = $orders -> merge($newOrders_rejected);
+  		             $result = $result ->unique('order_id')->values()->all();
+
+
+				 		if(!empty($result)  && count($result) > 0){
+
+				 			foreach ($result as $key => $order) {
+                    		 
+                    		  if($order -> status == 0 )
+                    		  {
+                                      $order -> status_text = $msg[12];
+ 
+                    		  }elseif ($order -> status == 1) {
+
+                    		  	$order -> status_text = $msg[14];
+
+                    		  }elseif ($order -> status == 2) {
+
+                    		  	$order -> status_text = $msg[13];
+
+                    		  }elseif ($order -> status == 3) {
+
+                    		  	$order -> status_text = $msg[11];
+
+                    		  }
+ 
+                    	}
+							return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[0], 'result' => $result]);
+						}else{
+							return response()->json(['status' => false, 'errNum' => 1, 'msg' => $msg[1]]);
+						}
+
+
+  		        }else{
+
+                          // status order "new"
+                      if($request -> id == 3 || $request -> has('order_id') ){
+                          
+                           
+                           $result = $newOrders_rejected;
+
+                      }else{
+                           
+                             $result =  $orders;
+                      	
+                      }
+                    
+                    if(isset($result) && $result->count() > 0){
+
+                    	foreach ($result as $key => $order) {
                     		 
                     		  if($order -> status == 0 )
                     		  {
@@ -2057,12 +2130,12 @@ public function prepareSearch(Request $request){
                     	}
 
 
-							return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[0], 'result' => $orders]);
+							return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[0], 'result' => $result]);
 						}else{
 							return response()->json(['status' => false, 'errNum' => 1, 'msg' => $msg[1]]);
 						}
 
-			 
+  		        }
        
        } 
  
@@ -2091,106 +2164,6 @@ public function prepareSearch(Request $request){
  }
 
 
-
-
-
-
-	public function getNotificationSettings(Request $request){  
-         
-         $lang = $request->input('lang');
-
-		if($lang == "ar"){
-			$msg = array(
-				0 => '',
-				1 => 'رقم مقدم الخدمه مطلوب',
-				2 => ' المستخدم  غير موجود',
-				3 => 'لابد من ادخال النوع ',
-				4 => 'النوع لابد ان يكون providers , users ,deliveries ',
-				5 => 'المستهدم غير موجود ',
-				6 => 'تم جلب البينات ',
-				7 => 'لا يوجد اعدادات محفوظه حتي الان '
-			);
-		}else{
-			$msg = array(
-				0 => '',
-				1 => 'Access_token is required',
-				2 => 'Actor not exists',
-				3 => 'Type field required',
-				4 => 'Type must be only providers , users , deliveries',
-				5 => 'Provider not exists ',
-				6 => 'Successfully retrieved data',
-				7 => 'ther is no setting info. uptil now'
-			);
-		}
-
-			$messages = array(
-				'access_token.required' => 1,
- 			);
-
-			$validator = Validator::make($request->all(), [
-				'access_token' => 'required',
-				'type'         => 'required|in:users,providers,deliveries'
-			], $messages);
-
-			if($validator->fails()){
-				$error = $validator->errors()->first();
-				return response()->json(['status' => false, 'errNum' => $error, 'msg' => $msg[$error]]);
-			}
-
-
-            $type = 'deliveries';
-
-            switch ($type) {
-            	case 'providers':
-             		 $actor = 'providers';
-             		 $table = 'providers';
-             		 $colum = 'provider_id';
-            		break;
-
-            		case 'users':
-             		 $actor = 'users';
-             		 $table = 'users';
-             		 $colum = 'user_id';
-            		break;
-            	
-            	   case 'deliveries':
-             		 $actor = 'deliveries';
-             		 $table = 'deliveries';
-             		 $colum = 'delivery_id';
-            		break;
-
-            	default:
-            		     $actor = 'deliveries';
-	             		 $table = 'deliveries';
-	             		 $colum = 'delivery_id';
-
-            		break;
-            }
-     
-               $actor_id    = $this->get_id($request,$table,$colum);
-
-		        if($actor_id == 0 ){
-		              return response()->json(['status' => false, 'errNum' => 5, 'msg' => $msg[5]]);
-		        }
-
-		      $check = DB::table($table)   -> where($colum,$actor_id) -> first();
-
-		      if(!$check){
-		      	return response()->json(['status' => false, 'errNum' => 5, 'msg' => $msg[5]]);
-		      }
-			 	$notificationSettings = DB::table('notification_settings') -> where('type',$actor)  -> where('actor_id',$actor_id) -> select() -> first();
-				 
-
-				  if($notificationSettings){
-                         unset($notificationSettings -> id);//
-                       return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[6],'settings' =>  $notificationSettings]);   
-				  }
-			
-             return response()->json(['status' => true, 'errNum' => 7, 'msg' => $msg[7] ,'settings' => []]);                      
-	}
-
-
- 
 
 	public function fetchOrdersCounts(Request $request){
 		$lang = $request->input('lang');

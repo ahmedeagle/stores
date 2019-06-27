@@ -48,10 +48,10 @@ Route::group(['middleware' => ['api_auth'], 'prefix' => 'api'], function() {
         
 
 
-    Route::post('/notificationSettings', 'ProviderController@getNotificationSettings');
+    Route::post('/notificationSettings', 'NotificationController@getNotificationSettings');
     Route::get('/notificationSettings', 'ProviderController@echoEmpty');
 
-    Route::post('/savenotificationSettings', 'ProviderController@saveNotificationSettings');
+    Route::post('/savenotificationSettings', 'NotificationController@saveNotificationSettings');
     Route::get('/savenotificationSettings', 'ProviderController@echoEmpty');
 
     Route::post('/get_notifications', 'NotificationController@get_notifications');
