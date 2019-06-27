@@ -1997,10 +1997,7 @@ public function prepareSearch(Request $request){
   		$status_id         	 = $request->input('id');
  		$order_id            = $request->input('order_id'); 
 
-            //(SELECT users.full_name FROM users WHERE orders_headers.user_id = users.user_id) AS user_name
- 	   	$virtualTble = "SELECT orders_headers.order_id , orders_headers.order_code, orders_headers.total_value ,orders_headers.user_id ,(SELECT users.full_name FROM users WHERE orders_headers.user_id = users.user_id) AS user_name
- 	   	 ,(SELECT rejectedorders_delivery.status   FROM rejectedorders_delivery WHERE orders_headers.order_id  = rejectedorders_delivery.order_id AND orders_headers.delivery_id = rejectedorders_delivery.delivery_id) FROM `orders_headers` "
- 	   	 ;  
+            
       
            $conditions=[];
            array_push($conditions, ['rejectedorders_delivery.delivery_id', '=', $actor_id]);
@@ -2015,49 +2012,60 @@ public function prepareSearch(Request $request){
 		}
 		   
 		if(!empty($conditions)){
+
+			   //get cancelled  , approved and deliveried orders
 		 	$orders =  DB::table('orders_headers') 
 		 	   	->whereIn('orders_headers.status_id',[2,3,4])
 		 	   	->join('rejectedorders_delivery','orders_headers.order_id','=','rejectedorders_delivery.order_id') 
 		 	   	->join('users','users.user_id','=','orders_headers.user_id')
-		 	   	->join('providers','providers.provider_id','=','orders_headers.provider_id')
-		 	   	->select('users.full_name','orders_headers.order_id' , 'orders_headers.order_code', 'orders_headers.total_value' ,'orders_headers.user_id','rejectedorders_delivery.status','rejectedorders_delivery.delivery_id')  
-		 	   	->where($conditions) 
+ 		 	   	->select('orders_headers.order_id' , 'orders_headers.order_code', 'orders_headers.total_value','rejectedorders_delivery.status')  
+		 	   	-> where($conditions)
 		 	   	-> get();
 
-		}else{
-			$orders =  DB::table('orders_headers') 
+               //get new orders 
+		 	   $newOrders = DB::table('orders_headers') 
 		 	   	->whereIn('orders_headers.status_id',[2,3,4])
-		 	   	->join('rejectedorders_delivery','orders_headers.order_id','=','rejectedorders_delivery.order_id') 
-		 	   	->join('users','users.user_id','=','orders_headers.user_id')
-		 	   	->join('providers','providers.provider_id','=','orders_headers.provider_id')
-		 	   	->select('users.full_name','orders_headers.order_id' , 'orders_headers.order_code', 'orders_headers.total_value' ,'orders_headers.user_id','rejectedorders_delivery.status')  
-		 	   	-> get();
-		}
+		 	   	->leftjoin('rejectedorders_delivery','rejectedorders_delivery.order_id','orders_headers.order_id')
+		 	   	->where('orders_headers.delivery_id',0)
+  		 	   	->select('orders_headers.order_id' , 'orders_headers.order_code', 'orders_headers.total_value')
+  		 	   	-> get();
+
+  		  	    	$result = $orders -> merge($newOrders);
+
+  		            $result ->unique('order_id')->values()->all();
+
+  		           if(isset($result) && $result->count() > 0){
+						return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[0], 'result' => $result]);
+					}else{
+						return response()->json(['status' => false, 'errNum' => 1, 'msg' => $msg[1]]);
+					}
+
+		} 
  
-
-
+ 
  		if(isset($orders) && $orders->count() > 0){
 
  			foreach ($orders as $key => $order) {
-
-
- 				if($order -> status = 0 ){
-
- 					$msg[12]
  
- 				}elseif($order -> status = 1){
+ 				if($order -> status == 0 ){
+
+ 					  $order -> status_text = $msg[12];
  
-                       $msg[14]
+ 				}elseif($order -> status == 1){
  
- 				}elseif($order -> status = 2){
+                       $order -> status_text = $msg[14];
+ 
+ 				}elseif($order -> status == 2){
                     
-                    $msg[13]
-                     
- 
+                       $order -> status_text = $msg[13];
+                   
  				}else{
 
- 					$status_text ="";
+ 					$order -> status_text  ="";
  				}
+
+
+ 				unset($order -> status);
  			}
 			return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[0], 'result' => $orders]);
 		}else{

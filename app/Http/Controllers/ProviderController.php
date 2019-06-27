@@ -196,9 +196,11 @@ class ProviderController extends Controller
             
  		$provider = Providers::where('provider_id',$this->get_id($request,'providers','provider_id'))  -> select('provider_id AS id','full_name AS provider_name','category_id','status','publish','phoneactivated','store_name', 'phone', 'country_code','country_id', 'city_id','membership_id', 'token AS access_token','provider_rate','created_at','activate_phone_hash') ->first();
 
- 		$code =  json_encode($activate_phone_hash)  ;
-  
-
+        //$code =  json_decode($provider  -> activate_phone_hash);
+        
+        
+  		 
+ 		 
 		  //get main categories
 		$cats = Categories::where('publish', 1)->select('cat_id', $cat_col)->get();
 
@@ -255,9 +257,9 @@ class ProviderController extends Controller
                   }
 
  
-  
 
-		return response()->json(['status' => true, 'errNum' => 0, 'msg' => '','data'=> $provider ,'delivery_methods' =>$delivery_methods,'cats' => $cats,'activation_code' =>$code -> code]);
+
+		return response()->json(['status' => true, 'errNum' => 0, 'msg' => '','data'=> $provider ,'delivery_methods' =>$delivery_methods,'cats' => $cats]);
 	}
 
 
@@ -1485,6 +1487,7 @@ class ProviderController extends Controller
             $isPhoneChanged = true;
         }else{
             $isPhoneChanged = false;
+            $code = "";
         }
  
  
