@@ -267,8 +267,7 @@ class NotificationController extends Controller
          $lang = $request->input('lang');
 
 
-         return $request ;
-
+ 
         if($lang == "ar"){
             $msg = array(
                 0 => '',
@@ -384,7 +383,7 @@ class NotificationController extends Controller
                        return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[6],'settings' =>  $notificationSettings]);   
                   }
             
-             return response()->json(['status' => true, 'errNum' => 7, 'msg' => $msg[7] ,'settings' => $notificationSettings]);                      
+             return response()->json(['status' => false, 'errNum' => 7, 'msg' => $msg[7]]);                      
     }
 
 
@@ -469,7 +468,7 @@ class NotificationController extends Controller
                 
                    case 'deliveries':
                      $actor = 'deliveries';
-                     $table = 'deliveries';
+                       $table = 'deliveries';
                      $colum = 'delivery_id';
                     break;
 
@@ -520,23 +519,9 @@ class NotificationController extends Controller
 
                 }else{
 
-                     
-                    if($actor =='providers') 
-                    {
-
-                        $inputs = $request -> only('new_order','cancelled_order','offer_request','admin_notify','ticket_notify','order_delay');
-
-                        $inputs['recieve_orders'] = 0;
-                    }
- 
-                     $inputs['actor_id'] = $actor_id;
-                     $inputs['type']     = $actor;
-
-
-               $settings = DB::table('notification_settings') 
-                                     -> insert($inputs);
-
-                return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[11]]);
+                    
+                   
+                return response()->json(['status' => false, 'errNum' => 7, 'msg' => $msg[7]]);
 
                 }
 
