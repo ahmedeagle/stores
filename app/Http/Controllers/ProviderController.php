@@ -3371,8 +3371,8 @@ public function updateProduct(Request $request){
   			'product_images' => 'required',
  			'product_images'   => 'required|array',
           //  //'product_images.*' => 'required',  that means all of them must pass value
-            'image_ext'        => 'required|array',
-            'image_ext.*'      => 'required',
+           // 'image_ext'        => 'required|array',
+            //'image_ext.*'      => 'required',
             
             
             'options'          => 'array|min:1',
@@ -3486,15 +3486,15 @@ public function updateProduct(Request $request){
 				if( $request -> has('product_images')){
  
    
-                 $image_extensions = $request -> image_ext;
+               //  $image_extensions = $request -> image_ext;
                  $products_images  = $request -> product_images;
                  
                  
-                  $extensions = array_filter($image_extensions,function($ext){
+                /*  $extensions = array_filter($image_extensions,function($ext){
 
                                return !empty($ext);
 
-			            });
+			            });*/
 			            
 			            
 			      $images = array_filter($products_images,function($images){
@@ -3503,12 +3503,12 @@ public function updateProduct(Request $request){
 
 			            });
 			            
-                 
+              /*   
                  
                  if(count($extensions) != count($images)){
                      
                      return response()->json(['status'=> false, 'errNum' => 25, 'msg' => $msg[25]]);
-                 }
+                 }*/
   
 				foreach($images  AS $index =>  $image){
    
@@ -3516,7 +3516,7 @@ public function updateProduct(Request $request){
                     //save new image   64 encoded
                      
                                 
-                      $image = $this->saveImage($image,$extensions[$index], 'products/');
+                      $image = $this->saveImage($image,'jpg', 'products/');
                                  
       					
     					if($image == ""){
