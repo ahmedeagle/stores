@@ -429,7 +429,7 @@ $Insurance_img= "";
  				                $inputs['order_delay']     = 0;
  				                $inputs['order_status_user']=0;
 				                $inputs['type']            = 'deliveries';
-			                 ];
+			                  
 
   			        DB::table('notification_settings') -> insert($inputs);
 

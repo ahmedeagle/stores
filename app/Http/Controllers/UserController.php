@@ -329,7 +329,7 @@ class UserController extends Controller
 
 				//intialize settings
 
-				 $inputs[
+				 
 				                $inputs['new_order']       = 0;
 				                $inputs['cancelled_order'] = 0;
 				                $inputs['offer_request']   = 0;
@@ -339,7 +339,7 @@ class UserController extends Controller
 				                $inputs['recieve_orders']  = 0;
 				                $inputs['order_status_user']=1;
 				                $inputs['type']            = 'users';
-			                 ];
+			              
  
 			                DB::table('notification_settings') -> insert($inputs);
 
