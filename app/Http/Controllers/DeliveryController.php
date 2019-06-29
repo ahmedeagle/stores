@@ -419,16 +419,16 @@ $Insurance_img= "";
 					DB::table('balances')->insert(['actor_id' => $id, 'current_balance' => 0, 'due_balance' => 0, 'type' => 'delivery']);
 
 					    //intialize settings
-					   $inputs[
-				                'new_order'       => 1,
-				                'cancelled_order' => 1,
- 				                'admin_notify'    => 1,
-				                'ticket_notify'   => 1,
- 				                'recieve_orders'  => 1,
- 				                'offer_request'   => 0,
- 				                'order_delay'     => 0,
- 				                'order_status_user'=>0,
-				                'type'            => 'deliveries',
+					   
+				                $inputs['new_order']       = 1;
+				                $inputs['cancelled_order'] = 1;
+ 				                $inputs['admin_notify']    = 1;
+				                $inputs['ticket_notify']   = 1;
+ 				                $inputs['recieve_orders']  = 1;
+ 				                $inputs['offer_request']   = 0;
+ 				                $inputs['order_delay']     = 0;
+ 				                $inputs['order_status_user']=0;
+				                $inputs['type']            = 'deliveries';
 			                 ];
 
   			        DB::table('notification_settings') -> insert($inputs);

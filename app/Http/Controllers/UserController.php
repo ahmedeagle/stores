@@ -330,15 +330,15 @@ class UserController extends Controller
 				//intialize settings
 
 				 $inputs[
-				                'new_order'       => 0,
-				                'cancelled_order' => 0,
-				                'offer_request'   => 0,
-				                'admin_notify'    => 1,
-				                'ticket_notify'   => 1,
-				                'order_delay'     => 0,
-				                'recieve_orders'  => 0,
-				                'order_status_user'=>1,
-				                'type'            => 'users',
+				                $inputs['new_order']       = 0;
+				                $inputs['cancelled_order'] = 0;
+				                $inputs['offer_request']   = 0;
+				                $inputs['admin_notify']    = 1;
+				                $inputs['ticket_notify']   = 1;
+				                $inputs['order_delay']     = 0;
+				                $inputs['recieve_orders']  = 0;
+				                $inputs['order_status_user']=1;
+				                $inputs['type']            = 'users';
 			                 ];
  
 			                DB::table('notification_settings') -> insert($inputs);

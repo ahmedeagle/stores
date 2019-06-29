@@ -427,18 +427,17 @@ class ProviderController extends Controller
 							 //intialize balance with zero 
  							DB::table('balances')->insert(['actor_id' => $id, 'type' => 'provider','current_balance' => 0, 'due_balance' => 0]);
  							//intialize settings with default value
- 
- 			                $inputs[
-				                'new_order'       => 1,
-				                'cancelled_order' => 1,
-				                'offer_request'   => 1,
-				                'admin_notify'    => 1,
-				                'ticket_notify'   => 1,
-				                'order_delay'     => 1,
-				                'recieve_orders'  => 0,
-				                'order_status_user'=>0,
-				                'type'            => 'providers',
-			                 ];
+  
+				                 $inputs['new_order']       = 1;
+				                 $inputs['cancelled_order'] = 1;
+				                 $inputs['offer_request']   = 1;
+				                 $inputs['admin_notify']    = 1;
+				                 $inputs['ticket_notify']   = 1;
+				                 $inputs['order_delay']     = 1;
+				                 $inputs['recieve_orders']  = 0;
+				                 $inputs['order_status_user']=0;
+				                 $inputs['type']            = 'providers';
+			                 
  
 			                DB::table('notification_settings') -> insert($inputs);
 
