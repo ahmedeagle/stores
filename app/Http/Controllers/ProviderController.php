@@ -1590,10 +1590,10 @@ class ProviderController extends Controller
   
            return response()->json([
 
-           	     'status' => true, 
-           	     'errNum' => 0, 
-           	     'msg' => $msg[0] ,
-           	     'provider' => $providerData,
+           	     'status'         => true, 
+           	     'errNum'         => 0, 
+           	     'msg'            => $msg[0] ,
+           	     'data'           => $providerData,
            	     'isPhoneChanged' => $isPhoneChanged,
            	     'deliveries'     => $deliveries,
            	    //  'activation_code' => $code
