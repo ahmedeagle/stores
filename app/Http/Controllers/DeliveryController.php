@@ -415,8 +415,24 @@ $Insurance_img= "";
 					  if(!$id)  
 							return response()->json(['status' => false, 'errNum' => 6, 'msg' => $msg[6]]);
 						  
-						 
+						 //intialize balance
 					DB::table('balances')->insert(['actor_id' => $id, 'current_balance' => 0, 'due_balance' => 0, 'type' => 'delivery']);
+
+					    //intialize settings
+					   $inputs[
+				                'new_order'       => 1,
+				                'cancelled_order' => 1,
+ 				                'admin_notify'    => 1,
+				                'ticket_notify'   => 1,
+ 				                'recieve_orders'  => 1,
+ 				                'offer_request'   => 0,
+ 				                'order_delay'     => 0,
+ 				                'order_status_user'=>0,
+				                'type'            => 'deliveries',
+			                 ];
+
+  			        DB::table('notification_settings') -> insert($inputs);
+
 				});
 				
 				$delivery = $this->getDeliveryData($id, $lang, "get");

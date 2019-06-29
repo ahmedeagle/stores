@@ -417,12 +417,30 @@ class ProviderController extends Controller
 						]);
 
 
+
+
+
 						if($id){
 
 							$inserts = array();
 							 
 							 //intialize balance with zero 
  							DB::table('balances')->insert(['actor_id' => $id, 'type' => 'provider','current_balance' => 0, 'due_balance' => 0]);
+ 							//intialize settings with default value
+ 
+ 			                $inputs[
+				                'new_order'       => 1,
+				                'cancelled_order' => 1,
+				                'offer_request'   => 1,
+				                'admin_notify'    => 1,
+				                'ticket_notify'   => 1,
+				                'order_delay'     => 1,
+				                'recieve_orders'  => 0,
+				                'order_status_user'=>0,
+				                'type'            => 'providers',
+			                 ];
+ 
+			                DB::table('notification_settings') -> insert($inputs);
 
 						}else{
 							return response()->json(['status' => false, 'errNum' => 5, 'msg' => $msg[5]]);

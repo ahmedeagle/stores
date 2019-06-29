@@ -327,6 +327,22 @@ class UserController extends Controller
                      //initailize account balance 
 				DB::table('balances')->insert(['actor_id' => $user -> id, 'type' => 'user','current_balance' => 0, 'due_balance' => 0]);
 
+				//intialize settings
+
+				 $inputs[
+				                'new_order'       => 0,
+				                'cancelled_order' => 0,
+				                'offer_request'   => 0,
+				                'admin_notify'    => 1,
+				                'ticket_notify'   => 1,
+				                'order_delay'     => 0,
+				                'recieve_orders'  => 0,
+				                'order_status_user'=>1,
+				                'type'            => 'users',
+			                 ];
+ 
+			                DB::table('notification_settings') -> insert($inputs);
+
 
                   // send phone activation code 
                 $res = (new SmsController())->send($message , $user ->phone);

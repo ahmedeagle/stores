@@ -266,6 +266,9 @@ class NotificationController extends Controller
          
          $lang = $request->input('lang');
 
+
+         return $request ;
+
         if($lang == "ar"){
             $msg = array(
                 0 => '',
@@ -373,15 +376,15 @@ class NotificationController extends Controller
                                                       'recieve_orders') 
                                            -> first();
                  }
-
+ 
 
 
                   if($notificationSettings){
-                         unset($notificationSettings -> id);//
+                         unset($notificationSettings -> id); 
                        return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[6],'settings' =>  $notificationSettings]);   
                   }
             
-             return response()->json(['status' => true, 'errNum' => 7, 'msg' => $msg[7] ,'settings' => []]);                      
+             return response()->json(['status' => true, 'errNum' => 7, 'msg' => $msg[7] ,'settings' => $notificationSettings]);                      
     }
 
 
