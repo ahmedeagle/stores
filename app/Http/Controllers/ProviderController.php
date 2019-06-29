@@ -1596,7 +1596,7 @@ class ProviderController extends Controller
            	     'provider' => $providerData,
            	     'isPhoneChanged' => $isPhoneChanged,
            	     'deliveries'     => $deliveries,
-           	      'activation_code' => $code
+           	    //  'activation_code' => $code
            	     
  
            	 ]);
