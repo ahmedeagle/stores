@@ -428,6 +428,7 @@ $Insurance_img= "";
  				                $inputs['offer_request']   = 0;
  				                $inputs['order_delay']     = 0;
  				                $inputs['order_status_user']=0;
+ 				                $inputs['actor_id']        =$id;
 				                $inputs['type']            = 'deliveries';
 			                  
 

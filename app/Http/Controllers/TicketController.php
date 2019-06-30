@@ -98,6 +98,8 @@ class TicketController extends Controller
            $delivery_id = $this -> get_id($request,'deliveries','delivery_id');
 
             
+
+
             if($user_id &&  $user_id != 0){
 
                    $actor_type = "user";
@@ -155,14 +157,44 @@ class TicketController extends Controller
 
     public function get_tickets(Request $request){
  
-        $lang = $request->input('lang');
+         $lang = $request -> lang;
+
+        if($lang == 'ar'){
+                 
+
+         $msg       = [
+                1   => 'التوكن غير موجود ',
+                3   =>'النوع لابد ان يكون  provider,user,delivery',
+                2   =>'النوع مطلوب ',
+                4   => 'لايوجد  اي بيانات ',
+                5   => 'تم استعاده البيانات بنجاح ',
+                6   => 'المستخدم غير موجود '
+            ];
+
+        }else{
+
+            $msg        = [
+            1   => 'access_token field required',
+            3   => 'user type not exists must be provider,user,delivery',
+            2   => 'type field required',
+            4   => 'there is no data',
+            5   => 'data retrieved succeffully' ,
+            6   =>  'user not found',
+        ];
+
+
+        }
+
 
         $messages = array(
-            'access_token.required' => 1
+            'access_token.required' => 1,
+            'type.required'         => 2,
+            'type.in'               => 3,
         );
 
         $validator = Validator::make($request->all(), [
             'access_token' => 'required',
+            'type'         =>"required|in:provider,user,delivery"
         ], $messages);
 
 
@@ -172,42 +204,62 @@ class TicketController extends Controller
             return response()->json(['status' => false, 'errNum' => $error, 'msg' => $msg[$error]]);
         }
 
+          
 
+          $type = $request -> type;                    
          
+          switch ($type) {
+                case 'provider':
+                     $actor = 'provider';
+                     $table = 'providers';
+                     $colum = 'provider_id';
+                    break;
 
-           $user_id     = $this -> get_id($request,'users','user_id');
+                    case 'user':
+                     $actor = 'user';
+                     $table = 'users';
+                     $colum = 'user_id';
+                    break;
+                
+                   case 'delivery':
+                     $actor = 'delivery';
+                     $table = 'deliveries';
+                     $colum = 'delivery_id';
+                    break;
 
-           $provider_id = $this -> get_id($request,'providers','provider_id');
+                default:
+                         $actor = 'user';
+                         $table = 'users';
+                         $colum = 'user_id';
 
-           $delivery_id = $this -> get_id($request,'deliveries','delivery_id');
+                    break;
+            }
+     
+               $actor_id    = $this->get_id($request,$table,$colum);
 
+                if($actor_id == 0 ){
+                      return response()->json(['status' => false, 'errNum' => 6, 'msg' => $msg[6]]);
+                }
+
+ 
             
-            if($user_id &&  $user_id != 0){
-
-                   $actor_type = "user";
-                   $actor_id   = $user_id;
+            if($actor == 'user'){
+ 
                    $fromUser   = 1 ;
 
-            }elseif($provider_id && $provider_id != 0){
-
-
-                   $actor_type = "provider";
-                   $actor_id   = $provider_id;
+            }elseif($actor == 'provider'){
+ 
                    $fromUser   = 2 ;
 
 
-            }elseif($delivery_id && $delivery_id != 0){
-                     
-
-                    $actor_type = "delivery"; 
-                    $actor_id   = $delivery_id;
-
+            }elseif($actor == 'delivery'){
+                      
                     $fromUser   = 3 ;
 
             }else{
                   
 
-                   return response()->json(['status' => false, 'errNum' => 3, 'msg' => 'المستخدم غير موجود ' ]);
+                   $fromUser   = 1 ;
  
             }
  
@@ -217,7 +269,7 @@ class TicketController extends Controller
 
          $tickets = DB::table("tickets")
                     ->where("actor_id" ,$actor_id)
-                    ->where("actor_type" ,$actor_type)
+                    ->where("actor_type" ,$actor)
                     ->join('ticket_types','tickets.type_id','=','ticket_types.id')
                     ->select(
                             "tickets.id",

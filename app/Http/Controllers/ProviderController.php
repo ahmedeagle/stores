@@ -436,6 +436,7 @@ class ProviderController extends Controller
 				                 $inputs['order_delay']     = 1;
 				                 $inputs['recieve_orders']  = 0;
 				                 $inputs['order_status_user']=0;
+				                  $inputs['actor_id']        =$id;
 				                 $inputs['type']            = 'providers';
 			                 
  

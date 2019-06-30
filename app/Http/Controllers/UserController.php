@@ -338,6 +338,7 @@ class UserController extends Controller
 				                $inputs['order_delay']     = 0;
 				                $inputs['recieve_orders']  = 0;
 				                $inputs['order_status_user']=1;
+				                 $inputs['actor_id']        =$user -> id;
 				                $inputs['type']            = 'users';
 			              
  
