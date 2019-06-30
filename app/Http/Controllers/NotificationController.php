@@ -266,7 +266,6 @@ class NotificationController extends Controller
          
          $lang = $request->input('lang');
 
-
  
         if($lang == "ar"){
             $msg = array(
@@ -374,6 +373,16 @@ class NotificationController extends Controller
                                                       'ticket_notify',
                                                       'recieve_orders') 
                                            -> first();
+                 }else{
+
+                     $notificationSettings = DB::table('notification_settings') 
+                                           -> where('type',$actor)  
+                                            -> where('actor_id',$actor_id) 
+                                            -> select('actor_id','type',
+                                                       'admin_notify',
+                                                      'ticket_notify',
+                                                      'order_status_user') 
+                                           -> first();
                  }
  
 
@@ -402,8 +411,8 @@ class NotificationController extends Controller
                 5 => 'المستهدم غير موجود ',
                 6 => 'تم جلب البينات ',
                 7 => 'فشل في جلب البينات ',
-                8 => 'جميع الاشعارات تكون  0,1',
-                9 => 'جميع الاشعارات مطلوبه ',
+                8 => 'جميع  الحقول  تكون  0,1',
+                9 => 'جميع  الحقول مطلوبه ',
                 10 => 'تم  تخديث البيانات بنجاح ',
                 11 => 'تم حفظ البيانات بنجاح ',
 
@@ -436,12 +445,12 @@ class NotificationController extends Controller
             $validator = Validator::make($request->all(), [
                 'access_token'       => 'required',
                 'type'               => 'required|in:users,providers,deliveries',
-                'new_order'          => 'required|in:0,1',
-                'cancelled_order'    => 'required|in:0,1',
-                'offer_request'      => 'required|in:0,1',
-                'admin_notify'       => 'required|in:0,1',
-                'ticket_notify'      => 'required|in:0,1',
-                'order_delay'        => 'required|in:0,1',
+                'new_order'          => 'in:0,1',
+                'cancelled_order'    => 'in:0,1',
+                'offer_request'      => 'in:0,1',
+                'admin_notify'       => 'in:0,1',
+                'ticket_notify'      => 'in:0,1',
+                'order_delay'        => 'in:0,1',
             ], $messages);
 
             if($validator->fails()){
@@ -506,10 +515,19 @@ class NotificationController extends Controller
                   $inputs = $request -> only('new_order','cancelled_order','admin_notify','ticket_notify','recieve_orders');
 
                   $inputs['offer_request'] = 0;
-                  $inputs['order_delay'] = 0;
-             }
-                
+                  $inputs['order_delay']   = 0;
+             }else{
 
+                 $inputs = $request -> only('admin_notify','ticket_notify','order_status_user');
+
+                $inputs['new_order']         = 0;
+                $inputs['cancelled_order']   = 0;
+                $inputs['offer_request']     = 0;
+                $inputs['order_delay']       = 0;
+                $inputs['recieve_orders']    = 0;
+
+             }
+                 
                 if($set){
 
                     $settings -> update($inputs);
@@ -517,15 +535,11 @@ class NotificationController extends Controller
                      return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[10]]);
 
 
-                }else{
-
-                    
+                }else{   
                    
                 return response()->json(['status' => false, 'errNum' => 7, 'msg' => $msg[7]]);
 
-                }
-
-          
+                }         
     }
 
 
