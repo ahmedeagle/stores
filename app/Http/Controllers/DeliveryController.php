@@ -24,6 +24,7 @@ use Mail;
 use Carbon\Carbon;
 use DateTime;
 use App\Http\Controllers\PushNotificationController as Push;
+use App\Http\Controllers\NotificationController as NotifyC;
 
 class DeliveryController extends Controller
 {
@@ -266,7 +267,7 @@ class DeliveryController extends Controller
 
 		if($validator->fails()){
 
-			$error = $validator->errors()->first();
+			 $error = $validator->errors() ->first();
 			return response()->json(['status' => false, 'errNum' => $error, 'msg' => $msg[$error]]);
 	 
 		}
@@ -489,7 +490,7 @@ public function checkCountryCodeFormate($str){
 		], $messages);
  
         if($validator->fails()){
-			$error = $validator->errors()->first();
+			  $error = $validator->errors() ->first();
 			return response()->json(['status' => false, 'errNum' => $error, 'msg' => $msg[$error]]);
 		}
   
@@ -1293,8 +1294,8 @@ public function newOrders(Request $request){
 			} 
 		 
 			//get orders
- 	$orders = \App\Order_header::where($conditions) 
- 	                     ->whereIn('orders_headers.status_id', $inCondition)
+ 	  $orders = \App\Order_header::where($conditions)
+ 	                      ->whereIn('orders_headers.status_id', $inCondition)
  						->join('providers', 'orders_headers.provider_id', '=', 'providers.provider_id')
 						->join('delivery_methods', 'orders_headers.delivery_method' ,'=', 'delivery_methods.method_id')
 
@@ -1869,13 +1870,22 @@ public function OrderDetails(Request $request){
 			    $notif_data['order_id']   = $order_id;
 			    $notif_data['notif_type'] = 'order';
 			    
+
+			       // check if user allow recieve change order status notification 
+              $userAllowOrdersStatus = (new NotifyC()) -> check_notification($get->user_id,'users','order_status_user'); 
+                 
+ 
+
 			    
 			 (new Push())->send($get->provider_device_reg,$notif_data,(new Push())->provider_key);
 
+           if($userAllowOrdersStatus == 1){
+
+                // send firbase notifications
 			 (new Push())->send($get->user_device_reg,$notif_data,(new Push())->user_key);
-			     
-  
-			      DB::table("notifications")
+
+                 // store notification to DB
+			 DB::table("notifications")
 		            ->insert([
 		                "en_title"           => $notif_data['title'],
 		                "ar_title"           => $notif_data['title'],
@@ -1887,7 +1897,9 @@ public function OrderDetails(Request $request){
 		                "action_id"          => $order_id
 
 		            ]);
-
+			 }
+			     
+              
 
                     DB::table("notifications")
 		            ->insert([
@@ -1901,10 +1913,11 @@ public function OrderDetails(Request $request){
 		                "action_id"          => $order_id
 
 		            ]);
+           
+
 
   
-
-  return response()->json(['status' => false, 'errNum' => 0 , 'msg' => $msg[0]]);
+  return response()->json(['status' => true, 'errNum' => 0 , 'msg' => $msg[0]]);
 
 			 
 	}

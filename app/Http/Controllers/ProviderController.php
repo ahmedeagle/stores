@@ -26,6 +26,7 @@ use Storage;
 use DateTime;
 use Carbon\Carbon;
 use App\Http\Controllers\PushNotificationController as Push;
+use App\Http\Controllers\NotificationController as NotifyC;
 
 class ProviderController extends Controller
 {
@@ -590,7 +591,7 @@ class ProviderController extends Controller
  
 
 		if($validator->fails()){
-			$error = $validator->errors()->first();
+			  $error = $validator->errors() -> first();
 			return response()->json(['status' => false, 'errNum' => $error, 'msg' => $msg[$error]]);
 		}
 
@@ -771,6 +772,7 @@ class ProviderController extends Controller
 				3 =>  'لابد من توكن المستخدم ',
 				4 =>  'فشل التفعيل من فضلك حاول لاحقا',
 				5=> 'كود تفعيل غير صحيح ',
+				6=>  'التوكن غير موجود '
 			);
 		}else{
 			$msg = array(
@@ -780,6 +782,7 @@ class ProviderController extends Controller
 				3 => 'access_token required',
 				4 => 'Failed to activate, please try again later',
 				5 => 'Code is not Correct',
+				6 => 'access_token not found'
 			);
 		}
 
@@ -792,8 +795,7 @@ class ProviderController extends Controller
 			'access_token' => 'required',
 			'code'         => 'required'
 		], $messages);
-
-
+ 
 
         if($validator->fails()){
 			$error = $validator->errors()->first();
@@ -802,6 +804,13 @@ class ProviderController extends Controller
 
 
 		$provider = Providers::where('provider_id',$this->get_id($request,'providers','provider_id'));
+
+		if(!$provider -> first())
+		{
+         
+         return response()->json(['status' => false, 'errNum' => 6, 'msg' => $msg[6]]);
+
+		}
 
 		 $activate_phone_hash = $provider -> first() ->  activate_phone_hash;
 
@@ -2783,7 +2792,7 @@ public function updateProviderOffer(Request $request){
  		],$messages);
 
 		if($validator->fails()){
-		      $error = $validator->errors()-> first()  ;
+		       $error = $validator->errors()-> first()  ;
 
 		   return response()->json(['status' => false, 'errNum' => $error, 'msg' => $msg[$error]]);
 		} 
@@ -3972,9 +3981,7 @@ public function updateProviderJob(Request $request){
 			'job_title.max'            => 7,
 			'job_desc.max'             => 8,
 
-			
-
-
+ 
 		);
 
 		$validator = Validator::make($request->all(),[
@@ -3989,12 +3996,9 @@ public function updateProviderJob(Request $request){
 			$error = $validator->errors()->first();
 			return response()->json(['status' => false, 'errNum' => $error, 'msg' => $msg[$error]]);
 		} 
-
  
          $inputs = $request -> only('job_title','job_desc');
-
-
-         
+ 
          $inputs['provider_id']  =  $this->get_id($request,'providers','provider_id');
               
                     // cat_id
@@ -5057,6 +5061,7 @@ if($providerRequest){
 				4 => 'رقم الموصل مطلوب إذا كان رقم الحاله = 3 و طريقة التوصيل = 1',
 				5 => 'رقم الموصل خطأ',
 				6 => 'التاجر  غير موجود ',
+				7 => 'الطلب غير موجود ' ,
 			);
 		}else{
 			$msg = array(
@@ -5067,16 +5072,18 @@ if($providerRequest){
 				4 => 'delivery id is required if status id = 3 AND delivery_method = 1',
 				5 => 'Invalid delivery_id',
 				6 => 'Provider not exists',
+				7 => 'Order Not Found '
 			);
 		}
 
 		$messages = array(
 			'required'    => 1,
-			'in'          => 3
+			'in'          => 3,
+			'exists'      => 7,
 		);
 
 		$validator = Validator::make($request->all(), [
-			'order_id'         => 'required',
+			'order_id'         => 'required|exists:orders_headers,order_id',
 			'access_token'     => 'required',
 			'status_id'        => 'required|in:2,3,4'
 		], $messages);
@@ -5222,13 +5229,13 @@ if($providerRequest){
              }
 			
 
-				 DB::table('orders_headers') ->where('orders_headers.order_id', $order_id) -> update($updates);
+				 DB::table('orders_headers') ->where('orders_headers.order_id', $order_id) -> update($updates);    
 
 				if($lang == "ar"){
-					$userTitle   = "تم تعديل حالة طلبك" .$order_id;
-					$userMessage = "تم تعديل حالة طلبك";
+					$userTitle   = "تم تعديل حالة طلبك -"  .$order_id;
+					$userMessage = "تم تعديل حالة طلبك ";
 				}else{
-					$userTitle   = "Your order status has been updated" .$order_id;
+					$userTitle   = "Your order status has been updated - " .$order_id;
 					$userMessage = "Your order status has been changed";
 				}
 				//send to user
@@ -5238,14 +5245,17 @@ if($providerRequest){
 			    $notif_data['order_id']   = $order_data->order_id;
 			    $notif_data['notif_type'] = 'order';
 
-
-							
+                  
+                     // check if user allow recieve change order status notification 
+              $userAllowOrdersStatus = (new NotifyC()) -> check_notification($order_data -> user_id,'users','order_status_user'); 
+                 
 			    	//send notification to mobile Firebase			  
-			    if($order_data){
+			    if($order_data && $userAllowOrdersStatus == 1){
 			    	$push_notif = (new Push())->send($order_data->device_reg_id,$notif_data,(new Push())->user_key);
 			    }
 
 
+               if($userAllowOrdersStatus == 1){
 			      DB::table("notifications")
 		            ->insert([
 		                "en_title"           => $userTitle,
@@ -5258,6 +5268,7 @@ if($providerRequest){
 		                "action_id"          => $order_id
 
 		            ]);
+		        }    
 
 
 			/*	if($status == 3 && $delivery_method == 1){

@@ -29,7 +29,8 @@ Route::group(['middleware' => ['api_auth'], 'prefix' => 'api'], function() {
     
     	//crons
 	Route::get('/crons', 'Crons@cron_job');
-  
+	Route::get('/refuseDelayOrdes', 'Crons@refuse_delay_orders_crone');
+   
 	   // prepare signup first step  provider personal account apis 
 	Route::post('/getProviderSignUpFirstStep', 'ProviderController@prepareSignUp');
 	Route::get('/getProviderSignUpFirstStep', 'ProviderController@echoEmpty');

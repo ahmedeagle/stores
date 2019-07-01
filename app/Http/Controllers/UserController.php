@@ -26,6 +26,7 @@ use Carbon\Carbon;
 use Illuminate\Pagination\LengthAwarePaginator;
 use App\Traits\MainImage;
 use App\Http\Controllers\PushNotificationController as Push;
+use App\Http\Controllers\NotificationController as NotifyC;
 
 class UserController extends Controller
 {
@@ -223,7 +224,7 @@ class UserController extends Controller
 		$validator = Validator::make($request->all(),$rules, $messages);
 
 		if($validator->fails()){
-			 $errors   = $validator->errors();
+		   $errors   = $validator->errors();
 			$error    = $errors->first();
 			
 			return response()->json(['status'=> false, 'errNum' => $error, 'msg' => $messagesStr[$error]]);
@@ -338,7 +339,7 @@ class UserController extends Controller
 				                $inputs['order_delay']     = 0;
 				                $inputs['recieve_orders']  = 0;
 				                $inputs['order_status_user']=1;
-				                 $inputs['actor_id']        =$user -> id;
+				                $inputs['actor_id']        =$user -> id;
 				                $inputs['type']            = 'users';
 			              
  
@@ -2535,8 +2536,7 @@ public function prepareSearch(Request $request){
 
 	//method to add user order
 	public function addOrder(Request $request){
-
-
+ 
 
     //  total price is total price of order products 
 	//  total value is  total price + delivery_price 
@@ -2573,7 +2573,7 @@ public function prepareSearch(Request $request){
 				23 => 'القيمه المدفوعه لا تساوي قيمه الطلب '
 			);
 			$push_notif_title   = "طلب جديد";
-			$push_notif_message = "تم إضافة طلب جديد خاص بك";
+			$push_notif_message = "تم إضافة طلب جديد ";
 		}else{
 			$msg = array(
 				0 => 'Process done successfully',
@@ -2603,7 +2603,7 @@ public function prepareSearch(Request $request){
 
 			);
 			$push_notif_title   = "New order";
-			$push_notif_message = "A new order has been added to you";
+			$push_notif_message = "A new order has been added  ";
 		}
  
         $products        = $request->input('products');
@@ -2767,10 +2767,7 @@ public function prepareSearch(Request $request){
 			$net        += $products[$i]['qty'] * ($productPrice + $options_added_price);   // need to subtract the discount from the net value
 
 		} //end foreach 
-
-
-
-         
+ 
 
 		$uniqueProducts      = array_values(array_unique($productsArr));  // to avoid duplicate products id
 
@@ -3019,34 +3016,83 @@ public function prepareSearch(Request $request){
 			    $notif_data['order_id'] 	      = $id;
 			    $notif_data['notif_type']         = 'order';
 			    $provider_token = Providers::where('provider_id', $data['provider'])->first();
-				if($provider_token){
+              
+              $providerAllowNewOrderNotify = (new NotifyC()) -> check_notification($data['provider'],'providers','new_order'); 
+                
+ 				if($provider_token && $providerAllowNewOrderNotify == 1){
 			    	$push_notif =(new Push())->send($provider_token->device_reg_id, $notif_data,(new Push())->provider_key);
 			    }
 
 
-                 DB::table("notifications")
-		            ->insert([
-		                "en_title"           => $push_notif_title.'-'. $id,
-		                "ar_title"           => $push_notif_title.'-'. $id,
-		                "en_content"         => $push_notif_message,
-		                "ar_content"         => $push_notif_message,
-		                "notification_type"  => 1,
-		                "actor_id"           => $data['provider'],
-		                "actor_type"         => "provider",
-		                "action_id"          => $id
+                if($providerAllowNewOrderNotify == 1){
+ 
+	                 DB::table("notifications")
+			            ->insert([
+			                "en_title"           => $push_notif_title.'-'. $id,
+			                "ar_title"           => $push_notif_title.'-'. $id,
+			                "en_content"         => $push_notif_message,
+			                "ar_content"         => $push_notif_message,
+			                "notification_type"  => 1,
+			                "actor_id"           => $data['provider'],
+			                "actor_type"         => "provider",
+			                "action_id"          => $id
 
-		            ]);
+			            ]);
+		        }    
 
 
+		        //send notification to all deliveries  and push notification
 
-
-
+ 
+		        $this -> sendNotificationToDeliveries($notif_data,$id,$push_notif_title,$push_notif_message);
+ 
 				return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[0] ,'order_id' => $id]);
 			} catch (Exception $e) {
 				return response()->json(['status' => false, 'errNum' => 9, 'msg' => $msg[9]]);
 			}
 		
 	}
+
+
+   protected function sendNotificationToDeliveries($notif_data,$id,$push_notif_title,$push_notif_message){
+
+
+      $deliveries = DB::table('deliveries') -> join('notification_settings','deliveries.delivery_id','=','notification_settings.actor_id') -> where('notification_settings.type','deliveries') ->where('notification_settings.new_order',1) -> get();
+
+
+      if(isset($deliveries) && $deliveries -> count() > 0){
+
+      	  foreach ($deliveries as $key => $delivery) {
+ 
+               if($delivery -> device_reg_id){
+
+                    $push_notif =(new Push())->send($delivery -> device_reg_id, $notif_data,(new Push())->delivery_key);
+
+               }
+
+           DB::table("notifications")
+            ->insert([
+                "en_title"           => $push_notif_title.'-'. $id,
+                "ar_title"           => $push_notif_title.'-'. $id,
+                "en_content"         => $push_notif_message,
+                "ar_content"         => $push_notif_message,
+                "notification_type"  => 1,
+                "actor_id"           => $delivery -> delivery_id,
+                "actor_type"         => "delivery",
+                "action_id"          => $id
+
+            ]);
+
+      	  	 
+      	  }
+      }
+  
+        
+		     
+
+   }
+
+
 	
 
   public function get_list_of_orders(Request $request){
@@ -3169,6 +3215,7 @@ public function cancel_order(Request $request){
 		$lang = $request->input('lang');
 		if($lang == "ar"){
 			$msg = array(
+
 				0 => 'تمت إلغاء الطلب',
 				1 => 'order_id مطلوب',
 				2 => 'user_id مطلوب',
@@ -3201,6 +3248,7 @@ public function cancel_order(Request $request){
 				11 => 'Order Already cancelled',
 				12 => 'Must Enter Cancellation reason'
 			);
+
 			$push_notif_title = 'Order canceled';
 			$push_notif_message = 'the order has been cancelled  because ';
 		}
@@ -3335,25 +3383,48 @@ public function cancel_order(Request $request){
 
  		     $actor_token = DB::table($notify_type_table) -> where($notify_column,$actor_id) -> first();
 
-		    if(!$actor_token){
  
+     /*
+     if($provider_token && $providerAllowNewOrderNotify == 1){
+			    	$push_notif =(new Push())->send($provider_token->device_reg_id, $notif_data,(new Push())->provider_key);
+			    }
+*/
+
+           $actorAllowcancelOrderNotify = 1; 
+
+          if($notify_type_table == 'providers'){
+                   
+                    $actorAllowcancelOrderNotify = (new NotifyC()) -> check_notification($actor_id,'providers','cancelled_order'); 
+
+                 
+          }elseif ($notify_type_table == 'users') {
+          	       $actorAllowcancelOrderNotify = (new NotifyC()) -> check_notification($actor_id,'users','order_status_user'); 
+          } 
+          
+
+		    if(!$actor_token && $actorAllowcancelOrderNotify == 1){
+
 		    	$push_notif = (new Push())->send($actor_token->device_reg_id,$notif_data,(new Push())->$key);
 
 		    }
 
+                
+               if($actorAllowcancelOrderNotify == 1 ){
 
-			      DB::table("notifications")
-		            ->insert([
-		                "en_title"           => $push_notif_title .'-'.$order_id ,
-		                "ar_title"           => $push_notif_title.'-'.$order_id ,
-		                "en_content"         => $push_notif_message.'-'.$request -> reason,
-		                "ar_content"         => $push_notif_message.'-'.$request -> reason,
-		                "notification_type"  => 1,
-		                "actor_id"           => $actor_token-> $notify_column,
-		                "actor_type"         => $notify_actor_type,
-		                "action_id"          => $order_id
+				      DB::table("notifications")
+			            ->insert([
+			                "en_title"           => $push_notif_title .'-'.$order_id ,
+			                "ar_title"           => $push_notif_title.'-'.$order_id ,
+			                "en_content"         => $push_notif_message.'-'.$request -> reason,
+			                "ar_content"         => $push_notif_message.'-'.$request -> reason,
+			                "notification_type"  => 1,
+			                "actor_id"           => $actor_token-> $notify_column,
+			                "actor_type"         => $notify_actor_type,
+			                "action_id"          => $order_id
 
-		            ]);
+			            ]);
+
+		            }
 
 
 

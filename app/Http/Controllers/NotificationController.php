@@ -543,4 +543,19 @@ class NotificationController extends Controller
     }
 
 
+public function check_notification($actor_id , $type ,$notify){
+
+    $settings = DB::table('notification_settings') -> where('actor_id',$actor_id) -> where('type',$type) ->select($notify) ->  first();
+
+    if($settings){
+          
+          return $settings -> $notify;
+
+    }else{
+
+         return 1; // if ther is no notifications settings allow any notify 
+    }
+
+}
+
 }

@@ -11,11 +11,7 @@
 | author   ahmed Emam
 | email    ahmedaboemam123@gmail.com  
 */
-
-             
-
  
-
 
 Route::group(['middleware' => ['api_auth'], 'prefix' => 'api'], function() {
  
