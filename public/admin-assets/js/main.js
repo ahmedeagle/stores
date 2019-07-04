@@ -386,6 +386,7 @@ $(document).ready(function() {
         }
     });
     
+    // validation using javascript 
     $('#create-provider').form({
         fields: {
             fname: {
@@ -544,6 +545,8 @@ $(document).ready(function() {
         }
     });
     
+
+
     $('#create-delivery').form({
         fields: {
             fname: {

@@ -15,7 +15,7 @@
 
         <!-- Fave Icons
         ================================-->
-        <link rel="shortcut icon" href="{{ url('admin-assets/images/fav.png') }}">
+        <link rel="shortcut icon" href="<?php echo e(url('admin-assets/images/fav.png')); ?>">
           
         <!-- Google Web Fonts 
         ===================================-->
@@ -24,19 +24,19 @@
         
         <!-- Css Base And Vendor 
         ===================================-->
-        <link rel="stylesheet" href="{{ url('admin-assets/vendor/bootstrap/css/bootstrap-ar.css') }}">
-        <link rel="stylesheet" href="{{ url('admin-assets/vendor/font-awesome/css/font-awesome.min.css') }}">
-        <link rel="stylesheet" href="{{ url('admin-assets/vendor/semantic/semantic.min.css') }}">
+        <link rel="stylesheet" href="<?php echo e(url('admin-assets/vendor/bootstrap/css/bootstrap-ar.css')); ?>">
+        <link rel="stylesheet" href="<?php echo e(url('admin-assets/vendor/font-awesome/css/font-awesome.min.css')); ?>">
+        <link rel="stylesheet" href="<?php echo e(url('admin-assets/vendor/semantic/semantic.min.css')); ?>">
         <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />
-        <link href="{{ url('admin-assets/vendor/datepicker/jquery.datetimepicker.min.css') }}" rel="stylesheet">
-        <link href="{{ url('admin-assets/vendor/colorpicker/jquery.minicolors.css') }}" rel="stylesheet">
-        <link href="{{ url('admin-assets/vendor/magnific-popup/css/magnific-popup.css') }}" rel="stylesheet">
-        <link href="{{ url('admin-assets/vendor/magnific-popup/css/custom.css') }}" rel="stylesheet">
+        <link href="<?php echo e(url('admin-assets/vendor/datepicker/jquery.datetimepicker.min.css')); ?>" rel="stylesheet">
+        <link href="<?php echo e(url('admin-assets/vendor/colorpicker/jquery.minicolors.css')); ?>" rel="stylesheet">
+        <link href="<?php echo e(url('admin-assets/vendor/magnific-popup/css/magnific-popup.css')); ?>" rel="stylesheet">
+        <link href="<?php echo e(url('admin-assets/vendor/magnific-popup/css/custom.css')); ?>" rel="stylesheet">
         <!-- Site Css
         ====================================-->
-        <link rel="stylesheet" href="{{ url('admin-assets/css/style.css') }}">
-        <link rel="stylesheet" href="{{ url('admin-assets/css/custom.css') }}">
-        <link rel="stylesheet" href="{{ url('admin-assets/css/rtl.css') }}">
+        <link rel="stylesheet" href="<?php echo e(url('admin-assets/css/style.css')); ?>">
+        <link rel="stylesheet" href="<?php echo e(url('admin-assets/css/custom.css')); ?>">
+        <link rel="stylesheet" href="<?php echo e(url('admin-assets/css/rtl.css')); ?>">
         <style>
             /* Always set the map height explicitly to define the size of the div
             * element that contains the map. */
@@ -101,10 +101,10 @@
                     <aside class="sidebar">
                         <ul class="side-menu-links">
                             <li>
-                                <a rel="nofollow" rel="noreferrer" href=" {{route('home')}}">الرئيسية</a>
+                                <a rel="nofollow" rel="noreferrer" href=" <?php echo e(route('home')); ?>">الرئيسية</a>
                             </li>
                             <li>
-                                <a rel="nofollow" rel="noreferrer" href="{{ route('setting.show') }}">الأعدادت</a>
+                                <a rel="nofollow" rel="noreferrer" href="<?php echo e(route('setting.show')); ?>">الأعدادت</a>
                             </li>
 
  
@@ -116,10 +116,10 @@
                                 </a>
                                 <ul>
                                     <li>
-                                        <a rel="nofollow" rel="noreferrer" href="{{ route('admins.show') }}">قائمة  المدرين </a>
+                                        <a rel="nofollow" rel="noreferrer" href="<?php echo e(route('admins.show')); ?>">قائمة  المدرين </a>
                                     </li>
                                     <li>    
-                                        <a rel="nofollow" rel="noreferrer" href="{{  route('create_admin') }}">إضافة  مدير جديد  </a>
+                                        <a rel="nofollow" rel="noreferrer" href="<?php echo e(route('create_admin')); ?>">إضافة  مدير جديد  </a>
                                     </li>
                                 </ul>
                             </li>
@@ -132,10 +132,10 @@
                                 </a>
                                 <ul>
                                     <li>
-                                        <a rel="nofollow" rel="noreferrer" href="{{ route('user.show') }}">قائمة المستخدمين</a>
+                                        <a rel="nofollow" rel="noreferrer" href="<?php echo e(route('user.show')); ?>">قائمة المستخدمين</a>
                                     </li>
                                     <li>    
-                                        <a rel="nofollow" rel="noreferrer" href="{{ route('user.create') }}">إضافة مستخدم </a>
+                                        <a rel="nofollow" rel="noreferrer" href="<?php echo e(route('user.create')); ?>">إضافة مستخدم </a>
                                     </li>
                                 </ul>
                             </li>
@@ -146,10 +146,10 @@
                                 </a>
                                 <ul>
                                     <li>
-                                        <a rel="nofollow" rel="noreferrer" href="{{ route('provider.show') }}">قائمة مقدمى الخدمة</a>
+                                        <a rel="nofollow" rel="noreferrer" href="<?php echo e(route('provider.show')); ?>">قائمة مقدمى الخدمة</a>
                                     </li>
                                     <li>    
-                                        <a rel="nofollow" rel="noreferrer" href="{{ route('provider.create') }}">إضافة مقدم خدمة</a>
+                                        <a rel="nofollow" rel="noreferrer" href="<?php echo e(route('provider.create')); ?>">إضافة مقدم خدمة</a>
                                     </li>
                                     <li>    
                                         <a rel="nofollow" rel="noreferrer" href=" ">إيرادات مقدمى الخدمة</a>
@@ -164,7 +164,7 @@
                                 </a>
                                 <ul>
                                     <li>
-                                        <a rel="nofollow" rel="noreferrer" href="{{ route('offers.show') }}">  قائمه العروض  </a>
+                                        <a rel="nofollow" rel="noreferrer" href="<?php echo e(route('offers.show')); ?>">  قائمه العروض  </a>
                                     </li>
 
                                     
@@ -180,11 +180,11 @@
                                 </a>
                                 <ul>
                                     <li>
-                                        <a rel="nofollow" rel="noreferrer" href="{{ route('requests.show') }}">  قائمه  طلبات التمييز   </a>
+                                        <a rel="nofollow" rel="noreferrer" href="<?php echo e(route('requests.show')); ?>">  قائمه  طلبات التمييز   </a>
                                     </li>
 
                                     <li>    
-                                        <a rel="nofollow" rel="noreferrer" href="{{ route('requests.reports') }}"> تقارير  طلبات التمييز  </a>
+                                        <a rel="nofollow" rel="noreferrer" href="<?php echo e(route('requests.reports')); ?>"> تقارير  طلبات التمييز  </a>
                                     </li>
  
                                     
@@ -198,13 +198,13 @@
                                 </a>
                                 <ul>
                                     <li>
-                                        <a rel="nofollow" rel="noreferrer" href="{{ route('deliveries.show') }}">قائمة الموصلين</a>
+                                        <a rel="nofollow" rel="noreferrer" href="<?php echo e(route('deliveries.show')); ?>">قائمة الموصلين</a>
                                     </li>
                                     <li>    
-                                        <a rel="nofollow" rel="noreferrer" href="{{ route('deliveries.create') }}">إضافة موصل</a>
+                                        <a rel="nofollow" rel="noreferrer" href="<?php echo e(route('deliveries.create')); ?>">إضافة موصل</a>
                                     </li>
                                     <li>    
-                                        <a rel="nofollow" rel="noreferrer" href="{{ route('delivery.income.show') }}">قائمة إيرادات الموصلين</a>
+                                        <a rel="nofollow" rel="noreferrer" href="<?php echo e(route('delivery.income.show')); ?>">قائمة إيرادات الموصلين</a>
                                     </li>
                                 </ul>
                             </li>
@@ -215,15 +215,15 @@
                                 </a>
                                 <ul>
                                     <li>
-                                        <a rel="nofollow" rel="noreferrer" href="{{ route('category.show') }}">قائمة التصنفيات</a>
+                                        <a rel="nofollow" rel="noreferrer" href="<?php echo e(route('category.show')); ?>">قائمة التصنفيات</a>
                                     </li>
                                     <li>    
-                                        <a rel="nofollow" rel="noreferrer" href="{{ route('category.create') }}">إضافة تصنيف جديد</a>
+                                        <a rel="nofollow" rel="noreferrer" href="<?php echo e(route('category.create')); ?>">إضافة تصنيف جديد</a>
                                     </li>
                                 </ul>
                             </li>
                             <li>
-                                <a rel="nofollow" rel="noreferrer" href="{{ route('orders.filter') }}">الطلبات</a>
+                                <a rel="nofollow" rel="noreferrer" href="<?php echo e(route('orders.filter')); ?>">الطلبات</a>
                             </li>
                             <!-- <li class="sub-menu">
                                 <a rel="nofollow" rel="noreferrer" href="javascript:void(0);">
@@ -249,10 +249,10 @@
                                 </a>
                                 <ul>
                                     <li>
-                                        <a rel="nofollow" rel="noreferrer" href="{{ route('requests.today') }}">عمليات السحب اليومية</a>
+                                        <a rel="nofollow" rel="noreferrer" href="<?php echo e(route('requests.today')); ?>">عمليات السحب اليومية</a>
                                     </li>
                                     <li>    
-                                        <a rel="nofollow" rel="noreferrer" href="{{ route('requests.show') }}">قائمة عمليات السحب</a>
+                                        <a rel="nofollow" rel="noreferrer" href="<?php echo e(route('requests.show')); ?>">قائمة عمليات السحب</a>
                                     </li>
                                 </ul>
                             </li>
@@ -263,18 +263,18 @@
                                 </a>
                                 <ul>
                                     <li>
-                                        <a rel="nofollow" rel="noreferrer" href="{{ route('invoices.filter') }}">قائمة الفواتير</a>
+                                        <a rel="nofollow" rel="noreferrer" href="<?php echo e(route('invoices.filter')); ?>">قائمة الفواتير</a>
                                     </li>
                                     <li>    
-                                        <a rel="nofollow" rel="noreferrer" href="{{ route('invoices.create') }}">إنشاء فاتورة</a>
+                                        <a rel="nofollow" rel="noreferrer" href="<?php echo e(route('invoices.create')); ?>">إنشاء فاتورة</a>
                                     </li>
                                 </ul>
                             </li>
                             <li>
-                                <a rel="nofollow" rel="noreferrer" href="{{ route('balances.show') }}">الأرصدة</a>
+                                <a rel="nofollow" rel="noreferrer" href="<?php echo e(route('balances.show')); ?>">الأرصدة</a>
                             </li>
                             <li>
-                                <a rel="nofollow" rel="noreferrer" href="{{ route('income.app') }}">إيرادات التطبيق</a>
+                                <a rel="nofollow" rel="noreferrer" href="<?php echo e(route('income.app')); ?>">إيرادات التطبيق</a>
                             </li>
                             <li class="sub-menu">
                                 <a rel="nofollow" rel="noreferrer" href="javascript:void(0);">
@@ -283,10 +283,10 @@
                                 </a>
                                 <ul>
                                     <li>
-                                        <a rel="nofollow" rel="noreferrer" href="{{ route('complains.today') }}">الشكاوى اليومية</a>
+                                        <a rel="nofollow" rel="noreferrer" href="<?php echo e(route('complains.today')); ?>">الشكاوى اليومية</a>
                                     </li>
                                     <li>    
-                                        <a rel="nofollow" rel="noreferrer" href="{{ route('complains.show') }}">قائمة الشكاوى</a>
+                                        <a rel="nofollow" rel="noreferrer" href="<?php echo e(route('complains.show')); ?>">قائمة الشكاوى</a>
                                     </li>
                                 </ul>
                             </li>
@@ -297,10 +297,10 @@
                                 </a>
                                 <ul>
                                     <li>
-                                        <a rel="nofollow" rel="noreferrer" href="{{ route('comments.today') }}">التعليقات اليومية</a>
+                                        <a rel="nofollow" rel="noreferrer" href="<?php echo e(route('comments.today')); ?>">التعليقات اليومية</a>
                                     </li>
                                     <li>    
-                                        <a rel="nofollow" rel="noreferrer" href="{{ route('comments.show') }}">قائمة التعليقات</a>
+                                        <a rel="nofollow" rel="noreferrer" href="<?php echo e(route('comments.show')); ?>">قائمة التعليقات</a>
                                     </li>
                                 </ul>
                             </li>
@@ -311,10 +311,10 @@
                                 </a>
                                 <ul>
                                     <li>
-                                        <a rel="nofollow" rel="noreferrer" href="{{ route('provider.evaluations.show') }}">تقييمات مقدمين الخدمة</a>
+                                        <a rel="nofollow" rel="noreferrer" href="<?php echo e(route('provider.evaluations.show')); ?>">تقييمات مقدمين الخدمة</a>
                                     </li>
                                     <li>    
-                                        <a rel="nofollow" rel="noreferrer" href="{{ route('delivery.evaluations.show') }}">تقييمات الموصلين</a>
+                                        <a rel="nofollow" rel="noreferrer" href="<?php echo e(route('delivery.evaluations.show')); ?>">تقييمات الموصلين</a>
                                     </li>
                                 </ul>
                             </li>
@@ -330,17 +330,17 @@
                         </div>
                         
                     </div>
-                    @yield('content')
+                    <?php echo $__env->yieldContent('content'); ?>
                     
                 </div><!--End Page-Content-->
            </div><!--End Main-->
         </div>
            <!-- JS Base And Vendor 
         ===================================-->
-        <script src="{{ url('admin-assets/vendor/jquery/jquery.js') }}"></script>
-        <script src="{{ url('admin-assets/vendor/bootstrap/js/bootstrap.min.js') }}"></script>
+        <script src="<?php echo e(url('admin-assets/vendor/jquery/jquery.js')); ?>"></script>
+        <script src="<?php echo e(url('admin-assets/vendor/bootstrap/js/bootstrap.min.js')); ?>"></script>
 
-        <script src="{{ url('admin-assets/vendor/datatables/datatables.js') }}"></script>        
+        <script src="<?php echo e(url('admin-assets/vendor/datatables/datatables.js')); ?>"></script>        
 
         <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.3.1/js/dataTables.buttons.min.js"></script>
          <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.3.1/js/buttons.flash.min.js"></script>
@@ -351,32 +351,32 @@
         <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.3.1/js/buttons.print.min.js"></script>
         <script src="https://cdn.ckeditor.com/4.7.0/standard/ckeditor.js"></script>
     
-        <script src="{{ url('admin-assets/vendor/semantic/semantic.min.js') }}"></script>
+        <script src="<?php echo e(url('admin-assets/vendor/semantic/semantic.min.js')); ?>"></script>
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
         
-        <script src="{{ url('admin-assets/vendor/datepicker/jquery.datetimepicker.full.min.js') }}"></script>
+        <script src="<?php echo e(url('admin-assets/vendor/datepicker/jquery.datetimepicker.full.min.js')); ?>"></script>
         
-        <script src="{{ url('admin-assets/vendor/colorpicker/jquery.minicolors.min.js') }}"></script>
+        <script src="<?php echo e(url('admin-assets/vendor/colorpicker/jquery.minicolors.min.js')); ?>"></script>
 
-        <script src="{{ url('admin-assets/vendor/magnific-popup/js/magnific-popup.js') }}"></script>
-        <script src="{{ url('admin-assets/vendor/count-to/jquery.countTo.js') }}"></script>
+        <script src="<?php echo e(url('admin-assets/vendor/magnific-popup/js/magnific-popup.js')); ?>"></script>
+        <script src="<?php echo e(url('admin-assets/vendor/count-to/jquery.countTo.js')); ?>"></script>
 
         <!-- Site JS
         ====================================-->
-        <script src="{{ url('admin-assets/js/main.js') }}"></script>
-        <script src="{{ url('admin-assets/js/custom.js') }}"></script>
-        @yield('customJs')
+        <script src="<?php echo e(url('admin-assets/js/main.js')); ?>"></script>
+        <script src="<?php echo e(url('admin-assets/js/custom.js')); ?>"></script>
+        <?php echo $__env->yieldContent('customJs'); ?>
         <!-- <script 
         src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCXBOJbpMWx-frwLP2BfsDdlzEG48mn9rc&callback=initMap" 
         async defer></script> -->
         <!-- 
             <script src="http://maps.googleapis.com/maps/api/js?key=AIzaSyCXBOJbpMWx-frwLP2BfsDdlzEG48mn9rc&amp;sensor=false&amp;signed_in=true&amp;libraries=geometry,places"></script>
             <script src="https://google-maps-utility-library-v3.googlecode.com/svn-history/r287/trunk/markerclusterer/src/markerclusterer.js"></script>
-            <script src="{{ url('admin-assets/js/maperizer/List.js') }}"></script>
-            <script src="{{ url('admin-assets/js/maperizer/Maperizer.js') }}"></script>
-            <script src="{{ url('admin-assets/js/maperizer/map-options.js') }}"></script>
-            <script src="{{ url('admin-assets/js/maperizer/jqueryui.maperizer.js') }}"></script>
+            <script src="<?php echo e(url('admin-assets/js/maperizer/List.js')); ?>"></script>
+            <script src="<?php echo e(url('admin-assets/js/maperizer/Maperizer.js')); ?>"></script>
+            <script src="<?php echo e(url('admin-assets/js/maperizer/map-options.js')); ?>"></script>
+            <script src="<?php echo e(url('admin-assets/js/maperizer/jqueryui.maperizer.js')); ?>"></script>
         -->
     </body>
 </html>

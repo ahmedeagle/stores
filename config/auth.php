@@ -46,7 +46,7 @@ return [
             'provider' => 'users',
         ],
 
-        'zad_admin' => [
+        'admin' => [
             'driver' => 'session',
             'provider' => 'admins',
         ],

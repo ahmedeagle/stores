@@ -17,7 +17,7 @@ class AuthenticateAdmin
      */
     public function handle($request, Closure $next)
     {
-        if (!Auth::guard('zad_admin')->check()) {
+        if (!Auth::guard('admin')->check()) {
             return redirect()->route('loginView');
         }
 

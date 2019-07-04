@@ -15,7 +15,7 @@
 
         <!-- Fave Icons
         ================================-->
-        <link rel="shortcut icon" href="{{ url('admin-assets/images/fav.png') }}">
+        <link rel="shortcut icon" href="<?php echo e(url('admin-assets/images/fav.png')); ?>">
           
         <!-- Google Web Fonts 
 		===================================-->
@@ -24,12 +24,12 @@
         
         <!-- Css Base And Vendor 
         ===================================-->
-        <link rel="stylesheet" href="{{ url('admin-assets/vendor/bootstrap/css/bootstrap-en.css') }}">
-        <link rel="stylesheet" href="{{ url('admin-assets/vendor/font-awesome/css/font-awesome.min.css') }}">
+        <link rel="stylesheet" href="<?php echo e(url('admin-assets/vendor/bootstrap/css/bootstrap-en.css')); ?>">
+        <link rel="stylesheet" href="<?php echo e(url('admin-assets/vendor/font-awesome/css/font-awesome.min.css')); ?>">
         
         <!-- Site Css
         ====================================-->
-        <link rel="stylesheet" href="{{ url('admin-assets/css/pages.css') }}">
+        <link rel="stylesheet" href="<?php echo e(url('admin-assets/css/pages.css')); ?>">
         
         <!--[if lt IE 9]>
             <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
@@ -49,7 +49,7 @@
                                         <div class="num">404</div>
                                         <div class="status">للاسف !</div>
                                         <div class="status">الصفحة غير موجودة</div>
-                                        <a href="{{route('home')}}" class="custom-btn">الرجوع للرئيسية</a>
+                                        <a href="<?php echo e(route('home')); ?>" class="custom-btn">الرجوع للرئيسية</a>
                                     </div>
                                 </div>
                             </div>
@@ -60,8 +60,8 @@
         </div>
         <!-- JS Base And Vendor 
         ===================================-->
-        <script src="{{ url('admin-assets/vendor/jquery/jquery.js') }}"></script>
-        <script src="{{ url('admin-assets/vendor/bootstrap/js/bootstrap.min.js') }}"></script>
-        <script src="{{ url('admin-assets/js/pages.js') }}"></script>
+        <script src="<?php echo e(url('admin-assets/vendor/jquery/jquery.js')); ?>"></script>
+        <script src="<?php echo e(url('admin-assets/vendor/bootstrap/js/bootstrap.min.js')); ?>"></script>
+        <script src="<?php echo e(url('admin-assets/js/pages.js')); ?>"></script>
      
     </body>

@@ -1,5 +1,4 @@
-@extends('cpanel.layout.master')
-@section('content')
+<?php $__env->startSection('content'); ?>
    <div class="content">
         <div class="col-sm-12">
             <div class="widget">
@@ -10,7 +9,7 @@
                                 <i class="fa fa-user-o"></i>
                             </div>
                             <div class="counter-content"> 
-                                <div class="timer" data-to="{{ ($users != NULL)? $users : 0 }}" data-speed="2500">{{ ($users != NULL)? $users : 0 }}</div>
+                                <div class="timer" data-to="<?php echo e(($users != NULL)? $users : 0); ?>" data-speed="2500"><?php echo e(($users != NULL)? $users : 0); ?></div>
                                 <span>المستخدمين</span>
                             </div>
                         </div>
@@ -21,7 +20,7 @@
                                 <i class="fa fa-user-o"></i>
                             </div>
                             <div class="counter-content"> 
-                                <div class="timer" data-to="{{ ($providers != NULL)? $providers : 0 }}" data-speed="2500">{{ ($providers != NULL)? $providers : 0 }}</div>
+                                <div class="timer" data-to="<?php echo e(($providers != NULL)? $providers : 0); ?>" data-speed="2500"><?php echo e(($providers != NULL)? $providers : 0); ?></div>
                                 <span>مقدمين الخدمات</span>
                             </div>
                         </div>
@@ -32,7 +31,7 @@
                                 <i class="fa fa-user-o"></i>
                             </div>
                             <div class="counter-content"> 
-                                <div class="timer" data-to="{{ ($deliveries != NULL)? $deliveries : 0 }}" data-speed="2500">{{ ($deliveries != NULL)? $deliveries : 0 }}</div>
+                                <div class="timer" data-to="<?php echo e(($deliveries != NULL)? $deliveries : 0); ?>" data-speed="2500"><?php echo e(($deliveries != NULL)? $deliveries : 0); ?></div>
                                 <span>الموصلين</span>
                             </div>
                         </div>
@@ -43,7 +42,7 @@
                                 <i class="fa fa-cutlery"></i>
                             </div>
                             <div class="counter-content"> 
-                                <div class="timer" data-to="{{ ($products != NULL)? $products : 0 }}" data-speed="2500">{{ ($products != NULL)? $products : 0 }}</div>
+                                <div class="timer" data-to="<?php echo e(($products != NULL)? $products : 0); ?>" data-speed="2500"><?php echo e(($products != NULL)? $products : 0); ?></div>
                                 <span>الوجبات</span>
                             </div>
                         </div>
@@ -54,7 +53,7 @@
                                 <i class="fa fa-user-o"></i>
                             </div>
                             <div class="counter-content"> 
-                                <div class="timer" data-to="{{ ($sale != NULL)? $sale : 0 }}" data-speed="2500">{{ ($sale != NULL)? $sale : 0 }}</div>
+                                <div class="timer" data-to="<?php echo e(($sale != NULL)? $sale : 0); ?>" data-speed="2500"><?php echo e(($sale != NULL)? $sale : 0); ?></div>
                                 <span>المدخلات</span>
                             </div>
                         </div>
@@ -65,7 +64,7 @@
                                 <i class="fa fa-user-o"></i>
                             </div>
                             <div class="counter-content"> 
-                                <div class="timer" data-to="{{ ($return != NULL)? $return : 0 }}" data-speed="2500">{{ ($return != NULL)? $return : 0 }}</div>
+                                <div class="timer" data-to="<?php echo e(($return != NULL)? $return : 0); ?>" data-speed="2500"><?php echo e(($return != NULL)? $return : 0); ?></div>
                                 <span>المرجعات</span>
                             </div>
                         </div>
@@ -76,7 +75,7 @@
                                 <i class="fa fa-comment-o"></i>
                             </div>
                             <div class="counter-content"> 
-                                <div class="timer" data-to="{{ ($comments != NULL)? $comments : 0 }}" data-speed="2500">{{ ($comments != NULL)? $comments : 0 }}</div>
+                                <div class="timer" data-to="<?php echo e(($comments != NULL)? $comments : 0); ?>" data-speed="2500"><?php echo e(($comments != NULL)? $comments : 0); ?></div>
                                 <span>التعليقات</span>
                             </div>
                         </div>
@@ -88,4 +87,5 @@
         </div>
     </div>
     
-@stop
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('cpanel.layout.master', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

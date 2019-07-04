@@ -42,35 +42,19 @@
                         </div>
                         <div class="two fields">
                             <div class="ui field">
-                                <label>الوقت بالساعات :<span class="require">*</span></label>
+                                <label>اقصي وقت بالساعات  لتوصيل الطلب   :<span class="require">*</span></label>
                                 <div class="ui input">
                                     <input name="hours" id="hours" type="text" placeholder="الوقت بالساعات" value="{{ (!empty($setting->time_in_hours))? $setting->time_in_hours : old('hours') }}" />
                                 </div>
                             </div>
                             <div class="ui field">
-                                <label>الوقت بالدقايق:<span class="require">*</span></label>
+                                <label> اقصي وقت بالدقائق لتوصيل الطلب :<span class="require">*</span></label>
                                 <div class="ui input">
                                     <input name="minutes" id="minutes" type="text" placeholder="الوقت بالدقائق" value="{{ (!empty($setting->time_in_min))? $setting->time_in_min : old('minutes') }}" />
                                 </div>
                             </div>
                         </div>
-                        <!--start adding minimum time taken by provider to finish the order  -->
-                        <div class="ui field">
-                            <label>اقصى وقت مسموح للمقدم لتجهيز الطلب بالدقائق<span class="require">*</span></label>
-                            <div class="ui input">
-                                <input name="max_time_to_process_order" id="max_time_to_process_order" type="text" placeholder="اقصى وقت مسموح للمقدم لتجهيز الطلب" value="{{ (!empty($setting->max_time_to_process_order))? $setting->max_time_to_process_order  : old('max_time_to_process_order') }}" />
-                            </div>
-                        </div>
-                        <!--end adding minimum time taken by provider to finish the order -->
-
-                        <!--start adding minimum time taken by delivery to accept or reject the order  -->
-                        <div class="ui field">
-                            <label> اقصى وقت مسموح للموصل لقبول الطلب بالدقائق<span class="require">*</span></label>
-                            <div class="ui input">
-                                <input name="max_time_to_accept_order" id="max_time_to_accept_order" type="text" placeholder="اقصى وقت مسموح للموصل لقبول الطلب" value="{{ (!empty($setting->max_time_to_accept_order))? $setting->max_time_to_accept_order  : old('max_time_to_accept_order') }}" />
-                            </div>
-                        </div>
-                        <!--end adding minimum time taken by provider to finish the order -->
+                        
 
                             <div class="spacer-25"></div><!--End Spacer-->
                         <div class="widget-title">
@@ -78,23 +62,18 @@
                         </div>
                         <div class="three fields">
                             <div class="ui field">
-                                <label>نسبة مزود خدمة مذاق: <span class="require">*</span></label>
+                                <label>نسبة مزود خدمة استور ماب : <span class="require">*</span></label>
                                 <div class="ui input">
-                                    <input name="provider" id="provider" type="text" placeholder="نسبة مزود خدمة مذاق" value="{{ (!empty($setting->app_percentage))? $setting->app_percentage  : old('provider') }}" />
+                                    <input name="provider" id="provider" type="text" placeholder="نسبة مزود خدمة  استور ماب " value="{{ (!empty($setting->app_percentage))? $setting->app_percentage  : old('provider') }}" />
                                 </div>
                             </div>
                             <div class="ui field">
-                                <label>نسبة التسليم <span class="require">*</span></label>
+                                <label>نسبة  الموصلين <span class="require">*</span></label>
                                 <div class="ui input">
                                     <input name="delivery" id="delivery" type="text" placeholder="نسبة التسليم" value="{{ (!empty($setting->delivery_percentage))? $setting->delivery_percentage  : old('delivery') }}" />
                                 </div>
                             </div>
-                            <div class="ui field">
-                                <label>نسبة المسوقين: <span class="require">*</span></label>
-                                <div class="ui input">
-                                    <input name="marketer" id="marketer" type="text" placeholder="نسبة المسقين:" value="{{ (!empty($setting->marketer_percentage))? $setting->marketer_percentage  : old('marketer') }}" />
-                                </div>
-                            </div>
+                            
                             <!--start adding minimum limit of requested balance to withdraw  -->
                             <div class="ui field">
                                 <label>:الحد الادنى لسحب الرصيد <span class="require">*</span></label>
@@ -115,12 +94,7 @@
                                     <input name="kilo" id="kilo" type="text" placeholder="سعر الكيلو" value="{{ (!empty($setting->kilo_price))? $setting->kilo_price  : old('kilo') }}" />
                                 </div>
                             </div>
-                            <div class="ui field">
-                                <label>السعر المبدئى المضاف على سعر الطلب :<span class="require">*</span></label>
-                                <div class="ui input">
-                                    <input name="initial_value_added_order_price" id="initial_value_added_order_price" type="text" placeholder="السعر المبدئى للطلب" value="{{ (!empty($setting->initial_value_added_order_price))? $setting->initial_value_added_order_price  : old('initial_value_added_order_price') }}" />
-                                </div>
-                            </div>
+                            
                             <div class="ui field">
                                 <label>سعر التوصيل خارج المدينة :<span class="require">*</span></label>
                                 <div class="ui input">
@@ -156,6 +130,22 @@
                                 </div>
                             </div>
                         </div>
+
+                        <div class="two fields">
+                            <div class="ui field">
+                                <label> تكلفة  اليوم للعروض   <span class="require">*</span></label>
+                                <div class="ui input">
+                                    <input name="offer_day_coast" id="offer_day_coast" type="text" placeholder="offer day coast" value="{{ (!empty($setting->offer_day_coast))? $setting->offer_day_coast : old('offer_day_coast') }}" />
+                                </div>
+                            </div>
+                            <div class="ui field">
+                                <label>  تكلفه  اليوم لطلبات التمييز  <span class="require">*</span></label>
+                                <div class="ui input">
+                                    <input name="excellence_day_coast" id="excellence_day_coast" type="text" placeholder="excellence day coast " value="{{ (!empty($setting->excellence_day_coast))? $setting->excellence_day_coast : old('excellence_day_coast') }}" />
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="spacer-25"></div><!--End Spacer-->
                         <div class="ui right algined inline field">
                             <button type="submit" class="custom-btn">

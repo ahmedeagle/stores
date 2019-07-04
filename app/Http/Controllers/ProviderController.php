@@ -957,9 +957,7 @@ class ProviderController extends Controller
 							->first();
 			if($getProvider != NULL){
 
-                      
-
-
+                       
                        //update device FCM token 
 				Providers::where('provider_id', $getProvider->provider_id)->update(['device_reg_id' => $request->input('provider_token')]);
 

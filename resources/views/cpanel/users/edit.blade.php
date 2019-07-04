@@ -19,7 +19,8 @@
     <div class="col-md-3">
         <div class="profile-card">
             <div class="profile-img">
-                <img src="{{ (!empty($user) && !empty($user->profile_pic))? $user->profile_pic : url('admin-assets/images/avatar_big_ic.png') }}" alt="">
+
+                 <img src="{{ (!empty($user) && !empty($user->profile_pic))? env('APP_URL').'/public/userProfileImages/'.$user->profile_pic : url('admin-assets/images/avatar_big_ic.png') }}" alt="">
             </div><!--End profile-img-->
             <div class="profile-name">
                 
@@ -156,6 +157,27 @@
                             <input class="form-control" type="text" value="{{ old('passwordcon2') }}" name="passwordcon2">
                         </div>
                     </div><!--End form-group-->
+
+
+                       <div class="ui field">
+                        <label>
+                            الحالة  :  <span class="require">*</span>
+                        </label>
+                        <div class="ui input">
+                            <select   name="status">
+                                <option value="">إختار  حاله  : </option>
+                               
+                                  <option value="1" {{$user-> status == 1 ? 'selected' : '' }}>مفعل 
+                                  </option>
+
+                                  <option value="0" {{$user-> status == 0 ? 'selected' : '' }}> غير مفعل  
+                                  </option>
+                                   
+                            </select>
+                        </div>
+                    </div><!--End form-widget-->
+
+
                     <hr>
                     <div class="spacer-20"></div>
                     <div class="ui form">

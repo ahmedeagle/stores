@@ -93,7 +93,8 @@ class UsersController extends Controller
 	public function update(Request $request){
 		$validate = Validator::make($request->all(), [
 			'phone' => 'required|unique:users,phone,'.$request->input('user_id').',user_id',
-			'email' => 'required|unique:users,email,'.$request->input('user_id').',user_id'
+			'email' => 'required|unique:users,email,'.$request->input('user_id').',user_id',
+			'status'=> 'required|in:0,1'
 		]);
 
 		if($validate->fails()){
@@ -126,7 +127,7 @@ class UsersController extends Controller
 						  		'phone'     => $request->input('phone'),
 						  		'country_code' => $request->input('country_code'),
 						  		'password'     => md5($request->input('password2')),
-						  		'status'       => $status,
+						  		'status'       => $request -> status,
 						  		'city_id'      => $request->input('city')
 						  	]);
 		}else{
@@ -136,7 +137,7 @@ class UsersController extends Controller
 						  		'email'     => $request->input('email'),
 						  		'phone'     => $request->input('phone'),
 						  		'country_code' => $request->input('country_code'),
-						  		'status'       => $status,
+						  		'status'       => $request -> status,
 						  		'city_id'      => $request->input('city')
 						  	]);
 		}

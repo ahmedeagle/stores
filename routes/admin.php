@@ -15,12 +15,17 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+
+
+
 Route::group(['middleware' => 'admin_auth'], function(){
 	Route::get('/publishing/{id}/{val}/{proccess}/{col}/{table}', [
 		'uses' => 'Controller@publishing', 
 		'as'   => 'publishing' 
 	]);
 
+
+ 
 	Route::post('/countryCitiesAjax', [
 		'uses' => 'Controller@getCountryCitites',
 		'as'   => 'country.cities'
@@ -32,20 +37,22 @@ Route::group(['middleware' => 'admin_auth'], function(){
 	]);
 });
 
-Route::group(['prefix' => 'zad-cpanel', 'namespace' => 'Admin'], function() {
+Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function() {
 	Route::group(['middleware' => 'admin_auth'], function(){
-		Route::get('/', [
+
+		/*Route::get('/', [
 			'uses' => 'HomeController@index',
 			'as'   => 'home'
-		]);
+		]);*/
+ 
 
-		Route::get('/home', 'HomeController@index');
+
+		Route::get('/home', 'HomeController@index') -> name('home');
 
 		Route::get('logout', 'AdminController@logout');
 	});
 
-	Route::group(['prefix' => 'adminPanel'], function(){
-		Route::group(['middleware' => 'admin_guest'], function(){
+ 		Route::group(['middleware' => 'admin_guest'], function(){
 			Route::get('/', [
 				'uses' => 'AdminController@loginView',
 				'as'   => 'loginView'
@@ -57,24 +64,56 @@ Route::group(['prefix' => 'zad-cpanel', 'namespace' => 'Admin'], function() {
 			]);
 
 			Route::post('/loginAction', [
-				'uses' => 'AdminController@login',
+				'uses' => 'AdminController@postLogin',
 				'as'   => 'admin.login'
 			]);
 		});
 
 		Route::group(['middleware' => 'admin_auth'], function(){
-			Route::get('/create_admin', [
+			
+
+		Route::group(['prefix' => 'admins'], function(){
+
+			Route::get('/create', [
 				'uses' => 'AdminController@create_admin',
 				'as'   => 'create_admin'
 			]);
 
-			Route::post('/creatAdmin', [
+
+			Route::get('/', [
+				'uses' => 'AdminController@list',
+				'as'   => 'admins.show'
+			]);
+
+           Route::post('/save', [
 				'uses' => 'AdminController@create',
 				'as'   => 'admin.store'
 			]);
-		});
-	});
+  
+        
 
+         Route::get('/{id}/edit', [
+				'uses' => 'AdminController@edit',
+				'as'   => 'admin.edit'
+			]);
+
+          Route::post('/update', [
+				'uses' => 'AdminController@update',
+				'as'   => 'update_admin'
+			]);
+
+
+          Route::get('/delete/{id}', [
+				'uses' => 'AdminController@delete',
+				'as'   => 'admin.delete'
+			]);
+
+
+		});
+			
+			
+		});
+ 
 		
 	Route::group(['middleware' => 'admin_auth'], function(){
 		//providers routing
@@ -106,17 +145,25 @@ Route::group(['prefix' => 'zad-cpanel', 'namespace' => 'Admin'], function() {
 				'as'   => 'provider.update'
 			]);
 
-			Route::get('/orderProperties/{provider_id}', [
-				'uses' => 'ProviderController@getOrderProperties',
-				'as'   => 'provider.properties'
+			Route::get('/products/{provider_id}', [
+				'uses' => 'ProviderController@getProducts',
+				'as'   => 'provider.products'
 			]);
 
-			Route::post('/setOrderProperties', [
-				'uses' => 'ProviderController@saveOrderProperties',
-				'as'   => 'provider.setProperties'
+
+			Route::get('/product/{product_id}', [
+				'uses' => 'ProviderController@editProducts',
+				'as'   => 'product.edit'
 			]);
 
-			Route::get('/providerIncome', [
+
+			Route::post('/product/changestatus', [
+				'uses' => 'ProviderController@changeProductStatus',
+				'as'   => 'product.status'
+			]);
+
+			 
+			/*Route::get('/providerIncome', [
 				'uses' => 'ProviderController@getProviderIncomeView',
 				'as'   => 'provider.income.show'
 			]);
@@ -124,47 +171,49 @@ Route::group(['prefix' => 'zad-cpanel', 'namespace' => 'Admin'], function() {
 			Route::post('/incomeSearch', [
 				'uses' => 'ProviderController@incomeSearch',
 				'as'   => 'income.search'
-			]);
+			]);*/
 		});
 
-		Route::group(['prefix' => 'marketersPanel'], function(){
-			Route::get('/', 'MarketerController@show');
 
-			Route::get('/marketers', [
-				'uses' => 'MarketerController@show',
-				'as'   => 'marketers.show'
-			]);
+	 Route::group(['prefix' => 'offers'], function(){
 
-			Route::get('/addMarketer', [
-				'uses' => 'MarketerController@create',
-				'as'   => 'marketer.create'
-			]);
 
-			Route::post('/storeMarketer', [
-				'uses' => 'MarketerController@store',
-				'as'   => 'marketer.store'
-			]);
+				Route::get('/', [
+					'uses' => 'OffersController@show',
+					'as'   => 'offers.show'
+				]);
 
-			Route::get('/editMarketer/{id}', [
-				'uses' => 'MarketerController@edit',
-				'as'   => 'marketer.edit'
-			]);
 
-			Route::post('/updateMarketer', [
-				'uses' => 'MarketerController@update',
-				'as'   => 'marketer.update'
-			]);
+			 
 
-			Route::get('/marketerIncome', [
-				'uses' => 'MarketerController@getMarketerIncomeView',
-				'as'   => 'marketer.income.show'
-			]);
+				Route::get('/orders/{type}', [
+					'uses' => 'OffersController@getOrders',
+					'as'   => 'offers.status'
+				]);
 
-			Route::post('/marketerIncomeSearch', [
-				'uses' => 'MarketerController@incomeSearch',
-				'as'   => 'marketer.income.search'
-			]);
-		});
+
+				
+	 
+	 });
+
+
+
+
+	Route::group(['prefix' => 'requests'], function(){
+
+
+				Route::get('/', [
+					'uses' => 'RequestsController@show',
+					'as'   => 'requests.show'
+				]);
+
+
+				Route::get('/reports', [
+					'uses' => 'RequestsController@reports',
+					'as'   => 'requests.reports'
+				]);
+	 
+	 });
 
 		//deliveries routing
 		Route::group(['prefix' => 'deliveriesPanel'], function(){

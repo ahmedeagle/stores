@@ -30,9 +30,10 @@
                                 <strong>خطأ!</strong> {{ $errors->first() }}
                             </div>
                         @endif
-                        @if(!empty($msg))
+
+                        @if(Session::has('msg'))
                             <div class="alert alert-success">
-                                <strong>نجاح !</strong> {{ $msg }}
+                                <strong>نجاح !</strong> {{ Session::get('msg') }}
                             </div>
                         @endif
                         <div>
@@ -66,6 +67,25 @@
                                 </div>
                             </div>
                         </div>
+
+                          <div class="ui field">
+                        <label>
+                            الحالة  :  <span class="require">*</span>
+                        </label>
+                        <div class="ui input">
+                            <select   name="publish">
+                                <option value="">إختار  حاله  : </option>
+                               
+                                  <option value="1" >مفعل 
+                                  </option>
+
+                                  <option value="0" > غير مفعل  
+                                  </option>
+                                   
+                            </select>
+                        </div>
+                    </div><!--End form-widget-->
+
                         <div class="ui right algined inline field">
                             <button type="submit" class="custom-btn">
                                 <i class="fa fa-plus"></i>

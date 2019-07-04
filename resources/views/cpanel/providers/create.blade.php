@@ -1,4 +1,6 @@
 @extends('cpanel.layout.master')
+
+
 @section('content')
 <div class="content">
     <div class="col-sm-12" id="container">
@@ -21,15 +23,18 @@
                   نموذج إضافة مقدم خدمة
                 </div>
                 <div class="widget-content">
-                    <form class="ui form" id="create-provider" method="post" action="{{ route('provider.store') }}" enctype="multipart/form-data">
+                    <form class="ui form" id="create-providerr" method="post" action="{{ route('provider.store') }}" enctype="multipart/form-data">
                         <div class="form-title">من فضلك إملئ الحقول التالية </div>
                         <div class="form-note">[ * ] حقل مطلوب</div>
                         <div class="ui error message"></div>
+                       
                         @if(!empty($errors->first()))
                             <div class="alert alert-danger">
-                                <strong>خطأ !</strong> {{ $errors->first() }}
+                                <strong>خطأ !</strong> لابد من تصحيح الاخطاء الاتية 
                             </div>
                         @endif
+
+
                         @if(!empty($msg))
                             <div class="alert alert-success">
                                 <strong>تم بنجاح !</strong> {{ $msg }}
@@ -39,181 +44,163 @@
                             المعلومات الشخصية
                         </div>
                         <div class="two fields">
-                            <div class="ui field">
-                                <label>الأسم الأول :<span class="require">*</span></label>
+                            <div class="ui field @if ($errors->has('full_name')) error  @endif">
+                                <label> الاسم بالكامل :<span class="require">*</span></label>
                                 <div class="ui input">
-                                    <input name="fname" id="fname" type="text" placeholder="الأسم الأول" value="{{ old('fname') }}" />
+                                    <input   name="full_name" id="full_name" type="text" placeholder=" الاسم بالكامل " value="{{ old('full_name') }}" />
+ 
+                                     
                                 </div>
+                                  <div class="error-messagen">
+                                      @if($errors->has('full_name'))  
+                                          {{$errors -> first('full_name')}}
+                                      @endif
+                                  .</div>
+                                       
                             </div>
-                            <div class="ui field">
-                                <label>الأسم الأوسط :<span class="require">*</span></label>
+                            <div class="ui field @if ($errors->has('store_name')) error  @endif">
+                                <label>  اسم المتجر  :<span class="require">*</span></label>
                                 <div class="ui input">
-                                    <input name="sname" id="sname" type="text" placeholder="الأسم الأوسط" value="{{ old('sname') }}" />
+                                    <input name="store_name" id="store_name" type="text" placeholder="الأسم المتجر " value="{{ old('store_name') }}" />
+
                                 </div>
-                            </div>
-                        </div>
-                        <div class="two fields">
-                            <div class="ui field">
-                                <label>الأسم الأخير :<span class="require">*</span></label>
-                                <div class="ui input">
-                                    <input name="tname" id="tname" type="text" placeholder="الأسم الأخير" value="{{ old('tname') }}" />
-                                </div>
-                            </div>
-                            <div class="ui field">
-                                <label>إسم العائلة :<span class="require">*</span></label>
-                                <div class="ui input">
-                                    <input name="lname" id="lname" type="text" placeholder="إسم العائلة" value="{{ old('lname') }}" />
-                                </div>
-                            </div>
-                        </div>
-                        <div>
-                            <div class="ui field">
-                                <label>إسم الماركة :<span class="require">*</span></label>
-                                <div class="ui input">
-                                    <input name="bname" id="bname" type="text" placeholder="إسم الماركة" value="{{ old('bname') }}" />
-                                </div>
+                                 <div class="error-messagen">
+                                      @if($errors->has('store_name'))  
+                                          {{$errors -> first('store_name')}}
+                                      @endif
+                                  .</div>
+                                  
                             </div>
                         </div>
+
+  
                         <div class="spacer-25"></div><!--End Spacer-->
                         <div class="widget-title">
                            تفاصيل العنوان
                         </div>
                         <div class="two fields">
-                            <div class="ui field">
+                            <div class="ui field @if ($errors->has('country_id')) error  @endif" >
                                 <label>الدول :<span class="require">*</span></label>
                                 <div class="ui input">
-                                    <select class="ui dropdown country" id="countries" name="countries">
-                                        <option value="">Select</option>
+                                    <select class="ui dropdown country" id="countries" name="country_id">
+                                        <option value="">اختر دولة </option>
                                         @if($countries->count())
                                             @foreach($countries AS $country)
-                                                <option value="{{ $country->country_id }}">{{ $country->country_en_name }}</option>
+                                                <option id="{{old('country_id')}}" value="{{ $country->country_id }}" 
+                                                        @php if(old('country_id')  == $country->country_id ) { echo 'selected';  }    @endphp 
+
+                                                    >{{ $country->country_en_name }}</option>
                                             @endforeach
                                         @endif
                                     </select>
                                 </div>
+
+                                   <div class="error-messagen">
+                                      @if($errors->has('country_id'))  
+                                          {{$errors -> first('country_id')}}
+                                      @endif
+                                  .</div>
+                                    
                             </div>
-                            <div class="ui field cityDiv">
+                            <div class="ui field cityDiv @if ($errors->has('city_id')) error  @endif">
                                 <label>المدن :<span class="require">*</span></label>
-                                <select id="cities" class="ui dropdown city" name="cities">
-                                    <option value="">إختار</option>
+                                <select id="cities" class="ui dropdown city" name="city_id">
+                                    <option value="">إختر مدينه</option>
                                 </select>
                             </div>
+                             <div class="error-messagen">
+                                      @if($errors->has('city_id'))  
+                                          {{$errors -> first('city_id')}}
+                                      @endif
+                                  .</div>
+ 
                         </div>
                         <div>
-                            <div class="ui field">
-                                <label>العنوان : <span class="require">*</span></label>
-                                <div class="ui input">
-                                    <input name="address" id="address" type="text" placeholder="العنوان" value="{{ old('address') }}" />
-                                </div>
-                            </div>
+                         
+
+                           <input id="pac-input" class="controls" type="text" placeholder="أبحث هنا عن 
+                           مكانك  علي الخريطه ">
+
+                           <input type="hidden" id="latitudef"  name="latitude">
+                           <input type="hidden" id="longitudef" name="longitude">
+                              
+                                 <div class="error-messagen">
+                                      @if($errors->has('latitude'))  
+                                          {{$errors -> first('latitude')}}
+                                      @endif
+                                  .</div>
+                                       
+
+
+                        <div id="map"></div>
+
                         </div>
                         <div class="spacer-25"></div><!--End Spacer-->
                         <div class="widget-title">صور للاوراق المطلوبة
                         </div>
-                        <div class="two fields">
-                            <div class=" ui field">
-                                <label for="maroof_img">معروف</label>
-                                <input type="file" id="maroof_img" name="maroof_img">
-                                <!-- <div class="files-wr" data-label-text="معروف" data-count-files="1">
-                                    <div class="one-file">
-                                        <label for="maroof_img">معروف</label>
-                                        <input name="maroof_img" id="maroof_img" type="file" />
-                                        <div class="file-item hide-btn">
-                                            <span class="file-name"></span>
-                                            <span class="btn btn-del-file">x</span>
-                                        </div>
-                                    </div>
-                                </div> -->
+                         
+                             <div class=" ui field @if ($errors->has('commercial_photo')) error  @endif">
+                                <label for="commercial_photo"> صوره السجل التجاري   </label>
+                                <input name="commercial_photo" id="commercial_photo" type="file" />
+                                
+                                   <div class="error-messagen">
+                                      @if($errors->has('commercial_photo'))  
+                                          {{$errors -> first('commercial_photo')}}
+                                      @endif
+                                  .</div>
+                                       
+
                             </div>
-                            <div class=" ui field">
-                                <div class="form-title">تاريخ إنتهاء معرووف :</div>
-                                <div class="form-group">
-                                    <div class="input-group date form_date" data-date="" data-date-format="yyyy-mm-dd" data-link-field="dtp_input2" data-link-format="yyyy-mm-dd">
-                                        <input class="form-control" size="16" type="text" value="" readonly="" name="maroof_date" id="maroof_date">
-                                        <span class="input-group-addon">
-                                            <span class="glyphicon glyphicon-calendar"></span>
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="two fields">
-                            <div class=" ui field">
-                                <label for="health_certific">الشهادة الصحية</label>
-                                <input name="health_certific" id="health_certific" type="file" />
-                                <!-- <div class="files-wr" data-label-text="الشهادة الصحية" data-count-files="2">
-                                    <div class="one-file">
-                                        <label for="health_certific">الشهادة الصحية</label>
-                                        <input name="health_certific" id="health_certific" type="file" />
-                                        <div class="file-item hide-btn">
-                                            <span class="file-name"></span>
-                                            <span class="btn btn-del-file">x</span>
-                                        </div>
-                                    </div>
-                                </div>-->
-                            </div>
-                            <div class=" ui field">
-                                <div class="form-title">تاريخ إنتهاء الشهادة الصحية :</div>
-                                <div class="form-group">
-                                    <div class="input-group date form_date" data-date="" data-date-format="yyyy-mm-dd" data-link-field="dtp_input2" data-link-format="yyyy-mm-dd">
-                                        <input class="form-control" size="16" type="text" value="" readonly="" name="health_certific_date" id="health_certific_date">
-                                        <span class="input-group-addon">
-                                            <span class="glyphicon glyphicon-calendar"></span>
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="two fields">
-                            <div class=" ui field">
-                                <label for="commercial_record">السجل التجارى</label>
-                                <input name="commercial_record" id="commercial_record" type="file" />
-                                <!-- <div class="files-wr" data-label-text="السجل التجارى" data-count-files="3">
-                                    <div class="one-file">
-                                        <label for="commercial_record">السجل التجارى</label>
-                                        <input name="commercial_record" id="commercial_record" type="file" />
-                                        <div class="file-item hide-btn">
-                                            <span class="file-name"></span>
-                                            <span class="btn btn-del-file">x</span>
-                                        </div>
-                                    </div>
-                                </div>-->
-                            </div>
-                            <div class=" ui field">
-                                <div class="form-title">تاريخ إنتهاء السجل التجارى :</div>
-                                <div class="form-group">
-                                    <div class="input-group date form_date" data-date="" data-date-format="yyyy-mm-dd" data-link-field="dtp_input2" data-link-format="yyyy-mm-dd">
-                                        <input class="form-control" size="16" type="text" value="" readonly="" name="commercial_record_date" id="commercial_record_date">
-                                        <span class="input-group-addon">
-                                            <span class="glyphicon glyphicon-calendar"></span>
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                           
                         <div class="spacer-25"></div><!--End Spacer-->
                         <div class="widget-title">
                             معلومات التواصل و الدخول
                         </div>
-                        <div>
-                            <div class="ui field">
-                                <label>البريد الألكترونى : <span class="require">*</span></label>
-                                <div class="ui input">
-                                    <input name="email" id="email" type="email" placeholder="البريد الألكترونى" value="{{ old('email') }}" />
-                                </div>
-                            </div>
-                        </div>
+                        
                         <div class="inline-form ui field">
                             <label class="col-md-2 col-sm-2">
                                رقم الهاتف: <span class="require">*</span>
                             </label>
-                            <div class="ui input col-md-2 col-sm-3">
-                                <input class="form-control country_code" id="country_code" value="{{ old('country_code')  }}" placeholder="مثال : 0200" type="text" name="country_code">
+                            <div class="ui input col-md-2 col-sm-3 @if ($errors->has('country_code')) error  @endif">
+                                <input class="form-control country_code" id="country_code" value="{{ old('country_code')  }}" placeholder="مثال : 996,20" type="text" name="country_code">
+                                   <div class="error-messagen">
+                                      @if($errors->has('country_code'))  
+                                          {{$errors -> first('country_code')}}
+                                      @endif
+                                  .</div>
+                                       
+
                             </div>
-                            <div class="ui input col-md-8 col-sm-7">
-                                <input class="form-control phone" id="phone" value="{{ old('phone') }}" placeholder="مثال : 01090353855" type="text" name="phone">
+                            <div class="ui input col-md-8 col-sm-7 @if ($errors->has('phone')) error  @endif">
+                                <input class="form-control phone" id="phone" value="{{ old('phone') }}" placeholder="مثال : 05xxxxxxxx" type="text" name="phone">
+                                <div class="error-messagen">
+                                      @if($errors->has('phone'))  
+                                          {{$errors -> first('phone')}}
+                                      @endif
+                                  .</div>
+
                             </div>
                         </div><!-- End inline-from -->
+
+                         <div class="ui field @if ($errors->has('membership_id')) error  @endif">
+                                <label> النوع  :<span class="require">*</span></label>
+                                <div class="ui input">
+                                    <select class="ui dropdown"  name="membership_id">
+                                        <option value="">Select</option>
+                                        @if(isset($types) && $types -> count() > 0)
+                                            @foreach($types AS $type)
+                                                <option value="{{ $type->membership_id }}"   @php if(old('membership_id')  == $type->membership_id ) { echo 'selected';  }    @endphp 
+                                                    >{{ $type->membership_ar_name }}</option>
+                                            @endforeach
+                                        @endif
+                                    </select>
+                                </div>
+                                 <div class="error-messagen">
+                                      @if($errors->has('membership_id'))  
+                                          {{$errors -> first('membership_id')}}
+                                      @endif
+                                  .</div>
+                            </div>
                         <span class="spacer-25"></span>
                         <!-- <div>
                             <div class="ui field">
@@ -224,33 +211,83 @@
                             </div>
                         </div> -->
                         <div class="two fields">
-                            <div class="ui field">
+                            <div class="ui field @if ($errors->has('password')) error  @endif">
                                 <label>كلمة المرور :<span class="require">*</span></label>
                                 <div class="ui input">
-                                    <input name="password" id="password" type="text" placeholder="كلمة المرور" value="{{ old('password') }}" />
+                                    <input name="password" id="password" type="password" placeholder="كلمة المرور" value="{{ old('password') }}" />
                                 </div>
+                                 <div class="error-messagen">
+                                      @if($errors->has('password'))  
+                                          {{$errors -> first('password')}}
+                                      @endif
+                                  .</div>
                             </div>
-                            <div class="ui field">
+                            <div class="ui field @if ($errors->has('password_confirmation')) error  @endif">
                                 <label>تأكيد كلمة المرور :<span class="require">*</span></label>
                                 <div class="ui input">
-                                    <input name="passwordcon" id="passwordcon" type="text" placeholder="تأكيد كلمة المرور" value="{{ old('passwordcon') }}" />
+                                    <input name="password_confirmation" id="password_confirmation" type="password" placeholder="تأكيد كلمة المرور" value="{{ old('password_confirmation') }}" />
                                 </div>
+                                <div class="error-messagen">
+                                      @if($errors->has('password_confirmation'))  
+                                          {{$errors -> first('password_confirmation')}}
+                                      @endif
+                                  .</div>
                             </div>
                         </div>
                         <div class="spacer-25"></div><!--End Spacer-->
                         <div class="widget-title">
-                           تصنفيات مقدم الخدمة
+                           تصنفيات مقدم الخدمة و طرق التوصيل 
                         </div>
-                        <div class="form-title">التصنفيات :<span class="require">*</span></div>
-                        <div class="form-group">
-                            <select multiple="" class="form-control" name="categories[]">
-                                @if($categories->count())
+                        <div class="form-title"> اختر تصنيف رئيسي  :<span class="require">*</span></div>
+                        <div class="form-group  @if ($errors->has('category_id')) error  @endif">
+                            <select   class="form-control" name="category_id">
+                                    <option> اختر قسم </option>
+                                @if(isset($categories) && $categories->count() > 0)
                                     @foreach($categories AS $category)
-                                        <option value="{{ $category->cat_id }}">{{ $category->cat_en_name }}</option>
+                                        <option value="{{ $category->cat_id }}" @php if(old('cat_id')  == $category->cat_id ) { echo 'selected';  }    @endphp >{{ $category->cat_ar_name }}</option>
                                     @endforeach
                                 @endif
                             </select>
+                            <div class="error-messagen">
+                                      @if($errors->has('category_id'))  
+                                          {{$errors -> first('category_id')}}
+                                      @endif
+                                  .</div>
                         </div>
+
+
+                        <div class="form-title"> اختر  طرق التوصيل المتاحه   :<span class="require">*</span></div>
+                        <div class="form-group @if ($errors->has('delivery_method')) error  @endif">
+                            <select id="delivery_method" multiple class="form-control multipart" name="delivery_method[]">
+
+                                @if(isset($delivery_methods) && $delivery_methods->count() > 0)
+                                    @foreach($delivery_methods AS $method)
+                                        <option  value="{{ $method->method_id }}" @php if(old('method_id')  == $method->method_id ) { echo 'selected';  }    @endphp >{{ $method->method_ar_name }}</option>
+                                    @endforeach
+                                @endif
+                            </select>
+
+                              <div class="error-messagen">
+                                      @if($errors->has('delivery_method'))  
+                                          {{$errors -> first('delivery_method')}}
+                                      @endif
+                                  .</div>
+                        </div>
+
+                          <div class="ui field @if ($errors->has('delivery_price')) error  @endif" id="delivery_price" >
+                                <label> تكلفه التوصيل  : (في حاله التوصيل من المتجر مع التكلفه )</label>
+                                <div class="ui input">
+                                    <input name="delivery_price" type="text" placeholder=" قم بادخال تكلفه التوصيل مثال   10 " value="{{ old('delivery_price') }}" />
+                                </div>
+                                <div class="error-messagen">
+                                      @if($errors->has('delivery_price'))  
+                                          {{$errors -> first('delivery_price')}}
+                                      @endif
+                                  .</div>
+                            </div>
+
+
+
                         
                         <div class="spacer-25"></div><!--End Spacer-->
                         <div class="ui right algined inline field">
@@ -277,5 +314,98 @@
             getCountryCities("{{ route('country.cities') }}", country, 'en', $('#cities'), $('.country_code'), $(".phone"), 2);
         });
     });
+
+
 </script>
+
+
+ <script>
+
+    $('#latitudef').val('');
+   $('#longitudef').val('');
+
+
+      // This example adds a search box to a map, using the Google Place Autocomplete
+      // feature. People can enter geographical searches. The search box will return a
+      // pick list containing a mix of places and predicted search terms.
+
+      // This example requires the Places library. Include the libraries=places
+      // parameter when you first load the API. For example:
+      // <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places">
+
+      function initAutocomplete() {
+        var map = new google.maps.Map(document.getElementById('map'), {
+          center: {lat: 24.740691, lng: 46.6528521 },
+          zoom: 13,
+          mapTypeId: 'roadmap'
+        });
+
+        // Create the search box and link it to the UI element.
+        var input = document.getElementById('pac-input');
+        var searchBox = new google.maps.places.SearchBox(input);
+        map.controls[google.maps.ControlPosition.TOP_RIGHT].push(input);
+
+        // Bias the SearchBox results towards current map's viewport.
+        map.addListener('bounds_changed', function() {
+          searchBox.setBounds(map.getBounds());
+        });
+
+        var markers = [];
+        // Listen for the event fired when the user selects a prediction and retrieve
+        // more details for that place.
+        searchBox.addListener('places_changed', function() {
+          var places = searchBox.getPlaces();
+
+          if (places.length == 0) {
+            return;
+          }
+
+          // Clear out the old markers.
+          markers.forEach(function(marker) {
+            marker.setMap(null);
+          });
+          markers = [];
+
+          // For each place, get the icon, name and location.
+          var bounds = new google.maps.LatLngBounds();
+          places.forEach(function(place) {
+            if (!place.geometry) {
+              console.log("Returned place contains no geometry");
+              return;
+            }
+            var icon = {
+              url: place.icon,
+              size: new google.maps.Size(100, 100),
+              origin: new google.maps.Point(0, 0),
+              anchor: new google.maps.Point(17, 34),
+              scaledSize: new google.maps.Size(25, 25)
+            };
+
+            // Create a marker for each place.
+            markers.push(new google.maps.Marker({
+              map: map,
+              icon: icon,
+              title: place.name,
+              position: place.geometry.location
+            }));
+
+ 
+            $('#latitudef').val(place.geometry.location.lat());
+            $('#longitudef').val(place.geometry.location.lng());
+ 
+            if (place.geometry.viewport) {
+              // Only geocodes have viewport.
+              bounds.union(place.geometry.viewport);
+            } else {
+              bounds.extend(place.geometry.location);
+            }
+          });
+          map.fitBounds(bounds);
+        });
+      }
+
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDKZAuxH9xTzD2DLY2nKSPKrgRi2_y0ejs&libraries=places&callback=initAutocomplete&language=ar&region=SA
+         async defer"></script>
 @stop
+

@@ -1,8 +1,14 @@
 <?php
 
+
+
+
+
 Route::group(['middleware' => ['api_auth'], 'prefix' => 'api'], function() {
 
        //////////////////tickets apis //////////////////
+
+
 
 	Route::post("/GetTicketTypes", "TicketController@get_ticket_types");
     Route::get("/GetTicketTypes", "ProviderController@echo_Empty");

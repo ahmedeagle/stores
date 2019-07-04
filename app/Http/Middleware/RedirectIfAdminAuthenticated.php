@@ -21,7 +21,7 @@ class RedirectIfAdminAuthenticated
             return redirect('/home');
         }
 
-        if (Auth::guard('zad_admin')->check()) {
+        if (Auth::guard('admin')->check()) {
             return redirect()->route('home');
         }
 
