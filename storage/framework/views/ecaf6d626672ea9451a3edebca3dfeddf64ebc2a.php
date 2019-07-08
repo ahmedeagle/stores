@@ -168,10 +168,13 @@
                                     <li>
                                         <a rel="nofollow" rel="noreferrer" href="<?php echo e(route('offers.show')); ?>">  قائمه العروض  </a>
                                     </li>
-
-
+ 
                                     <li>
                                         <a rel="nofollow" rel="noreferrer" href="<?php echo e(route('offers.reports')); ?>"> تقارير  ألعروض   </a>
+                                    </li>
+
+                                     <li>
+                                        <a rel="nofollow" rel="noreferrer" href="<?php echo e(route('offers.profits')); ?>"> الارباح  </a>
                                     </li>
 
                                     
@@ -194,7 +197,27 @@
                                     <li>
                                         <a rel="nofollow" rel="noreferrer" href="<?php echo e(route('excellent.reports')); ?>"> تقارير  الطلبات </a>
                                     </li>
+
+                                      <li>
+                                        <a rel="nofollow" rel="noreferrer" href="<?php echo e(route('excellent.profits')); ?>">  الارباح  </a>
+                                    </li>
   
+                                </ul>
+                            </li>
+
+
+                              <li class="sub-menu">
+                                <a rel="nofollow" rel="noreferrer" href="javascript:void(0);">
+                                      الوظائف 
+                                     <i class="fa fa-angle-down"></i>
+                                </a>
+                                <ul>
+                                    <li>
+                                        <a rel="nofollow" rel="noreferrer" href="<?php echo e(route('jobs.show')); ?>">  قائمه  الوظائف    </a>
+                                    </li>
+
+ 
+ 
                                 </ul>
                             </li>
 
@@ -283,20 +306,7 @@
                             <li>
                                 <a rel="nofollow" rel="noreferrer" href="<?php echo e(route('income.app')); ?>">إيرادات التطبيق</a>
                             </li>
-                            <li class="sub-menu">
-                                <a rel="nofollow" rel="noreferrer" href="javascript:void(0);">
-                                    الشكاوى
-                                    <i class="fa fa-angle-down"></i>
-                                </a>
-                                <ul>
-                                    <li>
-                                        <a rel="nofollow" rel="noreferrer" href="<?php echo e(route('complains.today')); ?>">الشكاوى اليومية</a>
-                                    </li>
-                                    <li>    
-                                        <a rel="nofollow" rel="noreferrer" href="<?php echo e(route('complains.show')); ?>">قائمة الشكاوى</a>
-                                    </li>
-                                </ul>
-                            </li>
+                            
                             <li class="sub-menu">
                                 <a rel="nofollow" rel="noreferrer" href="javascript:void(0);">
                                    التعليقات

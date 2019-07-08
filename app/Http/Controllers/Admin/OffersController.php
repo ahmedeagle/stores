@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\DB;
 use Mail;
 use Storage;
 use Carbon\Carbon;
+use DateTime;
 
 class OffersController extends Controller
 {
@@ -345,6 +346,63 @@ public function offerReports(){
      
 	 return view('cpanel.offers.reports',compact('offers','request'));
 }
+
+
+public function offersProfits(){
+
+//types  0 -> new 1 -> approved 2-> paid 3-> expired 4 -> published 
+
+ $offers = DB::table('providers_offers') 
+		         -> join('providers','providers.provider_id','providers_offers.provider_id') 
+		         -> where('providers_offers.status','2')
+		         ->where('providers_offers.paid','1')
+			    ->select(
+		    	'providers_offers.id AS offer_id',
+		    	'offer_title',
+		    	'providers_offers.provider_id',						    	 
+		    	 DB::raw("CONCAT('". url('/') ."','/offers/',providers_offers.photo) AS offer_photo"),
+		    	 DB::raw("(SELECT (city.city_ar_name) FROM city WHERE city.city_id = providers.city_id) AS city_name"),
+ 		    	  'start_date',
+		    	  'end_date',
+		    	  'providers_offers.created_at',
+		    	  'expire',
+		    	  'providers_offers.publish',
+		    	  'paid',
+		    	  'paid_amount',
+		    	  'providers_offers.status',
+		    	  'providers.store_name'
+		    	  
+		    	)
+		    -> get();
+
+
+             
+             $total = 0;
+
+		    if(isset($offers) && $offers -> count() > 0){
+
+		    	foreach ($offers as $offer) {
+		    		
+		    		 $datetime1 = new DateTime($offer -> start_date);
+					 $datetime2 = new DateTime($offer -> end_date);
+					 $interval = $datetime1->diff($datetime2);
+					 $days = $interval->format('%a');
+
+                     
+					 !empty($days) ? $offer -> days = $days: $offer -> days = 0;
+		    	}
+
+
+                $total = $offers ->sum('paid_amount'); 
+		    }
+
+
+	   return view('cpanel.offers.profits',compact('offers','request','total'));
+		     
+
+	}
+
+
 
 }
 

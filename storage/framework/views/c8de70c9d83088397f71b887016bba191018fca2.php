@@ -93,7 +93,7 @@
                                       
             	<?php if($type == 0 ): ?>
 
-            	 <?php if(! $offer -> status == '1'): ?>
+            	 <?php if(! $offer -> status == '1' && $offer -> expire == '0'): ?>
             	    <a title="موافقه "  id="acceptOffer" data_provider="<?php echo e($offer -> provider_id); ?>" data_id="<?php echo e($offer -> offer_id); ?>" data_status="1" href="" class="offerAcceptance custom-btn blue-bc ">
 	                    <i class="fa fa-check" aria-hidden="true"></i>
 
@@ -110,7 +110,7 @@
 
               <?php if($type == 2): ?>
 
-                <?php if(! $offer -> publish == 1): ?>
+                <?php if(! $offer -> publish == 1  && $offer -> expire == '0' ): ?>
                 
                     <a title="نشر العرض "   data_provider="<?php echo e($offer -> provider_id); ?>" data_id="<?php echo e($offer -> offer_id); ?>" data_status="1" href="" class="publishingOffer custom-btn blue-bc">
                                                 <i class="fa fa-bullhorn" aria-hidden="true"></i>
@@ -124,20 +124,16 @@
                 <?php if($type == 4): ?>
 
                 
-                 <?php if( $offer -> publish == 1): ?> 
+                 <?php if( $offer -> publish == 1 && $offer -> expire == '0'): ?>  
                     <a title="وقف الاعلان " href="" id="publishOffer"   data_provider="<?php echo e($offer -> provider_id); ?>" data_id="<?php echo e($offer -> offer_id); ?>" data_status="0" class="unpublishingOffer custom-btn blue-bc">
-                                                <i class="fa fa-close" aria-hidden="true"></i>
+                                                <i class="fa fa-pause" aria-hidden="true"></i>
                     </a>
 
                  <?php endif; ?>   
 
                <?php endif; ?>
 
-
-
-
-
-
+ 
                                           
                                         </td>
                                     </tr>

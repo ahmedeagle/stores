@@ -2173,6 +2173,7 @@ public function UpdateProfile(Request $request){
  						    ->whereExpire(0)
  						    ->wherePaid('1')
  						    ->where('providers_offers.publish',1)
+ 						    ->where('providers_offers.publish',1)
  						    ->where($conditions)
 						    ->select(
 						        	'providers_offers.id AS offer_id',
@@ -2218,6 +2219,7 @@ public function get_Jobs(Request $request){
 	 
 		$Jobs = DB::table('providers') 
 						    -> join('provider_jobs','providers.provider_id','provider_jobs.provider_id') 
+						    -> where('provider_jobs.publish',1)
 						    ->select('provider_jobs.id AS job_id',
 						    'job_title',
 						    'job_desc',

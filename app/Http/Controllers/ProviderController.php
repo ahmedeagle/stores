@@ -4336,16 +4336,70 @@ public function getExcellenceRequests(Request $request){
 
            array_push($conditions, ['providers.provider_id', '=', $provider_id]);
 
+
+
            if($request -> type == 0)
-             array_push($conditions, ['excellence_requests.status', '=', '0']);
-            if($request -> type == 1)
-            array_push($conditions, ['excellence_requests.status', '=', '1']);	
+           {
  
-     
+            	$inCondition = ['0','1'];  // new and approved
+            	$conditions[] = ['excellence_requests.paid', '0'];      // not paid
+            	$conditions[] = ['excellence_requests.publish', '0'];   // not publish
+
+            }	
+ 
+            if($request -> type == 1)
+            {
+            //paid request 
+ 
+             	$conditions[] = ['excellence_requests.paid', '1'];      //  paid
+             	//$conditions[] = ['excellence_requests.status','!=', '3']; //expire 
+             	$inCondition = ['2'];  // new and approved
+           }
+
+
+       if(!empty($conditions) && !empty($inCondition)){
 		$providerRequests= DB::table('providers') 
 						    -> join('excellence_requests','providers.provider_id','excellence_requests.provider_id') 
 						    -> where($conditions)
+						    ->whereIn('excellence_requests.status', $inCondition)
  						    ->select(
+
+						    	  'excellence_requests.id AS request_id',    	   	 
+						    	  'paid',
+						    	  'paid_amount',
+						    	  'excellence_requests.start_date',
+						    	  'excellence_requests.end_date',
+						    	  'excellence_requests.status'
+
+	                              )
+						    -> paginate(10);
+
+
+			if(isset($providerRequests) && $providerRequests -> count() > 0){
+
+				foreach ($providerRequests as $key => $providerRequest) {
+
+
+					    if($providerRequest -> status == 0)
+
+					    	$providerRequest -> order_date =  DATE('Y-m-d',strtotime($providerRequest ->start_date));
+					    else 
+
+					    	$providerRequest -> expire_date =  DATE('Y-m-d',strtotime($providerRequest ->end_date));
+  
+                            unset($providerRequest ->start_date);
+                            unset($providerRequest ->end_date);
+ 
+				}
+
+
+			}
+	    }else{
+
+	    	
+	    	$providerRequests= DB::table('providers') 
+						    -> join('excellence_requests','providers.provider_id','excellence_requests.provider_id') 
+  						    ->select(
 
 						    	  'excellence_requests.id AS request_id',    	   	 
 						    	  'paid',
@@ -4379,6 +4433,8 @@ public function getExcellenceRequests(Request $request){
 			}
 
 
+	    }
+	    	
 
 		return response()->json(['status' => true, 'errNum' => 0, 'msg' => '', 'requests' => $providerRequests]);
 	}

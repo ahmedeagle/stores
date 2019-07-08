@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\DB;
 use Mail;
 use Storage;
 use Carbon\Carbon;
+use DateTime;
 
 class ExcellentRequestsController extends Controller
 {
@@ -44,6 +45,7 @@ class ExcellentRequestsController extends Controller
 						    	  'excellence_requests.start_date',
 						    	  'excellence_requests.end_date',
 						    	  'excellence_requests.status',
+						    	   'excellence_requests.publish',
 						    	  'providers.store_name',
 						    	  'providers.provider_id'
 
@@ -175,7 +177,9 @@ class ExcellentRequestsController extends Controller
 					}
 	 
 			}
-  
+
+
+   
  
 
          	return view('cpanel.excellent.show',compact('providerRequests','type'));
@@ -344,63 +348,116 @@ public function excellentPublishing(Request $request){
 
 }
 
-
-
+ 
 
 public function excellentReports(){
 
-      $request = request();  // get request params
 
-        
-	 $offers = DB::table('providers') 
-		    -> join('providers_offers','providers.provider_id','providers_offers.provider_id') 
-			    ->select(
-		    	'providers_offers.id AS offer_id',
-		    	'offer_title',
-		    	'providers_offers.provider_id',						    	 
- 		    	 DB::raw("(SELECT (city.city_ar_name) FROM city WHERE city.city_id = providers.city_id) AS city_name"),
-		    	  'start_date',
-		    	  'end_date',
-		    	  'providers_offers.created_at',
-		    	  'expire',
-		    	  'providers_offers.publish',
-		    	  'paid',
-		    	  'paid_amount',
-		    	  'providers_offers.status',
-		    	  'providers.store_name'
-		    	  
-		    	)
-		    -> get();
+        $request = request();
+      
+ 
+       // get request params
+ 
+	
+    	  $providerRequests= DB::table('providers') 
+						    -> join('excellence_requests','providers.provider_id','excellence_requests.provider_id') 
+  						    ->select(
+
+						    	  'excellence_requests.id AS request_id',    	   	 
+						    	  'excellence_requests.name as title',
+						    	  'paid',
+						    	  'paid_amount',
+						    	   DB::raw("(SELECT (categories.cat_ar_name) FROM categories WHERE categories.cat_id = excellence_requests.main_category_id) AS category_name"),
+						    	  'excellence_requests.start_date',
+						    	  'excellence_requests.end_date',
+						    	  'excellence_requests.status',
+						    	  'excellence_requests.publish',
+						    	  'providers.store_name',
+						    	  'providers.provider_id'
+
+	                              )
+						    -> get();
+
 
 		        if($request->has('from')){
 		             $from = Carbon::createFromFormat('Y-m-d',$request->from)->toDateString();
-		           $offers = $offers->where('start_date','>=',$from);
+		             $providerRequests = $providerRequests->where('start_date','>=',$from);
 		        }
 		        if ($request->has('to')) {
 		          $to = Carbon::createFromFormat('Y-m-d',$request->to)->toDateString();
-		          $offers = $offers->where('end_date','<=',$to);
+		          $providerRequests = $providerRequests->where('end_date','<=',$to);
 		        }
 		        if ($request->has('from') && $request->has('to')) {
 		          $from = Carbon::createFromFormat('Y-m-d',$request->from)->toDateString();
 		          $to = Carbon::createFromFormat('Y-m-d',$request->to)->toDateString();
 		          //$offers = $offers ->whereBetween('created_at', [$from, $to])->get();
-		          $offers = $offers ->where('start_date','=',$from) ->where('end_date','=',$to) ->get();
+		          $providerRequests = $providerRequests ->where('start_date','=',$from) ->where('end_date','=',$to) ->get();
 		        }
+
+		        //0 new 1 approved 2 paid 3 expire
+
 		        if ($request->has('status')) {
 		        	if($request-> status == 'pending')
-		                $offers = $offers->where('status','=',0);
+		                $providerRequests = $providerRequests->where('status','=',0);
 		            elseif ($request-> status == 'approved') {
-		            	$offers = $offers->where('status','=',1);
+		            	$providerRequests = $providerRequests->where('status','=',1);
 		            }elseif ($request-> status == 'canceled') {
-		            	$offers = $offers->where('expire','=',1); 
+		            	$providerRequests = $providerRequests->where('status','=',3); 
 		            }elseif ($request -> status == 'unpublished') {
-		            	$offers = $offers->where('publish','=',0) -> where('status','2'); 
+		            	$providerRequests = $providerRequests->where('publish','=',0) -> where('paid','1'); 
 		            }elseif ($request -> status == 'published') {
-		            	 $offers = $offers->where('publish','=',1); 
+		            	 $providerRequests = $providerRequests->where('publish','=',1)-> where('paid','1'); 
 		            }
 		        }
 
-		 	 return view('cpanel.offers.reports',compact('offers','request'));
+		 	 return view('cpanel.excellent.reports',compact('providerRequests','request'));
+		}
+
+
+		public function excellentProfits(){
+
+ //types  0 -> new  1 -> approved 2-> paid  3-> expire
+			  $providerRequests= DB::table('providers') 
+									    -> join('excellence_requests','providers.provider_id','excellence_requests.provider_id') 
+									     -> where('excellence_requests.status','2')
+		                                 -> where('excellence_requests.paid','1')
+			  						     ->select(
+									    	  'excellence_requests.id AS request_id',    	   	 
+									    	  'excellence_requests.name as title',
+									    	  'paid',
+									    	  'paid_amount',
+									    	   DB::raw("(SELECT (categories.cat_ar_name) FROM categories WHERE categories.cat_id = excellence_requests.main_category_id) AS category_name"),
+									    	  'excellence_requests.start_date',
+									    	  'excellence_requests.end_date',
+									    	  'excellence_requests.status',
+									    	  'excellence_requests.publish',
+									    	  'providers.store_name',
+									    	  'providers.provider_id'
+
+				                              )
+									    -> get();
+
+
+            $total = 0;
+
+				    if(isset($providerRequests) && $providerRequests -> count() > 0){
+
+				    	foreach ($providerRequests as $providerRequest) {
+				    		
+				    		 $datetime1 = new DateTime($providerRequest -> start_date);
+							 $datetime2 = new DateTime($providerRequest -> end_date);
+							 $interval = $datetime1->diff($datetime2);
+							 $days = $interval->format('%a');
+
+
+							 !empty($days) ? $providerRequest -> days = $days: $providerRequest -> days = 0;
+				    	}
+				    	  $total = $providerRequests ->sum('paid_amount'); 
+				    }
+ 
+
+                return view('cpanel.excellent.profits',compact('providerRequests','request','total'));
+
 		}
 
 }

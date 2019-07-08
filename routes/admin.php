@@ -210,7 +210,14 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function() {
 					'as'   => 'offers.reports'
 				]);
 
-				
+
+
+				Route::get('/profits', [
+					'uses' => 'OffersController@offersProfits',
+					'as'   => 'offers.profits'
+				]);
+
+ 
 
 	 });
 
@@ -247,6 +254,11 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function() {
 					'as'   => 'excellent.reports'
 				]);
 
+
+				Route::get('/profits', [
+					'uses' => 'ExcellentRequestsController@excellentProfits',
+					'as'   => 'excellent.profits'
+				]);
 				
 
 	 });
@@ -254,22 +266,24 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function() {
 
 
 
+ 
 
-	Route::group(['prefix' => 'requests'], function(){
+	Route::group(['prefix' => 'jobs'], function(){
 
 
 				Route::get('/', [
-					'uses' => 'RequestsController@show',
-					'as'   => 'requests.show'
+					'uses' => 'JobsController@show',
+					'as'   => 'jobs.show'
 				]);
-
-
-				Route::get('/reports', [
-					'uses' => 'RequestsController@reports',
-					'as'   => 'requests.reports'
-				]);
+ 
 	 
+	            Route::post('/publishing', [
+					'uses' => 'JobsController@jobsPublishing',
+					'as'   => 'jobs.publishing'
+				]);
 	 });
+
+
 
 		//deliveries routing
 		Route::group(['prefix' => 'deliveriesPanel'], function(){
