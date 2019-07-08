@@ -2084,9 +2084,7 @@ public function deleteProviderCategory(Request $request){
 			return response()->json(['status' => false, 'errNum' => $error, 'msg' => $msg[$error]]);
 		}
 
-
  
-
 		$providerOffers = DB::table('providers') 
 						    -> join('providers_offers','providers.provider_id','providers_offers.provider_id') 
  						    ->where('providers.provider_id',$this->get_id($request,'providers','provider_id'))
@@ -2648,11 +2646,9 @@ public function updateProviderOffer(Request $request){
 			try {
  
                    $offer -> update([
-                           
-
+                            
                              'publish'          => '0',
                              
-
                    	    ]);     
  
 				return response()->json(['status'=> true, 'errNum' => 0, 'msg' => $msg[0]]);

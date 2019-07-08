@@ -12,7 +12,7 @@ namespace App\Http\Controllers;
  use Log;
 use App\Providers;
 use App\Offer;
-use Validator;
+ use Validator;
 use Illuminate\Http\Request;
 use Illuminate\Support\MessageBag;
 use Illuminate\Support\Facades\Input;
@@ -57,6 +57,8 @@ class Crons extends Controller
  
         //second refuse all dismissed orders
         $this->OfferExpireCron($now);
+
+        $this->requestsExpireCron($now);
  
     }
      
@@ -65,6 +67,12 @@ class Crons extends Controller
       
         $this->ExpireProviderOffer($now);
     }
+    public function OfferExpireCron($now){
+      
+        $this->requestsExpireCron($now);
+    }
+
+    
  
     protected function ExpireProviderOffer($now){
         
@@ -110,6 +118,51 @@ class Crons extends Controller
             }
         }
     }
+
+     protected function requestsExpireCron($now){
+        
+         
+        $requests =  DB::table('excellence_requests') -> join('providers', 'excellence_requests.provider_id', '=', 'providers.provider_id')
+            ->where('status','!=',3) -> select( DB::raw('DATE(end_date) AS expire_date'),'providers.provider_id','providers.device_reg_id','name','excellence_requests.id','excellence_requests.status')->get();
+             
+
+        if(isset($requests) && $requests -> count() > 0){
+            foreach($requests AS $excellentrequest){
+                
+                   if($excellentrequest -> expire_date  <  $now && $excellentrequest -> status != 3){
+                       
+                       DB::table('excellence_requests') -> where('id', $requests -> id)
+                        ->update(['status' => 3]);   // expire request after end date 
+                                    
+                  //send notification to the provider
+                    $notif_data = array();
+                    $notif_data['title']      = 'الاختار بحالة  الطلب ';
+                    $notif_data['message']    = "قد تم انتهاء مدة  الطلب  الخاص بك بعنوان  {$excellentrequest -> name}" ;
+                    $notif_data['request_id']   = $excellentrequest -> id;
+                    $notif_data['notif_type'] = 'excellentrequest';
+                    
+                     DB::table("notifications")
+                        ->insert([
+                            "en_title" => $notif_data['title'],
+                            "ar_title" => $notif_data['title'],
+                            "en_content" => $notif_data['message'],
+                            "ar_content"  => $notif_data['message'],
+                            "notification_type"  => 6,
+                            "actor_id" => $excellentrequest -> provider_id,
+                            "actor_type" => "provider",
+                            "action_id" => $request_id
+            
+                        ]);
+                                
+                    $push_provider_notif    = (new PushNotificationController()) ->send($excellentrequest -> device_reg_id, $notif_data, (new PushNotificationController())-> provider_key);
+                            
+                        
+                   }
+                    
+            }
+        }
+    }
+
 
        // refuse delivery late orders 
     public function refuse_delay_orders_crone(){

@@ -47,7 +47,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <?php if($providers->count()): ?>
+                            <?php if(isset($providers) && $providers ->count() > 0 ): ?>
                                 <?php $__currentLoopData = $providers; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $provider): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                     <tr>
                                         <td> <?php echo e($provider->full_name); ?> </td>

@@ -43,6 +43,7 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function() {
 		/*Route::get('/', [
 			'uses' => 'HomeController@index',
 			'as'   => 'home'
+
 		]);*/
  
 
@@ -186,15 +187,70 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function() {
 
 			 
 
-				Route::get('/orders/{type}', [
-					'uses' => 'OffersController@getOrders',
+				Route::get('/offer/{type}', [
+					'uses' => 'OffersController@getOffers',
 					'as'   => 'offers.status'
 				]);
 
 
+				Route::post('/acceptnace', [
+					'uses' => 'OffersController@offerAcceptRefuse',
+					'as'   => 'offers.acceptnace'
+				]);
+
+
+				Route::post('/publishing', [
+					'uses' => 'OffersController@offerPublishing',
+					'as'   => 'offers.publishing'
+				]);
+
+
+				Route::get('/reports', [
+					'uses' => 'OffersController@offerReports',
+					'as'   => 'offers.reports'
+				]);
+
 				
-	 
+
 	 });
+
+
+	  Route::group(['prefix' => 'excellentrequests'], function(){
+
+
+				Route::get('/', [
+					'uses' => 'ExcellentRequestsController@show',
+					'as'   => 'excellent.show'
+				]);
+ 
+
+				Route::get('/request/{type}', [
+					'uses' => 'ExcellentRequestsController@getRequests',
+					'as'   => 'excellent.status'
+				]);
+
+
+				Route::post('/acceptnace', [
+					'uses' => 'ExcellentRequestsController@excellentAcceptRefuse',
+					'as'   => 'excellent.acceptnace'
+				]);
+
+
+				Route::post('/publishing', [
+					'uses' => 'ExcellentRequestsController@excellentPublishing',
+					'as'   => 'excellent.publishing'
+				]);
+
+
+				Route::get('/reports', [
+					'uses' => 'ExcellentRequestsController@excellentReports',
+					'as'   => 'excellent.reports'
+				]);
+
+				
+
+	 });
+
 
 
 

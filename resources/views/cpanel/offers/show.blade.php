@@ -34,7 +34,7 @@
 
 
                      <a href="{{ route('offers.status',3) }}" class="custom-btn red-bc">
-                         العروض المنتهيه 
+                         العروض المنتهيه  والملغاه 
                     </a>
  
 
@@ -49,6 +49,12 @@
                 <div class="spacer-25"></div><!--End Spacer-->
 
               
+               <div class="alert alert-success" id="alert_success" style="display: none;">
+                        
+                    </div>
+
+                     <div class="alert alert-danger"  id="alert_danger" style="display: none;">
+                     </div>
 
 
                 @if(Session::has('success'))
@@ -87,42 +93,47 @@
                                       
             	@if($type == 0 )
 
-            	    <a title="موافقه " href="" class="custom-btn blue-bc">
-                                                <i class="fa fa-check" aria-hidden="true"></i>
+            	 @if(! $offer -> status == '1' && $offer -> expire == '0')
+            	    <a title="موافقه "  id="acceptOffer" data_provider="{{$offer -> provider_id}}" data_id="{{$offer -> offer_id}}" data_status="1" href="" class="offerAcceptance custom-btn blue-bc ">
+	                    <i class="fa fa-check" aria-hidden="true"></i>
 
-                                            </a>
-                                            
-
-                                            <a title="رفض " href="" class="custom-btn blue-bc">
-                                                <i class="fa fa-close" aria-hidden="true"></i>
-                                            </a>
-
+	                </a>
+	             @endif   
+                 
+                 @if(! $offer -> expire == '1')       
+	                <a title="رفض "  id="refuseOffer" data_provider="{{$offer -> provider_id}}"  data_id="{{$offer -> offer_id}}"  data_status="0" href="" class="offerAcceptance custom-btn blue-bc ">
+	                    <i class="fa fa-close" aria-hidden="true"></i>
+	                </a>
+	              @endif
+	                
               @endif
 
               @if($type == 2)
 
+                @if(! $offer -> publish == 1  && $offer -> expire == '0' )
                 
-                    <a title="نشر العرض " href="" class="custom-btn blue-bc">
+                    <a title="نشر العرض "   data_provider="{{$offer -> provider_id}}" data_id="{{$offer -> offer_id}}" data_status="1" href="" class="publishingOffer custom-btn blue-bc">
                                                 <i class="fa fa-bullhorn" aria-hidden="true"></i>
                     </a>
 
                @endif
 
+             @endif  
+
 
                 @if($type == 4)
 
                 
-                    <a title="وقف الاعلان " href="" class="custom-btn blue-bc">
-                                                <i class="fa fa-close" aria-hidden="true"></i>
+                 @if( $offer -> publish == 1 && $offer -> expire == '0')  
+                    <a title="وقف الاعلان " href="" id="publishOffer"   data_provider="{{$offer -> provider_id}}" data_id="{{$offer -> offer_id}}" data_status="0" class="unpublishingOffer custom-btn blue-bc">
+                                                <i class="fa fa-pause" aria-hidden="true"></i>
                     </a>
+
+                 @endif   
 
                @endif
 
-
-
-
-
-
+ 
                                           
                                         </td>
                                     </tr>
@@ -135,4 +146,173 @@
         </div><!--End Widget-->
     </div>
 </div>
+@stop
+
+
+@section('customJs')
+
+<script type="text/javascript">
+	 
+     $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+
+
+
+     $(document).on('click','.offerAcceptance',function(e){
+
+     	$('#alert_success').empty().hide();
+        $('#alert_danger').empty().hide();
+
+          e.preventDefault();
+
+         var status       =  $(this).attr('data_status');
+         var offer_id     =  $(this).attr('data_id');
+         var provider_id  =  $(this).attr('data_provider');
+ 
+
+         $.ajax({
+     
+              type :'post',
+
+              url  :"{{route('offers.acceptnace')}}",
+
+              data :{
+     
+                   '_token'            :   $('input[name="_token"]').val(),
+                   'offer_id'          :   offer_id,
+                   'status'            :   status, 
+                   'provider_id'       :   provider_id,
+       
+                },
+
+              success:function(data)
+              {                                          
+
+                    var status = data.status;                          
+
+                    if(status == 1){
+
+                         $('#acceptOffer').hide();
+
+                    }
+
+                    else if(status == 0)
+                    {
+
+                         $('#refuseOffer').hide();
+                    }
+
+                  if(data.error){
+
+
+
+                   $('#alert_danger').show().empty().append(data.error);
+
+                  }
+  
+
+                if(data.success){
+                      
+                      $('#alert_success').show().empty().append(data.success);
+                }
+
+ 
+                setTimeout(location.reload.bind(location), 2000);
+
+                        
+
+              }
+
+                   
+
+               
+            });
+
+
+ 
+    });
+
+
+
+      $(document).on('click',".publishingOffer,.unpublishingOffer",function(e){
+
+     	$('#alert_success').empty().hide();
+        $('#alert_danger').empty().hide();
+
+          e.preventDefault();
+
+         var status       =  $(this).attr('data_status');
+         var offer_id     =  $(this).attr('data_id');
+         var provider_id  =  $(this).attr('data_provider');
+ 
+
+         $.ajax({
+     
+              type :'post',
+
+              url  :"{{route('offers.publishing')}}",
+
+              data :{
+     
+                   '_token'            :   $('input[name="_token"]').val(),
+                   'offer_id'          :   offer_id,
+                   'status'            :   status, 
+                   'provider_id'       :   provider_id,
+       
+                },
+
+              success:function(data)
+              {                                          
+
+                    var status = data.status;                          
+
+                    if(status == 1){
+
+                         $('.publishingOffer').hide();
+                         $('.unpublishingOffer').show();
+
+                    }
+
+                    else if(status == 0)
+                    {
+                         
+                         $('.publishingOffer').show();
+                         $('.unpublishingOffer').hide();
+                    }
+
+                  if(data.error){
+
+
+
+                   $('#alert_danger').show().empty().append(data.error);
+
+                  }
+  
+
+                if(data.success){
+                      
+                      $('#alert_success').show().empty().append(data.success);
+                }
+
+ 
+			                setTimeout(location.reload.bind(location), 2000);
+                        
+
+	             }
+
+	                   
+
+               
+            });
+
+
+ 
+    });
+
+
+
+</script>
 @stop
