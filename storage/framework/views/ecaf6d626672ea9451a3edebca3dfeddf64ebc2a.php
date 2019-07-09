@@ -335,8 +335,15 @@
                                     </li>
                                 </ul>
                             </li>
+
+                             <li>
+                                <a rel="nofollow" rel="noreferrer" href="<?php echo e(route('get.notifications')); ?>">ارسال اشعارات </a>
+                            </li>
                         </ul>
-                    </aside>
+
+
+
+                     </aside>
                 </div><!--End Side Menu-->
                 <div class="page-content">
                      <div class="top-header">

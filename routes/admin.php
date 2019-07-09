@@ -265,9 +265,19 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function() {
 
 
 
+      Route::get('get/notifications',[
+
+               'uses' => 'NotificationsController@getNotifications',
+               'as'   =>  'get.notifications'
+      ]);
+
+      Route::post('send/notifications',[
+
+               'uses' => 'NotificationsController@sendNotifications',
+               'as'   =>  'send.notifications'
+      ]);
 
  
-
 	Route::group(['prefix' => 'jobs'], function(){
 
 

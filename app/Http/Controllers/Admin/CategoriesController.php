@@ -66,7 +66,7 @@ class CategoriesController extends Controller
         $insert = Categories::insert([
             'cat_en_name' => $request->input('en_name'),
             'cat_ar_name' => $request->input('ar_name'),
-            'cat_img'     => $filePath
+            'cat_img'     => $fileName
         ]);
 
         if($insert){
@@ -115,7 +115,7 @@ class CategoriesController extends Controller
         		      ->update([
 				            'cat_en_name' => $request->input('en_name'),
 				            'cat_ar_name' => $request->input('ar_name'),
-				            'cat_img'     => $filePath
+				            'cat_img'     => $fileName
 	        			]);
         }else{
         	$update = Categories::where('cat_id', $request->input('id'))

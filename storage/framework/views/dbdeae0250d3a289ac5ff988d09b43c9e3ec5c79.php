@@ -1,0 +1,230 @@
+<?php $__env->startSection('content'); ?>
+<div class="content">
+    <div class="col-sm-12">
+        <section class="page-heading">
+            <div class="col-sm-6">
+                <h2>تقييمات مقدمين الخدمة</h2>
+            </div><!--End col-md-6-->
+            <div class="col-sm-6">
+                <ul class="breadcrumb">
+                    <li><a href="<?php echo e(route('home')); ?>">الرئيسية</a></li>
+                    <li><a href="#">التقييمات</a></li>
+                    <li class="active">تقييمات مقدمين الخدمة</li>
+                </ul>
+            </div><!--End col-md-6-->
+        </section><!--End page-heading-->
+        <div class="spacer-25"></div><!--End Spacer-->
+        <div class="widget">
+            <div class="widget-title">
+                تقييمات مقدمين الخدمة
+            </div>
+            <div class="widget-content requests">
+                <?php if(Session::has('success')): ?>
+                    <div class="alert alert-success">
+                        <strong>تم بنجاح !</strong> <?php echo e(Session::get('success')); ?>
+
+                    </div>
+                    <div class="spacer-25"></div><!--End Spacer-->
+                <?php endif; ?>
+                <?php if(Session::has('err')): ?>
+                    <div class="alert alert-danger">
+                        <strong>خطا !</strong> <?php echo e(Session::get('err')); ?>
+
+                    </div>
+                    <div class="spacer-25"></div><!--End Spacer-->
+                <?php endif; ?>
+                <div class="col-sm-12">
+                    <div class="ui form">
+                        <div class="two fields">
+                            <div class="ui field">
+                                <label>من : </label>
+                                <div class="input-group date form_date" data-date="" data-date-format="yyyy-mm-dd" data-link-field="dtp_input2" data-link-format="yyyy-mm-dd">
+                                    <input class="form-control from_date" size="16" value="" readonly="" type="text">
+                                    <span class="input-group-addon">
+                                        <span class="glyphicon glyphicon-calendar"></span>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="ui field">
+                                <label>إلى :</label>
+                                <div class="form-group">
+                                    <div class="input-group date form_date" data-date="" data-date-format="yyyy-mm-dd" data-link-field="dtp_input2" data-link-format="yyyy-mm-dd">
+                                        <input class="form-control to_date" size="16" value="" readonly="" type="text">
+                                        <span class="input-group-addon">
+                                            <span class="glyphicon glyphicon-calendar"></span>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="two fields">
+                            <div class="ui field">
+                                <label>المستخدم</label>
+                                <div>
+                                    <select id="users" class="users-select2 form-control">
+                                        <option value="">إختار المستخدم</option>
+                                        <?php if($users->count()): ?>
+                                            <?php $__currentLoopData = $users; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $user): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <option value="<?php echo e($user->user_id); ?>"><?php echo e($user->full_name); ?></option>
+                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                        <?php endif; ?>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="ui field">
+                                <label>رقم هاتف المستخدم : </label>
+                                <div class="ui input">
+                                    <input class="form-control" placeholder="مثال : 01090353855" type="text" id="phone" name="phone">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="two fields">
+                            <div class="ui field">
+                                <label>مقدمين الخدمات</label>
+                                <div>
+                                    <select id="providers" class="users-select2 form-control">
+                                        <option value="">إختار مقدم الخدمة</option>
+                                        <?php if($providers->count()): ?>
+                                            <?php $__currentLoopData = $providers; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $provider): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                <option value="<?php echo e($provider->provider_id); ?>"><?php echo e($provider->full_name); ?></option>
+                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                        <?php endif; ?>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="ui field">
+                                <label>رقم هاتف مقدم الخدمة : </label>
+                                <div class="ui input">
+                                    <input class="form-control" placeholder="مثال : 01090353855" type="text" id="provider_phone" name="provider_phone">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <button href="#" class="custom-btn blue-bc searchBu">
+                            <i class="fa fa-search"></i> 
+                            بحث
+                        </button>
+                    </div>
+                </div>
+                <span class="spacer-25"></span>
+                <?php if($evaluations->count()): ?>
+                <div class="table-responsive"> 
+                    <table class="table table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th class="width-90">صورة المستخدم</th>
+                                <th>إسم المستخدم</th>
+                                <th>رقم الهاتف</th>
+                                <th class="width-90">صورة مقدم الخدمة</th>
+                                <th>إسم مقدم الخدمة</th>
+                                <th>رقم مقدم الخدمة</th>
+                                <th>كود الطلب</th>
+                                <th>التقييم العام</th>
+                                <th>التعليق</th>
+                                <th>التاريخ</th>
+                                <!-- <th></th> -->
+                            </tr>
+                        </thead>
+                        <tbody id="result">
+                            <?php $__currentLoopData = $evaluations; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $evaluation): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                            <tr>
+                                <td class="width-90">
+                                    <a class="img-popup-link" href="<?php echo e($evaluation->profile_pic); ?>">
+                                        <img src="<?php echo e($evaluation->profile_pic); ?>" class="table-img">
+                                    </a>
+                                </td>
+                                <td><?php echo e($evaluation->full_name); ?></td>
+                                <td><?php echo e($evaluation->phone); ?></td>
+                                <td class="width-90">
+                                    <a class="img-popup-link" href="<?php echo e($evaluation->provider_pic); ?>">
+                                        <img src="<?php echo e($evaluation->provider_pic); ?>" class="table-img">
+                                    </a>
+                                </td>
+                                <td><?php echo e($evaluation->provider_name); ?></td>
+                                <td><?php echo e($evaluation->provider_phone); ?></td>
+                                <td><?php echo e($evaluation->code); ?></td>
+                                <td><?php echo e($evaluation->rating); ?></td>
+                                <td><?php echo e($evaluation->comment); ?></td>
+                                <td><?php echo e($evaluation->created); ?></td>
+                   
+                            </tr>
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                        </tbody>
+                    </table>
+                </div>
+                <?php else: ?>
+                <div class="table-responsive"> 
+                    <table class="table table-bordered table-hover" style="display:none">
+                        <thead>
+                            <tr>
+                                <th class="width-90">صورة المستخدم</th>
+                                <th>إسم المستخدم</th>
+                                <th>رقم الهاتف</th>
+                                <th class="width-90">صورة مقدم الخدمة</th>
+                                <th>إسم مقدم الخدمة</th>
+                                <th>رقم مقدم الخدمة</th>
+                                <th>كود الطلب</th>
+                                <th>التقييم العام</th>
+                                <th>التعليق</th>
+                                <th>التاريخ</th>
+                                <!-- <th></th> -->
+                            </tr>
+                        </thead>
+                        <tbody id="result">
+                        </tbody>
+                    </tabl>
+                </div>
+                <?php endif; ?>
+                <div class="col-sm-12" id="pagi">
+                    <?php echo e($evaluations->links()); ?>
+
+                </div>
+            </div><!--End Widget-content -->
+        </div><!--End Widget-->
+    </div>
+</div>
+<?php $__env->stopSection(); ?>
+<?php $__env->startSection('customJs'); ?>
+<script type="text/javascript">
+
+    $("body").on("click", ".searchBu", function(){
+        var indicator = $(this).find('i');
+        var but       = $(this);
+        indicator.removeClass('fa-search');
+        indicator.addClass('fa-circle-o-notch fa-spin');
+        but.attr('disabled',true);
+        var user           = $("#users").val();
+        var user_phone     = $("#phone").val();
+        var provider       = $("#providers").val();
+        var provider_phone = $("#provider_phone").val();
+        var from_date      = $(".from_date").val();
+        var to_date        = $(".to_date").val();
+        var type           = 'provider';
+
+        var data = {'user':user, 'user_phone':user_phone, 'subject':provider, 'subject_phone':provider_phone, 'from':from_date, 'to':to_date, 'type':type};
+        $.ajax({
+            url:"<?php echo e(route('evaluations.search')); ?>",
+            type:"POST",
+            data:data,
+            scriptCharset:"application/x-www-form-urlencoded; charset=UTF-8",
+            success: function(result){
+                $("#result").html(result);
+                $("#pagi").html("");
+                $(".table").css('display', 'table');
+                indicator.addClass('fa-search');
+                indicator.removeClass('fa-circle-o-notch fa-spin');
+                but.attr('disabled',false);
+            },
+            error: function(){
+                indicator.addClass('fa-search');
+                indicator.removeClass('fa-circle-o-notch fa-spin');
+                but.attr('disabled',false);
+                alert('حدث خطأ ما من فضلك حاول مره اخرى');
+            }
+        });
+    });
+
+</script>
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('cpanel.layout.master', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

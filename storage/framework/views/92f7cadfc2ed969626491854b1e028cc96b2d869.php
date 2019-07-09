@@ -1,5 +1,4 @@
-@extends('cpanel.layout.master')
-@section('content')
+<?php $__env->startSection('content'); ?>
 <div class="content">
     <div class="col-sm-12" id="container">
         <section class="page-heading">
@@ -8,8 +7,8 @@
             </div><!--End col-md-6-->
             <div class="col-sm-6">
                 <ul class="breadcrumb">
-                    <li><a href="{{ route('home') }}">الرئيسية</a></li>
-                    <li><a href="{{ route('category.show') }}">التصنفيات</a></li>
+                    <li><a href="<?php echo e(route('home')); ?>">الرئيسية</a></li>
+                    <li><a href="<?php echo e(route('category.show')); ?>">التصنفيات</a></li>
                     <li class="active">تعديل التصنيف</li>
                 </ul>
             </div><!--End col-md-6-->
@@ -21,22 +20,24 @@
                    نموذج  تعديل التصنيف
                 </div>
                 <div class="widget-content">
-                    @if($category != NULL)
-                    <form class="ui form" id="create-category" method="post" action="{{ route('category.update') }}" enctype="multipart/form-data">
-                        <input type="hidden" name="id" value="{{ $category->cat_id }}" />
+                    <?php if($category != NULL): ?>
+                    <form class="ui form" id="create-category" method="post" action="<?php echo e(route('category.update')); ?>" enctype="multipart/form-data">
+                        <input type="hidden" name="id" value="<?php echo e($category->cat_id); ?>" />
                           <div class="form-title">من فضلك إملئ الحقول التالية</div>
                         <div class="form-note">[ * ] حقل مطلوب</div>
                         <div class="ui error message"></div>
-                        @if(!empty($errors->first()))
+                        <?php if(!empty($errors->first())): ?>
                             <div class="alert alert-danger">
-                                <strong>خطأ!</strong> {{ $errors->first() }}
+                                <strong>خطأ!</strong> <?php echo e($errors->first()); ?>
+
                             </div>
-                        @endif
-                        @if(Session::has('success'))
+                        <?php endif; ?>
+                        <?php if(Session::has('success')): ?>
                             <div class="alert alert-success">
-                                <strong>تم بنجاح !</strong> {{ Session::get('success') }}
+                                <strong>تم بنجاح !</strong> <?php echo e(Session::get('success')); ?>
+
                             </div>
-                        @endif
+                        <?php endif; ?>
                         <div class="widget-title">
                             المعلومات الشخصية
                         </div>
@@ -44,13 +45,13 @@
                             <div class="ui field">
                                <label>التصنيف باللغة الأنجليزية<span class="require">*</span></label>
                                 <div class="ui input">
-                                    <input name="en_name" id="en_name" type="text" placeholder="التصنيف باللغة الأنجليزية" value="{{ $category->cat_en_name }}" />
+                                    <input name="en_name" id="en_name" type="text" placeholder="التصنيف باللغة الأنجليزية" value="<?php echo e($category->cat_en_name); ?>" />
                                 </div>
                             </div>
                             <div class="ui field">
                                 <label>التصنيف باللغة  العربية<span class="require">*</span></label>
                                 <div class="ui input">
-                                    <input name="ar_name" id="ar_name" type="text" placeholder="التصنيف باللغة العربية" value="{{ $category->cat_ar_name }}" />
+                                    <input name="ar_name" id="ar_name" type="text" placeholder="التصنيف باللغة العربية" value="<?php echo e($category->cat_ar_name); ?>" />
                                 </div>
                             </div>
                         </div>
@@ -62,8 +63,8 @@
                         </div>
                         <div class="spacer-25"></div><!--End Spacer-->
                         <div class="col-sm-12">
-                            <a class="img-popup-link" href="{{ env('APP_URL').'/public/categoriesImages/'.$category->cat_img }}">
-                                <img src="{{ env('APP_URL').'/public/categoriesImages/'.$category->cat_img }}" class="table-img">
+                            <a class="img-popup-link" href="<?php echo e(env('APP_URL').'/public/categoriesImages/'.$category->cat_img); ?>">
+                                <img src="<?php echo e(env('APP_URL').'/public/categoriesImages/'.$category->cat_img); ?>" class="table-img">
                             </a>    
                         </div>
                         <div class="spacer-25"></div><!--End Spacer-->
@@ -74,14 +75,15 @@
                             </button>
                         </div>
                     </form>
-                    @endif
+                    <?php endif; ?>
                 </div><!-- end widget-content -->
             </div><!-- end widget -->
         </div>
     </div><!-- end container -->
 </div>
 
-@stop
-@section('customJs')
+<?php $__env->stopSection(); ?>
+<?php $__env->startSection('customJs'); ?>
 
-@stop
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('cpanel.layout.master', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
