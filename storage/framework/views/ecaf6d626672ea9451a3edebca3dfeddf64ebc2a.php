@@ -143,7 +143,7 @@
                             </li>
                             <li class="sub-menu">
                                 <a rel="nofollow" rel="noreferrer" href="javascript:void(0);">
-                                    مقدمى الخدمة
+                                    المتاجر 
                                     <i class="fa fa-angle-down"></i>
                                 </a>
                                 <ul>
