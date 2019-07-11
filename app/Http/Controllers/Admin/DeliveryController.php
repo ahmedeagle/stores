@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 /**
  *
- * @author Mohamed Salah <mohamedsalah7191@gmail.com>
+ * @author Ahmed Emam <ahmedaboemam123@gmail.com>
  */
 use Log;
 use App\Http\Controllers\Controller;
@@ -12,14 +12,13 @@ use App\User;
 use App\Categories;
 use App\Providers;
 use App\Deliveries;
-use App\Meals;
-use Validator;
+ use Validator;
 use Illuminate\Http\Request;
 use Illuminate\Support\MessageBag;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\DB;
-use Mail;
-
+use Storage;
+ 
 class DeliveryController extends Controller
 {
 	public function __construct(){
@@ -39,20 +38,18 @@ class DeliveryController extends Controller
 		return view('cpanel.deliveries.create', compact('countries', 'categories'));
 	}
 
-	public function uploadImage($file, $folder, $title){
-        $fileName = $title.'-'.time().$file->getClientOriginalName();
-        $path = url($folder.'/'.$fileName);
-        $uploaded = $file->move(public_path().'/'.$folder.'/', $fileName);
-        if(!$uploaded){
-            return false;
-        }else{
-        	return $path;
-        }
-	}
+	 
+	 protected function checkCountryCodeFormate($str){
+         
+               if(mb_substr(trim($str), 0, 1) === '+'){                         
+                          return  $str;                     
+                  }
+                    
+                  return '+'.$str;                  
+    }
 
 	public function show(){
-		$deliveries = Deliveries::where('deliveries.publish', 1)
-							    ->join('city', 'deliveries.city_id', '=','city.city_id')
+		$deliveries = Deliveries::join('city', 'deliveries.city_id', '=','city.city_id')
 							    ->join('country', 'deliveries.country_id', '=','country.country_id')
 							    ->select('deliveries.*', DB::raw('country.country_ar_name AS country'), DB::raw('city.city_ar_name AS city'))
 							    ->get();
@@ -60,316 +57,395 @@ class DeliveryController extends Controller
 	}
 
 	public function store(Request $request){
-		$validator = Validator::make($request->all(), [
-			'identity'      => 'required|mimes:jpeg,png,jpg',
-			'license'       => 'required|mimes:jpeg,png,jpg',
-			'insurance'     => 'required|mimes:jpeg,png,jpg',
-			'authorization' => 'required|mimes:jpeg,png,jpg',
-			'car1'          => 'required|mimes:jpeg,png,jpg',
-			'car2'          => 'required|mimes:jpeg,png,jpg',
-			'car3'          => 'required|mimes:jpeg,png,jpg',
-			'email'         => 'required|unique:deliveries,email',
-			'phone'         => 'required|unique:deliveries,phone'
-		]);
+		
+       
+	    $messages = [
+            'full_name.required'                  => 'لابد من ادخال الاسم  بالكامل ',
+ 	          'phone.required'                    => 'رقم الجوال مطلوب ولا ',
+            'phone.unique'                        => 'رقم الجوال مستخدم من قبل',
+            'phone.regex'                         => 'صيغه الهاتف غير صحيحه لابد ان تبدا ب 5 او 05',
+             'country_code.required'              => 'لابد من ادحال كود الدوله ',
+            'password_confirmation.required'      => 'لابد من تاكيد  كلمة  المرور ',
+            'password.required'                   => 'لابد من ادحال كلمة المرور ',
+            'password.min'                        => 'لابد الا تقل كلمه المرور عن 8 احرف ',
+            'password.confirmed'                  => 'لابد من تاكيد كلمه المرور ',
+            'country_id.required'                 => 'لابد من  اختيار دوله ',
+            'country_id.exists'                   => 'الدوله غير موجوده او ربما  تكون محذوفه ',
+             'city_id.required'                   => 'لايد من اختيار المدينة ',
+            'city_id.exists'                      => 'المدينه المحتاره غير موجوده او ربما قد حذفت ',
+             'longitude.required'                 => 'لابد من تحديد مكانك علي الحريطة ',
+            'latitude.required'                   => 'لابد من تحديد مكانك علي الخريطه ',
+            'license_img.required'                => 'لابد من رفع صوره الرخصه للمركبه ',
+            'car_form_img.required'               => 'لابد من رفع  صوره استماره السياره ',
+            'Insurance_img.required'              => 'للابد من رفع صوره التامين',
+            'national_img.required'               => 'لابد من رفع صوره بطاقه الرقم القومي ',
+             'mimes'                              => 'لابد ان تكون الصوره من نوع  jpg or png ',
 
-		if($validator->fails()){
-			return redirect()->back()->withInput()->withErrors($validator->errors());
-		}
+        ];
 
-		if($request->hasFile('identity')){
-			$identity = $this->uploadImage($request->file('identity'), 'deliveryImages', 'delivery');
-            if(!$identity){
-                $errors = array('Failed to upload the image');
-                return redirect()->back()->withInput()->withErrors($errors);
-            }
-        }else{
-            $errors = array('You must upload identity image');
-            return redirect()->back()->withInput()->withErrors($errors);
+
+        $rules=[
+
+            'full_name'              => 'required',
+            'car_number'             => 'required',
+            'phone'                  =>  array('required','unique:deliveries,phone','regex:/^(05|5)([0-9]{8})$/'),
+            'country_code'           => 'required',
+            'password_confirmation'  => 'required',
+            'password'               => 'required|min:8|confirmed',         
+            'country_id'             => 'required|exists:country,country_id',
+            'city_id'                => 'required|exists:city,city_id',
+            'longitude'              => 'required',
+            'latitude'               => 'required',
+            'license_img'            => 'required|mimes:jpeg,png',
+            'car_form_img'           => 'required|mimes:jpeg,png',
+            'Insurance_img'          => 'required|mimes:jpeg,png',
+             'national_img'           => 'required|mimes:jpeg,png',
+        ];
+
+
+      	if($request->hasFile('authorization_img')){
+               //rules['authorization_img'] = 'mimes';
+      	}
+			  
+      $validator = Validator::make($request->all(),$rules, $messages);
+  
+
+        if($validator->fails()){
+
+
+               return redirect()->back()->with('errors', $validator->errors())->withInput();
         }
 
-        if($request->hasFile('license')){
-			$license = $this->uploadImage($request->file('license'), 'deliveryImages', 'delivery');
-            if(!$license){
-                $errors = array('Failed to upload the image');
-                return redirect()->back()->withInput()->withErrors($errors);
-            }
-        }else{
-            $errors = array('You must upload license image');
-            return redirect()->back()->withInput()->withErrors($errors);
-        }
+       
+          $inputs = $request -> only('full_name','phone','country_id','city_id','car_number','longitude','latitude');
 
-        if($request->hasFile('insurance')){
-			$insurance = $this->uploadImage($request->file('insurance'), 'deliveryImages', 'delivery');
-            if(!$insurance){
-                $errors = array('Failed to upload the image');
-                return redirect()->back()->withInput()->withErrors($errors);
-            }
-        }else{
-            $errors = array('You must upload insurance image');
-            return redirect()->back()->withInput()->withErrors($errors);
-        }
+           $inputs['country_code']        =  $this -> checkCountryCodeFormate($request->input('country_code'));
+           $inputs['password']            =  md5($request -> password);
+           $inputs['status']              = 1;
+           $inputs['publish']             = 1;           
+           $inputs['account_activated']   = 1;
+           $inputs['token']               = $this -> getRandomString(128);
 
-        if($request->hasFile('authorization')){
-			$authorization = $this->uploadImage($request->file('authorization'), 'deliveryImages', 'delivery');
-            if(!$authorization){
-                $errors = array('Failed to upload the image');
-                return redirect()->back()->withInput()->withErrors($errors);
-            }
-        }else{
-            $errors = array('You must upload authorization image');
-            return redirect()->back()->withInput()->withErrors($errors);
-        }
+              if($request -> hasFile('license_img')){
+                        $image  = $request -> license_img ;
+                        //save new image   
+                        $image ->store('/','deliveries');
+                        $nameOfImage = $image ->hashName();
+                        $inputs['license_img'] =  $nameOfImage;                           
+                    }else{                        
+                        $inputs['license_img'] = "avatar_ic.png";
+                    }
 
-        if($request->hasFile('car1')){
-			$car1 = $this->uploadImage($request->file('car1'), 'deliveryImages', 'delivery');
-            if(!$car1){
-                $errors = array('Failed to upload the image');
-                return redirect()->back()->withInput()->withErrors($errors);
-            }
-        }else{
-            $errors = array('You must upload car image 1 image');
-            return redirect()->back()->withInput()->withErrors($errors);
-        }
+                     if($request -> hasFile('car_form_img')){
+                        $image  = $request -> car_form_img ;
+                        //save new image   
+                        $image ->store('/','deliveries');
+                        $nameOfImage = $image ->hashName();
+                        $inputs['car_form_img'] =  $nameOfImage;                           
+                    }else{                        
+                        $inputs['car_form_img'] = "avatar_ic.png";
+                    }
+ 
 
-        if($request->hasFile('car2')){
-			$car2 = $this->uploadImage($request->file('car2'), 'deliveryImages', 'delivery');
-            if(!$car2){
-                $errors = array('Failed to upload the image');
-                return redirect()->back()->withInput()->withErrors($errors);
-            }
-        }else{
-            $errors = array('You must upload car image 2 image');
-            return redirect()->back()->withInput()->withErrors($errors);
-        }
+                  if($request -> hasFile('Insurance_img')){
+                        $image  = $request -> Insurance_img ;
+                        //save new image   
+                        $image ->store('/','deliveries');
+                        $nameOfImage = $image ->hashName();
+                        $inputs['Insurance_img'] =  $nameOfImage;                           
+                    }else{                        
+                        $inputs['Insurance_img'] = "avatar_ic.png";
+                    }
+ 
 
-        if($request->hasFile('car3')){
-			$car3 = $this->uploadImage($request->file('car3'), 'deliveryImages', 'delivery');
-            if(!$car3){
-                $errors = array('Failed to upload the image');
-                return redirect()->back()->withInput()->withErrors($errors);
-            }
-        }else{
-            $errors = array('You must upload car image 3 image');
-            return redirect()->back()->withInput()->withErrors($errors);
-        }
-        $data['firstname']    		  = $request->input('fname');
-		$data['secondname']   		  = $request->input('sname');
-		$data['thirdname']    		  = $request->input('tname');
-		$data['lastname']     		  = $request->input('lname');
-		$data['country_id']   		  = $request->input('countries');
-		$data['city_id']      		  = $request->input('cities');
-		$data['email']        		  = $request->input('email');
-		$data['phone']        		  = $request->input('phone');
-		$data['country_code'] 		  = $request->input('country_code');
-		$data['password']     		  = md5($request->input('password'));
-		$data['car_type']     		  = $request->input('car_type');
-		$data['longitude']    		  = '11';
-		$data['latitude']     		  = '11';
-		$data['full_name']    		  = $data['firstname']." ".$data['secondname']." ".$data['thirdname']." ".$data['lastname'];
-		$data['image']        		  = url('providerProfileImages/avatar_ic.png');
-		$data['car_img1']       	  = $car1;
-		$data['car_img2']       	  = $car2;
-		$data['car_img3']       	  = $car3;
-		$data['license_img']          = $license;
-		$data['authorization_img']    = $authorization;
-		$data['insurance_img']        = $insurance;
-		$data['id_img']        		  = $identity;
-		$data['token']        		  = NULL;
-		if(!empty($request->input('marketer_code'))){
-			$data['marketer_code'] = $request->input('marketer_code');
-		}else{
-			$data['marketer_code'] = "";
-		}
-		try {
-			$id = 0;
-			DB::transaction(function() use ($data, &$id){
-				$id = DB::table('deliveries')->insertGetId([
-					'full_name'     	  => $data['full_name'],
-					'firstname'     	  => $data['firstname'],
-					'secondname'    	  => $data['secondname'],
-					'thirdname'     	  => $data['thirdname'],
-					'lastname'      	  => $data['lastname'],
-					'country_id'    	  => $data['country_id'],
-					'city_id'       	  => $data['city_id'],
-					'email' 	    	  => $data['email'],
-					'phone' 	    	  => $data['phone'],
-					'country_code'  	  => $data['country_code'],
-					'password'      	  => md5($data['password']),
-					'car_type'      	  => $data['car_type'],
-					'longitude'     	  => $data['longitude'],
-					'latitude'      	  => $data['latitude'],
-					'profile_pic'   	  => $data['image'],
-					'car_img1'   		  => $data['car_img1'],
-					'car_img2'   		  => $data['car_img2'],
-					'car_img3'   		  => $data['car_img3'],
-					'insurance_img'   	  => $data['insurance_img'],
-					'authorization_img'   => $data['authorization_img'],
-					'id_img'  			  => $data['id_img'],
-					'license_img'  		  => $data['license_img'],
-					'device_reg_id'		  => $data['token'],
-					'marketer_code'       => $data['marketer_code']
-				]);
 
-				DB::table('balances')->insert(['actor_id' => $id, 'current_balance' => 0, 'due_balance' => 0, 'type' => 'delivery']);
-			});
-			$request->session()->flash('success', 'Delivery added successfully');
-			return redirect()->route('deliveries.show');
-		} catch (Exception $e) {
-			$errors = array('Failed to add, please try again later');
-			return redirect()->back()->withInput()->withErrors($errors);
-		}
+                  if($request -> hasFile('authorization_img')){
+                        $image  = $request -> authorization_img ;
+                        //save new image   
+                        $image ->store('/','deliveries');
+                        $nameOfImage = $image ->hashName();
+                        $inputs['authorization_img'] =  $nameOfImage;                           
+                    }else{                        
+                        $inputs['authorization_img'] = "avatar_ic.png";
+                    }
+ 
+
+                if($request -> hasFile('national_img')){
+                        $image  = $request -> national_img ;
+                        //save new image   
+                        $image ->store('/','deliveries');
+                        $nameOfImage = $image ->hashName();
+                        $inputs['national_img'] =  $nameOfImage;                           
+                    }else{                        
+                        $inputs['national_img'] = "avatar_ic.png";
+                    }
+
+
+					  try{
+
+                           $id = Deliveries::insertGetId($inputs);
+
+					  }catch(Exception $e){
+
+                           
+                           $request->session()->flash('faild', 'فشل رجاء المحاوله مجددا ');
+                             
+					  }
+                 
+
+                   $request->session()->flash('success', 'تم الاضافه بنجاح ');
+			       return redirect()->route('deliveries.show');		 
+                   
 	}
 
 	public function edit($id){
-		$delivery = Deliveries::where('delivery_id', $id)->first();
-		$countries = DB::table('country')->where('publish', 1)->get();
-		if($delivery != NULL){
-			$cities = DB::table('city')->where('country_id', $delivery->country_id)->get();
-		}else{
-			$cities = array();
-		}
-		return view('cpanel.deliveries.edit',compact('delivery', 'countries', 'cities'));
+	 
+
+         $data =[];
+		//get Provider data 
+		$data['delivery']      = Deliveries::where('delivery_id',$id) -> first();
+
+
+        if(!$data['delivery']){
+
+             return abort('404');
+        }
+
+		    $city_id       = $data['delivery']->city_id;
+		    $country_id    = $data['delivery']->country_id;
+ 
+     
+		//get countries
+		 $data['countries']  = DB::table('country')-> where('publish',1) 
+                                         -> select('country_id',
+                                                  'country_ar_name',
+                                                  'country_code',
+                                                  DB::raw('IF(country_id = '.$country_id.', true, false) AS choosen')
+                                                   )-> get();
+
+   
+		//get country cities
+		  $data['cities']       = DB::table('city')->select('city_id','city_ar_name','country_id',DB::raw('IF(city_id = '.$city_id.', true, false) AS choosen'))->get();
+ 
+
+		return view('cpanel.deliveries.edit',$data);
 	}
 
 	public function update(Request $request){
-		$validator = Validator::make($request->all(), [
-			'identity'      => 'nullable|mimes:jpeg,png,jpg',
-			'license'       => 'nullable|mimes:jpeg,png,jpg',
-			'insurance'     => 'nullable|mimes:jpeg,png,jpg',
-			'authorization' => 'nullable|mimes:jpeg,png,jpg',
-			'car1'          => 'nullable|mimes:jpeg,png,jpg',
-			'car2'          => 'nullable|mimes:jpeg,png,jpg',
-			'car3'          => 'nullable|mimes:jpeg,png,jpg',
-			'email'         => 'required|unique:deliveries,email,'.$request->input('id').',delivery_id',
-			'phone'         => 'required|unique:deliveries,phone,'.$request->input('id').',delivery_id'
-		]);
 
-		if($validator->fails()){
-			return redirect()->back()->withInput()->withErrors($validator->errors());
-		}
 
-		if($request->hasFile('identity')){
-			$identity = $this->uploadImage($request->file('identity'), 'deliveryImages', 'delivery');
-            if(!$identity){
-                $errors = array('Failed to upload the image');
-                return redirect()->back()->withInput()->withErrors($errors);
-            }
-        }else{
-            $identity = "";
+	    $messages = [
+            'full_name.required'                  => 'لابد من ادخال الاسم  بالكامل ',
+ 	          'phone.required'                    => 'رقم الجوال مطلوب ولا ',
+            'phone.unique'                        => 'رقم الجوال مستخدم من قبل',
+            'phone.regex'                         => 'صيغه الهاتف غير صحيحه لابد ان تبدا ب 5 او 05',
+             'country_code.required'              => 'لابد من ادحال كود الدوله ',
+            'password_confirmation.required'      => 'لابد من تاكيد  كلمة  المرور ',
+            'password.required'                   => 'لابد من ادحال كلمة المرور ',
+            'password.min'                        => 'لابد الا تقل كلمه المرور عن 8 احرف ',
+            'password.confirmed'                  => 'لابد من تاكيد كلمه المرور ',
+            'country_id.required'                 => 'لابد من  اختيار دوله ',
+            'country_id.exists'                   => 'الدوله غير موجوده او ربما  تكون محذوفه ',
+             'city_id.required'                   => 'لايد من اختيار المدينة ',
+            'city_id.exists'                      => 'المدينه المحتاره غير موجوده او ربما قد حذفت ',
+             'longitude.required'                 => 'لابد من تحديد مكانك علي الحريطة ',
+            'latitude.required'                   => 'لابد من تحديد مكانك علي الخريطه ',
+              'mimes'                              => 'لابد ان تكون الصوره من نوع  jpg or png ',
+              'delivery_id.required'               => 'رقم الموصل مطلوب ',
+              'delivery_id.exists'                 => 'الموصل غير موجود ', 
+
+        ];
+
+
+        $rules=[
+
+            'full_name'              => 'required',
+            'car_number'             => 'required',
+            'phone'                  =>  array('required','unique:deliveries,phone,'.$request->input('delivery_id').',delivery_id','regex:/^(05|5)([0-9]{8})$/'),
+            'country_code'           => 'required',
+              'country_id'             => 'required|exists:country,country_id',
+            'city_id'                => 'required|exists:city,city_id',
+            'longitude'              => 'required',
+            'latitude'               => 'required',
+            'delivery_id'            => 'required|exists:deliveries,delivery_id'
+         ];
+
+
+			   if($request -> hasFile('license_img')){
+
+			      $rules['license_img'] = 'required|mimes:jpeg,png';
+			 
+			    }
+
+			     if($request -> hasFile('car_form_img')){
+
+			      $rules['car_form_img'] = 'required|mimes:jpeg,png';
+			 
+			    }
+
+			    if($request -> hasFile('Insurance_img')){
+
+			      $rules['Insurance_img'] = 'required|mimes:jpeg,png';
+			 
+			    }
+
+			    if($request -> hasFile('authorization_img')){
+
+			      $rules['authorization_img'] = 'required|mimes:jpeg,png';
+			 
+			    }
+			     if($request -> hasFile('national_img')){
+
+			      $rules['national_img'] = 'required|mimes:jpeg,png';
+			 
+			    }
+
+			     if($request -> hasFile('national_img')){
+
+			      $rules['national_img'] = 'required|mimes:jpeg,png';
+			 
+			    }
+			 
+			    
+			    if($request ->has('password')){ 
+			          $rules['password_confirmation'] = 'required';
+			          $rules['password']              = 'required|min:8|confirmed';
+			      }
+
+      $validator = Validator::make($request->all(),$rules, $messages);
+ 
+ 
+        if($validator->fails()){
+
+              // return redirect()->back()->with('errors', $validator->errors())->withInput();
         }
 
-        if($request->hasFile('license')){
-			$license = $this->uploadImage($request->file('license'), 'deliveryImages', 'delivery');
-            if(!$license){
-                $errors = array('Failed to upload the image');
-                return redirect()->back()->withInput()->withErrors($errors);
-            }
-        }else{
-            $license = "";
-        }
 
-        if($request->hasFile('insurance')){
-			$insurance = $this->uploadImage($request->file('insurance'), 'deliveryImages', 'delivery');
-            if(!$insurance){
-                $errors = array('Failed to upload the image');
-                return redirect()->back()->withInput()->withErrors($errors);
-            }
-        }else{
-            $insurance = "";
-        }
+      
+          $inputs = $request -> only('full_name','phone','country_id','city_id','car_number','longitude','latitude');
 
-        if($request->hasFile('authorization')){
-			$authorization = $this->uploadImage($request->fiel('authorization'), 'deliveryImages', 'delivery');
-            if(!$authorization){
-                $errors = array('Failed to upload the image');
-                return redirect()->back()->withInput()->withErrors($errors);
-            }
-        }else{
-            $authorization = "";
-        }
+           if($request -> has('password')){
+                   
+                     $inputs['password']            =  md5($request -> password);
+                 } 
 
-        if($request->hasFile('car1')){
-			$car1 = $this->uploadImage($request->file('car1'), 'deliveryImages', 'delivery');
-            if(!$car1){
-                $errors = array('Failed to upload the image');
-                return redirect()->back()->withInput()->withErrors($errors);
-            }
-        }else{
-            $car1 = "";
-        }
 
-        if($request->hasFile('car2')){
-			$car2 = $this->uploadImage($request->file('car2'), 'deliveryImages', 'delivery');
-            if(!$car2){
-                $errors = array('Failed to upload the image');
-                return redirect()->back()->withInput()->withErrors($errors);
-            }
-        }else{
-            $car2 = "";
-        }
+           $inputs['country_code']        =  $this -> checkCountryCodeFormate($request->input('country_code'));
+           $inputs['status']              = 1;
+           $inputs['publish']             = 1;           
+           $inputs['account_activated']   = 1;
 
-        if($request->hasFile('car3')){
-			$car3 = $this->uploadImage($request->file('car3'), 'deliveryImages', 'delivery');
-            if(!$car3){
-                $errors = array('Failed to upload the image');
-                return redirect()->back()->withInput()->withErrors($errors);
-            }
-        }else{
-            $car3 = "";
-        }
-        $data['firstname']    		  = $request->input('fname');
-		$data['secondname']   		  = $request->input('sname');
-		$data['thirdname']    		  = $request->input('tname');
-		$data['lastname']     		  = $request->input('lname');
-		$data['country_id']   		  = $request->input('countries');
-		$data['city_id']      		  = $request->input('cities');
-		$data['email']        		  = $request->input('email');
-		$data['phone']        		  = $request->input('phone');
-		$data['country_code'] 		  = $request->input('country_code');
-		if(!empty($request->input('pass')) && $request->input('pass') != ""){
-			$data['password']     		  = md5($request->input('pass'));
-		}
-		
-		$data['car_type']     		  = $request->input('car_type');
-		$data['full_name']    		  = $data['firstname']." ".$data['secondname']." ".$data['thirdname']." ".$data['lastname'];
-		if($car1 != ""){
-			$data['car_img1'] = $car1;
-		}
-		
-		if($car2 != ""){
-			$data['car_img2'] = $car2;
-		}
 
-		if($car3 != ""){
-			$data['car_img3'] = $car3;
-		}
+             $images = array();
 
-		if($license != ""){
-			$data['license_img'] = $license;
-		}
-		
-		if($authorization != ""){
-			$data['authorization_img'] = $authorization;
-		}
 
-		if($insurance != ""){
-			$data['insurance_img'] = $insurance;
-		}
+                 if($request -> hasFile('license_img')){
 
-		if($identity != ""){
-			$data['id_img'] = $identity;
-		}
-		$id = $request->input('id');
-		try {
-			DB::transaction(function() use ($data, $id){
-				DB::table('deliveries')->where('delivery_id', $id)->update($data);
-			});
-			$request->session()->flash('success', 'Delivery updated successfully');
-			return redirect()->route('deliveries.show');
-		} catch (Exception $e) {
-			$errors = array('Failed to update, please try again later');
-			return redirect()->back()->withInput()->withErrors($errors);
-		}
+
+                      //delete the previous image from storage 
+                       if(Storage::disk('deliveries')->exists($request -> input('license_img')))
+                       {
+                             
+                            Storage::disk('deliveries')->delete($request -> input('license_img'));
+
+                       }
+ 
+                         $image  = $request -> license_img ;
+                        //save new image   
+                        $image ->store('/','deliveries');
+                        $nameOfImage = $image ->hashName();
+                        $inputs['license_img'] =  $nameOfImage;                           
+                 }
+
+                  if($request -> hasFile('national_img')){
+
+ 
+                      //delete the previous image from storage 
+                       if(Storage::disk('deliveries')->exists($request -> input('national_img')))
+                       {
+                             
+                            Storage::disk('deliveries')->delete($request -> input('national_img'));
+
+                       }
+ 
+                         $image  = $request -> national_img ;
+                        //save new image   
+                        $image ->store('/','deliveries');
+                        $nameOfImage = $image ->hashName();
+                        $inputs['national_img'] =  $nameOfImage;                           
+                 }
+
+                  if($request -> hasFile('authorization_img')){
+
+
+                      //delete the previous image from storage 
+                       if(Storage::disk('deliveries')->exists($request -> input('authorization_img')))
+                       {
+                             
+                            Storage::disk('deliveries')->delete($request -> input('authorization_img'));
+
+                       }
+ 
+                         $image  = $request -> authorization_img ;
+                        //save new image   
+                        $image ->store('/','deliveries');
+                        $nameOfImage = $image ->hashName();
+                        $inputs['authorization_img'] =  $nameOfImage;                           
+                 }
+
+
+                  if($request -> hasFile('Insurance_img')){
+
+
+                      //delete the previous image from storage 
+                       if(Storage::disk('deliveries')->exists($request -> input('Insurance_img')))
+                       {
+                             
+                            Storage::disk('deliveries')->delete($request -> input('Insurance_img'));
+
+                       }
+ 
+                         $image  = $request -> Insurance_img ;
+                        //save new image   
+                        $image ->store('/','deliveries');
+                        $nameOfImage = $image ->hashName();
+                        $inputs['Insurance_img'] =  $nameOfImage;                           
+                 }
+
+
+                  if($request -> hasFile('car_form_img')){
+
+
+                      //delete the previous image from storage 
+                       if(Storage::disk('deliveries')->exists($request -> input('car_form_img')))
+                       {
+                             
+                            Storage::disk('deliveries')->delete($request -> input('car_form_img'));
+
+                       }
+ 
+                         $image  = $request -> car_form_img ;
+                        //save new image   
+                        $image ->store('/','deliveries');
+                        $nameOfImage = $image ->hashName();
+                        $inputs['car_form_img'] =  $nameOfImage;                           
+                 }
+
+
+
+            try {
+
+            	 Deliveries::where('delivery_id',$request -> delivery) -> update($inputs);
+             	
+             } catch (Exception $e) {
+             	
+                    $request->session()->flash('faild', 'فشل رجاء المحاوله مجددا ');
+             } 
+ 
+
+           $request->session()->flash('success', 'تم التعديل  بنجاح ');
+	       return redirect()->route('deliveries.show');		 
+         
 	}
 
 	// function to activate delivery

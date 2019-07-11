@@ -74,10 +74,12 @@
               margin: 5px 0 0;
             }
 
+           
+           .error-messagen {
 
-        .error-messagen {
-          display: none;
-        }
+            display: none;
+           }
+         
         .error .error-messagen {
           display: inline-block;
         }
@@ -328,7 +330,7 @@
                                 </a>
                                 <ul>
                                     <li>
-                                        <a rel="nofollow" rel="noreferrer" href="<?php echo e(route('provider.evaluations.show')); ?>">تقييمات مقدمين الخدمة</a>
+                                        <a rel="nofollow" rel="noreferrer" href="<?php echo e(route('provider.evaluations.show')); ?>">تقييمات   المتاجر </a>
                                     </li>
                                     <li>    
                                         <a rel="nofollow" rel="noreferrer" href="<?php echo e(route('delivery.evaluations.show')); ?>">تقييمات الموصلين</a>
@@ -339,6 +341,27 @@
                              <li>
                                 <a rel="nofollow" rel="noreferrer" href="<?php echo e(route('get.notifications')); ?>">ارسال اشعارات </a>
                             </li>
+
+                              <li class="sub-menu">
+                                <a rel="nofollow" rel="noreferrer" href="javascript:void(0);">
+                                    التذاكر 
+                                    <i class="fa fa-angle-down"></i>
+                                </a>
+                                <ul>
+                                    <li>
+                                        <a rel="nofollow" rel="noreferrer" href="<?php echo e(route('tickets',2)); ?>">المتاجر </a>
+                                    </li>
+                                     <li>
+                                        <a rel="nofollow" rel="noreferrer" href="<?php echo e(route('tickets',1)); ?>">المستخدمين </a>
+                                    </li>
+
+                                     <li>
+                                        <a rel="nofollow" rel="noreferrer" href="<?php echo e(route('tickets',3)); ?>">الموصلين  </a>
+                                    </li>
+                                </ul>
+                            </li>
+
+
                         </ul>
 
 

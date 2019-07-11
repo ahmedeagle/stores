@@ -1835,7 +1835,7 @@ public function UpdateProfile(Request $request){
 					 
 					 if($this -> UserCommentBefore($data)){
  
-                      DB::table('products_rates')-> where(['product_id' => $data['product_id'], 'user_id'  => $data['user_id']]) -> update([
+                      DB::table('products_rates')-> where(['product_id' => $data['product_id'],       'user_id'  => $data['user_id']]) -> update([
 							'product_id' => $data['product_id'],
 							'rates'      => $data['rate'] ? $data['rate'] : 0 ,
 							'user_id'    => $data['user_id']
@@ -2855,7 +2855,7 @@ public function prepareSearch(Request $request){
 				$percentage          = $app_settings->app_percentage;
 				$kilo_price          = $app_settings->kilo_price;   
 				$delivery_percentage = $app_settings->delivery_percentage;
- 				$initial_price       = $app_settings->initial_value_added_order_price;
+ 				$initial_price       = 0;
  			}else{
 				$percentage = 0;
 				$kilo_price = 0;
@@ -3545,7 +3545,7 @@ public function cancel_order(Request $request){
 
                      if($image){
 
-                     	 $product -> main_image =  env('APP_URL').'/public/providerProfileImages/'.$image -> image;
+                     	 $product -> main_image =  env('APP_URL').'/public/products/'.$image -> image;
 
                      }else{
                       
@@ -3570,10 +3570,10 @@ public function cancel_order(Request $request){
 
 		if($status == 3 || $status == "3"){
 
-			$provider_order_rate = DB::table('provider_evaluation')
+			$provider_order_rate = DB::table('providers_rates')
                             ->where('order_id',$request->input('order_id'))
 						    ->select(
-						    	DB::raw("IFNULL(((quality + autotype + packing + maturity + ask_again) / 5), 0) AS order_rate") , 
+						    	DB::raw("IFNULL((rates), 0) AS order_rate") , 
 						    	DB::raw("IFNULL(((comment)), 0) AS comment"))
 						    ->first();
 

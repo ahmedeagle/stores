@@ -1,5 +1,4 @@
-@extends('cpanel.layout.master')
-@section('content')
+<?php $__env->startSection('content'); ?>
 <div class="content">
     <div class="col-sm-12">
         <section class="page-heading">
@@ -8,7 +7,7 @@
             </div><!--End col-md-6-->
             <div class="col-sm-6">
                 <ul class="breadcrumb">
-                    <li><a href="{{ route('home') }}">الرئيسية</a></li>
+                    <li><a href="<?php echo e(route('home')); ?>">الرئيسية</a></li>
                    <li>التعليقات</li>
                     <li class="active">التعليقات اليومية</li>
                 </ul>
@@ -20,20 +19,22 @@
              التعليقات اليومية
             </div>
             <div class="widget-content requests">
-                @if(Session::has('success'))
+                <?php if(Session::has('success')): ?>
                     <div class="alert alert-success">
-                        <strong>تم بنجاح !</strong> {{ Session::get('success') }}
+                        <strong>تم بنجاح !</strong> <?php echo e(Session::get('success')); ?>
+
                     </div>
                     <div class="spacer-25"></div><!--End Spacer-->
-                @endif
-                @if(Session::has('err'))
+                <?php endif; ?>
+                <?php if(Session::has('err')): ?>
                     <div class="alert alert-danger">
-                        <strong>خطأ !</strong> {{ Session::get('err') }}
+                        <strong>خطأ !</strong> <?php echo e(Session::get('err')); ?>
+
                     </div>
                     <div class="spacer-25"></div><!--End Spacer-->
-                @endif
+                <?php endif; ?>
                 
-                @if($comments->count())
+                <?php if($comments->count()): ?>
                 <div class="table-responsive"> 
                     <table class="table table-bordered table-hover">
                         <thead>
@@ -48,45 +49,46 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($comments AS $comment)
+                            <?php $__currentLoopData = $comments; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $comment): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                             <tr>
                                 <td class="width-90">
-                                    <a class="img-popup-link" href="{{$comment -> product_image}}">
-                                        <img src="{{$comment -> product_image}}" class="table-img">
+                                    <a class="img-popup-link" href="<?php echo e($comment -> product_image); ?>">
+                                        <img src="<?php echo e($comment -> product_image); ?>" class="table-img">
                                     </a>
                                 </td>
-                                <td>{{ $comment->title }}</td>
-                                <td>{{ $comment->full_name }}</td>
-                                <td>{{ $comment->phone }}</td>
-                                <td>{{ $comment->comment }}</td>
-                                <td>{{ $comment->created }}</td>
+                                <td><?php echo e($comment->title); ?></td>
+                                <td><?php echo e($comment->full_name); ?></td>
+                                <td><?php echo e($comment->phone); ?></td>
+                                <td><?php echo e($comment->comment); ?></td>
+                                <td><?php echo e($comment->created); ?></td>
                                 <td>
-                                    <button data-id="{{ $comment->id }}" class="custom-btn red-bc deleteMeal">
+                                    <button data-id="<?php echo e($comment->id); ?>" class="custom-btn red-bc deleteMeal">
                                         <i class="fa fa-trash-o"></i>
                                     </button>
                                 </td>
                             </tr>
-                            @endforeach
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                         </tbody>
                     </table>
                 </div>
-                @endif
+                <?php endif; ?>
                 <div class="col-sm-12">
-                    {{ $comments->links() }}
+                    <?php echo e($comments->links()); ?>
+
                 </div>
             </div><!--End Widget-content -->
         </div><!--End Widget-->
     </div>
 </div>
-@stop
+<?php $__env->stopSection(); ?>
 
-@section('customJs')
+<?php $__env->startSection('customJs'); ?>
 <script type="text/javascript">
 $(document).ready(function(){
     $('body').on('click', '.deleteMeal', function(){
         if(confirm("Are you sure?")){
             var id = $(this).attr('data-id');
-            var url = "{{ route('comments.delete', ['id' => ':id']) }}";
+            var url = "<?php echo e(route('comments.delete', ['id' => ':id'])); ?>";
 
             url = url.replace(':id', id);
 
@@ -95,4 +97,5 @@ $(document).ready(function(){
     });
 });
 </script>
-@stop
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('cpanel.layout.master', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

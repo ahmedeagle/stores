@@ -1,5 +1,4 @@
-@extends('cpanel.layout.master')
-@section('content')
+<?php $__env->startSection('content'); ?>
 <div class="content">
     <div class="col-sm-12">
         <section class="page-heading">
@@ -8,7 +7,7 @@
             </div><!--End col-md-6-->
             <div class="col-sm-6">
                 <ul class="breadcrumb">
-                    <li><a href="{{ route('home') }}">الرئيسية</a></li>
+                    <li><a href="<?php echo e(route('home')); ?>">الرئيسية</a></li>
                     <li>الموصلين</li>
                     <li class="active">قائمة الموصلين</li>
                 </ul>
@@ -21,18 +20,19 @@
             </div>
             <div class="widget-content">
                 <div class="col-sm-12">
-                    <a href="{{ route('deliveries.create') }}" class="custom-btn red-bc">
+                    <a href="<?php echo e(route('deliveries.create')); ?>" class="custom-btn red-bc">
                         <i class="fa fa-plus"></i>
                         إضافة موصل جديد
                     </a>
                 </div>
                 <div class="spacer-25"></div><!--End Spacer-->
-                @if(Session::has('success'))
+                <?php if(Session::has('success')): ?>
                     <div class="alert alert-success">
-                        <strong>تم بنجاح !</strong> {{ Session::get('success') }}
+                        <strong>تم بنجاح !</strong> <?php echo e(Session::get('success')); ?>
+
                     </div>
                     <div class="spacer-25"></div><!--End Spacer-->
-                @endif
+                <?php endif; ?>
                 <div class="table-responsive">          
                     <table id="datatable" class="table table-hover">
                         <thead>
@@ -49,19 +49,19 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @if($deliveries->count())
-                                @foreach($deliveries AS $delivery)
+                            <?php if($deliveries->count()): ?>
+                                <?php $__currentLoopData = $deliveries; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $delivery): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                     <tr>
-                                        <td> {{ $delivery->full_name }} </td>
-                                        <td> {{ $delivery->brand_name }} </td>
-                                        <td> {{ $delivery->country_code.$delivery->phone }} </td>
-                                        <td> {{ $delivery->email }} </td>
-                                        <td> {{ $delivery->country }} </td>
-                                        <td> {{ $delivery->city }} </td>
-                                        <td>{{ $delivery-> account_activated == 0 ? 'غير مفعل' : 'مفعل' }}</td>
-                                         <td> {{ $delivery->publish == 0 ? 'غير مفعل' : 'مفعل' }} </td>
+                                        <td> <?php echo e($delivery->full_name); ?> </td>
+                                        <td> <?php echo e($delivery->brand_name); ?> </td>
+                                        <td> <?php echo e($delivery->country_code.$delivery->phone); ?> </td>
+                                        <td> <?php echo e($delivery->email); ?> </td>
+                                        <td> <?php echo e($delivery->country); ?> </td>
+                                        <td> <?php echo e($delivery->city); ?> </td>
+                                        <td><?php echo e($delivery-> account_activated == 0 ? 'غير مفعل' : 'مفعل'); ?></td>
+                                         <td> <?php echo e($delivery->publish == 0 ? 'غير مفعل' : 'مفعل'); ?> </td>
                                          <td>
-                                            <a href="{{ route('deliveries.edit', $delivery->delivery_id) }}" class="custom-btn blue-bc">
+                                            <a href="<?php echo e(route('deliveries.edit', $delivery->delivery_id)); ?>" class="custom-btn blue-bc">
                                                 <i class="fa fa-pencil"></i>
                                             </a>
                                             <!--
@@ -69,18 +69,18 @@
                                              2 => activate sms But not activated from manger
                                              1 => activated from the manger
                                             -->
-                                            @if($delivery->status == 0 || $delivery->status == 2)
-                                            <form action="{{ route('deliveries.activate', $delivery->delivery_id) }}" method="post" name="activate-delivery" id="activate-delivery">
+                                            <?php if($delivery->status == 0 || $delivery->status == 2): ?>
+                                            <form action="<?php echo e(route('deliveries.activate', $delivery->delivery_id)); ?>" method="post" name="activate-delivery" id="activate-delivery">
                                                 <button type="submit" name="activate-delivery-btn" class="btn btn-success">تفعيل</button>
                                             </form>
-                                            @endif
+                                            <?php endif; ?>
                                             <!-- <button class="custom-btn red-bc">
                                                 <i class="fa fa-trash-o"></i>
                                             </button> -->
                                         </td>
                                     </tr>
-                                @endforeach
-                            @endif
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                            <?php endif; ?>
                         </tbody>
                     </table>
                 </div>
@@ -88,4 +88,5 @@
         </div><!--End Widget-->
     </div>
 </div>
-@stop
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('cpanel.layout.master', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

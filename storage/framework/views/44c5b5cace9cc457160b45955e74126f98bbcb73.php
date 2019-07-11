@@ -1,5 +1,4 @@
-@extends('cpanel.layout.master')
-@section('content')
+<?php $__env->startSection('content'); ?>
 <div class="content">
     <div class="col-sm-12">
         <section class="page-heading">
@@ -8,8 +7,8 @@
             </div><!--End col-md-6-->
             <div class="col-sm-6">
                 <ul class="breadcrumb">
-                    <li><a href="{{ route('home') }}">الرئيسية</a></li>
-                    <li><a href="{{ route('orders.filter') }}">الطلبات</a></li>
+                    <li><a href="<?php echo e(route('home')); ?>">الرئيسية</a></li>
+                    <li><a href="<?php echo e(route('orders.filter')); ?>">الطلبات</a></li>
                     <li class="active">تفاصيل الطلب</li>
                 </ul>
             </div><!--End col-md-6-->
@@ -27,14 +26,15 @@
                     </a>
                 </div> -->
                 <div class="spacer-25"></div><!--End Spacer-->
-                @if(Session::has('success'))
+                <?php if(Session::has('success')): ?>
                     <div class="alert alert-success">
-                        <strong>تم بنجاح  !</strong> {{ Session::get('success') }}
+                        <strong>تم بنجاح  !</strong> <?php echo e(Session::get('success')); ?>
+
                     </div>
                     <div class="spacer-25"></div><!--End Spacer-->
-                @endif
+                <?php endif; ?>
                 <div class="table-responsive">  
-                    @if($header != NULL)        
+                    <?php if($header != NULL): ?>        
                     <table class="table table-bordered table-hover">
                         <thead>
                             <tr>
@@ -56,27 +56,27 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td>{{ $header->order_code }}</td>
-                                <td>{{ ($header->in_future == 1)? 'Future order' : 'Current order' }}</td>
-                                <td>{{ $header->method_en_name }}</td>
-                                <td>{{ $header->user }}</td>
-                                <td>{{ $header->user_phone }}</td>
-                                <td>{{ $header->user_email }}</td>
-                                <td>{{ $header->address }}</td>
-                                <td>{{ $header->provider }}</td>
-                                <td>{{ $header->delivery }}</td>
-                                <td>{{ $header->total_value }}</td>
-                                <td>{{ $header->total_qty }}</td>
-                                <td>{{ date('Y-m-d', strtotime($header->created_at)) }}</td>
-                                <td>{{ $header->sts }}</td>
+                                <td><?php echo e($header->order_code); ?></td>
+                                <td><?php echo e(($header->in_future == 1)? 'Future order' : 'Current order'); ?></td>
+                                <td><?php echo e($header->method_en_name); ?></td>
+                                <td><?php echo e($header->user); ?></td>
+                                <td><?php echo e($header->user_phone); ?></td>
+                                <td><?php echo e($header->user_email); ?></td>
+                                <td><?php echo e($header->address); ?></td>
+                                <td><?php echo e($header->provider); ?></td>
+                                <td><?php echo e($header->delivery); ?></td>
+                                <td><?php echo e($header->total_value); ?></td>
+                                <td><?php echo e($header->total_qty); ?></td>
+                                <td><?php echo e(date('Y-m-d', strtotime($header->created_at))); ?></td>
+                                <td><?php echo e($header->sts); ?></td>
                             </tr>
                         </tbody>
                     </table>
-                    @endif
+                    <?php endif; ?>
                 </div>
                 <span class="spacer-25"></span>
                 <div class="table-responsive">  
-                    @if(isset($details) && $details->count() > 0)        
+                    <?php if(isset($details) && $details->count() > 0): ?>        
                     <table class="table table-bordered table-hover">
                         <thead>
                             <tr>
@@ -89,30 +89,31 @@
                         </thead>
                         <tbody>
                             <?php $total = 0; ?>
-                            @foreach($details AS $row)
+                            <?php $__currentLoopData = $details; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $row): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                 <?php $total += ($row->product_price * $row->qty); ?>
                             <tr>
                                 <td class="width-90">
-                                    <a class="img-popup-link" href="{{$row -> main_image}}">
-                                        <img src="{{$row -> main_image}}" class="table-img">
+                                    <a class="img-popup-link" href="<?php echo e($row -> main_image); ?>">
+                                        <img src="<?php echo e($row -> main_image); ?>" class="table-img">
                                     </a>
                                 </td>
-                                <td>{{ $row-> title }}</td>
-                                <td>{{ $row->qty }}</td>
-                                <td>{{ $row->product_price }}</td>
-                                <td>{{ ($row->product_price * $row->qty) }}</td>
+                                <td><?php echo e($row-> title); ?></td>
+                                <td><?php echo e($row->qty); ?></td>
+                                <td><?php echo e($row->product_price); ?></td>
+                                <td><?php echo e(($row->product_price * $row->qty)); ?></td>
                             </tr>
-                            @endforeach
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                             <tr>
                                 <td colspan="4">الأجمالى</td>
-                                <td>{{ $total }}</td>
+                                <td><?php echo e($total); ?></td>
                             </tr>
                         </tbody>
                     </table>
-                    @endif
+                    <?php endif; ?>
                 </div>
             </div>
         </div><!--End Widget-->
     </div>
 </div>
-@stop
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('cpanel.layout.master', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

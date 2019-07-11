@@ -1,16 +1,15 @@
-@extends('cpanel.layout.master')
-@section('content')
+<?php $__env->startSection('content'); ?>
 <div class="content">
     <div class="col-sm-12" id="container">
         <section class="page-heading">
             <div class="col-sm-6">
-                <h2>تعديل موصل </h2>
+                <h2>إضافة موصل</h2>
             </div><!--End col-md-6-->
             <div class="col-sm-6">
                 <ul class="breadcrumb">
-                    <li><a href="{{ route('home') }}">الرئيسية</a></li>
-                    <li ><a href="{{ route('deliveries.show') }}">الموصلين </a></li>
-                    <li class="active"> تعديل موصل </li>
+                    <li><a href="<?php echo e(route('home')); ?>">الرئيسية</a></li>
+                    <li>الموصلين</li>
+                    <li class="active">إضاف موصل</li>
                 </ul>
             </div><!--End col-md-6-->
         </section><!--End page-heading-->
@@ -18,44 +17,46 @@
         <div class="col-md-12">
             <div class="widget">
                 <div class="widget-title">
-                    نموذج  تعديل  موصل
+                    نموذج إضافة موصل
                 </div>
                 <div class="widget-content">
-                    <form class="ui form" enctype="multipart/form-data"   method="post" action="{{ route('deliveries.update') }}">
-                      <input type="hidden" name="delivery_id" value="{{$delivery -> delivery_id}}">
+                    <form class="ui form" enctype="multipart/form-data"   method="post" action="<?php echo e(route('deliveries.store')); ?>">
                         <div class="form-title">من فضلك إملئ البيانات التالية</div>
                         <div class="form-note">[ * ] حقل مطلوب</div>
                         <div class="ui error message"></div>
-                        @if(!empty($errors->first()))
+                        <?php if(!empty($errors->first())): ?>
                             <div class="alert alert-danger">
                                  <strong>خطأ !</strong> لابد من تصحيح الاخطاء الاتية 
                             </div>
-                        @endif
-                        @if(!empty($success))
+                        <?php endif; ?>
+                        <?php if(!empty($success)): ?>
                             <div class="alert alert-success">
-                                <strong>تم بنجاح !</strong> {{ $msg }}
-                            </div>
-                        @endif
+                                <strong>تم بنجاح !</strong> <?php echo e($msg); ?>
 
-                          @if(!empty($faild))
-                            <div class="alert alert-danger">
-                                  {{ $faild }}
                             </div>
-                        @endif
+                        <?php endif; ?>
+
+                          <?php if(!empty($faild)): ?>
+                            <div class="alert alert-danger">
+                                  <?php echo e($faild); ?>
+
+                            </div>
+                        <?php endif; ?>
  
                         <div class="widget-title">
                             البيانات الشخصية
                         </div>
-                             <div class="ui field @if ($errors->has('full_name')) error  @endif">
+                             <div class="ui field <?php if($errors->has('full_name')): ?> error  <?php endif; ?>">
                                 <label>الاسم بالكامل  :<span class="require">*</span></label>
                                 <div class="ui input">
-                                    <input name="full_name" id="full_name" type="text" placeholder="الاسم بالكامل " value="{{ $delivery -> full_name  }}" />
+                                    <input name="full_name" id="full_name" type="text" placeholder="الاسم بالكامل " value="<?php echo e(old('full_name')); ?>" />
                                 </div>
 
                                  <div class="error-messagen">
-                                      @if($errors->has('full_name'))  
-                                          {{$errors -> first('full_name')}}
-                                      @endif
+                                      <?php if($errors->has('full_name')): ?>  
+                                          <?php echo e($errors -> first('full_name')); ?>
+
+                                      <?php endif; ?>
                                    .</div>
 
                             </div>
@@ -66,52 +67,37 @@
                             بيانات العنوان
                         </div>
                         <div class="two fields">
-                            <div class="ui field @if ($errors->has('country_id')) error  @endif ">
+                            <div class="ui field <?php if($errors->has('country_id')): ?> error  <?php endif; ?> ">
                                 <label>الدول :<span class="require">*</span></label>
                                 <div class="ui input">
                                     <select class="ui dropdown country" id="country_id" name="country_id">
-                                          <option value="">اختر دولة </option>
-                                       @if(isset($countries) && $countries -> count() > 0)
-                                          @foreach($countries as $country)
-                                              
-                                                <option id="{{$country -> country_id}}" value="{{ $country->country_id }}" 
-                                                        @php if($country -> choosen   == 1 ) { echo 'selected';  }    @endphp 
-
-                                                    >{{ $country->country_ar_name }}</option>
-
-                                          @endforeach
-                                       @endif
-
+                                        <option value="">قم بإختيار دوله</option>
+                                        <?php if($countries->count()): ?>
+                                            <?php $__currentLoopData = $countries; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $country): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                <option value="<?php echo e($country->country_id); ?>"  <?php  if(old('country_id')  == $country->country_id ) { echo 'selected';  }     ?>  ><?php echo e($country->country_ar_name); ?></option>
+                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                        <?php endif; ?>
                                     </select>
                                 </div>
                                 <div class="error-messagen">
-                                      @if($errors->has('country_id'))  
-                                          {{$errors -> first('country_id')}}
-                                      @endif
+                                      <?php if($errors->has('country_id')): ?>  
+                                          <?php echo e($errors -> first('country_id')); ?>
+
+                                      <?php endif; ?>
                                   .</div>
 
                             </div>
-                            <div class="ui field cityDiv  @if ($errors->has('city_id')) error  @endif " >
+                            <div class="ui field cityDiv  <?php if($errors->has('city_id')): ?> error  <?php endif; ?> " >
                                 <label>المدن :<span class="require">*</span></label>
                                 <select id="cities" class="ui dropdown city" name="city_id">
                                     <option value="">قم بإختيار مدينه</option>
-                                     @if(isset($cities) && $cities -> count() > 0)
-
-                                     @foreach($cities as $city)
-                                                <option id="{{$city -> city_id }}" value="{{ $city -> city_id  }}" 
-                                                        @php if($city -> choosen   == 1 ) { echo 'selected';  }    @endphp 
-
-                                                    >{{ $city -> city_ar_name }}</option>
-
-                                          @endforeach
-                                       @endif
-
                                 </select>
                             </div>
                              <div class="error-messagen">
-                                      @if($errors->has('city_id'))  
-                                          {{$errors -> first('city_id')}}
-                                      @endif
+                                      <?php if($errors->has('city_id')): ?>  
+                                          <?php echo e($errors -> first('city_id')); ?>
+
+                                      <?php endif; ?>
                                   .</div>
                         </div>
 
@@ -120,13 +106,14 @@
 
                            <input id="pac-input" class="controls" type="text" placeholder="أبحث هنا عن  مكانك  علي الخريطه ">
 
-                           <input type="hidden" id="latitudef" value="{{$delivery -> latitude}}"  name="latitude">
-                           <input type="hidden" id="longitudef"  value="{{$delivery -> latitude}}" name="longitude">
+                           <input type="hidden" id="latitudef"  name="latitude">
+                           <input type="hidden" id="longitudef" name="longitude">
                               
                                  <div class="error-messagen">
-                                      @if($errors->has('latitude'))  
-                                          {{$errors -> first('latitude')}}
-                                      @endif
+                                      <?php if($errors->has('latitude')): ?>  
+                                          <?php echo e($errors -> first('latitude')); ?>
+
+                                      <?php endif; ?>
                                   .</div>
                                        
  
@@ -145,14 +132,15 @@
                             <label>رقم الجوال : <span class="require">*</span></label>
                             <div class="inline-form">
 
-                                <div  class="@if ($errors->has('country_code')) error  @endif"> 
+                                <div  class="<?php if($errors->has('country_code')): ?> error  <?php endif; ?>"> 
                                 <div class="form-group col-md-1 col-sm-2">
-                                    <input class="form-control country_code" value="{{ $delivery -> country_code  }}" placeholder="مثال : 202" maxlength="4" name="country_code" id="country_code" type="text">
+                                    <input class="form-control country_code" value="<?php echo e(old('country_code')); ?>" placeholder="مثال : 202" maxlength="4" name="country_code" id="country_code" type="text">
 
                                      <div class="error-messagen">
-                                      @if($errors->has('country_code'))  
-                                          {{$errors -> first('country_code')}}
-                                      @endif
+                                      <?php if($errors->has('country_code')): ?>  
+                                          <?php echo e($errors -> first('country_code')); ?>
+
+                                      <?php endif; ?>
                                   .</div>
 
                                 </div>
@@ -160,13 +148,14 @@
                                  </div> 
                                        
 
-                             <div class="@if ($errors->has('phone')) error  @endif">
+                             <div class="<?php if($errors->has('country_code')): ?> error  <?php endif; ?>">
                                 <div class="form-group col-md-11 col-sm-10">
-                                    <input class="form-control phone" value="{{ $delivery -> phone }}" name="phone" id="phone" placeholder="مثال : 05xxxxxxxx" maxlength="11" type="text">
+                                    <input class="form-control phone" value="<?php echo e(old('phone')); ?>" name="phone" id="phone" placeholder="مثال : 05xxxxxxxx" maxlength="11" type="text">
                                       <div class="error-messagen">
-                                       @if($errors->has('phone'))  
-                                          {{$errors -> first('phone')}}
-                                      @endif
+                                       <?php if($errors->has('phone')): ?>  
+                                          <?php echo e($errors -> first('phone')); ?>
+
+                                      <?php endif; ?>
                                   .</div>
 
                                 </div>
@@ -178,27 +167,29 @@
 
                         <span class="spacer-25"></span>
                         <div class="two fields">
-                            <div class="ui field @if ($errors->has('password')) error  @endif">
+                            <div class="ui field <?php if($errors->has('password')): ?> error  <?php endif; ?>">
                                 <label>كلمة المرور :<span class="require">*</span></label>
                                 <div class="ui input">
-                                    <input name="password" id="password" type="password" placeholder="كلممة المرور" value="{{ old('password') }}" />
+                                    <input name="password" id="password" type="password" placeholder="كلممة المرور" value="<?php echo e(old('password')); ?>" />
                                 </div>
                                 <div class="error-messagen">
-                                      @if($errors->has('password'))  
-                                          {{$errors -> first('password')}}
-                                      @endif
+                                      <?php if($errors->has('password')): ?>  
+                                          <?php echo e($errors -> first('password')); ?>
+
+                                      <?php endif; ?>
                                   .</div>
                             </div>
-                            <div class="ui field @if ($errors->has('password_confirmation')) error  @endif">
+                            <div class="ui field <?php if($errors->has('password_confirmation')): ?> error  <?php endif; ?>">
                                 <label>تاكيد كلمة المرور :<span class="require">*</span></label>
                                 <div class="ui input">
-                                    <input name="password_confirmation" id="password_confirmation" type="password" placeholder="تاكيد كلمة المرور" value="{{ old('password_confirmation') }}" />
+                                    <input name="password_confirmation" id="password_confirmation" type="password" placeholder="تاكيد كلمة المرور" value="<?php echo e(old('password_confirmation')); ?>" />
                                 </div>
 
                                  <div class="error-messagen">
-                                      @if($errors->has('password_confirmation'))  
-                                          {{$errors -> first('password_confirmation')}}
-                                      @endif
+                                      <?php if($errors->has('password_confirmation')): ?>  
+                                          <?php echo e($errors -> first('password_confirmation')); ?>
+
+                                      <?php endif; ?>
                                   .</div>
                                  
                             </div>
@@ -208,22 +199,22 @@
                             بيانات السيارة و الاوراق
                         </div>
                         <div>
-                            <div class="ui field @if ($errors->has('car_number')) error  @endif">
+                            <div class="ui field <?php if($errors->has('car_number')): ?> error  <?php endif; ?>">
                                 <label> رقم  السيارة : <span class="require">*</span></label>
                                 <div class="ui input">
-                                    <input name="car_number" id="car_number" type="text" placeholder=" رقم  السيارة" value="{{ $delivery ->  car_number  }}" />
+                                    <input name="car_number" id="car_number" type="text" placeholder=" رقم  السيارة" value="<?php echo e(old('car_number')); ?>" />
                                 </div>
 
                                  <div class="error-messagen">
-                                @if($errors->has('car_number'))  
-                                          {{$errors -> first('car_number')}} .
-                                 @endif
+                                <?php if($errors->has('car_number')): ?>  
+                                          <?php echo e($errors -> first('car_number')); ?> .
+                                 <?php endif; ?>
                              </div>
 
                             </div>
                         </div>
                         <div class="two fields">
-                            <div class=" ui field @if ($errors->has('license_img')) error  @endif">
+                            <div class=" ui field <?php if($errors->has('license_img')): ?> error  <?php endif; ?>">
                                 <label class="custom-file">
                                      صوره الرخصه  : <span class="require">*</span></label>
                                     <input type="file" name="license_img" value="" id="license_img" class="custom-file-input">
@@ -231,45 +222,48 @@
                                 </label>
 
                                          <div class="error-messagen">
-                                              @if($errors->has('license_img'))  
-                                                  {{$errors -> first('license_img')}}
-                                              @endif
+                                              <?php if($errors->has('license_img')): ?>  
+                                                  <?php echo e($errors -> first('license_img')); ?>
+
+                                              <?php endif; ?>
                                     .</div>
                             </div>
 
                            
 
 
-                            <div class=" ui field @if ($errors->has('car_form_img')) error  @endif">
+                            <div class=" ui field <?php if($errors->has('car_form_img')): ?> error  <?php endif; ?>">
                                 <label class="custom-file">
                                     استماره السياره  : <span class="require">*</span></label>
                                     <input type="file" name="car_form_img" value="" id="car_form_img" class="custom-file-input">
                                     <span class="custom-file-control"></span>
                                 </label>
                                  <div class="error-messagen">
-                                      @if($errors->has('car_form_img'))  
-                                          {{$errors -> first('car_form_img')}}
-                                      @endif
+                                      <?php if($errors->has('car_form_img')): ?>  
+                                          <?php echo e($errors -> first('car_form_img')); ?>
+
+                                      <?php endif; ?>
                             .</div>
                             </div>
                              
                         </div>
                         <div class="two fields">
-                            <div class=" ui field @if ($errors->has('Insurance_img')) error  @endif">
+                            <div class=" ui field <?php if($errors->has('Insurance_img')): ?> error  <?php endif; ?>">
                                 <label class="custom-file">
                                     التامين : <span class="require">*</span></label>
                                     <input type="file" name="Insurance_img" value="" id="Insurance_img" class="custom-file-input">
                                     <span class="custom-file-control"></span>
                                     <div class="error-messagen">
-                                      @if($errors->has('Insurance_img'))  
-                                          {{$errors -> first('Insurance_img')}}
-                                      @endif
+                                      <?php if($errors->has('Insurance_img')): ?>  
+                                          <?php echo e($errors -> first('Insurance_img')); ?>
+
+                                      <?php endif; ?>
                             .</div>
                                 </label>
                                  
 
                             </div>
-                            <div class=" ui field @if ($errors->has('authorization_img')) error  @endif" >
+                            <div class=" ui field <?php if($errors->has('authorization_img')): ?> error  <?php endif; ?>" >
                                 <label class="custom-file">
                                     التفويض : <span class="require">*</span></label>
                                     <input type="file" name="authorization_img" value="" id="authorization_img" class="custom-file-input">
@@ -277,15 +271,16 @@
                                 </label>
 
                                   <div class="error-messagen">
-                                      @if($errors->has('authorization_img'))  
-                                          {{$errors -> first('authorization_img')}}
-                                      @endif
+                                      <?php if($errors->has('authorization_img')): ?>  
+                                          <?php echo e($errors -> first('authorization_img')); ?>
+
+                                      <?php endif; ?>
                             .</div>
                             </div>
 
                         </div>
                         <div class="two fields">
-                            <div class=" ui field @if ($errors->has('national_img')) error  @endif">
+                            <div class=" ui field <?php if($errors->has('national_img')): ?> error  <?php endif; ?>">
                                 <label class="custom-file">
                                     بطاقه الرقم القومي  : <span class="require">*</span></label>
                                     <input type="file" name="national_img" value="" id="national_img" class="custom-file-input">
@@ -293,9 +288,10 @@
                                 </label>
 
                                  <div class="error-messagen">
-                                      @if($errors->has('national_img'))  
-                                          {{$errors -> first('national_img')}}
-                                      @endif
+                                      <?php if($errors->has('national_img')): ?>  
+                                          <?php echo e($errors -> first('national_img')); ?>
+
+                                      <?php endif; ?>
                             .</div>
                             </div>
                            
@@ -315,22 +311,16 @@
     </div><!-- end container -->
 </div>
 
-@stop
+<?php $__env->stopSection(); ?>
  
-@section('customJs')
+<?php $__env->startSection('customJs'); ?>
 <script type="text/javascript">
     
- 
 
     $(document).ready(function(){
-
-
-           $('#password').val('');
-           $('#password_confirmation').val('');
-
         $("body").on("change", ".country", function(){
             var country = $(this).val();
-            getCountryCities("{{ route('country.cities') }}", country, 'en', $('#cities'), $('.country_code'), $(".phone"), 2);
+            getCountryCities("<?php echo e(route('country.cities')); ?>", country, 'en', $('#cities'), $('.country_code'), $(".phone"), 2);
         });
     });
 
@@ -354,8 +344,8 @@
 
       function initAutocomplete() {
         var map = new google.maps.Map(document.getElementById('map'), {
-          center: {lat: "{{$delivery  -> latitude}}", lng: "{{$delivery  -> longitude}}" },
-          zoom: 19,
+          center: {lat: 24.740691, lng: 46.6528521 },
+          zoom: 13,
           mapTypeId: 'roadmap'
         });
 
@@ -426,4 +416,5 @@
     </script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDKZAuxH9xTzD2DLY2nKSPKrgRi2_y0ejs&libraries=places&callback=initAutocomplete&language=ar&region=SA
          async defer"></script>
-@stop
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('cpanel.layout.master', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

@@ -232,8 +232,8 @@ class ProviderController extends Controller
              return abort('404');
         }
 
-		$city_id       = $data['provider']->city_id;
-		$country_id    = $data['provider']->country_id;
+		   $city_id       = $data['provider']->city_id;
+		    $country_id    = $data['provider']->country_id;
         $membership_id = $data['provider']->membership_id;
         $cat_id        = $data['provider']->category_id;
 

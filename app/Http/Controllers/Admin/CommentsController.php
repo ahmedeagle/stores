@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 /**
  *
- * @author Mohamed Salah <mohamedsalah7191@gmail.com>
+ * @author Ahmed Emam <ahmedaboemam@gmail.com>
  */
 use Log;
 use App\Http\Controllers\Controller;
@@ -26,73 +26,92 @@ class CommentsController extends Controller
 	}
 
 	public function getComments(){
-		$users = User::select('user_id', 'full_name')->get();
-		$comments = DB::table('meal_comments')
-					->join('users', 'meal_comments.user_id', '=', 'users.user_id')
-					->join('meals', 'meal_comments.meal_id', '=', 'meals.meal_id')
+		$users    = User::select('user_id', 'full_name')->get();
+		$comments = DB::table('product_comments')
+					->join('users', 'product_comments.user_id', '=', 'users.user_id')
+					->join('products', 'product_comments.product_id', '=', 'products.id')
 					->select(
-							'meal_comments.id', 
-							'meal_comments.comment', 
-							DB::raw('DATE(meal_comments.created_at) AS created'), 
+							'product_comments.id', 
+							'product_comments.comment', 
+							DB::raw('DATE(product_comments.created_at) AS created'), 
 							'users.full_name', 
 							DB::raw('CONCAT(users.country_code, users.phone) AS phone'), 
-							'meals.meal_name', 
-							'meals.main_image',
-							DB::raw('DATE(meal_comments.created_at) AS created')
-							)
-					->orderBy('meal_comments.id', 'DESC')
+							'products.title', 
+							 'products.id as product_id',
+ 							DB::raw('DATE(product_comments.created_at) AS created')
+ 						)    
+					->orderBy('product_comments.id', 'DESC')
 					->paginate(40);
+
+			if(isset($comments) && $comments -> count() > 0 ){
+
+				  foreach ($comments as $key => $comment) {
+
+				  	 $image = DB::table('product_images') -> where('product_id',$comment -> product_id) -> select('image') ->  first();
+				  	 if($image){
+                         
+                        $comment -> product_image =  env('APP_URL').'/public/products/'.$image -> image  ;
+				  	 }else{
+
+                             $comment -> product_image = "";
+				  	 }
+				  }
+
+				
+
+			}
+
+
 		return view('cpanel.comments.comments', compact('users', 'comments'));
 	}
+
 
 	public function search($from, $to, $user, $phone){
 		$conditions = [];
 		if(!in_array($from, ["null", null, ""]) && !in_array($to, ["null", null, ""])){
-			$conditions[] = [DB::raw('DATE(meal_comments.created_at)'), '<=', $to];
-			$conditions[] = [DB::raw('DATE(meal_comments.created_at)'), '>=', $from];
+			$conditions[] = [DB::raw('DATE(product_comments.created_at)'), '<=', $to];
+			$conditions[] = [DB::raw('DATE(product_comments.created_at)'), '>=', $from];
 		}
 
 		if(!in_array($user, ["null", null, ""])){
-			$conditions[] = ['meal_comments.user_id', '=', $user];
+			$conditions[] = ['product_comments.user_id', '=', $user];
 		}
 
 		if(!in_array($phone, ["null", null, ""])){
-			$conditions[] = ['meal_comments.user_id', 'LIKE', "%".$phone];
+			$conditions[] = ['product_comments.user_id', 'LIKE', "%".$phone];
 		}
 
 		$users = User::select('user_id', 'full_name')->get();
 		if(!empty($conditions)){
-			$comments = DB::table('meal_comments')
+			$comments = DB::table('product_comments')
 						->where($conditions)
-						->join('users', 'meal_comments.user_id', '=', 'users.user_id')
-						->join('meals', 'meal_comments.meal_id', '=', 'meals.meal_id')
+						->join('users', 'product_comments.user_id', '=', 'users.user_id')
+						->join('products', 'product_comments.product_id', '=', 'products.id')
 						->select(
-								'meal_comments.id', 
-								'meal_comments.comment', 
-								DB::raw('DATE(meal_comments.created_at) AS created'), 
+								'product_comments.id', 
+								'product_comments.comment', 
+								DB::raw('DATE(product_comments.created_at) AS created'), 
 								'users.full_name', 
 								DB::raw('CONCAT(users.country_code, users.phone) AS phone'), 
-								'meals.meal_name', 
-								'meals.main_image',
-								DB::raw('DATE(meal_comments.created_at) AS created')
+								'products.title', 
+								DB::raw('DATE(product_comments.created_at) AS created')
 								)
-						->orderBy('meal_comments.id', 'DESC')
+						->orderBy('product_comments.id', 'DESC')
 						->paginate(40);
 		}else{
-			$comments = DB::table('meal_comments')
-						->join('users', 'meal_comments.user_id', '=', 'users.user_id')
-						->join('meals', 'meal_comments.meal_id', '=', 'meals.meal_id')
+			$comments = DB::table('product_comments')
+						->join('users', 'product_comments.user_id', '=', 'users.user_id')
+						->join('products', 'product_comments.product_id', '=', 'products.id')
 						->select(
-								'meal_comments.id', 
-								'meal_comments.comment', 
-								DB::raw('DATE(meal_comments.created_at) AS created'), 
+								'product_comments.id', 
+								'product_comments.comment', 
+								DB::raw('DATE(product_comments.created_at) AS created'), 
 								'users.full_name', 
 								DB::raw('CONCAT(users.country_code, users.phone) AS phone'), 
-								'meals.meal_name', 
-								'meals.main_image',
-								DB::raw('DATE(meal_comments.created_at) AS created')
+								'products.title', 
+ 								DB::raw('DATE(product_comments.created_at) AS created')
 								)
-						->orderBy('meal_comments.id', 'DESC')
+						->orderBy('product_comments.id', 'DESC')
 						->paginate(40);
 		}
 
@@ -100,7 +119,7 @@ class CommentsController extends Controller
 	}
 
 	public function delete($id, Request $request){
-		$check = DB::table('meal_comments')->where('id', $id)->delete();
+		$check = DB::table('product_comments')->where('id', $id)->delete();
 		if($check){
 			$request->session()->flash('success', 'Deleted successfully');
 		}else{
@@ -111,22 +130,42 @@ class CommentsController extends Controller
 	}
 
 	public function today(){
-		$comments = DB::table('meal_comments')
-					->where(DB::raw('DATE(meal_comments.created_at)'), date('Y-m-d', time()))
-					->join('users', 'meal_comments.user_id', '=', 'users.user_id')
-					->join('meals', 'meal_comments.meal_id', '=', 'meals.meal_id')
+		$comments = DB::table('product_comments')
+					->where(DB::raw('DATE(product_comments.created_at)'), date('Y-m-d', time()))
+					->join('users', 'product_comments.user_id', '=', 'users.user_id')
+					->join('products', 'product_comments.product_id', '=', 'products.id')
 					->select(
-							'meal_comments.id', 
-							'meal_comments.comment', 
-							DB::raw('DATE(meal_comments.created_at) AS created'), 
+							'product_comments.id', 
+							'product_comments.comment', 
+							'products.id as product_id', 
+							DB::raw('DATE(product_comments.created_at) AS created'), 
 							'users.full_name', 
 							DB::raw('CONCAT(users.country_code, users.phone) AS phone'), 
-							'meals.meal_name', 
-							'meals.main_image',
-							DB::raw('DATE(meal_comments.created_at) AS created')
+							'products.title', 
+ 							DB::raw('DATE(product_comments.created_at) AS created')
 							)
-					->orderBy('meal_comments.id', 'DESC')
+					->orderBy('product_comments.id', 'DESC')
 					->paginate(40);
+
+ 
+			if(isset($comments) && $comments -> count() > 0 ){
+
+				  foreach ($comments as $key => $comment) {
+
+				  	 $image = DB::table('product_images') -> where('product_id',$comment -> product_id) -> select('image') ->  first();
+				  	 if($image){
+                         
+                        $comment -> product_image =  env('APP_URL').'/public/products/'.$image -> image  ;
+				  	 }else{
+
+                             $comment -> product_image = "";
+				  	 }
+				  }
+
+				
+
+			}
+
 		return view('cpanel.comments.today', compact('comments'));
 	}
 }

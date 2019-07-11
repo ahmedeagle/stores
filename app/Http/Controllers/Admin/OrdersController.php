@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 /**
  *
- * @author Mohamed Salah <mohamedsalah7191@gmail.com>
+ * @author Ahmed Emam <ahmedaboemam123@gmail.com>
  */
 use Log;
 use App\Http\Controllers\Controller;
@@ -71,11 +71,33 @@ class OrdersController extends Controller
 			return false;
 		}
 
-		$details = DB::table('order_details')
-					 ->where('order_details.order_id', $header->order_id)
-					 ->join('meals', 'order_details.meal_id', '=', 'meals.meal_id')
-					 ->select('order_details.*', 'meals.meal_name', 'meals.main_image')
+		$details = DB::table('order_products')
+					 ->where('order_products.order_id', $header->order_id)
+					 ->join('products', 'order_products.product_id', '=', 'products.id')
+					 ->select('order_products.*', 'products.title')
 					 ->get();
+
+
+					 if(isset($details) && $details -> count() > 0){
+                
+                foreach ($details as  $product) {
+                	  
+                     $image = DB::table('product_images') -> where('product_id',$product -> product_id) -> first();
+
+                     if($image){
+
+                     	 $product -> main_image =  env('APP_URL').'/public/products/'.$image -> image;
+
+                     }else{
+                      
+                         $product -> main_image ="";
+
+                     }
+
+                }
+ 
+			} 
+
 
 		$result = array(
 			'header'  => $header,

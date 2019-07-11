@@ -94,14 +94,7 @@
                      <div class="alert alert-danger"  id="alert_danger" style="display: none;">
                      </div>
 
-
-                <?php if(Session::has('success')): ?>
-                    <div class="alert alert-success">
-                        <strong>تم بنجاح !</strong> <?php echo e(Session::get('success')); ?>
-
-                    </div>
-                    <div class="spacer-25"></div><!--End Spacer-->
-                <?php endif; ?>
+ 
                 <div class="table-responsive">          
                     <table id="datatable" class="table table-hover">
 

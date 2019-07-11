@@ -264,18 +264,51 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function() {
 	 });
 
 
+Route::group(['prefix' => 'notifications'], function(){
 
-      Route::get('get/notifications',[
+      Route::get('/',[
 
                'uses' => 'NotificationsController@getNotifications',
                'as'   =>  'get.notifications'
       ]);
 
-      Route::post('send/notifications',[
+      Route::post('send',[
 
                'uses' => 'NotificationsController@sendNotifications',
                'as'   =>  'send.notifications'
       ]);
+
+  });
+
+
+
+Route::group(['prefix' => 'tickets'], function(){
+
+      Route::get('/{type}',[
+
+               'uses' => 'TicketsController@index',
+               'as'   =>  'tickets'
+      ]);
+ 
+     Route::get('/replay/{ticket_id}',[
+
+               'uses' => 'TicketsController@get_reply',
+               'as'   =>  'ticket.replay'
+      ]);
+
+     Route::post('/replay',[
+
+               'uses' => 'TicketsController@post_reply',
+               'as'   =>  'post.replay'
+      ]);
+
+      
+
+  });
+
+
+
+
 
  
 	Route::group(['prefix' => 'jobs'], function(){

@@ -3,20 +3,20 @@
     <div class="col-sm-12">
         <section class="page-heading">
             <div class="col-sm-6">
-                <h2>تقييمات مقدمين الخدمة</h2>
+                <h2>تقييمات الموصلين</h2>
             </div><!--End col-md-6-->
             <div class="col-sm-6">
                 <ul class="breadcrumb">
                     <li><a href="<?php echo e(route('home')); ?>">الرئيسية</a></li>
                     <li><a href="#">التقييمات</a></li>
-                    <li class="active">تقييمات مقدمين الخدمة</li>
+                    <li class="active">تقييمات الموصلين</li>
                 </ul>
             </div><!--End col-md-6-->
         </section><!--End page-heading-->
         <div class="spacer-25"></div><!--End Spacer-->
         <div class="widget">
             <div class="widget-title">
-                تقييمات مقدمين الخدمة
+               تقييمات الموصلين
             </div>
             <div class="widget-content requests">
                 <?php if(Session::has('success')): ?>
@@ -80,22 +80,22 @@
                         </div>
                         <div class="two fields">
                             <div class="ui field">
-                                <label>مقدمين الخدمات</label>
+                                <label>الموصلين</label>
                                 <div>
-                                    <select id="providers" class="users-select2 form-control">
-                                        <option value="">إختار مقدم الخدمة</option>
-                                        <?php if($providers->count()): ?>
-                                            <?php $__currentLoopData = $providers; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $provider): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                                <option value="<?php echo e($provider->provider_id); ?>"><?php echo e($provider->full_name); ?></option>
+                                    <select id="deliveries" class="users-select2 form-control">
+                                        <option value="">إختار الموصل</option>
+                                        <?php if($deliveries->count()): ?>
+                                            <?php $__currentLoopData = $deliveries; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $delivery): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                <option value="<?php echo e($delivery->delivery_id); ?>"><?php echo e($delivery->full_name); ?></option>
                                             <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                         <?php endif; ?>
                                     </select>
                                 </div>
                             </div>
                             <div class="ui field">
-                                <label>رقم هاتف مقدم الخدمة : </label>
+                                <label>رقم هاتف الموصل : </label>
                                 <div class="ui input">
-                                    <input class="form-control" placeholder="مثال : 01090353855" type="text" id="provider_phone" name="provider_phone">
+                                    <input class="form-control" placeholder="مثال : 01090353855" type="text" id="delivery_phone" name="delivery_phone">
                                 </div>
                             </div>
                         </div>
@@ -115,9 +115,9 @@
                             <tr>
                                  <th>إسم المستخدم</th>
                                 <th>رقم الهاتف</th>
-                                <th class="width-90">صورة مقدم الخدمة</th>
-                                <th>إسم مقدم الخدمة</th>
-                                <th>رقم مقدم الخدمة</th>
+                                <th class="width-90">صورة الموصل</th>
+                                <th>إسم الموصل</th>
+                                <th>رقم الموصل</th>
                                 <th>كود الطلب</th>
                                 <th>التقييم العام</th>
                                 <th>التعليق</th>
@@ -128,21 +128,21 @@
                         <tbody id="result">
                             <?php $__currentLoopData = $evaluations; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $evaluation): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                             <tr>
-                                
+                               
                                 <td><?php echo e($evaluation->full_name); ?></td>
                                 <td><?php echo e($evaluation->phone); ?></td>
                                 <td class="width-90">
-                                    <a class="img-popup-link" href="<?php echo e($evaluation->provider_pic); ?>">
-                                        <img src="<?php echo e($evaluation->provider_pic); ?>" class="table-img">
+                                    <a class="img-popup-link" href="<?php echo e($evaluation->delivery_pic); ?>">
+                                        <img src="<?php echo e($evaluation->delivery_pic); ?>" class="table-img">
                                     </a>
                                 </td>
-                                <td><?php echo e($evaluation->provider_name); ?></td>
-                                <td><?php echo e($evaluation->provider_phone); ?></td>
+                                <td><?php echo e($evaluation->delivery_name); ?></td>
+                                <td><?php echo e($evaluation->delivery_phone); ?></td>
                                 <td><?php echo e($evaluation->code); ?></td>
                                 <td><?php echo e($evaluation->rating); ?></td>
                                 <td><?php echo e($evaluation->comment); ?></td>
                                 <td><?php echo e($evaluation->created); ?></td>
-                   
+                                <!-- remember -->
                             </tr>
                             <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                         </tbody>
@@ -156,9 +156,9 @@
                                 <th class="width-90">صورة المستخدم</th>
                                 <th>إسم المستخدم</th>
                                 <th>رقم الهاتف</th>
-                                <th class="width-90">صورة مقدم الخدمة</th>
-                                <th>إسم مقدم الخدمة</th>
-                                <th>رقم مقدم الخدمة</th>
+                                <th class="width-90">صورة الموصل</th>
+                                <th>إسم الموصل</th>
+                                <th>رقم الموصل</th>
                                 <th>كود الطلب</th>
                                 <th>التقييم العام</th>
                                 <th>التعليق</th>
@@ -180,6 +180,7 @@
     </div>
 </div>
 <?php $__env->stopSection(); ?>
+
 <?php $__env->startSection('customJs'); ?>
 <script type="text/javascript">
 
@@ -191,13 +192,13 @@
         but.attr('disabled',true);
         var user           = $("#users").val();
         var user_phone     = $("#phone").val();
-        var provider       = $("#providers").val();
-        var provider_phone = $("#provider_phone").val();
+        var delivery       = $("#deliveries").val();
+        var delivery_phone = $("#delivery_phone").val();
         var from_date      = $(".from_date").val();
         var to_date        = $(".to_date").val();
-        var type           = 'provider';
+        var type           = 'delivery';
 
-        var data = {'user':user, 'user_phone':user_phone, 'subject':provider, 'subject_phone':provider_phone, 'from':from_date, 'to':to_date, 'type':type};
+        var data = {'user':user, 'user_phone':user_phone, 'subject':delivery, 'subject_phone':delivery_phone, 'from':from_date, 'to':to_date, 'type':type};
         $.ajax({
             url:"<?php echo e(route('evaluations.search')); ?>",
             type:"POST",

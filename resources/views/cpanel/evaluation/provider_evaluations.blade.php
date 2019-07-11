@@ -112,8 +112,7 @@
                     <table class="table table-bordered table-hover">
                         <thead>
                             <tr>
-                                <th class="width-90">صورة المستخدم</th>
-                                <th>إسم المستخدم</th>
+                                 <th>إسم المستخدم</th>
                                 <th>رقم الهاتف</th>
                                 <th class="width-90">صورة مقدم الخدمة</th>
                                 <th>إسم مقدم الخدمة</th>
@@ -128,11 +127,7 @@
                         <tbody id="result">
                             @foreach($evaluations AS $evaluation)
                             <tr>
-                                <td class="width-90">
-                                    <a class="img-popup-link" href="{{ $evaluation->profile_pic }}">
-                                        <img src="{{ $evaluation->profile_pic }}" class="table-img">
-                                    </a>
-                                </td>
+                                
                                 <td>{{ $evaluation->full_name }}</td>
                                 <td>{{ $evaluation->phone }}</td>
                                 <td class="width-90">

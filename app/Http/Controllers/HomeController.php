@@ -33,8 +33,7 @@ class HomeController extends Controller
         if(isset($providers) && $providers -> count() > 0){
           
         foreach($providers as $key => $provider){
-             
-           
+              
                 $rates = DB::table('providers_rates')
                     ->where('providers_rates.provider_id' , $provider->provider_id)
                     ->select(

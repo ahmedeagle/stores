@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 /**
  *
- * @author Mohamed Salah <mohamedsalah7191@gmail.com>
+ * @author Ahmed Emam <ahmedaboemam123@gmail.com>
  */
 use Log;
 use App\Http\Controllers\Controller;
@@ -47,22 +47,22 @@ class EvaluationsController extends Controller
 	public function getProviderEvaluations(){
 		$users = DB::table('users')->select('user_id', 'full_name')->get();
 		$providers = Providers::select('provider_id', 'full_name')->get();
-		$evaluations = DB::table('provider_evaluation')
-					   ->join('users', 'provider_evaluation.user_id', '=', 'users.user_id')
-					   ->join('orders_headers', 'provider_evaluation.order_id', '=', 'orders_headers.order_id')
-					   ->join('providers', 'provider_evaluation.provider_id', '=', 'providers.provider_id')
+		$evaluations = DB::table('providers_rates')
+					   ->join('users', 'providers_rates.user_id', '=', 'users.user_id')
+					   ->join('orders_headers', 'providers_rates.order_id', '=', 'orders_headers.order_id')
+					   ->join('providers', 'providers_rates.provider_id', '=', 'providers.provider_id')
 					   ->select(
-					   		'provider_evaluation.id',
+					   		'providers_rates.id',
 					   		'users.full_name',
 					   		DB::raw('CONCAT(users.country_code, users.phone) AS phone'),
 					   		'users.profile_pic',
 					   		'providers.full_name AS provider_name',
-					   		'providers.profile_pic AS provider_pic',
+ 					   		 DB::raw("CONCAT('".env('APP_URL')."','/public/providerProfileImages/', providers.profile_pic) AS provider_pic"),
 					   		DB::raw('CONCAT(providers.country_code, providers.phone) AS provider_phone'),
 					   		'orders_headers.order_code AS code',
-					   		'provider_evaluation.comment',
-					   		DB::raw('((provider_evaluation.quality + provider_evaluation.autotype + provider_evaluation.packing + provider_evaluation.maturity + provider_evaluation.ask_again) / 5) AS rating'),
-					   		DB::raw('DATE(provider_evaluation.created_at) AS created')
+					   		'providers_rates.comment',
+					   		DB::raw('(providers_rates.rates) AS rating'),
+					   		DB::raw('DATE(providers_rates.created_at) AS created')
 					   	)->paginate(40);
 		return view('cpanel.evaluation.provider_evaluations', compact('evaluations', 'users', 'providers'));
 	}
@@ -78,10 +78,8 @@ class EvaluationsController extends Controller
 					   		'delivery_evaluation.id',
 					   		'users.full_name',
 					   		DB::raw('CONCAT(users.country_code, users.phone) AS phone'),
-					   		'users.profile_pic',
-					   		'deliveries.full_name AS delivery_name',
-					   		'deliveries.profile_pic AS delivery_pic',
-					   		DB::raw('CONCAT(deliveries.country_code, deliveries.phone) AS delivery_phone'),
+ 					   		'deliveries.full_name AS delivery_name',
+ 					   		DB::raw('CONCAT(deliveries.country_code, deliveries.phone) AS delivery_phone'),
 					   		'orders_headers.order_code AS code',
 					   		'delivery_evaluation.comment',
 					   		DB::raw('((delivery_evaluation.delivery_arrival  + delivery_evaluation.delivery_in_time + delivery_evaluation.delivery_attitude) / 3) AS rating'),
@@ -114,7 +112,8 @@ class EvaluationsController extends Controller
 	// }
 
 	public function evaluationSearch(Request $request){
-		$string        = '';
+
+ 		$string        = '';
 		$user          = $request->input('user');
 		$user_phone    = $request->input('user_phone');
 		$subject       = $request->input('subject');
@@ -124,17 +123,17 @@ class EvaluationsController extends Controller
 		$type 		   = $request->input('type');
 
 		if($type == 'provider'){
-			$table   = 'provider_evaluation';
+			$table   = 'providers_rates';
 			$joinTbl = 'providers';
-			$col     = 'provider_evaluation.provider_id';
+			$col     = 'providers_rates.provider_id';
 			$joinCol = 'providers.provider_id';
-			$rate    = '((provider_evaluation.quality + provider_evaluation.autotype + provider_evaluation.packing + provider_evaluation.maturity + provider_evaluation.ask_again) / 5) AS rating';
+			$rate    = '(rates) AS rating';
 		}else{
-			$table   = 'delivery_evaluation';
+			$table   = 'delivery_rates';
 			$joinTbl = 'deliveries';
-			$col     = 'delivery_evaluation.delivery_id';
+			$col     = 'delivery_rates.delivery_id';
 			$joinCol = 'deliveries.delivery_id';
-			$rate    = '((delivery_evaluation.delivery_arrival  + delivery_evaluation.delivery_in_time + delivery_evaluation.delivery_attitude) / 3) AS rating';
+			$rate    = '(rates) AS rating';
 		}
 
 		$conditions = [];
@@ -173,9 +172,9 @@ class EvaluationsController extends Controller
 								  	$table.'.id',
 							   		'users.full_name',
 							   		DB::raw('CONCAT(users.country_code, users.phone) AS phone'),
-							   		'users.profile_pic',
-							   		$joinTbl.'.full_name AS name',
+ 							   		$joinTbl.'.full_name AS name',
 							   		$joinTbl.'.profile_pic AS pic',
+							   		DB::raw("CONCAT('".env('APP_URL')."','/public/providerProfileImages/',".$joinTbl.".profile_pic) AS pic"),
 							   		DB::raw('CONCAT('.$joinTbl.'.country_code, '.$joinTbl.'.phone) AS subject_phone'),
 							   		'orders_headers.order_code AS code',
 							   		$table.'.comment',
@@ -191,9 +190,8 @@ class EvaluationsController extends Controller
 								  	$table.'.id',
 							   		'users.full_name',
 							   		DB::raw('CONCAT(users.country_code, users.phone) AS phone'),
-							   		'users.profile_pic',
-							   		$joinTbl.'.full_name AS name',
-							   		$joinTbl.'.profile_pic AS pic',
+ 							   		$joinTbl.'.full_name AS name',
+							   		DB::raw("CONCAT('".env('APP_URL')."','/public/providerProfileImages/',".$joinTbl.".profile_pic) AS pic"),
 							   		DB::raw('CONCAT('.$joinTbl.'.country_code, '.$joinTbl.'.phone) AS subject_phone'),
 							   		'orders_headers.order_code AS code',
 							   		$table.'.comment',
@@ -205,17 +203,14 @@ class EvaluationsController extends Controller
 		if($evaluations->count()){
 			foreach($evaluations AS $evaluation){
 				$string .= '<tr>
-                                <td class="width-90">
-                                    <a class="img-popup-link" href="'.$evaluation->profile_pic.'">
-                                        <img src="'.$evaluation->profile_pic.'" class="table-img">
-                                    </a>
-                                </td>
+                                
                                 <td>'.$evaluation->full_name.'</td>
                                 <td>'.$evaluation->phone.'</td>
                                 <td class="width-90">
                                     <a class="img-popup-link" href="'.$evaluation->pic.'">
                                         <img src="'.$evaluation->pic.'" class="table-img">
                                     </a>
+
                                 </td>
                                 <td>'.$evaluation->name.'</td>
                                 <td>'.$evaluation->subject_phone.'</td>
