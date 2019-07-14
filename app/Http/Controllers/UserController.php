@@ -4199,7 +4199,7 @@ public function cancel_order(Request $request){
 
 
 		$validator = Validator::make($request->all(), [
-			'access_token'     => 'required|exists:users,access_token',
+			'access_token'     => 'required|exists:users,token',
 			'comment'          => 'required|min:3',
 			'rates'            => 'required|in:1,2,3,4,5', 
 			'order_id'         => 'required|exists:orders_headers'
@@ -4213,7 +4213,8 @@ public function cancel_order(Request $request){
 
 		  $user_id = $this->get_id($request,'users','user_id');
 
-           $order = DB::table('orders_headers') -> where('order_id',$request -> order_id) ->where('user_id',$user_id) ->  select('status_id','provider_id')  -> first();
+           $order = DB::table('orders_headers') -> where('order_id',$request -> order_id) ->where('user_id',$user_id) ->  select('status_id','provider_id','delivery_method')  -> first();
+
 
            if($order){
 
@@ -4229,9 +4230,10 @@ public function cancel_order(Request $request){
 
            	   }
 
-
-           	     if($order ->  status_id == '3' && $order ->  delivery_method == '3')   // order deliveried
+            	     if($order ->  status_id == 3 && $order ->  delivery_method == 3)   // order deliveried
            	     {
+
+
 
                        $inputs=[];
 
@@ -4322,7 +4324,7 @@ public function cancel_order(Request $request){
 
 
 		$validator = Validator::make($request->all(), [
-			'access_token'     => 'required|exists:users,access_token',
+			'access_token'     => 'required|exists:users,token',
 			'comment'          => 'required|min:3',
 			'rates'            => 'required|in:1,2,3,4,5', 
 			'order_id'         => 'required|exists:orders_headers'
@@ -4336,7 +4338,7 @@ public function cancel_order(Request $request){
 
 		  $user_id = $this->get_id($request,'users','user_id');
 
-           $order = DB::table('orders_headers') -> where('order_id',$request -> order_id) ->where('user_id',$user_id) ->  select('status_id','provider_id','delivery_id')  -> first();
+           $order = DB::table('orders_headers') -> where('order_id',$request -> order_id) ->where('user_id',$user_id) ->  select('status_id','provider_id','delivery_id','delivery_method')  -> first();
 
            if($order){
 
@@ -4353,7 +4355,7 @@ public function cancel_order(Request $request){
            	   }
 
 
-           	     if($order ->  status_id == '3' && $order ->  delivery_method == '3')   // order deliveried
+           	     if($order ->  status_id == 3 && $order ->  delivery_method == 3)   // order deliveried
            	     {
 
                        $inputs=[];
