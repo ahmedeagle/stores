@@ -4335,8 +4335,8 @@ public function cancel_order(Request $request){
 			$error = $validator->errors()->first();
 			return response()->json(['status' => false, 'errNum' => $error, 'msg' => $msg[$error]]);
 		}
+            $user_id = $this->get_id($request,'users','user_id');
 
-		  $user_id = $this->get_id($request,'users','user_id');
 
            $order = DB::table('orders_headers') -> where('order_id',$request -> order_id) ->where('user_id',$user_id) ->  select('status_id','provider_id','delivery_id','delivery_method')  -> first();
 
