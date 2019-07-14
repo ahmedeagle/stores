@@ -2544,7 +2544,6 @@ public function prepareSearch(Request $request){
 	//  total value is  total price + delivery_price 
 	// net value is product value - app value   net which provider earn
 
-
 		$lang            = $request->input('lang');
 		
 		if($lang == "ar"){
@@ -2722,9 +2721,14 @@ public function prepareSearch(Request $request){
 
          
             if(!empty($products[$i]['options']) && is_array($products[$i]['options'])){
+                  
+
+                  //return $products[$i]['options'];
+
                 foreach($products[$i]['options'] as $option){
- 
-                    if(empty($option['id'])){
+
+                
+                    if(empty($option)){
                         return response()->json([
                             "status" => false,
                             "errNum" => 5,
@@ -2734,7 +2738,7 @@ public function prepareSearch(Request $request){
 
 
                     $option_id = DB::table("product_options")
-                                ->where("id" , $option['id'])
+                                ->where("id" , $option)
                                 ->where("product_id" ,$products[$i]['product_id'])
                                 ->select("id" , "price")
                                 ->first();
@@ -2809,7 +2813,7 @@ public function prepareSearch(Request $request){
 		$validator = Validator::make($request->all(),$rules, $messages);
 
 		if($validator->fails()){
-			$errors   = $validator->errors();
+			 $errors   = $validator->errors();
 			$error    = $errors->first();
 			return response()->json(['status' => false, 'errNum' => $error, 'msg' => $msg[$error]]);
 		}
@@ -3604,6 +3608,8 @@ public function cancel_order(Request $request){
 		}else{
 			$app_percentage = 0;
 		}
+
+		$orderOptions = DB::table('order_products_options') -> where('order_id',$request->input('order_id')) -> join('product_options','order_products_options.option_id','=','product_options.id') -> select('product_options.name','product_options.id','product_options.price')  -> get();
  
 		return response()->json([
 		                            'status'    => true,
@@ -3614,6 +3620,7 @@ public function cancel_order(Request $request){
                                     'app_percentage'      => $app_percentage,
                                     'order_status'        => $order_status,
                                      'provider_order_rate' => $provider_order_rate,
+                                     'orderOptions'        => $orderOptions,
 
                                 ]);
 
@@ -4133,6 +4140,254 @@ public function cancel_order(Request $request){
 			return response()->json(['status' => false, 'errNum' => 8, 'msg' => $msg[8]]);
 		}
 	}
+
+
+
+	public function provider_evaluate(Request $request){
+
+		/*
+		   1- make validate 
+		   2- check if order in deliveried status 
+		   3- store rates
+		*/
+
+		   $lang = $request->input('lang');
+		if($lang == "ar"){
+			$msg = array(
+				0 => 'تم إضافة الطلب بنجاح',
+				1 => 'access_token مطلوب', 
+				2 => 'المستخدم غير موجود ',
+				3 => 'التقييم مطلوب ',
+				4 => 'التقييم لابد ان سكون 1,2,3,4,5',
+				5 => 'التعليق مطلوب ',
+				6 => 'التعليق يجيب الا يقل عن 3 احرف ',
+				7 => 'رقم الطلب مطلوب ', 
+				8 => 'الطلب غير موجود او ربما يكون محذوف ',
+				9 => 'فشل من فضلك حاول مجداا ',
+				10 => 'لابد ان  يكون الطلب في حاله تم التوصيل اولا  ولديها رقم موصل ',
+				11 => 'التاجر غير موجود او ربما يكون محذوف '
+ 			);
+		}else{
+			$msg = array(
+				0 => 'Added successfully',
+				1 => 'Access_token is required',
+				2 => 'User not found ',
+				3 => 'Rates  required',
+				4 => 'Rates must be in 1,2,3,4,5',
+				5 => 'Comment is required',
+				6 => 'Comment must be at least 3 CHAR',
+				7 => 'Order_id is  required',
+				8 => 'Order not exists ',
+				9 => 'Faild please try again later ',
+				10=> 'Order Must be in deliveried status And has delivery man  ',
+				11=> 'the provider not found or may be deleted '
+
+				 
+			);
+		}
+
+		$messages = array(
+			'access_token.required'          => 1,
+			'access_token.exists'            => 2,
+			'rates.required'                 => 3,
+			'rates.in'                       => 4,
+			'comment.required'               => 5,
+			'comment.min'   	             => 6,
+			'order_id.required'              => 7,
+			'order_id.exists'                => 8,
+		);
+
+
+		$validator = Validator::make($request->all(), [
+			'access_token'     => 'required|exists:users,access_token',
+			'comment'          => 'required|min:3',
+			'rates'            => 'required|in:1,2,3,4,5', 
+			'order_id'         => 'required|exists:orders_headers'
+			 
+		], $messages);
+
+		if($validator->fails()){
+			$error = $validator->errors()->first();
+			return response()->json(['status' => false, 'errNum' => $error, 'msg' => $msg[$error]]);
+		}
+
+		  $user_id = $this->get_id($request,'users','user_id');
+
+           $order = DB::table('orders_headers') -> where('order_id',$request -> order_id) ->where('user_id',$user_id) ->  select('status_id','provider_id')  -> first();
+
+           if($order){
+
+
+           	     //check if provider not  blocked 
+
+           	   $provider = DB::table('providers') -> where('provider_id',$order -> provider_id) -> first();
+
+
+           	   if(!$provider){
+
+           	   	  return response()->json(['status' => false, 'errNum' => 11, 'msg' => $msg[11]]);
+
+           	   }
+
+
+           	     if($order ->  status_id == '3' && $order ->  delivery_method == '3')   // order deliveried
+           	     {
+
+                       $inputs=[];
+
+                       $inputs['order_id']     = $request -> order_id;
+                       $inputs['user_id']      = $request -> user_id;
+                       $inputs['rates']        = $request -> rates;
+                       $inputs['comment']      = $request -> comment;
+                       $inputs['provider_id']  = $order -> provider_id;
+                        
+
+           	     	    DB::table('providers_rates') -> insert($inputs);
+
+ 
+           	     }else{
+                        
+                        return response()->json(['status' => false, 'errNum' => 10, 'msg' => $msg[10]]);
+
+           	     }
+  
+           }else{
+
+
+           	return response()->json(['status' => false, 'errNum' => 8, 'msg' => $msg[8]]);
+
+           }
+
+
+     return response()->json(['status' => false, 'errNum' => 0, 'msg' => $msg[0]]);
+
+	}
+
+
+
+	public function delivery_evaluate(Request $request){
+
+        
+		/*
+		   1- make validate 
+		   2- check if order in deliveried status 
+		   3- store rates
+		*/
+
+		   $lang = $request->input('lang');
+		if($lang == "ar"){
+			$msg = array(
+				0 => 'تم إضافة الطلب بنجاح',
+				1 => 'access_token مطلوب', 
+				2 => 'المستخدم غير موجود ',
+				3 => 'التقييم مطلوب ',
+				4 => 'التقييم لابد ان سكون 1,2,3,4,5',
+				5 => 'التعليق مطلوب ',
+				6 => 'التعليق يجيب الا يقل عن 3 احرف ',
+				7 => 'رقم الطلب مطلوب ', 
+				8 => 'الطلب غير موجود او ربما يكون محذوف ',
+				9 => 'فشل من فضلك حاول مجداا ',
+				10 => 'لابد ان  يكون الطلب في حاله تم التوصيل اولا  ولديها رقم موصل ',
+				11 => ' الموصل  غير موجود او ربما يكون محذوف '
+ 			);
+		}else{
+			$msg = array(
+				0 => 'Added successfully',
+				1 => 'Access_token is required',
+				2 => 'User not found ',
+				3 => 'Rates  required',
+				4 => 'Rates must be in 1,2,3,4,5',
+				5 => 'Comment is required',
+				6 => 'Comment must be at least 3 CHAR',
+				7 => 'Order_id is  required',
+				8 => 'Order not exists ',
+				9 => 'Faild please try again later ',
+				10=> 'Order Must be in deliveried status And has delivery man  ',
+				11=> 'the delivery not found or may be deleted '
+
+				 
+			);
+		}
+
+		$messages = array(
+			'access_token.required'          => 1,
+			'access_token.exists'            => 2,
+			'rates.required'                 => 3,
+			'rates.in'                       => 4,
+			'comment.required'               => 5,
+			'comment.min'   	             => 6,
+			'order_id.required'              => 7,
+			'order_id.exists'                => 8,
+		);
+
+
+		$validator = Validator::make($request->all(), [
+			'access_token'     => 'required|exists:users,access_token',
+			'comment'          => 'required|min:3',
+			'rates'            => 'required|in:1,2,3,4,5', 
+			'order_id'         => 'required|exists:orders_headers'
+			 
+		], $messages);
+
+		if($validator->fails()){
+			$error = $validator->errors()->first();
+			return response()->json(['status' => false, 'errNum' => $error, 'msg' => $msg[$error]]);
+		}
+
+		  $user_id = $this->get_id($request,'users','user_id');
+
+           $order = DB::table('orders_headers') -> where('order_id',$request -> order_id) ->where('user_id',$user_id) ->  select('status_id','provider_id','delivery_id')  -> first();
+
+           if($order){
+
+
+           	     //check if provider not  blocked 
+
+           	   $delivery = DB::table('deliveries') -> where('delivery_id',$order -> delivery_id) -> first();
+
+
+           	   if(!$delivery){
+
+           	   	  return response()->json(['status' => false, 'errNum' => 11, 'msg' => $msg[11]]);
+
+           	   }
+
+
+           	     if($order ->  status_id == '3' && $order ->  delivery_method == '3')   // order deliveried
+           	     {
+
+                       $inputs=[];
+
+                       $inputs['order_id']     = $request -> order_id;
+                       $inputs['user_id']      = $request -> user_id;
+                       $inputs['rates']        = $request -> rates;
+                       $inputs['comment']      = $request -> comment;
+                       $inputs['delivery_id']  = $order -> provider_id;
+                        
+
+           	     	    DB::table('delivery_rates') -> insert($inputs);
+
+ 
+           	     }else{
+                        
+                        return response()->json(['status' => false, 'errNum' => 10, 'msg' => $msg[10]]);
+
+           	     }
+  
+           }else{
+
+
+           	return response()->json(['status' => false, 'errNum' => 8, 'msg' => $msg[8]]);
+
+           }
+
+
+     return response()->json(['status' => false, 'errNum' => 0, 'msg' => $msg[0]]);
+
+		
+	}
+
+
 }
 
 

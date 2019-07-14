@@ -111,6 +111,39 @@
                     </table>
                     <?php endif; ?>
                 </div>
+
+
+                <!-- order Options -->
+
+                <span class="spacer-25"></span>
+                الاضافات 
+                <div class="table-responsive">  
+                    <?php if(isset($orderOptions) && $orderOptions->count() > 0): ?>        
+                    <table class="table table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                 <th>المسلسل </th>
+                                <th>الاضافه </th>
+                                <th> السعر </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                             <?php $__currentLoopData = $orderOptions; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $option): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                             <tr>
+                               
+                                <td><?php echo e($option -> id); ?></td>
+                                <td><?php echo e($option->name); ?></td>
+                                <td><?php echo e($option->price); ?></td>
+                             </tr>
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                           
+                        </tbody>
+                    </table>
+                    <?php endif; ?>
+                </div>
+
+
+
             </div>
         </div><!--End Widget-->
     </div>

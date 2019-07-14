@@ -96,13 +96,9 @@
                                                 <th rowspan="2">نسبة التطبيق من مقم الخدمة</th>
                                                 <th rowspan="2">نسبة التوصيل</th>
                                                 <th rowspan="2">نسبة التطبيق من   الموصل </th>
-                                                <th colspan="2">قيم اخرى</th>
-                                                <th rowspan="2">الحالة</th>
+                                                 <th rowspan="2">الحالة</th>
                                             </tr>
-                                            <tr>
-                                                <th>Provider marketer value</th>
-                                                <th>Delivery marketer value</th>
-                                            </tr>
+                                             
                                         </thead>
                                         <tbody id="tableBody">
                                             <?php $__currentLoopData = $getDetails; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $row): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
@@ -113,8 +109,7 @@
                                                 <td><?php echo e($row->app_value); ?></td>
                                                 <td><?php echo e($row->delivery_price); ?></td>
                                                 <td><?php echo e($row->delivery_app_value); ?></td>
-                                                <td><?php echo e($row->marketer_value); ?></td>
-                                                <td><?php echo e($row->marketer_delivery_value); ?></td>
+                                                 
                                                 <td><?php echo e(($row->balance_status == 1)? 'Pending' : 'Done'); ?></td>
                                             </tr>
                                             <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>

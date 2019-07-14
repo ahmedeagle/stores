@@ -1,41 +1,50 @@
-@extends('cpanel.layout.master')
-@section('content')
+<?php $__env->startSection('content'); ?>
 <div class="content">
     <div class="col-sm-12">
         <section class="page-heading">
             <div class="col-sm-6">
-                <h2>الأرصدة</h2>
+                <h2>قائمة الفواتير</h2>
             </div><!--End col-md-6-->
             <div class="col-sm-6">
                 <ul class="breadcrumb">
-                    <li><a href="{{ route('home') }}">الرئيسية</a></li>
-                    <li class="active">الأرصدة</li>
+                    <li><a href="<?php echo e(route('home')); ?>">الرئيسية</a></li>
+                    <li>الفواتير</li>
+                    <li class="active">قائمة الفواتير</li>
                 </ul>
             </div><!--End col-md-6-->
         </section><!--End page-heading-->
         <div class="spacer-25"></div><!--End Spacer-->
         <div class="widget">
             <div class="widget-title">
-              قائمة الأرصدة
+               قائمة الفواتير
             </div>
             <div class="spacer-25"></div><!--End Spacer-->
-            @if(Session::has('success'))
+            <?php if(Session::has('success')): ?>
                 <div class="alert alert-success">
-                    <strong>تم بنجاح !</strong> {{ Session::get('success') }}
-                </div>
-            @endif
+                    <strong>تم بنجاح !</strong> <?php echo e(Session::get('success')); ?>
 
-            @if(Session::has('err'))
-                <div class="alert alert-danger">
-                    <strong>خطأ !</strong> {{ Session::get('err') }}
                 </div>
-            @endif
+            <?php endif; ?>
+
+            <?php if(Session::has('err')): ?>
+                <div class="alert alert-danger">
+                    <strong>خطأ !</strong> <?php echo e(Session::get('err')); ?>
+
+                </div>
+            <?php endif; ?>
             <div class="widget-content requests">
                 <div class="col-sm-12">
+                    <a href="<?php echo e(route('invoices.create')); ?>" class="custom-btn red-bc">
+                        <i class="fa fa-plus"></i>
+                        إضافة   فاتورة
+                    </a>
+                </div>
+                <?php if($invoices->count()): ?>
+                <div class="col-sm-12">
                     <div class="ui form">
-                        <!-- <div class="two fields">
+                        <div class="two fields">
                             <div class="ui field">
-                                <label>من ::</label>
+                                <label>من :</label>
                                 <div class="input-group date form_date" data-date="" data-date-format="yyyy-mm-dd" data-link-field="dtp_input2" data-link-format="yyyy-mm-dd">
                                     <input class="form-control from_date" size="16" value="" readonly="" type="text">
                                     <span class="input-group-addon">
@@ -44,7 +53,7 @@
                                 </div>
                             </div>
                             <div class="ui field">
-                                 <label>إلى ::</label>
+                                 <label>إلى :</label>
                                 <div class="form-group">
                                     <div class="input-group date form_date" data-date="" data-date-format="yyyy-mm-dd" data-link-field="dtp_input2" data-link-format="yyyy-mm-dd">
                                         <input class="form-control to_date" size="16" value="" readonly="" type="text">
@@ -54,7 +63,7 @@
                                     </div>
                                 </div>
                             </div>
-                        </div> -->
+                        </div>
                         <div class="two fields">
                             <div class="ui field">
                                 <label>بحث بواسطة الأسم</label>
@@ -63,96 +72,92 @@
                                 </div>
                             </div>
                             <div class="ui field">
-                                <label>بحث بواسطة الهاتف</label>
+                                <label>بحث بواسطة رقم الهاتف</label>
                                 <div class="ui input">
-                                    <input class="form-control" name="phone" id="phone" placeholder="بحث بواسطة الهاتف" type="text">
+                                    <input class="form-control" name="phone" id="phone" placeholder="بحث بواسطة رقم الهاتف" type="text">
                                 </div>
                             </div>
                         </div>
-                        <!-- <div class="two fields"> -->
-                        <div class="two fields">
-                            <!-- <div class="ui field">
-                                <label>Request status</label>
-                                <div>
-                                    <select id="status" class="form-control" placeholder="Request status">
-                                        <option value="">Both</option>
-                                        <option value="1">Pending</option>
-                                        <option value="2">Done</option>
-                                    </select>
-                                </div>
-                            </div> -->
+                        <div>
                             <div class="ui field">
-                                <label>الوظيفة</label>
+                                <label>نوع الفاتورة</label>
                                 <div>
-                                    <select id="job" class="form-control">
+                                    <select id="type" class="form-control" placeholder="Invoice type">
                                         <option value="">الكل</option>
-                                        <option value="provider">مقدم خدمة</option>
-                                        <option value="delivery">موصل</option>
-                                      <!--  <option value="marketer">مسوق</option> -->
+                                        <option value="1">بيع</option>
+                                        <option value="2">مسترجع</option>
                                     </select>
                                 </div>
                             </div>
                         </div>
                     </div>
+                    <span class="spacer-25"></span>
                     <div class="col-sm-3">
-                        <button href="#" class="custom-btn blue-bc balanceSearchBu">
+                        <button href="#" class="custom-btn blue-bc invoiceSearchBu">
                             <i class="fa fa-search"></i> 
                             بحث
                         </button>
                     </div>
                 </div>
                 <div class="spacer-25"></div><!--End Spacer-->
-                @if($balances->count())
                 <div class="table-responsive">          
                     <table class="table table-bordered table-hover">
                         <thead>
                             <tr>
-                                <th>الأسم بالكامل</th>
-                                <th>رقم  الهاتف</th>
-                                <th>الرصيد المستحق</th>
-                                <th>الرصيد الحالى</th>
-                                <th>الأجمالى</th>
+                                <th>رقم الفاتورة</th>
+                                <th>الأسم</th>
+                                <th>رقم الهاتف</th>
+                                <th>القيمة</th>
                                 <th>النوع</th>
+                                <th>الوصف</th>
+                                <th>التاريخ</th>
                             </tr>
                         </thead>
                         <tbody id="tableBody">
-                            @foreach($balances AS $balance)
+                            <?php $__currentLoopData = $invoices; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $invoice): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                             <tr>
-                                <td>{{ $balance->full_name }}</td>
-                                <td>{{ $balance->country_code.$balance->phone }}</td>
-                                <td>{{ $balance->due_balance }}</td>
-                                <td>{{ $balance->current_balance }}</td>
-                                <td>{{ $balance->current_balance - $balance->due_balance }}</td>
-                                <td>{{ $balance->type }}</td>
+                                <td><?php echo e($invoice->invo_id); ?></td>
+                                <td><?php echo e($invoice->name); ?></td>
+                                <td><?php echo e($invoice->phone); ?></td>
+                                <td><?php echo e($invoice->value); ?></td>
+                                <td><?php echo e(($invoice->type == 1)? 'Sale' : 'Return'); ?></td>
+                                <td><?php echo e($invoice->invo_desc); ?></td>
+                                <td><?php echo e(date('Y-m-d', strtotime($invoice->created_at))); ?></td>
                             </tr>
-                            @endforeach
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                         </tbody>
                     </table>
                 </div>
-                @endif
+                <?php endif; ?>
             </div>
         </div><!--End Widget-->
     </div>
 </div>
-@stop
+<?php $__env->stopSection(); ?>
 
-@section('customJs')
+<?php $__env->startSection('customJs'); ?>
 <script type="text/javascript">
-$("body").on("click",".balanceSearchBu", function(){
-    // var from   = $(".from_date").val();
-    // var to     = $(".to_date").val();
+$("body").on("click",".invoiceSearchBu", function(){
+    var indicator = $(this).find('i');
+    var but       = $(this);
+    indicator.removeClass('fa-search');
+    indicator.addClass('fa-circle-o-notch fa-spin');
+    but.attr('disabled',true);
+    var from   = $(".from_date").val();
+    var to     = $(".to_date").val();
     var name   = $("#name").val();
     var phone  = $("#phone").val();
-    // var status = $("#status").val();
-    var job    = $("#job").val();
-    // var posted = {'from':from, 'to':to, 'name':name, 'phone':phone, 'status':status, 'job':job};
-    var posted = {'name':name, 'phone':phone, 'job':job};
+    var type   = $("#type").val();
+    var posted = {'from':from, 'to':to, 'name':name, 'phone':phone, 'type':type};
     $.ajax({
-        url: "{{ route('balances.search') }}",
+        url: "<?php echo e(route('invoices.search')); ?>",
         type:"POST",
         data:posted,
         scriptCharset:"application/x-www-form-urlencoded; charset=UTF-8",
         success: function(result){
+            indicator.addClass('fa-search');
+            indicator.removeClass('fa-circle-o-notch fa-spin');
+            but.attr('disabled',false);
             if(result != ''){
                 $("#tableBody").html(result);
             }else{
@@ -160,9 +165,13 @@ $("body").on("click",".balanceSearchBu", function(){
             }
         },
         error: function(){
+            indicator.addClass('fa-search');
+            indicator.removeClass('fa-circle-o-notch fa-spin');
+            but.attr('disabled',false);
             alert('Something wrong, try again later');
         }
     });
 });
 </script>
-@stop
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('cpanel.layout.master', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

@@ -80,29 +80,28 @@ class OrdersController extends Controller
 
 					 if(isset($details) && $details -> count() > 0){
                 
-                foreach ($details as  $product) {
-                	  
-                     $image = DB::table('product_images') -> where('product_id',$product -> product_id) -> first();
+			                foreach ($details as  $product) {
+			                	  
+			                     $image = DB::table('product_images') -> where('product_id',$product -> product_id) -> first();
 
-                     if($image){
+			                     if($image){
 
-                     	 $product -> main_image =  env('APP_URL').'/public/products/'.$image -> image;
+			                     	 $product -> main_image =  env('APP_URL').'/public/products/'.$image -> image;
 
-                     }else{
-                      
-                         $product -> main_image ="";
+			                     }else{
+			                      
+			                         $product -> main_image ="";
 
-                     }
-
-                }
+			                     }
+			                }
  
-			} 
+						} 
 
 
 		$result = array(
-			'header'  => $header,
-			'details' => $details
-		);
+			'header'        => $header,
+			'details'       => $details,
+ 		);
 
 		return $result;
 
@@ -258,9 +257,11 @@ class OrdersController extends Controller
 			return redirect()->route('orders.filter');
 		}
 
+		  $orderOptions = DB::table('order_products_options') -> where('order_id',$id) -> join('product_options','order_products_options.option_id','=','product_options.id') -> select('product_options.name','product_options.id','product_options.price')  -> get();
+
 		$header  = $order['header'];
 		$details = $order['details'];
 
-		return view('cpanel.orders.details', compact('header', 'details'));
+		return view('cpanel.orders.details', compact('header', 'details','orderOptions'));
 	}
 }

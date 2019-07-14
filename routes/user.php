@@ -145,9 +145,12 @@ Route::group(['middleware' => ['api_auth'], 'prefix' => 'api'], function() {
 	Route::post('/CancelOrder', 'UserController@cancel_order');
 	Route::get('/CancelOrder', 'UserController@echoEmpty');
 
-	
-  
-	 
+	Route::post('/provider_evaluate', 'UserController@provider_evaluate');
+	Route::get('/provider_evaluate', 'UserController@echoEmpty');
 
+    
+    Route::post('/delivery_evaluate', 'UserController@delivery_evaluate');
+	Route::get('/delivery_evaluate', 'UserController@echoEmpty');
+	 
 
 });

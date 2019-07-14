@@ -95,13 +95,9 @@
                                                 <th rowspan="2">نسبة التطبيق من مقم الخدمة</th>
                                                 <th rowspan="2">نسبة التوصيل</th>
                                                 <th rowspan="2">نسبة التطبيق من   الموصل </th>
-                                                <th colspan="2">قيم اخرى</th>
-                                                <th rowspan="2">الحالة</th>
+                                                 <th rowspan="2">الحالة</th>
                                             </tr>
-                                            <tr>
-                                                <th>Provider marketer value</th>
-                                                <th>Delivery marketer value</th>
-                                            </tr>
+                                             
                                         </thead>
                                         <tbody id="tableBody">
                                             @foreach($getDetails AS $row)
@@ -112,8 +108,7 @@
                                                 <td>{{ $row->app_value }}</td>
                                                 <td>{{ $row->delivery_price }}</td>
                                                 <td>{{ $row->delivery_app_value }}</td>
-                                                <td>{{ $row->marketer_value }}</td>
-                                                <td>{{ $row->marketer_delivery_value }}</td>
+                                                 
                                                 <td>{{ ($row->balance_status == 1)? 'Pending' : 'Done' }}</td>
                                             </tr>
                                             @endforeach

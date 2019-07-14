@@ -89,7 +89,7 @@
                                         <option value="">الكل</option>
                                         <option value="provider">مقدم خدمة</option>
                                         <option value="delivery">موصل</option>
-                                        <option value="marketer">مسوق</option>
+                                      <!--  <option value="marketer">مسوق</option> -->
                                     </select>
                                 </div>
                             </div>

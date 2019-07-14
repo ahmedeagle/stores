@@ -111,6 +111,39 @@
                     </table>
                     @endif
                 </div>
+
+
+                <!-- order Options -->
+
+                <span class="spacer-25"></span>
+                الاضافات 
+                <div class="table-responsive">  
+                    @if(isset($orderOptions) && $orderOptions->count() > 0)        
+                    <table class="table table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                 <th>المسلسل </th>
+                                <th>الاضافه </th>
+                                <th> السعر </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                             @foreach($orderOptions AS $option)
+                             <tr>
+                               
+                                <td>{{ $option -> id }}</td>
+                                <td>{{ $option->name }}</td>
+                                <td>{{ $option->price }}</td>
+                             </tr>
+                            @endforeach
+                           
+                        </tbody>
+                    </table>
+                    @endif
+                </div>
+
+
+
             </div>
         </div><!--End Widget-->
     </div>
