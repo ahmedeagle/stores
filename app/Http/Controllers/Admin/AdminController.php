@@ -88,7 +88,7 @@ class AdminController extends Controller
 
 
 
-	public function list(){
+	public function index(){
 		$admins = Admin::all();
 		return view('cpanel.admin.admins', compact('admins'));
 	}

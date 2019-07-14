@@ -82,7 +82,7 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function() {
 
 
 			Route::get('/', [
-				'uses' => 'AdminController@list',
+				'uses' => 'AdminController@index',
 				'as'   => 'admins.show'
 			]);
 
