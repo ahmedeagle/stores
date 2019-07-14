@@ -4238,7 +4238,7 @@ public function cancel_order(Request $request){
                        $inputs=[];
 
                        $inputs['order_id']     = $request -> order_id;
-                       $inputs['user_id']      = $request -> user_id;
+                       $inputs['user_id']      = $user_id;
                        $inputs['rates']        = $request -> rates;
                        $inputs['comment']      = $request -> comment;
                        $inputs['provider_id']  = $order -> provider_id;
@@ -4363,7 +4363,7 @@ public function cancel_order(Request $request){
                        return  $request -> user_id;
 
                        $inputs['order_id']     = $request -> order_id;
-                       $inputs['user_id']      = $request -> user_id;
+                       $inputs['user_id']      = $user_id;
                        $inputs['rates']        = $request -> rates;
                        $inputs['comment']      = $request -> comment;
                        $inputs['delivery_id']  = $order -> provider_id;
