@@ -4366,7 +4366,7 @@ public function cancel_order(Request $request){
                        $inputs['user_id']      = $user_id;
                        $inputs['rates']        = $request -> rates;
                        $inputs['comment']      = $request -> comment;
-                       $inputs['delivery_id']  = $order -> provider_id;
+                       $inputs['delivery_id']  = $order -> delivery_id;
                         
 
            	     	    DB::table('delivery_rates') -> insert($inputs);
