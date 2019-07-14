@@ -43,7 +43,7 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function() {
 		/*Route::get('/', [
 			'uses' => 'HomeController@index',
 			'as'   => 'home'
-
+.
 		]);*/
  
 

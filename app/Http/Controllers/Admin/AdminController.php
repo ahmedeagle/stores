@@ -92,6 +92,7 @@ class AdminController extends Controller
 		$admins = Admin::all();
 		return view('cpanel.admin.admins', compact('admins'));
 	}
+	
 
 	public function edit($id){
 
