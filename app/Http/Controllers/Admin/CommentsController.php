@@ -38,6 +38,7 @@ class CommentsController extends Controller
 							DB::raw('CONCAT(users.country_code, users.phone) AS phone'), 
 							'products.title', 
 							 'products.id as product_id',
+							 'is_read',
  							DB::raw('DATE(product_comments.created_at) AS created')
  						)    
 					->orderBy('product_comments.id', 'DESC')
@@ -142,6 +143,7 @@ class CommentsController extends Controller
 							'users.full_name', 
 							DB::raw('CONCAT(users.country_code, users.phone) AS phone'), 
 							'products.title', 
+							'is_read',
  							DB::raw('DATE(product_comments.created_at) AS created')
 							)
 					->orderBy('product_comments.id', 'DESC')
@@ -167,5 +169,23 @@ class CommentsController extends Controller
 			}
 
 		return view('cpanel.comments.today', compact('comments'));
+	}
+
+
+	public function comment_seen($comment_id){
+
+        
+        $comment = DB::table('product_comments') -> whereId($comment_id) -> first();
+
+         if(!$comment){
+
+         	return abort('404');
+         }
+
+        
+            DB::table('product_comments') -> whereId($comment_id) -> update(['is_read' => 1]);
+
+            return redirect() -> back() -> with('success','تمت العمليه بنجاح ');
+
 	}
 }

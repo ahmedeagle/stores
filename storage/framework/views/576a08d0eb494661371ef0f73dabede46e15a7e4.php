@@ -8,33 +8,91 @@
                             <div class="counter-icon">
                                 <i class="fa fa-user-o"></i>
                             </div>
+                            <a style="color: #fff;" href="<?php echo e(route('user.show')); ?>?status=active">
                             <div class="counter-content"> 
-                                <div class="timer" data-to="<?php echo e(($users != NULL)? $users : 0); ?>" data-speed="2500"><?php echo e(($users != NULL)? $users : 0); ?></div>
-                                <span>المستخدمين</span>
+                                <div class="timer" data-to="<?php echo e(($activeusers != NULL)? $activeusers : 0); ?>" data-speed="2500"><?php echo e(($activeusers != NULL)? $activeusers : 0); ?></div>
+                                <span>المستخدمين المفعلين </span>
+                            
                             </div>
+                            </a>
                         </div>
                     </div><!--End col-md-4-->
+
+                     <div class="col-md-4">
+                        <div class="counter">
+                            <div class="counter-icon">
+                                <i class="fa fa-user-o"></i>
+                            </div>
+                             <a style="color: #fff;" href="<?php echo e(route('user.show')); ?>?status=inactive">
+                            <div class="counter-content"> 
+                                 
+                                <div class="timer" data-to="<?php echo e(($inactiveusers != NULL)? $inactiveusers : 0); ?>" data-speed="2500"><?php echo e(($inactiveusers != NULL)? $inactiveusers : 0); ?></div>
+                                <span>مستخدمين  غير  مفعلين  </span>
+
+                            </div>
+                        </a>
+
+                        </div>
+                    </div><!--End col-md-4-->
+
+
                     <div class="col-md-4">
                         <div class="counter">
                             <div class="counter-icon">
                                 <i class="fa fa-user-o"></i>
                             </div>
+                             <a style="color: #fff;" href="<?php echo e(route('provider.show')); ?>?status=active">
                             <div class="counter-content"> 
-                                <div class="timer" data-to="<?php echo e(($providers != NULL)? $providers : 0); ?>" data-speed="2500"><?php echo e(($providers != NULL)? $providers : 0); ?></div>
-                                <span>مقدمين الخدمات</span>
+                                <div class="timer" data-to="<?php echo e(($activeproviders != NULL)? $activeproviders : 0); ?>" data-speed="2500"><?php echo e(($activeproviders != NULL)? $activeproviders : 0); ?></div>
+                                <span>المتاجر المفعله </span>
                             </div>
+                        </a>
                         </div>
                     </div><!--End col-md-4-->
+
+                     <div class="col-md-4">
+                        <div class="counter">
+                            <div class="counter-icon">
+                                <i class="fa fa-user-o"></i>
+                            </div>
+                             <a style="color: #fff;" href="<?php echo e(route('provider.show')); ?>?status=inactive">
+                            <div class="counter-content"> 
+                                <div class="timer" data-to="<?php echo e(($inactiveproviders != NULL)? $inactiveproviders : 0); ?>" data-speed="2500"><?php echo e(($inactiveproviders != NULL)? $inactiveproviders : 0); ?></div>
+                                <span>المتاجر  الغير مفعله  </span>
+                            </div>
+                        </a>
+                        </div>
+                    </div><!--End col-md-4-->
+
+
                     <div class="col-md-4">
                         <div class="counter">
                             <div class="counter-icon">
                                 <i class="fa fa-user-o"></i>
                             </div>
+                            <a style="color: #fff;" href="<?php echo e(route('deliveries.show')); ?>?status=active">
                             <div class="counter-content"> 
-                                <div class="timer" data-to="<?php echo e(($deliveries != NULL)? $deliveries : 0); ?>" data-speed="2500"><?php echo e(($deliveries != NULL)? $deliveries : 0); ?></div>
-                                <span>الموصلين</span>
+                                <div class="timer" data-to="<?php echo e(($activedeliveries != NULL)? $activedeliveries : 0); ?>" data-speed="2500"><?php echo e(($activedeliveries != NULL)? $activedeliveries : 0); ?></div>
+                                <span>الموصلين المغعلين </span>
                             </div>
+                        </a>
                         </div>
+                    </div><!--End col-md-4-->
+
+
+                    <div class="col-md-4">
+                        <div class="counter">
+                            <div class="counter-icon">
+                                <i class="fa fa-user-o"></i>
+                            </div>
+                        <a style="color: #fff;" href="<?php echo e(route('deliveries.show')); ?>?status=inactive">
+                            <div class="counter-content"> 
+                                <div class="timer" data-to="<?php echo e(($inactivedeliveries != NULL)? $inactivedeliveries : 0); ?>" data-speed="2500"><?php echo e(($inactivedeliveries != NULL)? $inactivedeliveries : 0); ?></div>
+                                <span>الموصلين الغير مفعلين </span>
+                            </div>
+                        </a>    
+                        </div>
+
                     </div><!--End col-md-4-->
                     <div class="col-md-4">
                         <div class="counter">
@@ -43,7 +101,7 @@
                             </div>
                             <div class="counter-content"> 
                                 <div class="timer" data-to="<?php echo e(($products != NULL)? $products : 0); ?>" data-speed="2500"><?php echo e(($products != NULL)? $products : 0); ?></div>
-                                <span>الوجبات</span>
+                                <span>المنتجات </span>
                             </div>
                         </div>
                     </div><!--End col-md-4-->
@@ -58,28 +116,66 @@
                             </div>
                         </div>
                     </div><!--End col-md-4-->
-                    <div class="col-md-4">
-                        <div class="counter">
-                            <div class="counter-icon">
-                                <i class="fa fa-user-o"></i>
-                            </div>
-                            <div class="counter-content"> 
-                                <div class="timer" data-to="<?php echo e(($return != NULL)? $return : 0); ?>" data-speed="2500"><?php echo e(($return != NULL)? $return : 0); ?></div>
-                                <span>المرجعات</span>
-                            </div>
-                        </div>
-                    </div><!--End col-md-4-->
-                    <div class="col-md-4">
+               
+
+                     <div class="col-md-4">
                         <div class="counter">
                             <div class="counter-icon">
                                 <i class="fa fa-comment-o"></i>
                             </div>
+                     <a style="color: #fff;" href="<?php echo e(route('comments.show')); ?>?status=active"> 
                             <div class="counter-content"> 
                                 <div class="timer" data-to="<?php echo e(($comments != NULL)? $comments : 0); ?>" data-speed="2500"><?php echo e(($comments != NULL)? $comments : 0); ?></div>
-                                <span>التعليقات</span>
+                                <span>تعليقات جديده </span>
                             </div>
+                        </a>
                         </div>
                     </div><!--End col-md-4-->
+
+                     <div class="col-md-4">
+                        <div class="counter">
+                            <div class="counter-icon">
+                                <i class="fa fa-comment-o"></i>
+                            </div>
+                                                        <!-- new status -->
+                            <a style="color: #fff;" href="<?php echo e(route('excellent.status',0)); ?>"> 
+                            <div class="counter-content"> 
+                                <div class="timer" data-to="<?php echo e(($excellentReq != NULL)? $excellentReq : 0); ?>" data-speed="2500"><?php echo e(($excellentReq != NULL)? $excellentReq : 0); ?></div>
+                                <span> طلبات تمييز جديده  </span>
+                            </div>
+                            </a> 
+                        </div>
+                    </div><!--End col-md-4-->
+
+                 <div class="col-md-4">
+                        <div class="counter">
+                            <div class="counter-icon">
+                                <i class="fa fa-comment-o"></i>
+                            </div>
+                            <a style="color: #fff;" href="<?php echo e(route('offers.status',0)); ?>">
+                                <div class="counter-content"> 
+                                    <div class="timer" data-to="<?php echo e(($offers != NULL)? $offers : 0); ?>" data-speed="2500"><?php echo e(($offers != NULL)? $offers : 0); ?></div>
+                                    <span> عروض جديده    </span>
+                                </div>
+                           </a> 
+                        </div>
+                    </div><!--End col-md-4-->
+
+                 <div class="col-md-4">
+                        <div class="counter">
+                            <div class="counter-icon">
+                                <i class="fa fa-comment-o"></i>
+                            </div>
+                               <a style="color: #fff;" href="<?php echo e(route('offers.status',0)); ?>">
+                                <div class="counter-content"> 
+                                    <div class="timer" data-to="<?php echo e(($offers != NULL)? $offers : 0); ?>" data-speed="2500"><?php echo e(($offers != NULL)? $offers : 0); ?></div>
+                                    <span> تذاكر  مفتوحه  </span>
+                                </div>
+                           </a> 
+                        </div>
+                    </div><!--End col-md-4-->
+
+
                 </div>
             </div>
         </div>

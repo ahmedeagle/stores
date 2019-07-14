@@ -115,10 +115,19 @@
                                 <td><?php echo e($comment->comment); ?></td>
                                 <td><?php echo e($comment->created); ?></td>
                                 <td>
-                                    <button data-id="<?php echo e($comment->id); ?>" class="custom-btn red-bc deleteMeal">
+                                    <button title="حذف" data-id="<?php echo e($comment->id); ?>" class="custom-btn red-bc deleteMeal">
                                         <i class="fa fa-trash-o"></i>
                                     </button>
+
+                                 <?php if($comment-> is_read  == 0): ?>
+                                     <a href="<?php echo e(route('comment.seen',$comment -> id)); ?>"  title="مرئي " data-id="<?php echo e($comment->id); ?>" class="custom-btn red-bc">
+                                        <i class="fa fa-check"></i>
+                                    </a>
+                                <?php endif; ?>
+
                                 </td>
+
+
                             </tr>
                             <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                         </tbody>

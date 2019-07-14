@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 /**
  *
- * @author Mohamed Salah <mohamedsalah7191@gmail.com>
+ * @author Ahmed Emam <ahmedaboemam123@gmail.com>
  */
 use Log;
 use App\Http\Controllers\Controller;
@@ -26,9 +26,38 @@ class UsersController extends Controller
 	}
 
 	public function show(){
-		$users = User::join('city', 'users.city_id', '=', 'city.city_id')
+
+
+		$request = Request();
+
+
+		$status =  $request -> status;
+
+		if(in_array($status, ['active','inactive'])){
+
+                  $cond = ($status == 'active') ? 1 : 0 ; 
+                  $conditions[]=['status','=',$cond];
+		}
+
+
+ 		if(!empty($conditions)){
+
+                 
+                 $users = User::where($conditions) 
+		                     ->join('city', 'users.city_id', '=', 'city.city_id')
+							 ->select('users.*', 'city.city_en_name')
+							 ->get();
+
+		}else{
+
+			$users = User::join('city', 'users.city_id', '=', 'city.city_id')
 					 ->select('users.*', 'city.city_en_name')
 					 ->get();
+
+		}
+
+
+		
 		return view('cpanel.users.users', compact('users'));
 	}
 

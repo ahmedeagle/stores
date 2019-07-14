@@ -59,6 +59,12 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function() {
 				'as'   => 'loginView'
 			]);
 
+			Route::get('/admin', function(){
+                  
+                  return redirect() -> route('login');
+
+			});
+
 			Route::get('/login', [
 				'uses' => 'AdminController@getLogin',
 				'as'   => 'login'
@@ -562,6 +568,12 @@ Route::group(['prefix' => 'tickets'], function(){
 				'uses' => 'CommentsController@today',
 				'as'   => 'comments.today'
 			]);
+
+			Route::get('/is_read/{comment_id}', [
+				'uses' => 'CommentsController@comment_seen',
+				'as'   => 'comment.seen'
+			]);
+
 		});
 
 		Route::group(['prefix' => 'evaluations'], function(){

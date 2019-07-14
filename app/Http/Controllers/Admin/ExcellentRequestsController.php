@@ -82,7 +82,7 @@ class ExcellentRequestsController extends Controller
 
    public function getRequests($type){
 
-   	   //types  0 -> new  1 -> approved 2-> paid  3-> expire
+   	   //types  0 -> new  1 -> approved 2-> paid  3-> expire  
            
             if($type == 0){
 

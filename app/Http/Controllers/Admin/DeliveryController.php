@@ -49,10 +49,41 @@ class DeliveryController extends Controller
     }
 
 	public function show(){
-		$deliveries = Deliveries::join('city', 'deliveries.city_id', '=','city.city_id')
-							    ->join('country', 'deliveries.country_id', '=','country.country_id')
-							    ->select('deliveries.*', DB::raw('country.country_ar_name AS country'), DB::raw('city.city_ar_name AS city'))
-							    ->get();
+
+
+
+    $request = Request();
+
+
+    $status =  $request -> status;
+
+    if(in_array($status, ['active','inactive'])){
+
+                  $cond = ($status == 'active') ? 1 : 0 ; 
+                  $conditions[]=['deliveries.publish','=',$cond];
+    }
+
+
+    if(!empty($conditions)){
+
+                
+    $deliveries = Deliveries::where($conditions) 
+                  ->join('city', 'deliveries.city_id', '=','city.city_id')
+                  ->join('country', 'deliveries.country_id', '=','country.country_id')
+                  ->select('deliveries.*', DB::raw('country.country_ar_name AS country'), DB::raw('city.city_ar_name AS city'))
+                  ->get();
+
+    }else{
+
+      
+    $deliveries = Deliveries::join('city', 'deliveries.city_id', '=','city.city_id')
+                  ->join('country', 'deliveries.country_id', '=','country.country_id')
+                  ->select('deliveries.*', DB::raw('country.country_ar_name AS country'), DB::raw('city.city_ar_name AS city'))
+                  ->get();
+
+    }
+ 
+
 		return view('cpanel.deliveries.deliveries', compact('deliveries'));
 	}
 

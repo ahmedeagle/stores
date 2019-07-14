@@ -114,10 +114,19 @@
                                 <td>{{ $comment->comment }}</td>
                                 <td>{{ $comment->created }}</td>
                                 <td>
-                                    <button data-id="{{ $comment->id }}" class="custom-btn red-bc deleteMeal">
+                                    <button title="حذف" data-id="{{ $comment->id }}" class="custom-btn red-bc deleteMeal">
                                         <i class="fa fa-trash-o"></i>
                                     </button>
+
+                                 @if($comment-> is_read  == 0)
+                                     <a href="{{route('comment.seen',$comment -> id)}}"  title="مرئي " data-id="{{ $comment->id }}" class="custom-btn red-bc">
+                                        <i class="fa fa-check"></i>
+                                    </a>
+                                @endif
+
                                 </td>
+
+
                             </tr>
                             @endforeach
                         </tbody>

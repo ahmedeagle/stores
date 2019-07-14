@@ -26,11 +26,40 @@ class ProviderController extends Controller
 	}
 
 	public function show(){
-		$providers = Providers::join('city', 'providers.city_id', '=','city.city_id')
-							  ->join('country', 'providers.country_id', '=','country.country_id')
-							  ->select('providers.*', DB::raw('country.country_en_name AS country'), DB::raw('city.city_en_name AS city'))
-							  ->get();
 
+
+    $request = Request();
+
+
+    $status =  $request -> status;
+
+    if(in_array($status, ['active','inactive'])){
+
+                  $cond = ($status == 'active') ? 1 : 0 ; 
+                  $conditions[]=['providers.publish','=',$cond];
+    }
+
+
+if(!empty($conditions)){
+
+              
+    $providers = Providers::where($conditions) 
+                 -> join('city', 'providers.city_id', '=','city.city_id')
+                ->join('country', 'providers.country_id', '=','country.country_id')
+                ->select('providers.*', DB::raw('country.country_en_name AS country'), DB::raw('city.city_en_name AS city'))
+                ->get();
+
+
+
+    }else{
+
+    $providers = Providers::join('city', 'providers.city_id', '=','city.city_id')
+                ->join('country', 'providers.country_id', '=','country.country_id')
+                ->select('providers.*', DB::raw('country.country_en_name AS country'), DB::raw('city.city_en_name AS city'))
+                ->get();
+
+    }
+ 
 
                             
 		return view('cpanel.providers.providers', compact('providers'));
