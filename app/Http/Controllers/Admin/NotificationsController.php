@@ -139,11 +139,91 @@ class NotificationsController extends Controller
 					return redirect() -> back()-> with('faild' , 'فشل في ارسال بعض   الاشعارات  ');
 				 }
 
-           
-          
           return redirect() -> back()-> with('success' , 'تمت العمليه بنجاح ');
          
+        
+	}
+
+
+	public function getNotificationsList(){
            
+
+            $notifications = DB::table("notifications")
+                             ->where('notification_type',8)
+                            ->select(
+		                                "notifications.id AS id",
+		                                "notifications.ar_title AS title",
+		                                "notifications.ar_content AS content",
+		                                DB::raw("DATE(notifications.created_at) AS create_date"),
+		                                DB::raw("TIME(notifications.created_at) AS create_time"),
+		                                'notifications.actor_id',
+		                                'notifications.actor_type'
+                            )
+                            ->orderBy("notifications.id", "DESC")
+                            ->get();
+
+
+                            if(isset($notifications) && $notifications -> count() > 0){
+
+                            	   foreach ($notifications as $key => $notification) {
+
+                            	   	     if($notification -> actor_type == 'user' )
+                            	   	     {
+
+                            	   	     	 $actor = DB::table('users') -> where('user_id',$notification -> actor_id) -> select('full_name') -> first();
+
+                            	   	     	 if($actor){
+
+                            	   	     	 	$notification ->  actor_name =  $actor  -> full_name;
+
+
+                            	   	     	 }else{
+                                                  
+                                                  $notification ->  actor_name = "";
+
+                            	   	     	 }
+
+                            	   	     }elseif ($notification -> actor_type == 'provider') {
+                            	   	     	
+                            	   	     	 $actor = DB::table('providers') -> where('provider_id',$notification -> actor_id) -> select('full_name') -> first();
+
+                            	   	     	 if($actor){
+
+                            	   	     	 	$notification ->  actor_name =  $actor  -> full_name;
+
+
+                            	   	     	 }else{
+                                                  
+                                                  $notification ->  actor_name = "";
+
+                            	   	     	 }
+                            	   	     }elseif ($notification -> actor_type == 'delivery') {
+                            	   	     	
+
+                            	   	     	 $actor = DB::table('deliveries') -> where('delivery_id',$notification -> actor_id) -> select('full_name') -> first();
+
+                            	   	     	 if($actor){
+
+                            	   	     	 	$notification ->  actor_name =  $actor  -> full_name;
+
+
+                            	   	     	 }else{
+                                                  
+                                                  $notification ->  actor_name = "";
+
+                            	   	     	 }
+
+                            	   	     }else{
+
+
+                            	   	     	$notification ->  actor_name = "";
+                            	   	     }
+                            	   }
+                            }
+
+              
+              return view('cpanel.notifications.list',compact('notifications'));
+
 
 	}
  

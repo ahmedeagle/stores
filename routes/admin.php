@@ -272,17 +272,27 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function() {
 
 Route::group(['prefix' => 'notifications'], function(){
 
+       
+       //send notifications to actor 
       Route::get('/',[
 
                'uses' => 'NotificationsController@getNotifications',
                'as'   =>  'get.notifications'
-      ]);
+      ]);   
 
       Route::post('send',[
 
                'uses' => 'NotificationsController@sendNotifications',
                'as'   =>  'send.notifications'
       ]);
+ 
+       //get list of previous sent notifications 
+      Route::get('/list',[
+
+               'uses' => 'NotificationsController@getNotificationsList',
+               'as'   =>  'admin.notifications.list'
+      ]);
+
 
   });
 

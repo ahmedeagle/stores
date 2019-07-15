@@ -338,9 +338,24 @@
                                 </ul>
                             </li>
 
-                             <li>
-                                <a rel="nofollow" rel="noreferrer" href="{{ route('get.notifications') }}">ارسال اشعارات </a>
+
+                          <li class="sub-menu">
+                                <a rel="nofollow" rel="noreferrer" href="javascript:void(0);">
+                                   الاشعارات  اليدويه 
+                                    <i class="fa fa-angle-down"></i>
+                                </a>
+                                <ul>
+                                    <li>
+                                        <a rel="nofollow" rel="noreferrer" href="{{ route('admin.notifications.list') }}"> الاشعارات المرسله </a>
+                                    </li>
+                                    <li>    
+                                        <a rel="nofollow" rel="noreferrer" href="{{ route('get.notifications') }}"> ارسال اشعار جديد </a>
+                                    </li>
+                                </ul>
                             </li>
+
+
+ 
 
                               <li class="sub-menu">
                                 <a rel="nofollow" rel="noreferrer" href="javascript:void(0);">
