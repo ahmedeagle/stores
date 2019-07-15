@@ -39,7 +39,7 @@
                     <div class="col-md-4">
                         <div class="counter">
                             <div class="counter-icon">
-                                <i class="fa fa-user-o"></i>
+                                <i class="fa fa-home"></i>
                             </div>
                              <a style="color: #fff;" href="<?php echo e(route('provider.show')); ?>?status=active">
                             <div class="counter-content"> 
@@ -53,7 +53,7 @@
                      <div class="col-md-4">
                         <div class="counter">
                             <div class="counter-icon">
-                                <i class="fa fa-user-o"></i>
+                                <i class="fa fa-home"></i>
                             </div>
                              <a style="color: #fff;" href="<?php echo e(route('provider.show')); ?>?status=inactive">
                             <div class="counter-content"> 
@@ -68,7 +68,7 @@
                     <div class="col-md-4">
                         <div class="counter">
                             <div class="counter-icon">
-                                <i class="fa fa-user-o"></i>
+                                <i class="fa fa-truck"></i>
                             </div>
                             <a style="color: #fff;" href="<?php echo e(route('deliveries.show')); ?>?status=active">
                             <div class="counter-content"> 
@@ -83,7 +83,7 @@
                     <div class="col-md-4">
                         <div class="counter">
                             <div class="counter-icon">
-                                <i class="fa fa-user-o"></i>
+                                <i class="fa fa-truck"></i>
                             </div>
                         <a style="color: #fff;" href="<?php echo e(route('deliveries.show')); ?>?status=inactive">
                             <div class="counter-content"> 
@@ -97,7 +97,7 @@
                     <div class="col-md-4">
                         <div class="counter">
                             <div class="counter-icon">
-                                <i class="fa fa-cutlery"></i>
+                                <i class="fa fa-product-hunt"></i>
                             </div>
                             <div class="counter-content"> 
                                 <div class="timer" data-to="<?php echo e(($products != NULL)? $products : 0); ?>" data-speed="2500"><?php echo e(($products != NULL)? $products : 0); ?></div>
@@ -135,7 +135,7 @@
                      <div class="col-md-4">
                         <div class="counter">
                             <div class="counter-icon">
-                                <i class="fa fa-comment-o"></i>
+                                <i class="fa fa-star"></i>
                             </div>
                                                         <!-- new status -->
                             <a style="color: #fff;" href="<?php echo e(route('excellent.status',0)); ?>"> 
@@ -150,7 +150,7 @@
                  <div class="col-md-4">
                         <div class="counter">
                             <div class="counter-icon">
-                                <i class="fa fa-comment-o"></i>
+                                <i class="fa fa-gift"></i>
                             </div>
                             <a style="color: #fff;" href="<?php echo e(route('offers.status',0)); ?>">
                                 <div class="counter-content"> 
