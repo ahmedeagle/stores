@@ -47,9 +47,10 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function() {
 		]);*/
  
 
+
 		Route::get('/home', 'HomeController@index') -> name('home');
 
-		Route::get('logout', 'AdminController@logout') -> name('admin.logout');
+		Route::post('logout', 'AdminController@logout') -> name('admin.logout');
 	});
 
  		Route::group(['middleware' => 'admin_guest'], function(){

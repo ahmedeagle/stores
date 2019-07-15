@@ -180,7 +180,7 @@
                 </div>
             </div>
         </div>
-        <div class="footer-copy-rights">جميع الحقوق محفوظة <a href="https://www.al-yasser.com.sa/en/">مجموعة الياسر</a> ©2017
+        <div class="footer-copy-rights">جميع الحقوق محفوظة <a target="_blank" href="https://wisyst.com"> wisyst </a> ©2019
         </div>
     </div>
     

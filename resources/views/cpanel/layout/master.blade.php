@@ -361,11 +361,19 @@
                                 </ul>
                             </li>
 
-                                   <li>
-                                        <a href="{{ route('admin.logout') }}">
-                                        <i class="ti-layout-sidebar-left"></i> تسجيل الخروج
-                                    </a>
+                                   
+                                       <li>
+                                        <a href="{{ route('admin.logout') }}"
+                                            onclick="event.preventDefault();
+                                                     document.getElementById('logout-form').submit();">
+                                        خروج 
+                                        </a>
+
+                                        <form id="logout-form" action="{{ route('admin.logout') }}" method="POST" style="display: none;">
+                                            {{ csrf_field() }}
+                                        </form>
                                     </li>
+
 
                         </ul>
 

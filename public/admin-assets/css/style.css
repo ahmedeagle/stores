@@ -11,14 +11,14 @@ body{
     font-size: 80px;
     letter-spacing: 3px;
     text-transform: uppercase;
-    color: #e81747;
+    color: #6666ff;
 }
 .load h2{
     margin-top: 25px;
     font-size: 60px;
     letter-spacing: 3px;
     text-transform: uppercase;
-    color: #e81747;
+    color: #6666ff;
 }
 .modal {
     z-index: 999999;
@@ -33,7 +33,7 @@ body{
 .modal-header {
     padding: 0 15px;
     border-bottom: 0;
-    background: #e81747;
+    background: #6666ff;
 }
 .modal-title {
     display: block;
@@ -147,7 +147,7 @@ body{
     letter-spacing: 1px;
     font-size: 14px;
     font-weight: 600;
-    background: #e81747;
+    background: #6666ff;
     color: #fff;
 }
 .sidebar {
@@ -211,7 +211,7 @@ body{
 .sidebar .side-menu-links li.active a:hover ,
 .sidebar .side-menu-links li.active a{
     background: #f4f4f4;
-    border-left: 4px solid #e81747;
+    border-left: 4px solid #6666ff;
     -webkit-transition: .3s all;
        -moz-transition: .3s all;
             transition: .3s all;
@@ -219,7 +219,7 @@ body{
 .top-header {
     display: block;
     position: fixed;
-    background: #e81747;
+    background: #6666ff;
     width: calc(100% - 200px);
     height: 45px;
     color: #fff;
@@ -296,14 +296,14 @@ body{
     width: 100%;
     overflow: hidden;
     background: #fff;
-    border-left: 4px solid #e81747;
+    border-left: 4px solid #6666ff;
 }
 .page-heading h2 {
     display: block;
     font-size: 15px;
     font-weight:600;
     margin: 0;
-    color: #e81747;
+    color: #6666ff;
     line-height:40px;
     text-align: left;
     text-transform:capitalize;
@@ -321,10 +321,10 @@ body{
 }
 .page-heading .breadcrumb > li + li:before {
 	padding-right: 6px;
-	color: #e81747;
+	color: #6666ff;
 }
 .page-heading .breadcrumb a {
-	color: #e81747;
+	color: #6666ff;
 	font-size: 12px;
 }
 .page-heading .breadcrumb > li ,
@@ -389,7 +389,7 @@ ul, li {
 .pagenation li.active a:hover ,
 .pagenation li.active a ,
 .pagenation li a:hover{
-    background: #e81747;
+    background: #6666ff;
     color: #fff;
 }
 
@@ -479,7 +479,7 @@ img {
     border: 5px solid rgba(0,0,0,.1);
     font-size: 25px;
     background: rgba(255,255,255,0.8);
-    color: #e81747;
+    color: #6666ff;
     top: -70px;
     margin: 0;
     -webkit-transition: .4s all ease;
@@ -582,7 +582,7 @@ img {
     width: 185px;
     float: left;
     border-radius: 3px 0 0 3px;
-    border: 1px solid #e81747;
+    border: 1px solid #6666ff;
     border-right: 0;
 }
 .lock-form .form-group .custom-btn{
@@ -839,7 +839,7 @@ img {
     line-height: 25px;
     padding: 10px;
     text-align: center;
-    color: #e81747;
+    color: #6666ff;
     font-size: 13px;
     text-transform: lowercase;
 }
@@ -877,7 +877,7 @@ img {
     line-height: 25px;
     padding: 0 10px;
     text-align: center;
-    color: #e81747;
+    color: #6666ff;
     font-size: 13px;
     text-transform: lowercase;
 }
@@ -889,7 +889,7 @@ img {
     font-size: 13px;
     text-transform: lowercase;
     background: transparent;
-    color: #e81747;
+    color: #6666ff;
 }
 .message-dropdown .message-wrap li {
     padding: 0;
@@ -1004,7 +1004,7 @@ img {
     padding: 0 10px;
     text-align: center;
     color: #fff;
-    background: #e81747;
+    background: #6666ff;
     font-size: 12px;
     text-transform: uppercase;
     border:0;
@@ -1213,7 +1213,7 @@ img {
   margin-top: 0px;
 }
 .tabbable-line > .nav-tabs > li.active {
-  border-bottom: 4px solid #e81747;
+  border-bottom: 4px solid #6666ff;
   position: relative;
 }
 .tabbable-line > .nav-tabs > li.active > a {
@@ -1244,7 +1244,7 @@ img {
     border-bottom: 1px solid #ddd;
     font-size: 13px;
     font-weight: 600;
-    color: #e81747;
+    color: #6666ff;
     text-transform: capitalize;
     padding: 0 10px;
     line-height: 40px;
@@ -1281,7 +1281,7 @@ table.dataTable.no-footer{
     float: right;
     margin: 25px 0px;
     padding-top: 0;
-    color: #e81747!important;
+    color: #6666ff!important;
     font-weight: 600;
     letter-spacing: 0.5px;
     text-transform: capitalize;
@@ -1294,7 +1294,7 @@ table.dataTable.no-footer{
 .dataTables_wrapper .dataTables_paginate .paginate_button.disabled:hover,
 .dataTables_wrapper .dataTables_paginate .paginate_button.disabled:active {
     cursor: default;
-    color: #e81747 !important;
+    color: #6666ff !important;
     border: 1px solid transparent;
     background: transparent;
     box-shadow: none;
@@ -1309,8 +1309,8 @@ table.dataTable.no-footer{
     text-align: center;
     text-decoration: none !important;
     cursor: pointer;
-    color: #e81747 !important;
-    border: 1px solid #e81747;
+    color: #6666ff !important;
+    border: 1px solid #6666ff;
     border-radius: 2px;
 }
 .dataTables_wrapper .dataTables_paginate .paginate_button.current,
@@ -1319,7 +1319,7 @@ table.dataTable.no-footer{
 .dataTables_wrapper .dataTables_paginate .paginate_button:focus{
     color: #fff !important;
     border: none;
-    background: #e81747;
+    background: #6666ff;
 }
 .dataTables_wrapper .dataTables_length label, 
 .dataTables_wrapper .dataTables_filter label,
@@ -1332,7 +1332,7 @@ table.dataTable.no-footer{
     display: block;
     margin: 0 0 15px 0;
     letter-spacing: 0.5px;
-    color: #e81747;
+    color: #6666ff;
 }
 .dataTables_wrapper .dataTables_filter input{
     border: 1px solid #f1f1f1;
@@ -1488,7 +1488,7 @@ fieldset[disabled] .form-control{
     margin: 0;
 }
 .ext-icon i{
-    background: #e81747;
+    background: #6666ff;
     width: 40px;
     color: #fff;
 }
@@ -1624,8 +1624,8 @@ select[multiple], select[size] {
     border-radius: 0;
 }
 .select2-container--default .select2-selection--multiple .select2-selection__choice {
-    background-color: #e81747;
-    border: 1px solid #e81747;
+    background-color: #6666ff;
+    border: 1px solid #6666ff;
     border-radius: 4px;
     cursor: default;
     float: left;
@@ -1657,7 +1657,7 @@ select[multiple], select[size] {
   margin-bottom: 0px;
   position: relative;
   display: inline-block;
-  color: #e81747;
+  color: #6666ff;
   font-size: 16px;
   line-height: 25px;
   text-transform: capitalize;
@@ -1671,7 +1671,7 @@ select[multiple], select[size] {
   width: 25px;
   height: 25px;
   border-radius: 5px;
-  background-color: #e81747;
+  background-color: #6666ff;
   position: absolute;
   top: 0px;
   left: 110%;
@@ -1765,7 +1765,7 @@ select[multiple], select[size] {
 }
 .toggle-container .panel > a {
     color: #fff;
-    background:#e81747;
+    background:#6666ff;
     font-size: 13px;
     position: relative;
     display: block;
@@ -1873,7 +1873,7 @@ select[multiple], select[size] {
 }
 .profile-card .profile-menu ul li a i {
     font-size: 15px;
-    color: #e81747;
+    color: #6666ff;
     line-height: 40px;
     width: 40px;
     text-align: center;
@@ -1883,7 +1883,7 @@ select[multiple], select[size] {
 .profile-card .profile-menu ul li.active a, 
 .profile-card .profile-menu ul li:hover a {
     color: #ffffff;
-    background: #e81747;
+    background: #6666ff;
 }
 .profile-card .profile-menu ul li.active a i, 
 .profile-card .profile-menu ul li:hover a i{
@@ -2004,7 +2004,7 @@ select[multiple], select[size] {
     display: block;
     line-height: 18px;
     font-size: 12px;
-    color: #e81747;
+    color: #6666ff;
 }
 .message-wrap li a .message-content .message-details{
     display: block;
@@ -2193,7 +2193,7 @@ select[multiple], select[size] {
     margin-right: 10px;
     font-size: 15px;
     text-transform: capitalize;
-    color: #e81747;
+    color: #6666ff;
     font-weight: 600;
     line-height: 25px;
     padding: 0;
@@ -2213,7 +2213,7 @@ select[multiple], select[size] {
     margin-top: 0;
     margin-left: 10px;
     display: inline-block;
-    color: #e81747;
+    color: #6666ff;
 }
 .star-rating {
     margin-left: -10px;
@@ -2275,7 +2275,7 @@ select[multiple], select[size] {
     display: block;
     position: relative;
     width: 100%;
-    background: #e81747;
+    background: #6666ff;
     color: #fff;
     border-bottom: 1px solid #f4f4f4;
     line-height: 40px;
@@ -2317,7 +2317,7 @@ select[multiple], select[size] {
 .card .card-content .card-content-info span{
     margin-right: 5px;
     font-weight: 600;
-    color: #e81747;
+    color: #6666ff;
     text-transform: uppercase;
 }
 @media all and (max-width:480px){
@@ -2384,7 +2384,7 @@ select[multiple], select[size] {
 }
 .counter{
     position: relative;
-    background: #ff3b68;
+    background: #6666ff;
     padding: 20px;
     overflow: hidden;
     margin: 10px auto;
@@ -2395,7 +2395,7 @@ select[multiple], select[size] {
     width: 80px;
     height: 80px;
     padding: 5px;
-    border: 2px solid #e81747;
+    border: 2px solid #6666ff;
     border-radius: 50%;
 }
 .counter .counter-icon i{
