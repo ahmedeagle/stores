@@ -361,6 +361,11 @@
                                 </ul>
                             </li>
 
+                                   <li>
+                                        <a href="<?php echo e(route('admin.logout')); ?>">
+                                        <i class="ti-layout-sidebar-left"></i> تسجيل الخروج
+                                    </a>
+                                    </li>
 
                         </ul>
 

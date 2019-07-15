@@ -212,4 +212,14 @@ class AdminController extends Controller
 		$cities  = DB::table('city')->where('publish', 1)->get();
 
 	}
+
+
+	  public function logout(Request $request)
+    {
+             Auth::guard('admin')->logout();
+	        $request->session()->flush();
+	        $request->session()->regenerate();
+
+        return redirect()->route('login');
+    }
 }

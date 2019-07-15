@@ -361,6 +361,11 @@
                                 </ul>
                             </li>
 
+                                   <li>
+                                        <a href="{{ route('admin.logout') }}">
+                                        <i class="ti-layout-sidebar-left"></i> تسجيل الخروج
+                                    </a>
+                                    </li>
 
                         </ul>
 

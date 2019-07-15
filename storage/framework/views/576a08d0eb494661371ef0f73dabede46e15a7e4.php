@@ -164,7 +164,7 @@
                  <div class="col-md-4">
                         <div class="counter">
                             <div class="counter-icon">
-                                <i class="fa fa-comment-o"></i>
+                                <i class="fa fa-ticket"></i>
                             </div>
                                <a style="color: #fff;" href="<?php echo e(route('offers.status',0)); ?>">
                                 <div class="counter-content"> 
