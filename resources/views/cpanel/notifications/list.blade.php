@@ -4,19 +4,19 @@
     <div class="col-sm-12">
         <section class="page-heading">
             <div class="col-sm-6">
-                <h2>قائمة  العروض </h2>
+                <h2>قائمة  الاشعارات المرسله  </h2>
             </div><!--End col-md-6-->
             <div class="col-sm-6">
                 <ul class="breadcrumb">
                     <li><a href="{{ route('home') }}">الرئيسية</a></li>
-                     <li class="active">قائمة  العروض </li>
+                     <li class="active">الاشعارات المرسله يدويا  </li>
                 </ul>
             </div><!--End col-md-6-->
         </section><!--End page-heading-->
         <div class="spacer-25"></div><!--End Spacer-->
         <div class="widget">
             <div class="widget-title">
-               قائمة  العروض 
+               قائمة   الاشعارات اليدويه  
             </div>
             <div class="widget-content">
                
