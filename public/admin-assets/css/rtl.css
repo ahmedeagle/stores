@@ -122,7 +122,7 @@ body{
 .toggle-icon{
     float:right;
     border-right:0;
-    border-left:  1px solid #d60837;
+    border-left:  1px solid #6666ff;
 }
 .top-header-links{
     float:left;
@@ -523,7 +523,7 @@ span.require{
     border-bottom: 1px solid #ddd;
     font-size: 12px;
     font-weight: 600;
-    color: #ef1041;
+    color: #6666ff;
     text-transform: capitalize;
     padding: 0 10px;
     line-height: 40px;
@@ -560,7 +560,7 @@ table.dataTable.no-footer{
     float: right;
     margin: 15px 0px;
     padding-top: 0;
-    color: #ef1041!important;
+    color: #6666ff!important;
     font-weight: 600;
     text-transform: capitalize;
     font-size: 12px;
@@ -569,7 +569,7 @@ table.dataTable.no-footer{
     float: left;
     margin: 15px 0px;
     padding-top: 0;
-    color: #ef1041!important;
+    color: #6666ff!important;
     font-weight: 600;
     text-transform: capitalize;
     font-size: 12px;
@@ -578,7 +578,7 @@ table.dataTable.no-footer{
 .dataTables_wrapper .dataTables_paginate .paginate_button.disabled:hover,
 .dataTables_wrapper .dataTables_paginate .paginate_button.disabled:active {
     cursor: default;
-    color: #ef1041 !important;
+    color: #6666ff !important;
     border: 1px solid transparent;
     background: transparent;
     box-shadow: none;
@@ -593,8 +593,8 @@ table.dataTable.no-footer{
     text-align: center;
     text-decoration: none !important;
     cursor: pointer;
-    color: #ef1041 !important;
-    border: 1px solid #ef1041;
+    color: #6666ff !important;
+    border: 1px solid #6666ff;
     border-radius: 2px;
 }
 .dataTables_wrapper .dataTables_paginate .paginate_button.current,
@@ -603,7 +603,7 @@ table.dataTable.no-footer{
 .dataTables_wrapper .dataTables_paginate .paginate_button:focus{
     color: #fff !important;
     border: none;
-    background: #ef1041;
+    background: #6666ff;
 }
 .dataTables_wrapper .dataTables_length label, 
 .dataTables_wrapper .dataTables_filter label,
@@ -616,7 +616,7 @@ table.dataTable.no-footer{
     display: block;
     margin: 0 0 15px 0;
     font-size: 12px;
-    color: #ef1042;
+    color: #6666ff;
 }
 .dataTables_wrapper .dataTables_filter input {
     border: 1px solid #f1f1f1;
@@ -761,7 +761,7 @@ textarea.form-control {
 .dataTables_wrapper .dataTables_length label select {
     text-transform: none;
     width: 70px;
-    color: #ef1042;
+    color: #6666ff;
     border: 1px solid #eee;
     margin: 0px auto;
     padding: 0px 10px;
@@ -882,8 +882,8 @@ textarea.form-control {
     z-index: 3;
     color: #fff;
     cursor: default;
-    background-color: #ef1041;
-    border-color: #ef1041;
+    background-color: #6666ff;
+    border-color: #6666ff;
     display: block;
     position: relative;
     width: 30px;
@@ -898,9 +898,9 @@ textarea.form-control {
 .pagination li.active a:hover,
 .pagination li.active a, 
 .pagination li a:hover {
-    background: #ef1041;
+    background: #6666ff;
     color: #fff;
-    border-color: #ef1041;
+    border-color: #6666ff;
 }
 .complain-item{
     background: #f1f7f7;
@@ -919,7 +919,7 @@ textarea.form-control {
 }
 .complain-item .compalin-info p span{
     display: inline-block;
-    background: #ef1041;
+    background: #6666ff;
     color: #fff;
     line-height: 30px;
     padding: 0 5px;

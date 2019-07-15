@@ -15,7 +15,7 @@
 
         <!-- Fave Icons
         ================================-->
-        <link rel="shortcut icon" href="{{ url('admin-assets/images/fav.png') }}">
+        <link rel="shortcut icon" href="<?php echo e(url('admin-assets/images/fav.png')); ?>">
           
         <!-- Google Web Fonts 
 		===================================-->
@@ -24,13 +24,13 @@
         
         <!-- Css Base And Vendor 
         ===================================-->
-        <link rel="stylesheet" href="{{ url('admin-assets/vendor/bootstrap/css/bootstrap-en.css') }}">
-        <link rel="stylesheet" href="{{ url('admin-assets/vendor/font-awesome/css/font-awesome.min.css') }}">
-        <link rel="stylesheet" href="{{ url('admin-assets/vendor/magnific-popup/css/magnific-popup.css') }}">
+        <link rel="stylesheet" href="<?php echo e(url('admin-assets/vendor/bootstrap/css/bootstrap-en.css')); ?>">
+        <link rel="stylesheet" href="<?php echo e(url('admin-assets/vendor/font-awesome/css/font-awesome.min.css')); ?>">
+        <link rel="stylesheet" href="<?php echo e(url('admin-assets/vendor/magnific-popup/css/magnific-popup.css')); ?>">
         
         <!-- Site Css
         ====================================-->
-        <link rel="stylesheet" href="{{ url('admin-assets/css/pages.css') }}">
+        <link rel="stylesheet" href="<?php echo e(url('admin-assets/css/pages.css')); ?>">
         <!--[if lt IE 9]>
             <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
             <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
@@ -75,26 +75,28 @@
                                         </div>
 
 
-                                        <form class="login-form" method="post" action="{{ route('admin.login') }}">
-                                            @if(!empty($errors->first()))
+                                        <form class="login-form" method="post" action="<?php echo e(route('admin.login')); ?>">
+                                            <?php if(!empty($errors->first())): ?>
                                                 <div class="alert alert-danger">
-                                                    <strong>Error!</strong> {{ $errors->first() }}
+                                                    <strong>Error!</strong> <?php echo e($errors->first()); ?>
+
                                                 </div>
-                                            @endif
+                                            <?php endif; ?>
                                             <div class="form-group">
-                                                <input class="form-control" name="email" id="email" value="{{ old('name') }}" placeholder="البريد الألكترونى" type="email">
+                                                <input class="form-control" name="email" id="email" value="<?php echo e(old('name')); ?>" placeholder="البريد الألكترونى" type="email">
                                             </div><!--End form-group-->
                                             <div class="form-group">
-                                                <input class="form-control" name="password" id="password" placeholder="الرقم السرى" value="{{ old('name') }}" type="password">
+                                                <input class="form-control" name="password" id="password" placeholder="الرقم السرى" value="<?php echo e(old('name')); ?>" type="password">
                                             </div>
 
 
-                                       @if(Session::has('error'))
+                                       <?php if(Session::has('error')): ?>
                                                 <div class="alert alert-danger">
-                                                    <strong> هناك خطا  !</strong> {{ Session::get('error') }}
+                                                    <strong> هناك خطا  !</strong> <?php echo e(Session::get('error')); ?>
+
                                                 </div>
                                                 <div class="spacer-25"></div><!--End Spacer-->
-                                            @endif
+                                            <?php endif; ?>
                                             <!--End form-group-->
                                             <!-- <div class="form-group">
                                                 <div class="remmeber">
@@ -126,9 +128,9 @@
         </div>
         <!-- JS Base And Vendor 
         ===================================-->
-        <script src="{{ url('admin-assets/vendor/jquery/jquery.js') }}"></script>
-        <script src="{{ url('admin-assets/vendor/bootstrap/js/bootstrap.min.js') }}"></script>
-        <script src="{{ url('admin-assets/vendor/magnific-popup/js/magnific-popup.js') }}"></script>
-        <script src="{{ url('admin-assets/js/pages.js') }}"></script>
+        <script src="<?php echo e(url('admin-assets/vendor/jquery/jquery.js')); ?>"></script>
+        <script src="<?php echo e(url('admin-assets/vendor/bootstrap/js/bootstrap.min.js')); ?>"></script>
+        <script src="<?php echo e(url('admin-assets/vendor/magnific-popup/js/magnific-popup.js')); ?>"></script>
+        <script src="<?php echo e(url('admin-assets/js/pages.js')); ?>"></script>
      
     </body>
