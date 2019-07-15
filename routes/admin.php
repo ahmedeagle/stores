@@ -308,6 +308,12 @@ Route::group(['prefix' => 'tickets'], function(){
                'as'   =>  'post.replay'
       ]);
 
+       Route::get('/close/{id}',[
+
+               'uses' => 'TicketsController@closeTicket',
+               'as'   =>  'ticket.close'
+      ]);
+
       
 
   });

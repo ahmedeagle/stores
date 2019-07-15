@@ -190,4 +190,42 @@ class TicketsController extends Controller {
        // $redValue = route('ticket.replay') . $request->input("ticket_id");
         return redirect()->back()->with("success" , "تمت العملية بنجاح");
     }
+
+
+    public function closeTicket($id){
+
+         $ticket = DB::table('tickets') -> where('id',$id) -> first();
+
+         if(!$ticket){
+
+           return abort('404');
+         }
+
+       $request = Request();
+
+      $status =  $request -> action;
+
+         if(in_array($status, ['open','close'])){ 
+                 
+                 $val = ($status == 'open') ? '0' : '1';
+
+                 $updated = DB::table('tickets') -> where('id',$id) ->update([ 'solved' => $val  ]);
+ 
+                if($updated){
+
+                    return redirect()->back()->with("success" , "تمت العملية بنجاح "); 
+                }else{
+
+                    return redirect()->back()->with("errors" , "لم يتم تحديث اي بيانات "); 
+                }
+                
+
+         }else{
+
+
+           return redirect()->back()->with("errors" , "حاله التذكره لابد ان تكون open or close "); 
+         }
+    
+
+    }
 }

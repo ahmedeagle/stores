@@ -67,7 +67,26 @@
 					                        <td><?php echo e($ticket->type_name); ?></td>
 					                        <td><?php echo e(str_limit($ticket->title, $limit = 30, $end = "....")); ?></td>
 					                        <td><?php echo e($ticket->created_at); ?></td>
-					                        <td><a href="<?php echo e(route('ticket.replay',$ticket->id)); ?>" class="btn btn-success ">رد</a></td>
+
+					                        <td>
+                                             
+                                             <?php if($ticket -> solved == 0): ?>
+                                                <a href="<?php echo e(route('ticket.replay',$ticket->id)); ?>" class="btn btn-success ">رد</a>
+
+                                             <a title="غلق التذكره " href="<?php echo e(route('ticket.close',$ticket->id)); ?>?action=close" class="btn btn-danger "> غلق   
+
+                                             </a>
+                                             <?php else: ?>
+
+                                              <a title="غلق التذكره " href="<?php echo e(route('ticket.close',$ticket->id)); ?>?action=open" class="btn btn-success "> فتح التذكره     
+
+                                             </a>
+
+
+                                             <?php endif; ?>
+
+
+                                             </td>
                                     </tr>
                                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                             <?php endif; ?>

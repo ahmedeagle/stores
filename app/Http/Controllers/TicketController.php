@@ -451,6 +451,7 @@ class TicketController extends Controller
                     2   => 'التذكرة  غير موجوده ',
                     3   => 'تم الارسال بنجاح ',
                     5   => 'فشل في الارسال ',
+                    6   => 'عفوا التذكره تم اغلاقها من قبل الاداره '
                 ];
 
          }else{
@@ -460,6 +461,7 @@ class TicketController extends Controller
                 2   => 'Ticket Not Exists',
                 3   => 'Message successfully Added',
                 5   => 'Faild To Send Message',
+                6   => 'Sorry this ticket  closed by admin '
             ];
 
          }
@@ -519,7 +521,7 @@ class TicketController extends Controller
         $ticket = DB::table("tickets")
                         ->where("id" ,$id)
                         ->where("actor_type" ,$actor_type)
-                        ->select("actor_id")
+                        ->select("actor_id","solved")
                         ->first();
 
 
@@ -527,6 +529,11 @@ class TicketController extends Controller
 
             if($ticket->actor_id != $actor_id){
                 return response()->json(['status' => false, 'errNum' => 5, 'msg' => $msg[5]]);
+            }
+
+            if($ticket->solved == '1'){  // ticket closed 
+    
+                    return response()->json(['status' => false, 'errNum' => 6, 'msg' => $msg[6]]);
             }
         }
 

@@ -66,7 +66,26 @@
 					                        <td>{{ $ticket->type_name }}</td>
 					                        <td>{{ str_limit($ticket->title, $limit = 30, $end = "....") }}</td>
 					                        <td>{{ $ticket->created_at }}</td>
-					                        <td><a href="{{ route('ticket.replay',$ticket->id) }}" class="btn btn-success ">رد</a></td>
+
+					                        <td>
+                                             
+                                             @if($ticket -> solved == 0)
+                                                <a href="{{ route('ticket.replay',$ticket->id) }}" class="btn btn-success ">رد</a>
+
+                                             <a title="غلق التذكره " href="{{ route('ticket.close',$ticket->id) }}?action=close" class="btn btn-danger "> غلق   
+
+                                             </a>
+                                             @else
+
+                                              <a title="غلق التذكره " href="{{ route('ticket.close',$ticket->id) }}?action=open" class="btn btn-success "> فتح التذكره     
+
+                                             </a>
+
+
+                                             @endif
+
+
+                                             </td>
                                     </tr>
                                 @endforeach
                             @endif
