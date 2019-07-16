@@ -199,7 +199,7 @@ class UserController extends Controller
 
 		$rules=[
 				        'full_name'       => 'required|min:3',
-				        'email'           => 'required|email|unique:users',
+				       // 'email'           => 'required|email|unique:users',
 				        'phone'           => array('required','unique:users,phone','regex:/^(05|5)([0-9]{8})$/'),
 				        'country_code'    => 'required',
 				        'password'        => 'required|min:8|confirmed',
@@ -231,7 +231,7 @@ class UserController extends Controller
 		} 
 			//here we can set posted data sent from the mobile
 			$fullName      = $request->input('full_name');
-			$email         = $request->input('email');
+			//$email         = $request->input('email');
 			$phone         = $request->input('phone');
 			$password      = $request->input('password');
 			$image_ext     = $request->input('image_ext');
@@ -299,7 +299,7 @@ class UserController extends Controller
 
 			//setting data to insert it
 			$user->full_name       = $fullName;
-			$user->email           = $email;
+			//$user->email           = $email;
 			$user->phone           = $phone;
 			$user->country_code    = $country_code;
 			$user->password        = md5($password);
@@ -564,7 +564,7 @@ class UserController extends Controller
 					'status'          => $getUser->status,
  					'phone' 		  => $getUser->phone,
 					'country_code'    => $getUser->country_code,
-					'email' 		  => $getUser->email,
+					//'email' 		  => $getUser->email,
 					'longitude'       => $getUser->longitude, 
 					'latitude' 		  => $getUser->latitude,
 					'city_id'         => $getUser->city_id,
@@ -744,7 +744,7 @@ protected function getUserData($user, $lang, $action = "get"){
 				    'users.status', 
 				    'users.phone',
 				   	'users.country_code', 
-				   	'users.email', 
+				   //	'users.email', 
 				   	'users.longitude', 
 				   	'users.latitude', 
 				   	'users.city_id',
