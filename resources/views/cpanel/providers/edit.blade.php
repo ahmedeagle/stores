@@ -360,7 +360,7 @@
 
       function initAutocomplete() {
         var map = new google.maps.Map(document.getElementById('map'), {
-          center: {lat: "{{$provider -> latitude}}", lng: "{{$provider -> longitude}}" },
+          center: {lat: {{$provider -> latitude}}, lng: {{$provider -> longitude}} },
           zoom: 10,
           mapTypeId: 'roadmap'
         });
