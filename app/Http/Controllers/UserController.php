@@ -1145,6 +1145,7 @@ if($request -> has('all_stores')){
                                     "providers.membership_id",
                                     "providers.latitude",
                                     "providers.longitude",
+                                    "providers.profile_pic",
                                     "providers.token AS access_token",
                                     DB::raw("CONCAT('". env('APP_URL') ."','/public/providerProfileImages/',providers.profile_pic) AS image_url")
                                 )
