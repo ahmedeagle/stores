@@ -1095,13 +1095,28 @@ public function UpdateProfile(Request $request){
                  ];
 		}
 
-       
+
+
+$conditions = []; 
+if($request -> has('all_stores')){
+
+	if($request ->  all_stores  == 1 or  $request ->  all_stores  == '1'){
+           
+	            $rules      = [
+					            "type"   => "required|in:0,1"
+					          ];
+	} 
+}else{
 
         $rules      = [
-            "cat_id" => "required|exists:categories,cat_id",
-            "type"   => "required|in:0,1"
+			            "cat_id" => "required|exists:categories,cat_id",
+			            "type"   => "required|in:0,1"
+			          ];
 
-        ];
+			$conditions['categories.cat_id'] = $request->input("cat_id");
+}
+
+       
         $messages   = [
             "required"   => 1,
             "exists"     => 2,
@@ -1116,9 +1131,12 @@ public function UpdateProfile(Request $request){
 
         $type = $request->input("type");
 
-       $pagianted_providers =  DB::table("categories")
+
+     if(!empty($conditions)){
+            
+            $pagianted_providers =  DB::table("categories")
                                 ->join("providers" , "providers.category_id" , "categories.cat_id")   
-                                 ->where("categories.cat_id" , $request->input("cat_id"))
+                                 ->where($conditions)
                                  ->where("providers.publish" , 1)
                                 ->select(
                                     "providers.provider_id",
@@ -1132,6 +1150,28 @@ public function UpdateProfile(Request $request){
                                 )
                                 ->groupBy("providers.provider_id")
                                 ->paginate(10);
+
+     }else{
+
+     	$pagianted_providers =  DB::table("categories")
+                                ->join("providers" , "providers.category_id" , "categories.cat_id")   
+                                 ->where("providers.publish" , 1)
+                                ->select(
+                                    "providers.provider_id",
+                                    "providers.store_name AS store_name",
+                                    "providers.provider_rate",
+                                    "providers.membership_id",
+                                    "providers.latitude",
+                                    "providers.longitude",
+                                    "providers.token AS access_token",
+                                    DB::raw("CONCAT('". env('APP_URL') ."','/public/providerProfileImages/',providers.profile_pic) AS image_url")
+                                )
+                                ->groupBy("providers.provider_id")
+                                ->paginate(10);
+
+     }
+
+       
 
         (new HomeController())->filter_providers($request,$name,$pagianted_providers ,$type);
  
