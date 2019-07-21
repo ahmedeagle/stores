@@ -363,6 +363,7 @@
           center: {lat: {{$provider -> latitude}}, lng: {{$provider -> longitude}} },
           zoom: 10,
           mapTypeId: 'roadmap'
+          
         });
 
         // Create the search box and link it to the UI element.

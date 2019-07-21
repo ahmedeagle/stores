@@ -66,7 +66,7 @@ Route::group(['middleware' => ['api_auth'], 'prefix' => 'api'], function() {
 	Route::get('/userUpdatePassword', 'UserController@echoEmpty');
 
 	Route::post('/mainCats', 'UserController@mainCats');
-	Route::get('/mainCats', 'UserController@mainCats');
+	Route::get('/mainCats', 'UserController@echoEmpty');
 
 	Route::post('/GetCategoryProviders', 'UserController@get_nearest_providers_inside_main_sub_categories');
 	Route::get('/GetCategoryProviders', 'UserController@echoEmpty');
