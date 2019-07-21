@@ -1145,9 +1145,10 @@ if($request -> has('all_stores')){
                                     "providers.membership_id",
                                     "providers.latitude",
                                     "providers.longitude",
-                                    "providers.profile_pic",
-                                    "providers.token AS access_token",
-                                    DB::raw("CONCAT('". env('APP_URL') ."','/public/providerProfileImages/',providers.profile_pic) AS image_url")
+                                     "providers.token AS access_token",
+                    
+                                     DB::raw("CONCAT('". env('APP_URL') ."','/public/providerProfileImages/',providers.profile_pic) AS provider_image"),
+                                     DB::raw("CONCAT('". env('APP_URL') ."','/public/categoriesImages/',categories.cat_img) AS cat_image")
                                 )
                                 ->groupBy("providers.provider_id")
                                 ->paginate(10);
@@ -1165,10 +1166,12 @@ if($request -> has('all_stores')){
                                     "providers.latitude",
                                     "providers.longitude",
                                     "providers.token AS access_token",
-                                    DB::raw("CONCAT('". env('APP_URL') ."','/public/providerProfileImages/',providers.profile_pic) AS image_url")
+                                    DB::raw("CONCAT('". env('APP_URL') ."','/public/providerProfileImages/',providers.profile_pic) AS provider_image"),
+                                    DB::raw("CONCAT('". env('APP_URL') ."','/public/categoriesImages/',categories.cat_img) AS cat_image")
                                 )
                                 ->groupBy("providers.provider_id")
                                 ->paginate(10);
+
 
      }
 
@@ -1201,7 +1204,19 @@ if($request -> has('all_stores')){
         );
 
 
-        return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[3], "providers" => $providers]);
+        $categories = DB::table('categories') 
+                                 -> where('publish',1) 
+                                 -> select(
+                                 	        'cat_id',
+                                 	        'cat_en_name',
+                                 	        'cat_ar_name',
+                                 	        'cat_img',
+                                 	        DB::raw("CONCAT('". env('APP_URL') ."','/public/categoriesImages/',categories.cat_img) AS cat_image")
+                                 	       )
+                                 -> get();
+
+
+        return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[3], "providers" => $providers,'categories' => $categories]);
     }
 
 
