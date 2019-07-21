@@ -1203,7 +1203,7 @@ if($request -> has('all_stores')){
 
         );
 
-
+  //
         $categories = DB::table('categories') 
                                  -> where('publish',1) 
                                  -> select(
