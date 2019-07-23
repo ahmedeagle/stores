@@ -1467,6 +1467,9 @@ if($request -> has('all_stores')){
 								->join('categories_stores', 'products.category_id', '=', 'categories_stores.id')
 								->select('products.id AS product_id', 'products.title', 'products.description','products.price',
 									      'products.likes_count', 'providers.store_name AS store_name','providers.membership_id', 'providers.provider_id AS provider_id', $cat_col,
+
+									       DB::raw('IF ((SELECT count(id) FROM product_likes WHERE product_likes.user_id = '.$userId.' AND product_likes.product_id = '.$productId.') > 0, 1, 0) as isFavorit'),
+
 									       DB::raw("CONCAT('".env('APP_URL')."','/public/providerProfileImages/',providers.profile_pic) AS profile_pic"),
 									       'providers.latitude',
 									       'providers.longitude'
@@ -1492,6 +1495,31 @@ if($request -> has('all_stores')){
 
                  // product average rat 
           $productDetails -> totalAverageRate = $totalAverage;
+
+
+            $Prates = DB::table('providers_rates')
+                    ->where('providers_rates.provider_id' , $productDetails -> provider_id)
+                    ->select(
+                        DB::raw("IFNULL(COUNT(providers_rates.id),0)  AS number_of_rates"),
+                        DB::raw("IFNULL(SUM(providers_rates.rates),0) AS sum_of_rates")
+                     )
+                    ->first();
+
+
+
+                $numberOfPRates = $Prates->number_of_rates;
+                $sumRate   = $rates->sum_of_rates;
+                 if($numberOfPRates != 0 && $numberOfPRates != null){
+                    $PtotalAverage  = $sumRate/$numberOfPRates;
+                }else{
+                    $PtotalAverage = 0;
+                }
+
+
+
+                $productDetails -> ProvidertotalAverageRate = $PtotalAverage;
+
+
 
 
  					            $data = DB::table("product_images")
