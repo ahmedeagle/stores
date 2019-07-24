@@ -4238,7 +4238,7 @@ public function cancel_order(Request $request){
 		   $lang = $request->input('lang');
 		if($lang == "ar"){
 			$msg = array(
-				0 => 'تم إضافة الطلب بنجاح',
+				0 => 'تم  العملية نجاح',
 				1 => 'access_token مطلوب', 
 				2 => 'المستخدم غير موجود ',
 				3 => 'التقييم مطلوب ',
@@ -4345,7 +4345,7 @@ public function cancel_order(Request $request){
            }
 
 
-     return response()->json(['status' => false, 'errNum' => 0, 'msg' => $msg[0]]);
+     return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[0]]);
 
 	}
 
@@ -4363,7 +4363,7 @@ public function cancel_order(Request $request){
 		   $lang = $request->input('lang');
 		if($lang == "ar"){
 			$msg = array(
-				0 => 'تم إضافة الطلب بنجاح',
+				0 => 'تمت العملية بنجاح ',
 				1 => 'access_token مطلوب', 
 				2 => 'المستخدم غير موجود ',
 				3 => 'التقييم مطلوب ',
@@ -4469,9 +4469,27 @@ public function cancel_order(Request $request){
            }
 
 
-     return response()->json(['status' => false, 'errNum' => 0, 'msg' => $msg[0]]);
+     return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[0]]);
 
 		
+	}
+
+	public function get_delivery_Methods(Request $request){
+
+			$lang = ($request -> has('lang')) ? $request -> lang : 'en';
+
+			$name = ($lang == 'ar') ? 'method_ar_name' :  'method_en_name';
+
+			 $deliveryMethods = DB::table('delivery_methods') 
+							        ->select(
+							        	     'method_id AS delivery_method_id',
+							        	      DB::raw("{$name} AS method_name")
+							        	   )
+							        ->get();  
+
+
+			return response()->json(['status' => true, 'errNum' => 0, 'msg' =>'تمت العمليه بتجاح ','deliveryMethods' => $deliveryMethods]);				        
+
 	}
 
 
