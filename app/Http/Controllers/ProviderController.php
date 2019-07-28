@@ -2813,7 +2813,6 @@ public function updateProviderOffer(Request $request){
        $id =0; 
 
        $id = DB::table('products') -> insertGetId([
-                        
                         'provider_id'    => $provider_id,
 						'title'          => $request  ->  title,
 						'category_id'    => $request  ->  category_id,
@@ -2887,8 +2886,15 @@ public function updateProviderOffer(Request $request){
                    
                     //save new image   64 encoded
                      
-                                
-                      $image = $this->saveImage($image,'jpg', 'products/');
+                           try {
+                                	 
+                                	  $image = $this->saveImage($image,'jpg', 'products/');
+
+                                } catch (Exception $e) {
+                                	 
+                                	 return response()->json(['status'=> false, 'errNum' => 30, 'msg' => $errMsg]);
+                                }     
+                     
                                  
       					
     					if($image == ""){
