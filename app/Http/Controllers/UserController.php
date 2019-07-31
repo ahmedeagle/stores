@@ -1798,12 +1798,18 @@ if($request -> has('all_stores')){
 		        }
 
          
+
+
+
+
   				$data = DB::table('product_likes')->where('product_likes.user_id',$userId)
 				                               ->join('products', 'product_likes.product_id', '=', 'products.id')
 				                               ->join('providers', 'products.provider_id', '=', 'providers.provider_id')
 				                               ->select('products.id AS product_id','products.title', 'products.likes_count','products.product_rate', 'providers.store_name AS full_name','providers.provider_id','products.price',
-				                               	 DB::raw('IF ((SELECT count(id) FROM product_likes WHERE product_likes.user_id = '.$userId.' AND product_likes.product_id = products.id) > 0, 1, 0) as isFavorit')
+				                               	'products.category_id',
+				                               	 DB::raw("CONCAT('".env('APP_URL')."','/public/providerProfileImages/',providers.profile_pic) AS store_pic"),
 
+				                               	 DB::raw('IF ((SELECT count(id) FROM product_likes WHERE product_likes.user_id = '.$userId.' AND product_likes.product_id = products.id) > 0, 1, 0) as isFavorit')
 				                           )
 				                               ->orderBy('product_likes.id', 'DESC')
 				                               ->paginate(10);
@@ -1821,6 +1827,31 @@ if($request -> has('all_stores')){
 			                               DB::raw("CONCAT('".env('APP_URL')."','/public/products/',product_images.image) AS product_image")
 			                            )
 			                        ->first();
+
+
+
+
+				                $rates = DB::table('providers_rates')
+				                    ->where('providers_rates.provider_id' , $product -> provider_id)
+				                    ->select(
+				                        DB::raw("IFNULL(COUNT(providers_rates.id),0)  AS number_of_rates"),
+				                        DB::raw("IFNULL(SUM(providers_rates.rates),0) AS sum_of_rates")
+				                     )
+				                    ->first();
+
+
+
+				                $numberOfRates = $rates->number_of_rates;
+				                $sumRate   = $rates->sum_of_rates;
+				                 if($numberOfRates != 0 && $numberOfRates != null){
+				                    $totalAverage  = $sumRate/$numberOfRates;
+				                }else{
+				                    $totalAverage = 0;
+				                }
+
+				                $product -> provider_average_rate = $totalAverage;
+
+
 					            if($data){
 					                $product ->product_image = $images->product_image;   
 					            }else{
