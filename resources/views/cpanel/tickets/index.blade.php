@@ -49,7 +49,9 @@
                     <table id="datatable" class="table table-hover">
                         <thead>
                             <tr>
-                                 <th>مسلسل</th>  
+                           <th>مسلسل</th>  
+                            <th> الاسم </th>  
+                             <th> الصورة  </th>  
 			                     <th>نوع التذكرة</th>
 			                     <th>محتوى التذكرة</th>
 			                     <th>تاريخ الانشاء</th>
@@ -62,7 +64,9 @@
                                 @foreach($tickets AS $key => $ticket)
                                     <tr>
                                          
-                                          <td>{{ $key + 1 }}</td>
+                                  <td>{{ $key + 1 }}</td>
+                                  <td>{{ $ticket  -> name }}</td>
+                                  <td><img  style="width:90px; height:90px"  src="{{$imag_path.$ticket  -> profile_pic }}"> </td>
 					                        <td>{{ $ticket->type_name }}</td>
 					                        <td>{{ str_limit($ticket->title, $limit = 30, $end = "....") }}</td>
 					                        <td>{{ $ticket->created_at }}</td>

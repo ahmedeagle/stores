@@ -23,16 +23,24 @@ class TicketsController extends Controller {
         {
 
                 if($type == 2){
-                    $data['title'] = 'تذاكر  المتاجر ';
-                   $actorType = "provider";
+                    $data['title']  = 'تذاكر  المتاجر ';
+                    $actorType      = "provider";
+                    $column         = "provider_id";
+                    $table          = "providers";
+                    $data['imag_path']      = env('APP_URL')."/public/providerProfileImages/";
                 }elseif ($type == 1) {
                      $data['title'] = 'تذاكر العملاء';
-                     $actorType = "user";
+                     $actorType     = "user";
+                      $column       = "user_id";
+                     $table         = "users";
+                      $data['imag_path']     = env('APP_URL')."/public/userProfileImages/";
                 }elseif($type == 3){
 
-                     $data['title'] = 'تذاكر  الموصلين ';
-                     $actorType = "delivery";
-                  
+                     $data['title']  = 'تذاكر  الموصلين ';
+                     $actorType      = "delivery";
+                      $column        = "delivery_id";
+                     $table          = "deliveries";
+                     $data['imag_path']      = env('APP_URL')."/public/deliveryImages/";
                 }
         }else{
 
@@ -49,10 +57,14 @@ class TicketsController extends Controller {
                                 ->where($conditions)
                                 ->select(
                                     "tickets.*",
-                                    "ticket_types.ar_name AS type_name"
+                                    "ticket_types.ar_name AS type_name",
+                                    DB::raw("(SELECT(full_name) FROM  {$table} WHERE {$table}.{$column} = tickets.actor_id) AS name "),
+
+                                    DB::raw("(SELECT(profile_pic) FROM  {$table} WHERE {$table}.{$column} = tickets.actor_id) AS profile_pic ") 
+
                                 )
                                 ->get();
-      
+
          return view('cpanel.tickets.index',$data);
     }
     public function get_reply($id){

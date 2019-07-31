@@ -1801,7 +1801,10 @@ if($request -> has('all_stores')){
   				$data = DB::table('product_likes')->where('product_likes.user_id',$userId)
 				                               ->join('products', 'product_likes.product_id', '=', 'products.id')
 				                               ->join('providers', 'products.provider_id', '=', 'providers.provider_id')
-				                               ->select('products.id AS product_id','products.title', 'products.likes_count','products.product_rate', 'providers.store_name AS full_name')
+				                               ->select('products.id AS product_id','products.title', 'products.likes_count','products.product_rate', 'providers.store_name AS full_name','providers.provider_id','products.price',
+				                               	 DB::raw('IF ((SELECT count(id) FROM product_likes WHERE product_likes.user_id = '.$userId.' AND product_likes.product_id = products.id) > 0, 1, 0) as isFavorit')
+
+				                           )
 				                               ->orderBy('product_likes.id', 'DESC')
 				                               ->paginate(10);
 

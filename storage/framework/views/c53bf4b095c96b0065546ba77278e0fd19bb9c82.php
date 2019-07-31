@@ -50,7 +50,9 @@
                     <table id="datatable" class="table table-hover">
                         <thead>
                             <tr>
-                                 <th>مسلسل</th>  
+                           <th>مسلسل</th>  
+                            <th> الاسم </th>  
+                             <th> الصورة  </th>  
 			                     <th>نوع التذكرة</th>
 			                     <th>محتوى التذكرة</th>
 			                     <th>تاريخ الانشاء</th>
@@ -63,7 +65,9 @@
                                 <?php $__currentLoopData = $tickets; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $ticket): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                     <tr>
                                          
-                                          <td><?php echo e($key + 1); ?></td>
+                                  <td><?php echo e($key + 1); ?></td>
+                                  <td><?php echo e($ticket  -> name); ?></td>
+                                  <td><img  style="width:90px; height:90px"  src="<?php echo e($imag_path.$ticket  -> profile_pic); ?>"> </td>
 					                        <td><?php echo e($ticket->type_name); ?></td>
 					                        <td><?php echo e(str_limit($ticket->title, $limit = 30, $end = "....")); ?></td>
 					                        <td><?php echo e($ticket->created_at); ?></td>
