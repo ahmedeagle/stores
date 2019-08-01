@@ -4560,10 +4560,11 @@ public function prepareAddOrder(Request $request)
 
 		$messages = array(
 			'required' => 1,
+			'exists'   => 3,
  		);
 
 		$validator = Validator::make($request->all(), [
-			'provider_id' => 'required'
+			'provider_id' => 'required|exists:providers,provider_id'
 		], $messages);
 
 
