@@ -822,7 +822,7 @@ public function getProfileData(Request $request){
 										'status'       => true, 
 										'errNum'       => 0, 
 										'msg' 		   => $msg[0],
-										'data'     => $userData,
+										'user'       => $userData,
 										'countries'    => $countries,
 										'cities'       => $cities
 									]);
@@ -1806,6 +1806,7 @@ if($request -> has('all_stores')){
 				                               ->join('products', 'product_likes.product_id', '=', 'products.id')
 				                               ->join('providers', 'products.provider_id', '=', 'providers.provider_id')
 				                               ->select('products.id AS product_id','products.title', 'products.likes_count','products.product_rate', 'providers.store_name AS full_name','providers.provider_id','products.price',
+				                               	'providers.membership_id',
 				                               	'products.category_id',
 				                               	 DB::raw("CONCAT('".env('APP_URL')."','/public/providerProfileImages/',providers.profile_pic) AS store_pic"),
 
