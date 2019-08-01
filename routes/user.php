@@ -154,6 +154,11 @@ Route::group(['middleware' => ['api_auth'], 'prefix' => 'api'], function() {
 
 	Route::post('/delivery_Methods', 'UserController@get_delivery_Methods');
 	Route::get('/delivery_Methods', 'UserController@echoEmpty');
+	
+	Route::post('/prepareAddOrder', 'UserController@prepareAddOrder');
+	Route::get('/prepareAddOrder', 'UserController@echoEmpty');
+
+	
 
 	
 	 

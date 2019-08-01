@@ -4528,6 +4528,91 @@ public function cancel_order(Request $request){
 	}
 
 
+ 
+
+public function prepareAddOrder(Request $request)
+{
+
+
+		$lang = $request->input('lang');
+
+		if($lang == "ar"){
+  			
+ 			$msg = array(
+				0 => 'تم جلب البيانات ',
+				1 => 'رقم  التاجر  غير موجود ',
+ 				2 => 'لا يوجد بيانات',
+ 				3 => 'المتجر غير موجود ',
+			);
+			$delivery_col     = "delivery_methods.method_ar_name AS delivery_method";
+			$payment_col      =   "payment_types.payment_ar_name AS payment_method";
+		}else{
+  			$delivery_col     = "delivery_methods.method_en_name AS delivery_method";
+  			$payment_col      =   "payment_types.payment_en_name AS payment_method";
+ 			$msg = array(
+				0 => 'get data successfully',
+				1 => 'provider id  is required',
+ 				2 => 'There is no data',
+ 				3 => 'provider not found',
+			);
+			 
+		}
+
+		$messages = array(
+			'required' => 1,
+ 		);
+
+		$validator = Validator::make($request->all(), [
+			'provider_id' => 'required'
+		], $messages);
+
+
+		if($validator->fails()){
+			$error = $validator->errors()->first();
+			return response()->json(['status' => false, 'errNum' => $error, 'msg' => $msg[$error]]);
+		}
+
+
+		$provider = DB::table('providers') -> where('provider_id',$request -> provider_id) -> first();
+
+		if(!$provider){
+
+			return response()->json(['status' => false, 'errNum' => 3, 'msg' => $msg[3]]);
+		}
+
+       
+         $delivery_methods = DB::table("delivery_methods")
+                             ->join('providers_delivery_methods','delivery_methods.method_id','=','providers_delivery_methods.delivery_method') 
+                             -> where('providers_delivery_methods.provider_id',$provider -> provider_id)
+
+                             ->select(
+                             	$delivery_col,
+                             	'delivery_methods.method_id as delivery_method_id'
+                                )
+							 ->get();
+ 
+
+			  $payment_methods = DB::table("payment_types")
+                             ->select($payment_col,'payment_types.payment_id as payment_method_id')
+							 ->get();	
+
+				//get app percentage 
+			$app_settings = DB::table('app_settings')->first();
+			if($app_settings){
+				$tax = $app_settings -> tax;
+ 			}else{
+				$tax =  0;
+			}
+
+
+			$delivery_price =  $provider -> delivery_price ?  $provider -> delivery_price : 0;
+             
+			return response()->json(['status' => true, 'errNum' => 0, 'msg' =>$msg[0],'delivery_methods' => $delivery_methods ,'payment_methods' => $payment_methods ,'tax' => $tax,'delivery_price' => $delivery_price]);	
+
+       
+  } 
+
+
+
+
 }
-
-
