@@ -4615,5 +4615,157 @@ public function prepareAddOrder(Request $request)
 
 
 
+  public function get_checkout_id(Request $request){
+
+
+		$lang = $request->input('lang');
+
+		if($lang == "ar"){
+  			
+ 			$msg = array(
+				0 => 'تم جلب البيانات ',
+				1 => 'رقم  التاجر  غير موجود ',
+ 				2 => 'لا يوجد بيانات',
+ 				3 => 'المتجر غير موجود ',
+			);
+			 
+		}else{
+  			 
+ 			$msg = array(
+				0 => 'successfully done',
+				1 => 'total_paid_amount required',
+ 				2 => 'total_paid_amount is invalid',
+ 				3 => 'faild to process ',
+			);
+			 
+		}
+
+		$messages = array(
+			'required' => 1,
+			'regex'    => 2,
+			'min'      => 2,
+ 		);
+
+		$validator = Validator::make($request->all(), [
+			'total_paid_amount' =>  array('required','regex:/^\d+(\.\d{1,2})?$/','min:1'),
+		], $messages);
+
+
+		if($validator->fails()){
+			$error = $validator->errors()->first();
+			return response()->json(['status' => false, 'errNum' => $error, 'msg' => $msg[$error]]);
+		}
+
+
+      $url  = "https://test.oppwa.com/v1/checkouts";
+	  $data = 
+	            "entityId=8a8294174d0595bb014d05d82e5b01d2" .
+                "&amount=".$request -> total_paid_amount.
+                "&currency=SAR" .
+                "&paymentType=DB" .
+                "&notificationUrl=http://localhost/storemapv2/public/api/notify_payment";
+
+			$ch = curl_init();
+			curl_setopt($ch, CURLOPT_URL, $url);
+			curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+		                   'Authorization:Bearer OGE4Mjk0MTc0ZDA1OTViYjAxNGQwNWQ4MjllNzAxZDF8OVRuSlBjMm45aA=='));
+			curl_setopt($ch, CURLOPT_POST, 1);
+			curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);// this should be set to true in production
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+			$responseData = curl_exec($ch);
+			if(curl_errno($ch)) {
+				return response() -> json();
+
+				return response()->json(['status' => false, 'errNum' => 3, 'msg' => $msg[3]]);	
+			}
+			curl_close($ch);
+
+			$id  =  json_decode($responseData)  -> id;
+
+			return response()->json(['status' => true, 'errNum' => 0,'checkoutId'=>$id, 'msg' =>$msg[0]]);	
+   }
+
+
+   public function check_status(Request $request){
+
+
+          
+		$lang = $request->input('lang');
+
+		if($lang == "ar"){
+  			
+ 			$msg = array(
+				0 => 'تم جلب البيانات ',
+				1 => 'رقم  التاجر  غير موجود ',
+ 				2 => 'لا يوجد بيانات',
+ 				3 => 'المتجر غير موجود ',
+			);
+			 
+		}else{
+  			 
+ 			$msg = array(
+				0 => 'successfully done',
+				1 => 'checkoutId  required',
+ 				3 => 'faild to process ',
+			);
+			 
+		}
+
+		$messages = array(
+			'required' => 1,	 
+ 		);
+
+		$validator = Validator::make($request->all(), [
+			'checkoutId' =>  array('required'),
+		], $messages);
+
+
+		if($validator->fails()){
+			$error = $validator->errors()->first();
+			return response()->json(['status' => false, 'errNum' => $error, 'msg' => $msg[$error]]);
+		}
+
+           
+            $url = "https://test.oppwa.com/v1/checkouts/{$request -> checkoutId}/payment";
+			$url .= "?entityId=8a8294174d0595bb014d05d82e5b01d2";
+
+			$ch = curl_init();
+			curl_setopt($ch, CURLOPT_URL, $url);
+			curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+		                   'Authorization:Bearer OGE4Mjk0MTc0ZDA1OTViYjAxNGQwNWQ4MjllNzAxZDF8OVRuSlBjMm45aA=='));
+			curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
+			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);// this should be set to true in production
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+			$responseData = curl_exec($ch);
+			if(curl_errno($ch)) {
+				return curl_error($ch);
+
+			}
+			curl_close($ch);
+
+			$r = json_decode($responseData);
+        if($r->result->description == "Request successfully processed in 'Merchant in Connector Test Mode'"){
+            // make order
+            if(1==2){
+                //Session::flash('success', $mgs[0]);
+
+                return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[0]]);
+            }else{
+                 return response()->json(['status' => false, 'errNum' => 3, 'msg' => $msg[3]]);
+            }
+         }else{
+            // Error in payment
+             return response()->json(['status' => false, 'errNum' => 3, 'msg' => $msg[3]]);
+         }
+
+
+	   
+
+   }
+
+
+
+
 
 }

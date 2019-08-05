@@ -158,9 +158,12 @@ Route::group(['middleware' => ['api_auth'], 'prefix' => 'api'], function() {
 	Route::post('/prepareAddOrder', 'UserController@prepareAddOrder');
 	Route::get('/prepareAddOrder', 'UserController@echoEmpty');
 
-	
+	Route::post('/get_checkout_id', 'UserController@get_checkout_id');
+	Route::get('/get_checkout_id', 'UserController@echoEmpty');
 
-	
+
+	Route::post('/check_payment_status', 'UserController@check_status');
+	Route::get('/get_checkout_id', 'UserController@echoEmpty');	
 	 
 
 });
