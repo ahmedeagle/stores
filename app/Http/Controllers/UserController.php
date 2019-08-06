@@ -2397,7 +2397,7 @@ public function applyJob(Request $request){
   			'phone'                  =>  array('required','regex:/^(05|5)([0-9]{8})$/'),
 			'country_code'           => 'required',
   			'access_token'           => 'required',
-  			'cv'                     => 'required|mimes:application/doc,application/pdf,application/docx|max:2000',
+  			'cv'                     => 'required',
   			'job_id'                 => 'required|exists:provider_jobs,id'
   			
 		], $messages);
