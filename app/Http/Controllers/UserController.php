@@ -801,7 +801,7 @@ public function getProfileData(Request $request){
 		        }
 
 			$userData    = User::where('user_id', $userId)
-									->select("user_id","full_name AS user_name", 'phone','country_code', 
+									->select("user_id","full_name AS user_name", 'phone','country_code', 'email', 
 										 DB::raw("CONCAT('".env('APP_URL')."','/public/userProfileImages/',users.profile_pic) AS profile_pic"), 
 										 'country_id',
 										 'city_id',
@@ -3055,7 +3055,7 @@ public function prepareSearch(Request $request){
 				$data['balance_flag']        = 0;   // this app not use poins and balances
 			
 
-				$userInfo = DB::table('user_addresses') -> join('users','user_addresses.user_id','=','users.user_id') ->  where('user_addresses.user_id', $user)->select('user_addresses.phone','user_addresses.address') ->first();
+				$userInfo = DB::table('user_addresses') -> join('users','user_addresses.user_id','=','users.user_id') ->  where('user_addresses.user_id', $user)->select('user_addresses.phone','user_addresses.address','users.email') ->first();
 
 				if(!$userInfo){
                    
@@ -3065,7 +3065,7 @@ public function prepareSearch(Request $request){
 
                  
 				$data['phone'] = $userInfo->phone;
-			//	$data['email'] = $userInfo->email;
+				$data['email'] = $userInfo->email;
 				$data['marketer_percentage']     = 0;
 				$data['provider_marketer_value'] = 0;
 				$id = 0;
@@ -3092,7 +3092,7 @@ public function prepareSearch(Request $request){
 						'user_latitude'          => $data['user_latitude'],
 						'user_longitude'         => $data['user_longitude'],
 						'user_phone'             => $data['phone'],
-						//'user_email'             => $data['email'],
+						'user_email'             => $data['email'],
 						'payment_type'           => $data['payment_method'],
 						'delivery_method'        => $data['delivery_method'],
 						'in_future' 			 => $data['in_future'],
@@ -3627,7 +3627,7 @@ public function cancel_order(Request $request){
 						       'orders_headers.user_longitude', 
 						       'orders_headers.user_latitude',
 						       'orders_headers.user_phone',
-						      // 'orders_headers.user_email', 
+						       'orders_headers.user_email', 
 						        DB::raw('IFNULL(orders_headers.delivered_at, "") AS delivered_at'),
 						     $payment_col, 
 						      $delivery_col,
