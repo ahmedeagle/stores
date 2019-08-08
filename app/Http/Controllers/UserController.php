@@ -126,6 +126,7 @@ class UserController extends Controller
 			'city_id.exists'           => 28,
 			'password_confirmation.required'       => 29,
 			'regex'                   => 30,
+			'image_ext.required'      => 31,          
 		);
 
 		// seting error messages array
@@ -160,6 +161,7 @@ class UserController extends Controller
 				28 => 'قم المدينة غير موجود ',
 				29 => 'لابد من تاكيد كلمة المرور ',
 				30 => 'صيغة رقم الهاتف غير صحيحة لابد ان تبدا ب 5 او 05',
+				31 => 'لابد من ادخال امتداد الصوره الشخصية '
 			);
 			$city_col = "city_ar_name AS city_name";
 		}else{
@@ -191,7 +193,9 @@ class UserController extends Controller
 				27 => 'country  doesn\'t exists',
 				28 => 'city  doesn\'t exists',
 				29 => 'password confirmation required',
-				30 => 'phone number format invalid must start with 5 or 05'
+				30 => 'phone number format invalid must start with 5 or 05',
+				31 => 'image_ext is required'
+
 			);
 			$city_col = "city_en_name AS city_name";
 		}
