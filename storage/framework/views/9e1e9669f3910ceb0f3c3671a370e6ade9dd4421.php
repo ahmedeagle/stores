@@ -48,6 +48,12 @@
                                 <th>الموصل</th>
                                 <th>الأجمالى</th>
                                 <th>الكمية</th>
+                                <?php if(\Request::is('admin/orders/sales')): ?>  
+                                   
+                                   <th> نسبة التطبيق </th>
+                                   <th> قيمه التطبيق </th>
+  
+                                <?php endif; ?>
                                 <th>التاريخ</th>
                                 <th>الحالة </th>
                                 <th></th>
@@ -67,6 +73,12 @@
                                 <td><?php echo e($header->delivery); ?></td>
                                 <td><?php echo e($header->total_value); ?></td>
                                 <td><?php echo e($header->total_qty); ?></td>
+                                
+                                 <?php if(\Request::is('admin/orders/sales')): ?>                                     
+                                   <td><?php echo e($header->app_percentage); ?> %</td>
+                                   <td><?php echo e($header->app_value); ?> ريال</td>
+                                 <?php endif; ?>
+
                                 <td><?php echo e(date('Y-m-d', strtotime($header->created_at))); ?></td>
                                 <td><?php echo e($header->sts); ?></td>
                                 <td>

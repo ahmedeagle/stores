@@ -109,15 +109,17 @@
                         </div>
                     </div><!--End col-md-4-->
                     <div class="col-md-4">
+                     <a href="<?php echo e(route('orders.sales')); ?>">
                         <div class="counter">
                             <div class="counter-icon">
                                 <i class="fa fa-user-o"></i>
                             </div>
                             <div class="counter-content"> 
                                 <div class="timer" data-to="<?php echo e(($sale != NULL)? $sale : 0); ?>" data-speed="2500"><?php echo e(($sale != NULL)? $sale : 0); ?></div>
-                                <span>المدخلات</span>
+                                <span> المبيعات </span>
                             </div>
                         </div>
+                        </a> 
                     </div><!--End col-md-4-->
                
 

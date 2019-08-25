@@ -48,6 +48,12 @@
                                 <th>الموصل</th>
                                 <th>الأجمالى</th>
                                 <th>الكمية</th>
+                                @if (\Request::is('admin/orders/sales'))  
+                                   
+                                   <th> نسبة التطبيق </th>
+                                   <th> قيمه التطبيق </th>
+  
+                                @endif
                                 <th>التاريخ</th>
                                 <th>الحالة </th>
                                 <th></th>
@@ -67,6 +73,12 @@
                                 <td>{{ $header->delivery }}</td>
                                 <td>{{ $header->total_value }}</td>
                                 <td>{{ $header->total_qty }}</td>
+                                
+                                 @if (\Request::is('admin/orders/sales'))                                     
+                                   <td>{{ $header->app_percentage }} %</td>
+                                   <td>{{ $header->app_value }} ريال</td>
+                                 @endif
+
                                 <td>{{ date('Y-m-d', strtotime($header->created_at)) }}</td>
                                 <td>{{ $header->sts }}</td>
                                 <td>

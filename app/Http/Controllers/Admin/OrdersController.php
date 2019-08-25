@@ -261,9 +261,14 @@ class OrdersController extends Controller
 							->join('users', 'orders_headers.user_id', '=', 'users.user_id')
 							->join('order_status', 'orders_headers.status_id', '=', 'order_status.status_id')
 							->join('delivery_methods', 'orders_headers.delivery_method', '=', 'delivery_methods.method_id')
-							->select('orders_headers.*', 'providers.full_name AS provider', DB::raw('IFNULL(deliveries.full_name, "") AS delivery'), 'users.full_name AS user', 'order_status.en_desc AS sts', 'delivery_methods.method_en_name')
+							->select('orders_headers.*', 'providers.full_name AS provider', DB::raw('IFNULL(deliveries.full_name, "") AS delivery'), 'users.full_name AS user', 'order_status.en_desc AS sts', 'delivery_methods.method_en_name',
+								'orders_headers.app_percentage',
+								'orders_headers.app_value'
+
+						         )
 							->orderBy('orders_headers.created_at', 'DESC')
 							->get();
+
 		return view('cpanel.orders.headers', compact('headers'));
 	}
 

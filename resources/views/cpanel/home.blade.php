@@ -116,7 +116,7 @@
                                 <i class="fa fa-user-o"></i>
                             </div>
                             <div class="counter-content"> 
-                                <div class="timer" data-to="{{ ($sale != NULL)? $sale : 0 }}" data-speed="2500">{{ ($sale != NULL)? $sale : 0 }}</div>
+                                <div class="timer" data-to="{{ ($sale != NULL)? $sale : 0 }}" data-speed="2500">{{ ($sale != NULL)? $sale : 0 }}  ريال</div>
                                 <span> المبيعات </span>
                             </div>
                         </div>
