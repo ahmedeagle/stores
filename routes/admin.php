@@ -158,6 +158,12 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function() {
 			]);
 
 
+			Route::get('/products', [
+				'uses' => 'ProviderController@getAllProducts',
+				'as'   => 'provider.products'
+			]);
+
+
 			Route::get('/product/{product_id}', [
 				'uses' => 'ProviderController@editProducts',
 				'as'   => 'product.edit'

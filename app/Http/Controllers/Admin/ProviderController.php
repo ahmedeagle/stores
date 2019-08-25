@@ -285,7 +285,7 @@ if(!empty($conditions)){
 		 $data['categories']    = DB::table('categories')->where('publish',1) 
                                              ->select( 'cat_ar_name',
                                                        'cat_id',
-                                                      
+                                                       DB::raw('IF(cat_id ='.$cat_id.', true, false) AS choosen')
                                               )->get();
 
  
@@ -479,6 +479,57 @@ if(!empty($conditions)){
 		 
 	}
 
+   public function getAllProducts(){
+        
+
+
+         $products = DB::table('providers') 
+                            -> join('products','providers.provider_id','=','products.provider_id')
+                             ->select(
+
+                                    'products.id AS product_id',
+                                     'products.category_id',
+                                     'products.description',
+                                     'products.title',
+                                     'providers.store_name',
+                                     'providers.provider_id',
+                                     'products.price',
+                                     'products.publish' ,
+                                     DB::raw("CONCAT('". url('/') ."','/\providerProfileImages/',providers.profile_pic) AS profile_pic")
+
+                                    
+                                )
+                            -> get();
+                        
+                        
+                            
+       if(isset($products) && $products -> count() > 0)  {
+           
+           foreach($products as $product){
+               
+               
+                $mainImage = DB::table('product_images') -> where('product_id',$product -> product_id) ->select('image') ->  first();  // get onlly the first image as main image of product
+                if($mainImage){
+
+                     $product -> product_image = $mainImage -> image ? env('APP_URL').'/public/products/'.$mainImage -> image : "";
+
+                }else{
+
+                   $product -> product_image = "";
+                }
+                
+           }
+       }
+
+
+     
+    return view('cpanel.providers.products',compact('products'));
+
+   }
+
+
+
+    //get products by provider id
 	public function getProducts($provider_id){
 
 
