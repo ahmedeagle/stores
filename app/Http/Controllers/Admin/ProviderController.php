@@ -283,7 +283,9 @@ if(!empty($conditions)){
 
 		//get selected cats 
 		 $data['categories']    = DB::table('categories')->where('publish',1) 
-                                             ->select('cat_ar_name','cat_id',DB::raw('IF(cat_id = '.$cat_id.', true, false) AS choosen')
+                                             ->select( 'cat_ar_name',
+                                                       'cat_id',
+                                                       DB::raw("IF(cat_id = {$cat_id}, true, false) AS choosen")
                                               )->get();
  
          $data['delivery_methods']=  DB::table("delivery_methods")->select('method_id','method_ar_name',
