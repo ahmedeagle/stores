@@ -97,7 +97,7 @@
                     </div><!--End col-md-4-->
                     <div class="col-md-4">
                         <div class="counter">
-                           <a href="{{url('products/list')}}">
+                           <a href="{{route('provider.products.list')}}">
                             <div class="counter-icon">
                                 <i class="fa fa-product-hunt"></i>
                             </div>

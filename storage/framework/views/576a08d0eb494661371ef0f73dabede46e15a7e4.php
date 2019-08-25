@@ -96,6 +96,7 @@
                     </div><!--End col-md-4-->
                     <div class="col-md-4">
                         <div class="counter">
+                           <a href="<?php echo e(url('products/list')); ?>">
                             <div class="counter-icon">
                                 <i class="fa fa-product-hunt"></i>
                             </div>
@@ -103,6 +104,8 @@
                                 <div class="timer" data-to="<?php echo e(($products != NULL)? $products : 0); ?>" data-speed="2500"><?php echo e(($products != NULL)? $products : 0); ?></div>
                                 <span>المنتجات </span>
                             </div>
+                            </a> 
+
                         </div>
                     </div><!--End col-md-4-->
                     <div class="col-md-4">
