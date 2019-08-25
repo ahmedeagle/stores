@@ -117,7 +117,7 @@
                             </div>
                             <div class="counter-content"> 
                                 <div class="timer" data-to="{{ ($sale != NULL)? $sale : 0 }}" data-speed="2500">{{ ($sale != NULL)? $sale : 0 }}  ريال</div>
-                                <span> المبيعات </span>
+                                <span>  الايردادات  </span>
                             </div>
                         </div>
                         </a> 
