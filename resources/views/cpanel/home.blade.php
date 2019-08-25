@@ -97,6 +97,7 @@
                     </div><!--End col-md-4-->
                     <div class="col-md-4">
                         <div class="counter">
+                           <a href="{{url('products')}}">
                             <div class="counter-icon">
                                 <i class="fa fa-product-hunt"></i>
                             </div>
@@ -104,6 +105,8 @@
                                 <div class="timer" data-to="{{ ($products != NULL)? $products : 0 }}" data-speed="2500">{{ ($products != NULL)? $products : 0 }}</div>
                                 <span>المنتجات </span>
                             </div>
+                            </a> 
+
                         </div>
                     </div><!--End col-md-4-->
                     <div class="col-md-4">
