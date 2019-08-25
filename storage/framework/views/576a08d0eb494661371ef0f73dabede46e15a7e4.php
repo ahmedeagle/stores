@@ -96,7 +96,7 @@
                     </div><!--End col-md-4-->
                     <div class="col-md-4">
                         <div class="counter">
-                           <a href="<?php echo e(url('products/list')); ?>">
+                           <a href="<?php echo e(route('provider.products.list')); ?>">
                             <div class="counter-icon">
                                 <i class="fa fa-product-hunt"></i>
                             </div>

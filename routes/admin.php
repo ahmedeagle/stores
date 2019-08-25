@@ -152,16 +152,19 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function() {
 				'as'   => 'provider.update'
 			]);
 
+
+
+		Route::get('/products/list', [
+						'uses' => 'ProviderController@getAllProducts',
+						'as'   => 'provider.products.list'
+					]);
+
 			Route::get('/products/{provider_id}', [
 				'uses' => 'ProviderController@getProducts',
 				'as'   => 'provider.products'
 			]);
 
            //
-			Route::get('/products/list', [
-				'uses' => 'ProviderController@getAllProducts',
-				'as'   => 'provider.products.list'
-			]);
 
 
 			Route::get('/product/{product_id}', [
