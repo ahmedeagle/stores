@@ -285,8 +285,9 @@ if(!empty($conditions)){
 		 $data['categories']    = DB::table('categories')->where('publish',1) 
                                              ->select( 'cat_ar_name',
                                                        'cat_id',
-                                                       DB::raw("IF(cat_id = {$cat_id}, true, false) AS choosen")
+                                                      
                                               )->get();
+
  
          $data['delivery_methods']=  DB::table("delivery_methods")->select('method_id','method_ar_name',
                                                                 DB::raw('IF((SELECT count(providers_delivery_methods.id) FROM providers_delivery_methods WHERE providers_delivery_methods.delivery_method = delivery_methods.method_id AND providers_delivery_methods.provider_id = '.$id.') > 0, 1, 0) AS choosen'))
