@@ -499,6 +499,12 @@ Route::group(['prefix' => 'tickets'], function(){
 				'as'   => 'orders.filter'
 			]);
 
+			Route::get('/sales', [
+				'uses' => 'OrdersController@getSales',
+				'as'   => 'orders.sales'
+			]);
+
+
 			Route::get('/order_details/{id}', [
 				'uses' => 'OrdersController@getOrderDetails',
 				'as'   => 'orders.details'

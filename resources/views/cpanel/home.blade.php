@@ -110,15 +110,17 @@
                         </div>
                     </div><!--End col-md-4-->
                     <div class="col-md-4">
+                     <a href="{{route('orders.sales')}}">
                         <div class="counter">
                             <div class="counter-icon">
                                 <i class="fa fa-user-o"></i>
                             </div>
                             <div class="counter-content"> 
                                 <div class="timer" data-to="{{ ($sale != NULL)? $sale : 0 }}" data-speed="2500">{{ ($sale != NULL)? $sale : 0 }}</div>
-                                <span>المدخلات</span>
+                                <span> المبيعات </span>
                             </div>
                         </div>
+                        </a> 
                     </div><!--End col-md-4-->
                
 

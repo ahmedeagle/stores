@@ -41,7 +41,7 @@ class HomeController extends Controller
 		$data['activeusers']        = User::where('status',1) -> count();
 		$data['inactiveusers']      = User::where('status',0) -> count();
 		$data['comments']           = DB::table('product_comments')->where('is_read',0) -> count();
-		$data['sale']               = DB::table('orders_headers')->where('status_id', 4)->
+		$data['sale']               = DB::table('orders_headers')->where('status_id', 3)->
 		                select(DB::raw('IFNULL((app_value + delivery_app_value),0) AS total'))
 		                ->first();
 		$data['sale']   =  ($data['sale'])? $data['sale']->total : 0;

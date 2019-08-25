@@ -250,6 +250,23 @@ class OrdersController extends Controller
 		return view('cpanel.orders.headers', compact('headers'));
 	}
 
+	
+
+	public function getSales(){
+		$headers = DB::table('orders_headers')
+		                    ->where('orders_headers.status_id',3)
+		                    ->where('orders_headers.expired',0)
+							->join('providers', 'orders_headers.provider_id', '=', 'providers.provider_id')
+							->leftjoin('deliveries', 'orders_headers.delivery_id', '=', 'deliveries.delivery_id')
+							->join('users', 'orders_headers.user_id', '=', 'users.user_id')
+							->join('order_status', 'orders_headers.status_id', '=', 'order_status.status_id')
+							->join('delivery_methods', 'orders_headers.delivery_method', '=', 'delivery_methods.method_id')
+							->select('orders_headers.*', 'providers.full_name AS provider', DB::raw('IFNULL(deliveries.full_name, "") AS delivery'), 'users.full_name AS user', 'order_status.en_desc AS sts', 'delivery_methods.method_en_name')
+							->orderBy('orders_headers.created_at', 'DESC')
+							->get();
+		return view('cpanel.orders.headers', compact('headers'));
+	}
+
 	public function getOrderDetails($id, Request $request){
 		$order = $this->getOrdersById($id);
 		if($order == false){
