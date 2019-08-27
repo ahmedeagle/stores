@@ -2791,7 +2791,9 @@ public function prepareSearch(Request $request){
              $productColor = 0;
 
             if(empty($products[$i]['size'])){
-  
+                      
+                   
+
             }else{
 
                 $size_id = DB::table("product_sizes")
@@ -2814,7 +2816,7 @@ public function prepareSearch(Request $request){
  
              // if product  with color the price will change			  
             if(empty($products[$i]['color'])){
-                 $productSize  = 0;
+                 
             }else{
 
                 $color_id = DB::table("product_colors")
@@ -2918,7 +2920,7 @@ public function prepareSearch(Request $request){
 
        $rules=[
 			'provider_id'        => 'required',
-			'access_token'      => 'required',
+			'access_token'       => 'required',
 			//'in_future'          => 'required|in:0,1',
 			'address'            => 'required|exists:user_addresses,address_id',
 			'delivery_method_id' => 'required',
@@ -3096,7 +3098,7 @@ public function prepareSearch(Request $request){
 						'user_latitude'          => $data['user_latitude'],
 						'user_longitude'         => $data['user_longitude'],
 						'user_phone'             => $data['phone'],
-						'user_email'             => $data['email'],
+						//'user_email'             => $data['email'],
 						'payment_type'           => $data['payment_method'],
 						'delivery_method'        => $data['delivery_method'],
 						'in_future' 			 => $data['in_future'],

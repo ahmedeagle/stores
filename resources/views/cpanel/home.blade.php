@@ -174,7 +174,7 @@
                             </div>
                                <a style="color: #fff;" href="{{route('offers.status',0)}}">
                                 <div class="counter-content"> 
-                                    <div class="timer" data-to="{{ ($offers != NULL)? $offers : 0 }}" data-speed="2500">{{ ($offers != NULL)? $offers : 0 }}</div>
+                                    <div class="timer" data-to="{{ ($openTickets != NULL)? $openTickets : 0 }}" data-speed="2500">{{ ($openTickets != NULL)? $openTickets : 0 }}</div>
                                     <span> تذاكر  مفتوحه  </span>
                                 </div>
                            </a> 
