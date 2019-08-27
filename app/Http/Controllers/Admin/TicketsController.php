@@ -85,7 +85,7 @@ class TicketsController extends Controller {
             $data['title'] = 'تذاكر التجار';
             $name = DB::table("providers")->where("provider_id", $data['ticket']->actor_id)->first();
             $data['username'] = $name-> full_name;
-        }elseif($data['ticket']->actor_type == "users"){
+        }elseif($data['ticket']->actor_type == "user"){
             $data['type']  = 1;
             $data['title'] = 'تذاكر العملاء';
             $name = DB::table("users")->where("user_id", $data['ticket']->actor_id)->first();
@@ -100,8 +100,7 @@ class TicketsController extends Controller {
         }
 
 
-        return $data;
-  
+   
         DB::table("ticket_replies")
             ->where("ticket_id" , $id)
             ->where("FromUser" , $data['type'] )
