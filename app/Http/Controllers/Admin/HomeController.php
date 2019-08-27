@@ -56,7 +56,7 @@ class HomeController extends Controller
 		$data['excellentReq']      = DB::table('excellence_requests') -> where('excellence_requests.paid', '0') -> where('excellence_requests.publish', '0') -> where('status',0)  -> count();
 
 
-		$data['openTickets']   = DB::table('tickets') -> where('solved',0) ->  count();
+		$data['openTickets']   = DB::table('tickets') -> where('solved','0') ->  count();
 
 		return view('cpanel.home',$data);
 	}
