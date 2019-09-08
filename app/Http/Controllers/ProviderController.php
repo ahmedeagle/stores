@@ -72,6 +72,8 @@ class ProviderController extends Controller
  
                         		 
                             }catch(Exception $e){
+
+                            	retutn $e;
                                 
                                 return response()->json(['status'=> false, 'errNum' => 30, 'msg' =>$errMsg]);
                             }
