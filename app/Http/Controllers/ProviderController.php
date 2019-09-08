@@ -2833,7 +2833,7 @@ public function updateProviderOffer(Request $request){
     
                      $image = $this->saveImage($image,'jpg', 'products');
 
-                     if($image ! =""){
+                     if($image != ""){
                      	 DB::table('product_images') -> insert([
                      	  'image'      => $nameOfImage,
                      	  'product_id' => $id
