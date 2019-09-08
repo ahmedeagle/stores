@@ -70,7 +70,6 @@ class ProviderController extends Controller
 										    	return "";
 										    }
  
-                        		 
                             }catch(Exception $e){
 
                             	return $e;//
@@ -2851,17 +2850,10 @@ public function updateProviderOffer(Request $request){
    
                    
                     //save new image   64 encoded
-                     
-                           try {
+                      
                                 	 
-                                	  $image = $this->saveImage($image,'jpg', 'products/');
-
-                                } catch (Exception $e) {
-                                	 
-                                	 return response()->json(['status'=> false, 'errNum' => 30, 'msg' => $errMsg]);
-                                }     
-                     
-                                 
+                      $image = $this->saveImage($image,'jpg', 'products/');
+     
       					
     					if($image == ""){
     						if($lang == "ar"){
