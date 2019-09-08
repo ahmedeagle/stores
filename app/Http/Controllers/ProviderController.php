@@ -53,35 +53,20 @@ class ProviderController extends Controller
 	protected function saveImage($data, $image_ext, $path){
 	    
 		if(!empty($data)){
-    				 
     				 		$errMsg = "فشل فى رفع الصورة حاول فى وقت  لاحق";
     					  
                         try{
                                        
-                        				   $file_data = $data; 
-										   $file_name = 'img-'.str_random(25).'.'.$image_ext; //generating unique file name; 
-										   @list($type, $file_data) = explode(';', $file_data);
-										   @list(, $file_data) = explode(',', $file_data); 
-										   if($file_data!=""){ // storing image in storage/app/public Folder 
-										          \Storage::disk($path)->put($file_name,base64_decode($file_data)); 
-										          return $file_name;
-										    } else{
-
-										    	return "";
-										    }
- 
+                        	$file_data =  $image_ext; 
+ 					        $file_name = 'img-'.str_random(25).'.jpg'; //generating unique file name; 					
+                              \Storage::disk($path)->put($file_name,base64_decode($file_data));  
                             }catch(Exception $e){
-
-                            	return $e;//
                                 
                                 return response()->json(['status'=> false, 'errNum' => 30, 'msg' =>$errMsg]);
-                            }
-       
+                            }       
 		}else{
 			return "";
-		}
-		
-		
+		}	
 		
 	}
       
@@ -2847,9 +2832,11 @@ public function updateProviderOffer(Request $request){
     
                     //save new image   64 encoded                 
     				   $file_data = $image; 
-					  return  $file_name = 'img-'.str_random(25).'jpg'; //generating unique file name; 
+					    $file_name = 'img-'.str_random(25).'.jpg'; //generating unique file name; 
 					   @list($type, $file_data) = explode(';', $file_data);
 					   @list(, $file_data) = explode(',', $file_data); 
+
+					 return   $file_data;
 					   if($file_data!=""){ // storing image in storage/app/public Folder 
 					          \Storage::disk($path)->put($file_name,base64_decode($file_data)); 
 					          return $file_name;
