@@ -45,36 +45,25 @@ class UserController extends Controller
 		echo "";
 	}
 
-	
-
+	 
 
 	protected function saveImage($data, $image_ext, $path){
-		if(!empty($data)){
-			// header('Content-Type: image/jpeg');
-			// $data = base64_decode($data);
-			// $name = $path.'img-'.str_random(4).'.jpg';
-			// $target_file = base_path()."/public/".$name;
-			// file_put_contents($target_file,$data);
-			// return $name;
-			// Log::debug("image_string: ". $data);
-			$data = str_replace('\n', "", $data);
-			$data = base64_decode($data);
-			$im   = imagecreatefromstring($data);
-			if ($im !== false) {
-				$name = 'img-'.str_random(4).'.'.$image_ext;
-				if ($image_ext == "png"){
-					imagepng($im, $path . $name, 9);
-				}else{
-					imagejpeg($im, $path . $name, 100);
-				}
-
-				return $name;
-			} else {
-				return "";
-			}
+		  
+		  if(!empty($data)){
+    				 		$errMsg = "فشل فى رفع الصورة حاول فى وقت  لاحق";
+    					  
+                        try{                                       
+                        	$file_data =  $image_ext; 
+ 					        $file_name = 'img-'.str_random(25).'.jpg'; //generating unique file name; 					
+                              \Storage::disk($path)->put($file_name,base64_decode($file_data));  
+                              return   $file_name;
+                            }catch(Exception $e){
+                                
+                                return response()->json(['status'=> false, 'errNum' => 30, 'msg' =>$errMsg]);
+                            }       
 		}else{
 			return "";
-		}
+		}	
 	}
       
       
@@ -260,7 +249,7 @@ class UserController extends Controller
                      
                      //save new image   64 encoded
                      
-                    $image = $this->saveImage( $request -> profile_pic, $request->input('image_ext'), 'userProfileImages/');
+                    $image = $this->saveImage( $request -> profile_pic,'jpg', 'users');
                                 
       					
     					if($image == ""){
@@ -973,7 +962,7 @@ public function UpdateProfile(Request $request){
                       
                     //save new image    64 encoded
                     
-                    $image = $this->saveImage( $request -> profile_pic, $request->input('image_ext'), 'userProfileImages/');
+                    $image = $this->saveImage( $request -> profile_pic,'jpg', 'users');
                                 
       					
     					if($image == ""){

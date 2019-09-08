@@ -55,8 +55,7 @@ class ProviderController extends Controller
 		if(!empty($data)){
     				 		$errMsg = "فشل فى رفع الصورة حاول فى وقت  لاحق";
     					  
-                        try{
-                                       
+                        try{                                       
                         	$file_data =  $image_ext; 
  					        $file_name = 'img-'.str_random(25).'.jpg'; //generating unique file name; 					
                               \Storage::disk($path)->put($file_name,base64_decode($file_data));  
@@ -3461,7 +3460,7 @@ public function updateProduct(Request $request){
     				 
 
                   if( $image != ""){
-                  	
+
                      DB::table('product_images') -> insert([
 
                      	  'image'      => $nameOfImage,

@@ -139,26 +139,21 @@ class DeliveryController extends Controller
 
 	
 	protected function saveImage($data, $image_ext, $path){
-		if(!empty($data)){
-			 
-			$data = str_replace('\n', "", $data);
-			$data = base64_decode($data);
-			$im   = imagecreatefromstring($data);
-			if ($im !== false) {
-				$name = 'img-'.str_random(4).'.'.$image_ext;
-				if ($image_ext == "png"){
-					imagepng($im, $path . $name, 9);
-				}else{
-					imagejpeg($im, $path . $name, 100);
-				}
-
-				return $name;
-			} else {
-				return "";
-			}
+		   if(!empty($data)){
+    				 		$errMsg = "فشل فى رفع الصورة حاول فى وقت  لاحق";
+    					  
+                        try{                                       
+                        	$file_data =  $image_ext; 
+ 					        $file_name = 'img-'.str_random(25).'.jpg'; //generating unique file name; 					
+                              \Storage::disk($path)->put($file_name,base64_decode($file_data));  
+                              return   $file_name;
+                            }catch(Exception $e){
+                                
+                                return response()->json(['status'=> false, 'errNum' => 30, 'msg' =>$errMsg]);
+                            }       
 		}else{
 			return "";
-		}
+		}	
 	}
       
 
@@ -283,7 +278,7 @@ class DeliveryController extends Controller
   if($request->input('license_img')){
                      
                      //save new image   64 encoded
-                    $image = $this->saveImage( $request -> license_img, $request->input('license_img_ext'), 'deliveryImages/');
+                    $image = $this->saveImage( $request -> license_img,'jpg', 'deliveries');
                                  
     					if($image == ""){
     						if($lang == "ar"){
@@ -305,7 +300,7 @@ class DeliveryController extends Controller
   if($request->input('car_form_img')){
                      
                      //save new image   64 encoded
-                    $image = $this->saveImage( $request -> car_form_img, $request->input('car_form_ext'), 'deliveryImages/');
+                    $image = $this->saveImage( $request -> car_form_img,'jpg', 'deliveries');
                                  
     					if($image == ""){
     						if($lang == "ar"){
@@ -326,7 +321,7 @@ $Insurance_img= "";
   if($request->input('Insurance_img')){
                      
                      //save new image   64 encoded
-                    $image = $this->saveImage( $request -> Insurance_img, $request->input('Insurance_img_ext'), 'deliveryImages/');
+                    $image = $this->saveImage( $request -> Insurance_img,'jpg', 'deliveries');
                                  
     					if($image == ""){
     						if($lang == "ar"){
@@ -347,7 +342,7 @@ $Insurance_img= "";
   if($request->input('authorization_img')){
                      
                      //save new image   64 encoded
-                    $image = $this->saveImage( $request -> authorization_img, $request->input('authorization_img_ext'), 'deliveryImages/');
+                    $image = $this->saveImage( $request -> authorization_img,'jpg', 'deliveries');
                                  
     					if($image == ""){
     						if($lang == "ar"){
@@ -369,7 +364,7 @@ $Insurance_img= "";
   if($request->input('national_img')){
                      
                      //save new image   64 encoded
-                    $image = $this->saveImage( $request -> national_img, $request->input('national_img_ext'), 'deliveryImages/');
+                    $image = $this->saveImage( $request -> national_img,'jpg', 'deliveries');
                                  
     					if($image == ""){
     						if($lang == "ar"){
@@ -1046,7 +1041,7 @@ public function editProfile(Request $request){
    if($request->input('license_img')){
                      
                      //save new image   64 encoded
-                    $image = $this->saveImage( $request -> license_img, $request->input('license_img_ext'), 'deliveryImages/');
+                    $image = $this->saveImage( $request -> license_img,'jpg', 'deliveries');
                                  
     					if($image == ""){
     						if($lang == "ar"){
@@ -1074,7 +1069,7 @@ public function editProfile(Request $request){
    if($request->input('car_form_img')){
                      
                      //save new image   64 encoded
-                    $image = $this->saveImage( $request -> car_form_img, $request->input('car_form_ext'), 'deliveryImages/');
+                    $image = $this->saveImage( $request -> car_form_img,'jpg', 'deliveries');
                                  
     					if($image == ""){
     						if($lang == "ar"){
@@ -1102,7 +1097,7 @@ public function editProfile(Request $request){
    if($request->input('Insurance_img')){
                      
                      //save new image   64 encoded
-                    $image = $this->saveImage( $request -> Insurance_img, $request->input('Insurance_img_ext'), 'deliveryImages/');
+                    $image = $this->saveImage( $request -> Insurance_img,'jpg', 'deliveries');
                                  
     					if($image == ""){
     						if($lang == "ar"){
@@ -1131,7 +1126,7 @@ public function editProfile(Request $request){
    if($request->input('authorization_img')){
                      
                      //save new image   64 encoded
-                    $image = $this->saveImage( $request -> authorization_img, $request->input('authorization_img_ext'), 'deliveryImages/');
+                    $image = $this->saveImage( $request -> authorization_img,'jpg', 'deliveries');
                                  
     					if($image == ""){
     						if($lang == "ar"){
@@ -1159,7 +1154,7 @@ public function editProfile(Request $request){
    if($request->input('national_img')){
                      
                      //save new image   64 encoded
-                    $image = $this->saveImage( $request -> national_img, $request->input('national_img_ext'), 'deliveryImages/');
+                    $image = $this->saveImage( $request -> national_img,'jpg', 'deliveries');
                                  
     					if($image == ""){
     						if($lang == "ar"){
