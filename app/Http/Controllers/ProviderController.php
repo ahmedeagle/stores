@@ -47,63 +47,35 @@ class ProviderController extends Controller
 		echo "";
 	}
 
+ 
+
+
 	protected function saveImage($data, $image_ext, $path){
-	   
+	    
 		if(!empty($data)){
-		    
-		     
-    						  
-    							$errMsg = "فشل فى رفع الصورة حاول فى وقت  لاحق";
+    				 
+    				 		$errMsg = "فشل فى رفع الصورة حاول فى وقت  لاحق";
     					  
                         try{
-                                
-                                 
-                         
-                                                    
-                        			// header('Content-Type: image/jpeg');
-                        			// $data = base64_decode($data);
-                        			// $name = $path.'img-'.str_random(4).'.jpg';
-                        			// $target_file = base_path()."/public/".$name;
-                        			// file_put_contents($target_file,$data);
-                        			// return $name;
-                        			// Log::debug("image_string: ". $data);
-                        			$data = str_replace('\n', "", $data);
-                        			$data = base64_decode($data);
+                                       
+                        				   $file_data = $data; 
+										   $file_name = 'img-'.str_random(25).'.'.$image_ext; //generating unique file name; 
+										   @list($type, $file_data) = explode(';', $file_data);
+										   @list(, $file_data) = explode(',', $file_data); 
+										   if($file_data!=""){ // storing image in storage/app/public Folder 
+										          \Storage::disk($path)->put($file_name,base64_decode($file_data)); 
+										          return $file_name;
+										    } else{
 
-                        			 try{
-
-                                        $im   = $data;
-
-                        			 }catch(\Throwable $e)
-                        			 {
-
-
-			    							$errMsg = "Failed to upload image, please try again later";
-			    						 
-			    
-			    						return response()->json(['status'=> false, 'errNum' => 30, 'msg' => $errMsg]);
-
-                        			 }
-
-                        			 
-                        			if ($im !== false) {
-                        				$name = 'img-'.str_random(25).'.'.$image_ext;
-                        				 
-                        					imagejpeg($im, $path . $name, 100);
-                        			 
-                        				return $name;
-                        			} else {
-                        				return "";
-                        			}
+										    	return "";
+										    }
+ 
                         		 
                             }catch(Exception $e){
                                 
                                 return response()->json(['status'=> false, 'errNum' => 30, 'msg' =>$errMsg]);
                             }
-                            
-                       
-		
-		
+       
 		}else{
 			return "";
 		}
@@ -2866,8 +2838,7 @@ public function updateProviderOffer(Request $request){
 
 			            });
 			            
-			            return response() -> json( $images) ;
-
+                 
                  
                 /* if(count($extensions) != count($images)){
                      
