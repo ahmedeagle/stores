@@ -564,7 +564,7 @@ class ProviderController extends Controller
 					if($request -> has('commercial_photo')){
  
  	                                
-     					 $image = $this->saveImage( $request -> commercial_photo, $request->input('image_ext'), 'providerProfileImages/');
+     					 $image = $this->saveImage( $request -> commercial_photo,'jpg', 'providers');
      					
     					if($image == ""){
     						if($lang == "ar"){
@@ -1482,10 +1482,9 @@ class ProviderController extends Controller
  
 
               //save new image    64 encoded
-                    $image = $this->saveImage( $request -> profile_pic, $request->image_ext, 'providerProfileImages/');
+                    $image = $this->saveImage( $request -> profile_pic,'jpg', 'providers');
                                        
-                               
-      					
+                            
     					if($image == ""){
     						if($lang == "ar"){
     							$errMsg = "فشل فى رفع الصورة حاول فى وقت  لاحق";
@@ -2148,7 +2147,7 @@ public function addProviderOffer(Request $request){
                    //save new image   64 encoded
                      
                                 
-                       $image = $this->saveImage($request -> photo,$request -> image_ext, 'offers/');
+                       $image = $this->saveImage($request -> photo,'jpg', 'offers');
                                  
       					
     					if($image == ""){
@@ -2391,7 +2390,7 @@ public function updateProviderOffer(Request $request){
                         //save new image   64 encoded
  
 
-             $image = $this->saveImage($request -> photo,$request -> image_ext, 'offers/');
+             $image = $this->saveImage($request -> photo,'jpg', 'offers');
              $name = $offer -> first() -> photo;
 
 	               if(Storage::disk('offers')->exists($name))
@@ -2837,11 +2836,9 @@ public function updateProviderOffer(Request $request){
                      	 DB::table('product_images') -> insert([
                      	  'image'      => $image_name,
                      	  'product_id' => $id
-
                      ]);
 
                      }
- 
   
 					} 
  	  
@@ -3413,14 +3410,11 @@ public function updateProduct(Request $request){
 						         ->where('product_id',$request -> product_id)
 						         ->delete();
 
-
-	
 				if( $request -> has('product_images')){
  
    
                //  $image_extensions = $request -> image_ext;
                  $products_images  = $request -> product_images;
-                 
                  
                 /*  $extensions = array_filter($image_extensions,function($ext){
 
@@ -3448,7 +3442,7 @@ public function updateProduct(Request $request){
                     //save new image   64 encoded
                      
                                 
-                      $image = $this->saveImage($image,'jpg', 'products/');
+                      $image = $this->saveImage($image,'jpg', 'products');
                                  
       					
     					if($image == ""){
@@ -3466,12 +3460,15 @@ public function updateProduct(Request $request){
     					
     				 
 
+                  if( $image != ""){
+                  	
                      DB::table('product_images') -> insert([
 
                      	  'image'      => $nameOfImage,
                      	  'product_id' => $id
 
                      ]);
+                   }
  
  
 					} 
