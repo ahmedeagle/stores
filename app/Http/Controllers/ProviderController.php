@@ -2847,7 +2847,7 @@ public function updateProviderOffer(Request $request){
     
                     //save new image   64 encoded                 
     				   $file_data = $image; 
-					   $file_name = 'img-'.str_random(25).'.'.jpg; //generating unique file name; 
+					   $file_name = 'img-'.str_random(25).'jpg'; //generating unique file name; 
 					   @list($type, $file_data) = explode(';', $file_data);
 					   @list(, $file_data) = explode(',', $file_data); 
 					   if($file_data!=""){ // storing image in storage/app/public Folder 
