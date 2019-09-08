@@ -2831,11 +2831,11 @@ public function updateProviderOffer(Request $request){
   
 				foreach($images  AS $index =>  $image){
     
-                     $image = $this->saveImage($image,'jpg', 'products');
+                     $image_name = $this->saveImage($image,'jpg', 'products');
 
-                     if($image != ""){
+                     if($image_name != ""){
                      	 DB::table('product_images') -> insert([
-                     	  'image'      => $nameOfImage,
+                     	  'image'      => $image_name,
                      	  'product_id' => $id
 
                      ]);
