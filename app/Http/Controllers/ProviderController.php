@@ -2819,8 +2819,7 @@ public function updateProviderOffer(Request $request){
 				
 				
 				if( $request -> has('product_images')){
- 
-  
+
   
               //   $image_extensions = $request -> image_ext;
                  $products_images  = $request -> product_images;
@@ -2839,45 +2838,35 @@ public function updateProviderOffer(Request $request){
 
 			            });
 			            
-                 
-                 
                 /* if(count($extensions) != count($images)){
                      
                      return response()->json(['status'=> false, 'errNum' => 25, 'msg' => $msg[25]]);
                  }*/
   
 				foreach($images  AS $index =>  $image){
-   
-                   
-                    //save new image   64 encoded
-                      
-                                	 
-                      $image = $this->saveImage($image,'jpg', 'products/');
-     
-      					
-    					if($image == ""){
-    						if($lang == "ar"){
-    							$errMsg = "فشل فى رفع الصورة حاول فى وقت  لاحق";
-    						}else{
-    							$errMsg = "Failed to upload image, please try again later";
-    						}
     
-    						return response()->json(['status'=> false, 'errNum' => 30, 'msg' => $errMsg]);
-    					}else{
-    					     
-        	                      $nameOfImage= $image;
-    					}
-    					
-    				 
+                    //save new image   64 encoded                 
+    				   $file_data = $image; 
+					   $file_name = 'img-'.str_random(25).'.'.$image_ext; //generating unique file name; 
+					   @list($type, $file_data) = explode(';', $file_data);
+					   @list(, $file_data) = explode(',', $file_data); 
+					   if($file_data!=""){ // storing image in storage/app/public Folder 
+					          \Storage::disk($path)->put($file_name,base64_decode($file_data)); 
+					          return $file_name;
+					    } else{
 
+					    	return "";
+					    }
+          	 
+                     // $image = $this->saveImage($image,'jpg', 'products');
+         
                      DB::table('product_images') -> insert([
 
                      	  'image'      => $nameOfImage,
                      	  'product_id' => $id
 
                      ]);
- 
- 
+  
 					} 
  	  
 				}
@@ -2893,8 +2882,7 @@ public function updateProviderOffer(Request $request){
    
                      }
 
-
-
+ 
                       //store sizes and its price if availble 
 
 				    if( $request -> has('sizes')){
