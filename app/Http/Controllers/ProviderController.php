@@ -47,13 +47,8 @@ class ProviderController extends Controller
 		echo "";
 	}
 
- 
-
-
 	protected function saveImage($data, $image_ext, $path){
-	    
-	    
-	    
+	   
 		if(!empty($data)){
 		    
 		     
@@ -77,7 +72,7 @@ class ProviderController extends Controller
 
                         			 try{
 
-                                        $im   = imagecreatefromstring($data);
+                                        $im   = $data;
 
                         			 }catch(\Throwable $e)
                         			 {
@@ -93,12 +88,9 @@ class ProviderController extends Controller
                         			 
                         			if ($im !== false) {
                         				$name = 'img-'.str_random(25).'.'.$image_ext;
-                        				if ($image_ext == "png"){
-                        					imagepng($im, $path . $name, 9);
-                        				}else{
+                        				 
                         					imagejpeg($im, $path . $name, 100);
-                        				}
-                        
+                        			 
                         				return $name;
                         			} else {
                         				return "";
