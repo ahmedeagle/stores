@@ -60,6 +60,7 @@ class ProviderController extends Controller
                         	$file_data =  $image_ext; 
  					        $file_name = 'img-'.str_random(25).'.jpg'; //generating unique file name; 					
                               \Storage::disk($path)->put($file_name,base64_decode($file_data));  
+                              return   $file_name;
                             }catch(Exception $e){
                                 
                                 return response()->json(['status'=> false, 'errNum' => 30, 'msg' =>$errMsg]);
@@ -2830,29 +2831,17 @@ public function updateProviderOffer(Request $request){
   
 				foreach($images  AS $index =>  $image){
     
-                    //save new image   64 encoded                 
-    				   $file_data = $image; 
-					    $file_name = 'img-'.str_random(25).'.jpg'; //generating unique file name; 
-					   @list($type, $file_data) = explode(';', $file_data);
-					   @list(, $file_data) = explode(',', $file_data); 
+                     $image = $this->saveImage($image,'jpg', 'products');
 
-					 return   $file_data;
-					   if($file_data!=""){ // storing image in storage/app/public Folder 
-					          \Storage::disk($path)->put($file_name,base64_decode($file_data)); 
-					          return $file_name;
-					    } else{
-
-					    	return "";
-					    }
-          	 
-                     // $image = $this->saveImage($image,'jpg', 'products');
-         
-                     DB::table('product_images') -> insert([
-
+                     if($image ! =""){
+                     	 DB::table('product_images') -> insert([
                      	  'image'      => $nameOfImage,
                      	  'product_id' => $id
 
                      ]);
+
+                     }
+ 
   
 					} 
  	  
