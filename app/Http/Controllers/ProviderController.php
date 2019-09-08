@@ -2866,7 +2866,8 @@ public function updateProviderOffer(Request $request){
 
 			            });
 			            
-                 
+			            return response() -> json( $images) ;
+
                  
                 /* if(count($extensions) != count($images)){
                      
