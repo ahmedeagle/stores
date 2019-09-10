@@ -2749,10 +2749,6 @@ public function prepareSearch(Request $request){
 		if(!is_array($products)){
 			return response()->json(['status' => false, 'errNum' => 1, 'msg' => $msg[1]]);
 		}
-
-   
-
-
  
 		$productsArr 	      = array();
         $invalid_products     = array();
@@ -2766,6 +2762,9 @@ public function prepareSearch(Request $request){
 				return response()->json(['status' => false, 'errNum' => 2, 'msg' => $msg[2]]);
 			}
 
+
+
+
 			if(empty($products[$i]['price'])){
 				return response()->json(['status' => false, 'errNum' => 3, 'msg' => $msg[3]]);
 			}
@@ -2778,6 +2777,7 @@ public function prepareSearch(Request $request){
 			 $productPrice = $products[$i]['price'];
              $productSize  = 0;
              $productColor = 0;
+
 
             if(empty($products[$i]['size'])){
                       
@@ -2864,16 +2864,15 @@ public function prepareSearch(Request $request){
                         ]);
                     }
                     $options_arr[] = [
-                            "id"  => $option_id->id,
-                            "added_price" => $option_id->price
+                            "id"          => $option_id->id,
+                            "added_price" => $option_id->price,
+                            "product_id"  =>  $products[$i]['product_id']
                     ] ;
                     $options_added_price += $option_id-> price;
                 }
             }
             
-
-
-
+ 
 
 			if(empty($products[$i]['discount']) || $products[$i]['discount'] == "0" || $products[$i]['discount'] == ""){
 				$products[$i]['discount'] = 0;
@@ -2886,7 +2885,8 @@ public function prepareSearch(Request $request){
 			$net        += $products[$i]['qty'] * ($productPrice + $options_added_price);   // need to subtract the discount from the net value
 
 		} //end foreach 
- 
+
+
 
 		$uniqueProducts      = array_values(array_unique($productsArr));  // to avoid duplicate products id
 
@@ -3019,8 +3019,7 @@ public function prepareSearch(Request $request){
         }
 
  
-			 
-			//we will set this to zero till split payment method is activated
+			 			//we will set this to zero till split payment method is activated
 			$split_value = 0;
 			try {
 				$data['totalPrice']          = $totalPrice;
@@ -3099,6 +3098,9 @@ public function prepareSearch(Request $request){
 					$serial = 1;
 
  					$productsArr = $data['products'];
+
+
+
 					for($i = 0; $i < count($productsArr); $i++){
 						DB::table('order_products')->insert([
 							'order_id'         => $id, 
@@ -3106,6 +3108,8 @@ public function prepareSearch(Request $request){
 							'product_price'    => $productsArr[$i]['price'],
 							'qty'              => $productsArr[$i]['qty'],
 							'discount'         => $productsArr[$i]['discount'],
+							'size_id'          => $productsArr[$i]['size'],
+							'color_id'         => $productsArr[$i]['color'],
 							'serial'           => $serial
 						]);
  
@@ -3120,7 +3124,8 @@ public function prepareSearch(Request $request){
                                     ->insert([
                                          "order_id"              => $id,
                                          "option_id"             => $insertOptions['id'],
-                                         "option_price"          => $insertOptions['added_price']
+                                         "option_price"          => $insertOptions['added_price'],
+                                         "product_id"            => $insertOptions['product_id']
                                     ]);
                         }
                    }
@@ -3648,15 +3653,37 @@ public function cancel_order(Request $request){
                                 'products.description',
                                 'order_products.product_price',
                                 'order_products.discount',
-                                'products.id as product_id'
+                                'products.id as product_id',
+                                'order_products.size_id',
+                                'order_products.color_id'
                      )
 					 ->get();
+
 
 
 			if(isset($products) && $products -> count() > 0){
                 
                 foreach ($products as  $product) {
-                	  
+
+
+                	  //with size 
+
+                	  $size = [];$color = [];
+                   $size =  DB::table('product_sizes') -> whereProduct_id($product -> product_id)  -> whereId($product -> size_id) ->  select('product_sizes.name' ,'product_sizes.id','product_sizes.price') -> first();
+	              
+	              //with color
+	        	  $color =  DB::table('product_colors') -> whereProduct_id($product -> product_id) -> whereId($product -> color_id) -> select('product_colors.name' ,'product_colors.id','product_colors.price') -> first();
+
+	        	  //with options 
+
+	              $options = DB::table('order_products_options') -> where('order_id',$request -> order_id) -> join('product_options','product_options.id','=','order_products_options.option_id')  -> select('option_id as id','name','price') -> where('order_products_options.product_id',$product -> product_id)->get();
+ 
+
+                	  $product -> size     = $size;
+                	  $product -> color    = $color;
+                	  $product -> options  = $options;
+
+                	
                      $image = DB::table('product_images') -> where('product_id',$product -> product_id) -> first();
 
                      if($image){
@@ -3721,7 +3748,7 @@ public function cancel_order(Request $request){
 			$app_percentage = 0;
 		}
 
-		$orderOptions = DB::table('order_products_options') -> where('order_id',$request->input('order_id')) -> join('product_options','order_products_options.option_id','=','product_options.id') -> select('product_options.name','product_options.id','product_options.price')  -> get();
+		//$orderOptions = DB::table('order_products_options') -> where('order_id',$request->input('order_id')) -> join('product_options','order_products_options.option_id','=','product_options.id') -> select('product_options.name','product_options.id','product_options.price')  -> get();
  
 		return response()->json([
 		                            'status'    => true,
@@ -3732,8 +3759,7 @@ public function cancel_order(Request $request){
                                     'app_percentage'      => $app_percentage,
                                     'order_status'        => $order_status,
                                      'provider_order_rate' => $provider_order_rate,
-                                     'orderOptions'        => $orderOptions,
-
+ 
                                 ]);
 
 	}
