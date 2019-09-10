@@ -2798,7 +2798,7 @@ public function prepareSearch(Request $request){
                         "msg"    =>$msg[20]
                     ]);
                 }
-                $productPrice = $size_id->price;
+                $productPrice +=  $size_id->price;
                 $productSize  = $size_id->id;
             }
 
@@ -2831,7 +2831,6 @@ public function prepareSearch(Request $request){
             $options_added_price = 0;
 
           //  products[0][options][0][id]
-
 
          
             if(!empty($products[$i]['options']) && is_array($products[$i]['options'])){
@@ -2905,7 +2904,6 @@ public function prepareSearch(Request $request){
 			'balance_flag.in' => 15,
 			'after_or_equal'  => 17,
 		);
-
 
        $rules=[
 			'provider_id'        => 'required',
