@@ -3740,7 +3740,7 @@ public function cancel_order(Request $request){
 						   	 DB::raw('IF(status_id = '.$order -> status_id.', true, false) AS choosen')
 						   )->get();
  
-		$percentage = DB::table('app_settings')->select('app_percentage')->first();
+		$percentage = DB::table('app_settings')->select('app_percentage','tax')->first();
 
 		if($percentage){
 			$app_percentage = $percentage->app_percentage;
