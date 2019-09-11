@@ -3703,7 +3703,7 @@ public function cancel_order(Request $request){
         //return response()->json(["dataa" , $details]);
 
 		if($order){
-			$status = $order->status_id;
+			 $status = $order->status_id;
 		}else{
 			$status = "";
 		}
@@ -3744,6 +3744,10 @@ public function cancel_order(Request $request){
 
 		if($percentage){
 			$app_percentage = $percentage->app_percentage;
+			 if($order){
+
+			 	  $order -> tax =  $percentage->tax ;
+			 }
 		}else{
 			$app_percentage = 0;
 		}
@@ -3759,6 +3763,7 @@ public function cancel_order(Request $request){
                                     'app_percentage'      => $app_percentage,
                                     'order_status'        => $order_status,
                                      'provider_order_rate' => $provider_order_rate,
+                                     ''
  
                                 ]);
 
