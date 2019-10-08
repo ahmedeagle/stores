@@ -3726,7 +3726,7 @@ public function cancel_order(Request $request){
                                         "comment" => $provider_order_rate->comment
                                         ];
 			}else{
-                $provider_order_rate = "";
+                $provider_order_rate = [];
 			}
 
 		}else{
