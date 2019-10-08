@@ -305,6 +305,24 @@
                                   .</div>
                             </div>
 
+                         
+                    <div class="form-title"> نشر المتجر  :<span class="require">*</span></div>
+                        <div class="form-group  @if ($errors->has('category_id')) error  @endif">
+                            <select   class="form-control" name="category_id">
+                                    <option> اختر  حالة  </option>
+                                
+                                        <option value="1" @php if($provider  -> publish    == 1 ) { echo 'selected';  }    @endphp > نعم </option>
+
+                                         <option value="0" @php if($provider  -> publish    == 0 ) { echo 'selected';  }    @endphp > لا  </option>
+                                     
+                            </select>
+                            <div class="error-messagen">
+                                      @if($errors->has('publish'))  
+                                          {{$errors -> first('publish')}}
+                                      @endif
+                                  .</div>
+                        </div>
+
 
 
                         

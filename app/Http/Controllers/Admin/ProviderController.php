@@ -332,7 +332,11 @@ if(!empty($conditions)){
             'delivery_method.array'               => 'لابد ان تكون وسائل التوصيل علي شكل مصفوفه ',
             'delivery_method.min'                 => 'لابد من اختيار وسيله توصيل واحده علي الاقل ',
             'delivery_method.*.exists'            => 'وسيله التوصيل غير موجوده ',
-            'delivery_price.required'             => 'لابد من ادخال تكلفه التوصيل '
+            'delivery_price.required'             => 'لابد من ادخال تكلفه التوصيل ',
+            'publish.required'                    => 'لابد من اختيار حاله النشر ',
+            'publish.in'                         => 'لابد من اختيار حاله النشر ',
+
+
   
         ];
 
@@ -350,7 +354,8 @@ if(!empty($conditions)){
              'delivery_method.*'     => 'required|exists:delivery_methods,method_id', // that means all of them must pass val
             'longitude'              => 'required',
             'latitude'               => 'required',            
-            'delivery_price'         => 'sometimes'
+            'delivery_price'         => 'sometimes',
+            'publish'                => 'required|in:0,1'
         ];
 
 
