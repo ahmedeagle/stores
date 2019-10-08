@@ -415,19 +415,10 @@ if(!empty($conditions)){
                         }
 
                   }
-
-
-
-
      });
          
-
-
  
         if($validator->fails()){
-
-
-          return $validator -> errors();
 
                return redirect()->back()->with('errors', $validator->errors())->withInput();
         }
