@@ -307,8 +307,8 @@
 
                          
                     <div class="form-title"> نشر المتجر  :<span class="require">*</span></div>
-                        <div class="form-group  @if ($errors->has('category_id')) error  @endif">
-                            <select   class="form-control" name="category_id">
+                        <div class="form-group  @if ($errors->has('publish')) error  @endif">
+                            <select   class="form-control" name="publish">
                                     <option> اختر  حالة  </option>
                                 
                                         <option value="1" @php if($provider  -> publish    == 1 ) { echo 'selected';  }    @endphp > نعم </option>
