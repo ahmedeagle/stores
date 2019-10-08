@@ -42,7 +42,7 @@
                                 <th> رقم الهاتف</th>
                                  <th> الدولة</th>
                                 <th> المدينة </th>
-                                 <th> الحالة </th>
+                                 <th> الحالة   </th>
                                 <th></th>
                             </tr>
                         </thead>
@@ -55,7 +55,7 @@
                                         <td> <?php echo e($provider->country_code.$provider->phone); ?> </td>
                                          <td> <?php echo e($provider->country); ?> </td>
                                         <td> <?php echo e($provider->city); ?> </td>
-                                         <td> <?php echo e(($provider->status == 0)? 'not activated' : 'activated'); ?> </td>
+                                         <td> <?php echo e(($provider->  publish  == 0)? 'not activated' : 'activated'); ?> </td>
                                         <td>
                                             <!-- <button class="custom-btn green-bc">
                                                 <i class="fa fa-eye"></i>

@@ -115,8 +115,8 @@
                                 <i class="fa fa-user-o"></i>
                             </div>
                             <div class="counter-content"> 
-                                <div class="timer" data-to="<?php echo e(($sale != NULL)? $sale : 0); ?>" data-speed="2500"><?php echo e(($sale != NULL)? $sale : 0); ?></div>
-                                <span> المبيعات </span>
+                                <div class="timer" data-to="<?php echo e(($sale != NULL)? $sale : 0); ?>" data-speed="2500"><?php echo e(($sale != NULL)? $sale : 0); ?>  ريال</div>
+                                <span>  الايردادات  </span>
                             </div>
                         </div>
                         </a> 
@@ -173,7 +173,7 @@
                             </div>
                                <a style="color: #fff;" href="<?php echo e(route('offers.status',0)); ?>">
                                 <div class="counter-content"> 
-                                    <div class="timer" data-to="<?php echo e(($offers != NULL)? $offers : 0); ?>" data-speed="2500"><?php echo e(($offers != NULL)? $offers : 0); ?></div>
+                                    <div class="timer" data-to="<?php echo e(($openTickets != NULL)? $openTickets : 0); ?>" data-speed="2500"><?php echo e(($openTickets != NULL)? $openTickets : 0); ?></div>
                                     <span> تذاكر  مفتوحه  </span>
                                 </div>
                            </a> 
