@@ -430,7 +430,7 @@ if(!empty($conditions)){
         }
 
 
-           $inputs = $request -> only('full_name','store_name','phone','country_id','city_id','membership_id','category_id','longitude','latitude');
+           $inputs = $request -> only('full_name','store_name','phone','country_id','city_id','membership_id','category_id','longitude','latitude','publish');
 
 
                  if($request -> hasFile('commercial_photo')){
@@ -459,8 +459,7 @@ if(!empty($conditions)){
 
            $inputs['country_code']  =  $this -> checkCountryCodeFormate($request->input('country_code'));
            $inputs['status']              = 1;
-           $inputs['publish']             = 1;           
-           $inputs['phoneactivated']      = '1';
+            $inputs['phoneactivated']      = '1';
            $inputs['delivery_price']      =  $request -> delivery_price ? $request -> delivery_price : 0 ;
  
              Providers::where('provider_id',$request -> provider_id) -> update($inputs);
