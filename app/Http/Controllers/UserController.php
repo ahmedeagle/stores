@@ -3730,7 +3730,7 @@ public function cancel_order(Request $request){
 			}
 
 		}else{
-            $provider_order_rate = "";
+            $provider_order_rate = [];
 		}
 		  
 		$order_status = DB::table('order_status')->whereIn('status_id', [1,2,3,4])
