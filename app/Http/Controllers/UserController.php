@@ -949,7 +949,7 @@ public function UpdateProfile(Request $request){
         if($request-> profile_pic ){
  
  
-            if($user ->first() -> profile_pic != null && $provider ->first() -> profile_pic != ""){
+            if($user ->first() -> profile_pic != null && $user ->first() -> profile_pic != ""){
                     
 		                //delete the previous image from storage 
 		              if(Storage::disk('users')->exists($user ->first()  -> profile_pic))
