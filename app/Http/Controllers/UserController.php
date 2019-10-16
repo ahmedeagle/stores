@@ -627,13 +627,7 @@ class UserController extends Controller
 
 		        $user = User::where('user_id',$userData -> user_id);
                  
-
- 		        if($user -> first()->  status == '0' or $user -> first()->  status == 0 ){
-
-		            return response()->json(['status' => false, 'errNum' => 5, 'msg' => $msg[5]]);
-
-		        }
-
+ 
 
 		        $code = $this -> generate_random_number(4);
 
