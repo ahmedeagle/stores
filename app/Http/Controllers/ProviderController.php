@@ -1021,7 +1021,7 @@ class ProviderController extends Controller
 		        $provider = Providers::where('provider_id',$providerData -> provider_id);
                  
 
- 		        if($provider -> first()->  phoneactivated == '0' ){
+ 		        if($provider -> first()-> phoneactivated == '0' or $provider -> first()-> phoneactivated == 0 ){
 
 		            return response()->json(['status' => false, 'errNum' => 5, 'msg' => $msg[5]]);
 
