@@ -628,7 +628,7 @@ class UserController extends Controller
 		        $user = User::where('user_id',$userData -> user_id);
                  
 
- 		        if($user -> first()->  phoneactivated == '0' ){
+ 		        if($user -> first()->  status == '0' ){
 
 		            return response()->json(['status' => false, 'errNum' => 5, 'msg' => $msg[5]]);
 
@@ -1130,7 +1130,7 @@ if($request -> has('all_stores')){
             $pagianted_providers =  DB::table("categories")
                                 ->join("providers" , "providers.category_id" , "categories.cat_id")   
                                  ->where($conditions)
-                                 ->where("providers.publish" , 1)
+                                ->where("providers.publish" , 1)
                                 ->select(
                                     "providers.provider_id",
                                     "providers.store_name AS store_name",
