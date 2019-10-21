@@ -38,14 +38,6 @@ Route::group(['middleware' => 'admin_auth'], function(){
 Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function() {
 	Route::group(['middleware' => 'admin_auth'], function(){
 
-		/*Route::get('/', [
-			'uses' => 'HomeController@index',
-			'as'   => 'home'
-.
-		]);*/
- 
-
-
 		Route::get('/home', 'HomeController@index') -> name('home');
 
 		Route::post('logout', 'AdminController@logout') -> name('admin.logout');
@@ -58,7 +50,6 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function() {
 			]);
 
 			Route::get('/admin', function(){
-                  
                   return redirect() -> route('login');
 
 			});
