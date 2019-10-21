@@ -18,7 +18,7 @@ class AuthenticateAdmin
     public function handle($request, Closure $next)
     {
         if (!Auth::guard('admin')->check()) {
-            return redirect()->route('loginView');
+            return redirect()->route('login');
         }
 
         return $next($request);

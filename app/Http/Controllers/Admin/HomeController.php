@@ -34,7 +34,7 @@ class HomeController extends Controller
 	public function index(){
 
 
-		return '';
+		 
 		$data['activeproviders']    = Providers::where('publish',1)   -> count();
 		$data['inactiveproviders']  = Providers::where('publish',0)   -> count();
 		$data['activedeliveries']   = Deliveries::where('publish',1)  -> count();
