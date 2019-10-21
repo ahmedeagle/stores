@@ -774,7 +774,6 @@ class ProviderController extends Controller
 		  }
  
         $data['phoneactivated'] = "1";
-        $data['status'] = "0";
         $data['activate_phone_hash'] = null;
 
         $provider -> update($data);
@@ -1096,8 +1095,7 @@ class ProviderController extends Controller
                                          'activate_phone_hash'   => null
                                  ]);
 
-               
- 
+            
 
         return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[4]]);
     }
