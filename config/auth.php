@@ -72,12 +72,12 @@ return [
     'providers' => [
         'users' => [
             'driver' => 'eloquent',
-            'model' => App\Models\User::class,
+            'model' => App\User::class,
         ],
 
         'admins' => [
             'driver' => 'eloquent',  //We are using eloquent model
-            'model' => App\Models\Admin::class,
+            'model' => App\Admin::class,
         ],
 
         // 'users' => [

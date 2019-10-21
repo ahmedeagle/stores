@@ -16,8 +16,6 @@ Route::get('/', function () {
 });
 
 
-
-
 Route::group(['middleware' => 'admin_auth'], function(){
 	Route::get('/publishing/{id}/{val}/{proccess}/{col}/{table}', [
 		'uses' => 'Controller@publishing', 
@@ -25,7 +23,7 @@ Route::group(['middleware' => 'admin_auth'], function(){
 	]);
 
 
- 
+
 	Route::post('/countryCitiesAjax', [
 		'uses' => 'Controller@getCountryCitites',
 		'as'   => 'country.cities'
@@ -48,7 +46,10 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function() {
  
 
 
-		Route::get('/home', 'HomeController@index') -> name('home');
+		Route::get('/home', function(){
+
+            return 'fgfgfg';
+		}) -> name('home');
 
 		Route::post('logout', 'AdminController@logout') -> name('admin.logout');
 	});

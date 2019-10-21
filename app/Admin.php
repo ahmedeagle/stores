@@ -9,14 +9,14 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 class Admin extends Authenticatable
 {
 	protected $table = 'admin';
-  //Mass assignable attributes
-  protected $fillable = [
-      'full_name', 'email', 'password',
-  ];
+	  //Mass assignable attributes
+	  protected $fillable = [
+	      'full_name', 'email', 'password',
+	  ];
 
-  //hidden attributes
-   protected $hidden = [
-       'password', 'remember_token',
-   ];
+	  //hidden attributes
+	   protected $hidden = [
+	       'password', 'remember_token',
+	   ];
 
 }
