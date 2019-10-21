@@ -46,10 +46,7 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function() {
  
 
 
-		Route::get('/home', function(){
-
-            return 'fgfgfg';
-		}) -> name('home');
+		Route::get('/home', 'HomeController@index') -> name('home');
 
 		Route::post('logout', 'AdminController@logout') -> name('admin.logout');
 	});
