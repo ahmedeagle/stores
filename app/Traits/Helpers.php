@@ -22,7 +22,7 @@ trait Helpers {
 
     public function saveImage($name, $img, $folder, $extensions){
 
-        $image = 'data:image/jpeg;base64,' . $img;
+        $image = 'data:image/png;base64,' . $img;
         $name = substr($name, 0, 30);
         $ext = explode('/', explode(':', substr($image, 0, strpos($image, ';')))[1])[1];
         $fileName = $name . '.' . $ext;
