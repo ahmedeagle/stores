@@ -67,10 +67,10 @@ class Crons extends Controller
       
         $this->ExpireProviderOffer($now);
     }
-    public function OfferExpireCron($now){
+    // public function OfferExpireCron($now){
       
-        $this->requestsExpireCron($now);
-    }
+    //     $this->requestsExpireCron($now);
+    // }
 
     
  
