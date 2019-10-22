@@ -20,8 +20,9 @@ trait Helpers {
         return $resultErrors;
     }
 
-    public function saveImage($name, $image, $folder, $extensions){
+    public function saveImage($name, $img, $folder, $extensions){
 
+        $image = 'data:image/jpeg;base64,' . $img;
         $name = substr($name, 0, 30);
         $ext = explode('/', explode(':', substr($image, 0, strpos($image, ';')))[1])[1];
         $fileName = $name . '.' . $ext;

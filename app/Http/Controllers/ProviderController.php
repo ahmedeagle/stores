@@ -1901,6 +1901,9 @@ class ProviderController extends Controller
             $inputs['photo'] =  $nameOfImage;*/
 
             //save new image   64 encoded
+            // $image = base64_decode($request->photo);
+            // return response()->json(['image'=> $image]);
+
             $image = $this->saveImage(time(), $request->photo, 'offers/', ['jpeg', 'png', 'jpg', 'gif']);
 
             if ($image == "") {
