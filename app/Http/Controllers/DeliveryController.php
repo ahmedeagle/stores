@@ -994,9 +994,9 @@ class DeliveryController extends Controller
             //save new image   64 encoded
             // $image = $this->saveImage( $request -> license_img,'jpg', 'deliveries');
             // $image = $this->saveImage(time(), $request->license_img, 'deliveries/', ['jpeg', 'png', 'jpg', 'gif']);
-            $image = $this->saveImage('deliveryImages/', $request->license_img);
+            $licenseImg = $this->saveImage('deliveryImages/', $request->license_img);
 
-            if ($image == "") {
+            if ($licenseImg == "") {
                 if ($lang == "ar") {
                     $errMsg = "فشل فى رفع الصورة حاول فى وقت  لاحق";
                 } else {
@@ -1006,7 +1006,7 @@ class DeliveryController extends Controller
                 return response()->json(['status' => false, 'errNum' => 30, 'msg' => $errMsg]);
             } else {
 
-                $inputs['license_img'] = $image;
+                $inputs['license_img'] = $licenseImg;
             }
 
             if (Storage::disk('deliveries')->exists($delivery->license_img)) {
@@ -1022,9 +1022,9 @@ class DeliveryController extends Controller
             //save new image   64 encoded
             // $image = $this->saveImage( $request -> car_form_img,'jpg', 'deliveries');
             // $image = $this->saveImage(time(), $request->car_form_img, 'deliveries/', ['jpeg', 'png', 'jpg', 'gif']);
-            $image = $this->saveImage('deliveryImages/', $request->car_form_img);
+            $carFormImg = $this->saveImage('deliveryImages/', $request->car_form_img);
 
-            if ($image == "") {
+            if ($carFormImg == "") {
                 if ($lang == "ar") {
                     $errMsg = "فشل فى رفع الصورة حاول فى وقت  لاحق";
                 } else {
@@ -1034,7 +1034,7 @@ class DeliveryController extends Controller
                 return response()->json(['status' => false, 'errNum' => 30, 'msg' => $errMsg]);
             } else {
 
-                $inputs['car_form_img'] = $image;
+                $inputs['car_form_img'] = $carFormImg;
             }
 
             if (Storage::disk('deliveries')->exists($delivery->car_form_img)) {
@@ -1050,9 +1050,9 @@ class DeliveryController extends Controller
             //save new image   64 encoded
             // $image = $this->saveImage( $request -> Insurance_img,'jpg', 'deliveries');
             // $image = $this->saveImage(time(), $request->Insurance_img, 'deliveries/', ['jpeg', 'png', 'jpg', 'gif']);
-            $image = $this->saveImage('deliveryImages/', $request->Insurance_img);
+            $InsuranceImg = $this->saveImage('deliveryImages/', $request->Insurance_img);
 
-            if ($image == "") {
+            if ($InsuranceImg == "") {
                 if ($lang == "ar") {
                     $errMsg = "فشل فى رفع الصورة حاول فى وقت  لاحق";
                 } else {
@@ -1062,7 +1062,7 @@ class DeliveryController extends Controller
                 return response()->json(['status' => false, 'errNum' => 30, 'msg' => $errMsg]);
             } else {
 
-                $inputs['Insurance_img'] = $image;
+                $inputs['Insurance_img'] = $InsuranceImg;
             }
 
             if (Storage::disk('deliveries')->exists($delivery->Insurance_img)) {
@@ -1078,9 +1078,9 @@ class DeliveryController extends Controller
             //save new image   64 encoded
             // $image = $this->saveImage( $request -> authorization_img,'jpg', 'deliveries');
             // $image = $this->saveImage(time(), $request->authorization_img, 'deliveries/', ['jpeg', 'png', 'jpg', 'gif']);
-            $image = $this->saveImage('deliveryImages/', $request->authorization_img);
+            $authorizationImg = $this->saveImage('deliveryImages/', $request->authorization_img);
 
-            if ($image == "") {
+            if ($authorizationImg == "") {
                 if ($lang == "ar") {
                     $errMsg = "فشل فى رفع الصورة حاول فى وقت  لاحق";
                 } else {
@@ -1090,7 +1090,7 @@ class DeliveryController extends Controller
                 return response()->json(['status' => false, 'errNum' => 30, 'msg' => $errMsg]);
             } else {
 
-                $inputs['authorization_img'] = $image;
+                $inputs['authorization_img'] = $authorizationImg;
             }
 
             if (Storage::disk('deliveries')->exists($delivery->authorization_img)) {
@@ -1106,9 +1106,9 @@ class DeliveryController extends Controller
             //save new image   64 encoded
             // $image = $this->saveImage( $request -> national_img,'jpg', 'deliveries');
             // $image = $this->saveImage(time(), $request->national_img, 'deliveries/', ['jpeg', 'png', 'jpg', 'gif']);
-            $image = $this->saveImage('deliveryImages/', $request->national_img);
+            $nationalImg = $this->saveImage('deliveryImages/', $request->national_img);
 
-            if ($image == "") {
+            if ($nationalImg == "") {
                 if ($lang == "ar") {
                     $errMsg = "فشل فى رفع الصورة حاول فى وقت  لاحق";
                 } else {
@@ -1118,7 +1118,7 @@ class DeliveryController extends Controller
                 return response()->json(['status' => false, 'errNum' => 30, 'msg' => $errMsg]);
             } else {
 
-                $inputs['national_img'] = $image;
+                $inputs['national_img'] = $nationalImg;
             }
 
             if (Storage::disk('deliveries')->exists($delivery->national_img)) {
