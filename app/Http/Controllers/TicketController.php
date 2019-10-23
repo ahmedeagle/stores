@@ -25,7 +25,7 @@ class TicketController extends Controller
 
         if ($validator->fails()) {
             $error = $validator->errors()->first();
-            return response()->json(['status' => false, 'errNum' => $error, 'msg' => $msg[$error]]);
+            return response()->json(['status' => false, 'errNum' => (int) $error, 'msg' => $msg[$error]]);
         }
 
         $name = ($lang == 'ar') ? 'ar' : 'en';
@@ -182,7 +182,7 @@ class TicketController extends Controller
 
         if ($validator->fails()) {
             $error = $validator->errors()->first();
-            return response()->json(['status' => false, 'errNum' => $error, 'msg' => $msg[$error]]);
+            return response()->json(['status' => false, 'errNum' => (int) $error, 'msg' => $msg[$error]]);
         }
 
         $type = $request->type;

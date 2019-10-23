@@ -212,7 +212,7 @@ class UserController extends Controller
             $errors = $validator->errors();
             $error = $errors->first();
 
-            return response()->json(['status' => false, 'errNum' => $error, 'msg' => $messagesStr[$error]]);
+            return response()->json(['status' => false, 'errNum' => (int) $error, 'msg' => $messagesStr[$error]]);
         }
         //here we can set posted data sent from the mobile
         $fullName = $request->input('full_name');
@@ -375,7 +375,7 @@ class UserController extends Controller
 
         if ($validator->fails()) {
             $error = $validator->errors()->first();
-            return response()->json(['status' => false, 'errNum' => $error, 'msg' => $msg[$error]]);
+            return response()->json(['status' => false, 'errNum' => (int) $error, 'msg' => $msg[$error]]);
         }
 
         $user_id = $this->get_id($request, 'users', 'user_id');
@@ -430,7 +430,7 @@ class UserController extends Controller
 
         if ($validator->fails()) {
             $error = $validator->errors()->first();
-            return response()->json(['status' => false, 'errNum' => $error, 'msg' => $msg[$error]]);
+            return response()->json(['status' => false, 'errNum' => (int) $error, 'msg' => $msg[$error]]);
         }
 
         $data = [];
@@ -506,7 +506,7 @@ class UserController extends Controller
         if ($validator->fails()) {
             $errors = $validator->errors();
             $error = $errors->first();
-            return response()->json(['status' => false, 'errNum' => $error, 'msg' => $msg[$error]]);
+            return response()->json(['status' => false, 'errNum' => (int) $error, 'msg' => $msg[$error]]);
         } else {
             $user = new User();
             $getUser = $user->where('users.password', md5($request->input('password')))
@@ -730,7 +730,7 @@ class UserController extends Controller
 
         if ($validator->fails()) {
             $error = $validator->errors()->first();
-            return response()->json(['status' => false, 'errNum' => $error, 'msg' => $msg[$error]]);
+            return response()->json(['status' => false, 'errNum' => (int) $error, 'msg' => $msg[$error]]);
         }
 
         $userId = $this->get_id($request, 'users', 'user_id');
@@ -856,7 +856,7 @@ class UserController extends Controller
 
         if ($validator->fails()) {
             $error = $validator->errors()->first();
-            return response()->json(['status' => false, 'errNum' => $error, 'msg' => $msg[$error]]);
+            return response()->json(['status' => false, 'errNum' => (int) $error, 'msg' => $msg[$error]]);
         }
 
         if ($input['phone'] != $user->first()->phone) {
@@ -1174,7 +1174,7 @@ class UserController extends Controller
 
         if ($validator->fails()) {
             $error = $validator->errors()->first();
-            return response()->json(['status' => false, 'errNum' => $error, 'msg' => $msg[$error]]);
+            return response()->json(['status' => false, 'errNum' => (int) $error, 'msg' => $msg[$error]]);
         }
 
         $rates = DB::table('providers_rates')
@@ -1333,7 +1333,7 @@ class UserController extends Controller
 
         if ($validator->fails()) {
             $error = $validator->errors()->first();
-            return response()->json(['status' => false, 'errNum' => $error, 'msg' => $msg[$error]]);
+            return response()->json(['status' => false, 'errNum' => (int) $error, 'msg' => $msg[$error]]);
         }
 
         //get product details
@@ -1507,7 +1507,7 @@ class UserController extends Controller
         if ($validator->fails()) {
             $errors = $validator->errors();
             $error = $errors->first();
-            return response()->json(['status' => false, 'errNum' => $error, 'msg' => $msg[$error]]);
+            return response()->json(['status' => false, 'errNum' => (int) $error, 'msg' => $msg[$error]]);
         }
 
         $userId = 0; // return all products
@@ -1624,7 +1624,7 @@ class UserController extends Controller
         if ($validator->fails()) {
             $errors = $validator->errors();
             $error = $errors->first();
-            return response()->json(['status' => false, 'errNum' => $error, 'msg' => $msg[$error]]);
+            return response()->json(['status' => false, 'errNum' => (int) $error, 'msg' => $msg[$error]]);
         }
 
         $userId = 0; // return all products
@@ -1743,7 +1743,7 @@ class UserController extends Controller
 
         if ($validator->fails()) {
             $error = $validator->errors()->first();
-            return response()->json(['status' => false, 'errNum' => $error, 'msg' => $msg[$error]]);
+            return response()->json(['status' => false, 'errNum' => (int) $error, 'msg' => $msg[$error]]);
         }
 
         $userId = $this->get_id($request, 'users', 'user_id');
@@ -1902,7 +1902,7 @@ class UserController extends Controller
 
         if ($validator->fails()) {
             $error = $validator->errors()->first();
-            return response()->json(['status' => false, 'errNum' => $error, 'msg' => $msg[$error]]);
+            return response()->json(['status' => false, 'errNum' => (int) $error, 'msg' => $msg[$error]]);
         }
 
         $userId = $this->get_id($request, 'users', 'user_id');
@@ -1980,7 +1980,7 @@ class UserController extends Controller
 
         if ($validator->fails()) {
             $error = $validator->errors()->first();
-            return response()->json(['status' => false, 'errNum' => $error, 'msg' => $msg[$error]]);
+            return response()->json(['status' => false, 'errNum' => (int) $error, 'msg' => $msg[$error]]);
         }
 
         $userId = $this->get_id($request, 'users', 'user_id');
@@ -2036,7 +2036,7 @@ class UserController extends Controller
 
         if ($validator->fails()) {
             $error = $validator->errors()->first();
-            return response()->json(['status' => false, 'errNum' => $error, 'msg' => $msg[$error]]);
+            return response()->json(['status' => false, 'errNum' => (int) $error, 'msg' => $msg[$error]]);
         }
         $check = DB::table('user_addresses')->where('address_id', $request->input('address_id'))->delete();
         if ($check) {
@@ -2207,7 +2207,7 @@ class UserController extends Controller
 
         if ($validator->fails()) {
             $error = $validator->errors()->first();
-            return response()->json(['status' => false, 'errNum' => $error, 'msg' => $msg[$error]]);
+            return response()->json(['status' => false, 'errNum' => (int) $error, 'msg' => $msg[$error]]);
         }
 
         $inputs = $request->only('name', 'country_code', 'phone', 'job_id');
@@ -2340,7 +2340,7 @@ class UserController extends Controller
 
         if ($validator->fails()) {
             $error = $validator->errors()->first();
-            return response()->json(['status' => false, 'errNum' => $error, 'msg' => $msg[$error]]);
+            return response()->json(['status' => false, 'errNum' => (int) $error, 'msg' => $msg[$error]]);
         }
 
         $name = $request->input('name');
@@ -2690,7 +2690,7 @@ class UserController extends Controller
         if ($validator->fails()) {
             $errors = $validator->errors();
             $error = $errors->first();
-            return response()->json(['status' => false, 'errNum' => $error, 'msg' => $msg[$error]]);
+            return response()->json(['status' => false, 'errNum' => (int) $error, 'msg' => $msg[$error]]);
         }
 
         //get user address data
@@ -2999,7 +2999,7 @@ class UserController extends Controller
 
         if ($validator->fails()) {
             $error = $validator->errors()->first();
-            return response()->json(['status' => false, 'errNum' => $error, 'msg' => $msg[$error]]);
+            return response()->json(['status' => false, 'errNum' => (int) $error, 'msg' => $msg[$error]]);
         }
 
         $user_id = $this->get_id($request, 'users', 'user_id');
@@ -3131,7 +3131,7 @@ class UserController extends Controller
 
         if ($validator->fails()) {
             $error = $validator->errors()->first();
-            return response()->json(['status' => false, 'errNum' => $error, 'msg' => $msg[$error]]);
+            return response()->json(['status' => false, 'errNum' => (int) $error, 'msg' => $msg[$error]]);
         }
 
         $type = $request->input('type');
@@ -3312,7 +3312,7 @@ class UserController extends Controller
         if ($validator->fails()) {
             $errors = $validator->errors();
             $error = $errors->first();
-            return response()->json(['status' => false, 'errNum' => $error, 'msg' => $msg[$error]]);
+            return response()->json(['status' => false, 'errNum' => (int) $error, 'msg' => $msg[$error]]);
         }
         //get order header
         $order = DB::table('orders_headers')
@@ -3681,7 +3681,7 @@ class UserController extends Controller
         ], $messages);
         if ($validator->fails()) {
             $error = $validator->errors()->first();
-            return response()->json(['status' => false, 'errNum' => $error, 'msg' => $msg[$error]]);
+            return response()->json(['status' => false, 'errNum' => (int) $error, 'msg' => $msg[$error]]);
         }
         // get provider enable future order or not
         $provider_info = DB::table("providers")
@@ -3768,7 +3768,7 @@ class UserController extends Controller
 
         if ($validator->fails()) {
             $error = $validator->errors()->first();
-            return response()->json(['status' => false, 'errNum' => $error, 'msg' => $msg[$error]]);
+            return response()->json(['status' => false, 'errNum' => (int) $error, 'msg' => $msg[$error]]);
         }
 
         $userData = User::where('user_id', $request->input('user_id'))
@@ -3893,7 +3893,7 @@ class UserController extends Controller
 
         if ($validator->fails()) {
             $error = $validator->errors()->first();
-            return response()->json(['status' => false, 'errNum' => $error, 'msg' => $msg[$error]]);
+            return response()->json(['status' => false, 'errNum' => (int) $error, 'msg' => $msg[$error]]);
         }
 
         // insert bank account data into database
@@ -4040,7 +4040,7 @@ class UserController extends Controller
 
         if ($validator->fails()) {
             $error = $validator->errors()->first();
-            return response()->json(['status' => false, 'errNum' => $error, 'msg' => $msg[$error]]);
+            return response()->json(['status' => false, 'errNum' => (int) $error, 'msg' => $msg[$error]]);
         }
 
         $user_id = $this->get_id($request, 'users', 'user_id');
@@ -4152,7 +4152,7 @@ class UserController extends Controller
 
         if ($validator->fails()) {
             $error = $validator->errors()->first();
-            return response()->json(['status' => false, 'errNum' => $error, 'msg' => $msg[$error]]);
+            return response()->json(['status' => false, 'errNum' => (int) $error, 'msg' => $msg[$error]]);
         }
         $user_id = $this->get_id($request, 'users', 'user_id');
 
@@ -4255,7 +4255,7 @@ class UserController extends Controller
 
         if ($validator->fails()) {
             $error = $validator->errors()->first();
-            return response()->json(['status' => false, 'errNum' => $error, 'msg' => $msg[$error]]);
+            return response()->json(['status' => false, 'errNum' => (int) $error, 'msg' => $msg[$error]]);
         }
 
         $provider = DB::table('providers')->where('provider_id', $request->provider_id)->first();
@@ -4330,7 +4330,7 @@ class UserController extends Controller
 
         if ($validator->fails()) {
             $error = $validator->errors()->first();
-            return response()->json(['status' => false, 'errNum' => $error, 'msg' => $msg[$error]]);
+            return response()->json(['status' => false, 'errNum' => (int) $error, 'msg' => $msg[$error]]);
         }
 
         $url = "https://test.oppwa.com/v1/checkouts";
@@ -4396,7 +4396,7 @@ class UserController extends Controller
 
         if ($validator->fails()) {
             $error = $validator->errors()->first();
-            return response()->json(['status' => false, 'errNum' => $error, 'msg' => $msg[$error]]);
+            return response()->json(['status' => false, 'errNum' => (int) $error, 'msg' => $msg[$error]]);
         }
 
         $url = "https://test.oppwa.com/v1/checkouts/{$request->checkoutId}/payment";

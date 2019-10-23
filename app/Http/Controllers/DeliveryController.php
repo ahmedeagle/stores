@@ -262,7 +262,7 @@ class DeliveryController extends Controller
         if ($validator->fails()) {
 
             $error = $validator->errors()->first();
-            return response()->json(['status' => false, 'errNum' => $error, 'msg' => $msg[$error]]);
+            return response()->json(['status' => false, 'errNum' => (int) $error, 'msg' => $msg[$error]]);
 
         }
 
@@ -485,7 +485,7 @@ class DeliveryController extends Controller
 
         if ($validator->fails()) {
             $error = $validator->errors()->first();
-            return response()->json(['status' => false, 'errNum' => $error, 'msg' => $msg[$error]]);
+            return response()->json(['status' => false, 'errNum' => (int) $error, 'msg' => $msg[$error]]);
         }
 
         $delivery_id = $this->get_id($request, 'deliveries', 'delivery_id');
@@ -542,7 +542,7 @@ class DeliveryController extends Controller
 
         if ($validator->fails()) {
             $error = $validator->errors()->first();
-            return response()->json(['status' => false, 'errNum' => $error, 'msg' => $msg[$error]]);
+            return response()->json(['status' => false, 'errNum' => (int) $error, 'msg' => $msg[$error]]);
         }
 
         $data = [];
@@ -617,7 +617,7 @@ class DeliveryController extends Controller
         if ($validator->fails()) {
             $errors = $validator->errors();
             $error = $errors->first();
-            return response()->json(['status' => false, 'errNum' => $error, 'msg' => $msg[$error]]);
+            return response()->json(['status' => false, 'errNum' => (int) $error, 'msg' => $msg[$error]]);
         }
 
         $getDelivery = $this->getDeliveryData(0, $lang, "login", $request->input('password'), $request->input('phone'));
@@ -929,7 +929,7 @@ class DeliveryController extends Controller
         if ($validator->fails()) {
 
             $error = $validator->errors()->first();
-            return response()->json(['status' => false, 'errNum' => $error, 'msg' => $msg[$error]]);
+            return response()->json(['status' => false, 'errNum' => (int) $error, 'msg' => $msg[$error]]);
 
         }
 
@@ -947,6 +947,8 @@ class DeliveryController extends Controller
 
             return response()->json(['status' => false, 'errNum' => 20, 'msg' => $msg[20]]);
         }
+
+        dd($inputs);
 
         if ($inputs['phone'] != $delivery->phone) {
 
@@ -1188,7 +1190,7 @@ class DeliveryController extends Controller
 
         if ($validator->fails()) {
             $error = $validator->errors()->first();
-            return response()->json(['status' => false, 'errNum' => $error, 'msg' => $msg[$error]]);
+            return response()->json(['status' => false, 'errNum' => (int) $error, 'msg' => $msg[$error]]);
         }
 
         $delivery_id = $this->get_id($request, 'deliveries', 'delivery_id');
@@ -1376,7 +1378,7 @@ class DeliveryController extends Controller
         if ($validator->fails()) {
             $errors = $validator->errors();
             $error = $errors->first();
-            return response()->json(['status' => false, 'errNum' => $error, 'msg' => $msg[$error]]);
+            return response()->json(['status' => false, 'errNum' => (int) $error, 'msg' => $msg[$error]]);
         }
         //get order header
         $order = DB::table('orders_headers')
@@ -1583,7 +1585,7 @@ class DeliveryController extends Controller
         if ($validator->fails()) {
 
             $error = $validator->errors()->first();
-            return response()->json(['status' => false, 'errNum' => $error, 'msg' => $msg[$error]]);
+            return response()->json(['status' => false, 'errNum' => (int) $error, 'msg' => $msg[$error]]);
         }
 
         $order_id = $request->input('order_id');
@@ -1879,7 +1881,7 @@ class DeliveryController extends Controller
 
         if ($validator->fails()) {
             $error = $validator->errors()->first();
-            return response()->json(['status' => false, 'errNum' => $error, 'msg' => $msg[$error]]);
+            return response()->json(['status' => false, 'errNum' => (int) $error, 'msg' => $msg[$error]]);
         }
 
         $type = "deliveries";
@@ -2019,7 +2021,7 @@ class DeliveryController extends Controller
 
         if ($validator->fails()) {
             $error = $validator->errors()->first();
-            return response()->json(['status' => false, 'errNum' => $error, 'msg' => $msg[$error]]);
+            return response()->json(['status' => false, 'errNum' => (int) $error, 'msg' => $msg[$error]]);
         }
 
         $type = 'deliveries';
@@ -2261,7 +2263,7 @@ class DeliveryController extends Controller
 
         if ($validator->fails()) {
             $error = $validator->errors()->first();
-            return response()->json(['status' => false, 'errNum' => $error, 'msg' => $msg[$error]]);
+            return response()->json(['status' => false, 'errNum' => (int) $error, 'msg' => $msg[$error]]);
         } else {
             $delivery_id = $request->input('delivery_id');
             $type = $request->input('type');
@@ -2392,7 +2394,7 @@ class DeliveryController extends Controller
 
         if ($validator->fails()) {
             $error = $validator->errors()->first();
-            return response()->json(['status' => false, 'errNum' => $error, 'msg' => $msg[$error]]);
+            return response()->json(['status' => false, 'errNum' => (int) $error, 'msg' => $msg[$error]]);
         } else {
             $type = $request->input('type');
 
@@ -2470,7 +2472,7 @@ class DeliveryController extends Controller
 
         if ($validator->fails()) {
             $error = $validator->errors()->first();
-            return response()->json(['status' => false, 'errNum' => $error, 'msg' => $msg[$error]]);
+            return response()->json(['status' => false, 'errNum' => (int) $error, 'msg' => $msg[$error]]);
         } else {
             $balance = DB::table('balances')
                 ->where('actor_id', $request->input('delivery_id'))
@@ -2598,7 +2600,7 @@ class DeliveryController extends Controller
 
         if ($validator->fails()) {
             $error = $validator->errors()->first();
-            return response()->json(['status' => false, 'errNum' => $error, 'msg' => $msg[$error]]);
+            return response()->json(['status' => false, 'errNum' => (int) $error, 'msg' => $msg[$error]]);
         } else {
 
             //check if there is pending requests
@@ -2731,7 +2733,7 @@ class DeliveryController extends Controller
 
         if ($validator->fails()) {
             $error = $validator->errors()->first();
-            return response()->json(['status' => false, 'errNum' => $error, 'msg' => $msg[$error]]);
+            return response()->json(['status' => false, 'errNum' => (int) $error, 'msg' => $msg[$error]]);
         } else {
             $check = Deliveries::where('delivery_id', $request->input('delivery_id'))
                 ->update(['receive_orders' => $switch]);
@@ -2790,7 +2792,7 @@ class DeliveryController extends Controller
 
         if ($validator->fails()) {
             $error = $validator->errors()->first();
-            return response()->json(['status' => false, 'errNum' => $error, 'msg' => $msg[$error]]);
+            return response()->json(['status' => false, 'errNum' => (int) $error, 'msg' => $msg[$error]]);
         } else {
             if ($type == 0) {
                 //cancel order
