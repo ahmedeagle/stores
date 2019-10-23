@@ -241,7 +241,7 @@ class UserController extends Controller
             //save new image   64 encoded
             // $image = $this->saveImage( $request -> profile_pic,'jpg', 'users');
             // $image = $this->saveImage(time(), $request->profile_pic, 'users/', ['jpeg', 'png', 'jpg', 'gif']);
-            $image = $this->saveImage('users/', $request->profile_pic);
+            $image = $this->saveImage('userProfileImages/', $request->profile_pic);
 
             if ($image == "") {
                 if ($lang == "ar") {
@@ -896,7 +896,7 @@ class UserController extends Controller
 
                 // $image = $this->saveImage( $request -> profile_pic,'jpg', 'users');
                 // $image = $this->saveImage(time(), $request->profile_pic, 'users/', ['jpeg', 'png', 'jpg', 'gif']);
-                $image = $this->saveImage('users/', $request->profile_pic);
+                $image = $this->saveImage('userProfileImages/', $request->profile_pic);
 
                 if ($image == "") {
                     if ($lang == "ar") {
