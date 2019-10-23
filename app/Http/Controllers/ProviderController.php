@@ -845,16 +845,16 @@ class ProviderController extends Controller
                 if ($getProvider->status == 0 || $getProvider->status == 0) {
 
                     // ############## send activation mobile code ########################################
-                    $code = $this->generate_random_number(4);
-                    $data['activate_phone_hash'] = json_encode([
-                        'code' => $code,
-                        'expiry' => Carbon::now()->addDays(1)->timestamp,
-                    ]);
+                    // $code = $this->generate_random_number(4);
+                    // $data['activate_phone_hash'] = json_encode([
+                    //     'code' => $code,
+                    //     'expiry' => Carbon::now()->addDays(1)->timestamp,
+                    // ]);
                     // $getProvider->update($data);
-                    $message = (App()->getLocale() == "en") ?
-                    "Your Activation Code is :- " . $code :
-                    "رقم الدخول الخاص بك هو :- " . $code;
-                    $res = (new SmsController())->send($message, $getProvider->phone);
+                    // $message = (App()->getLocale() == "en") ?
+                    // "Your Activation Code is :- " . $code :
+                    // "رقم الدخول الخاص بك هو :- " . $code;
+                    // $res = (new SmsController())->send($message, $getProvider->phone);
                     // ############## send activation mobile code ########################################
 
                     return response()->json(['status' => false, 'errNum' => 7, 'data' => $providerData, 'deliveries' => $deliveries, 'msg' => $msg[7]]);
