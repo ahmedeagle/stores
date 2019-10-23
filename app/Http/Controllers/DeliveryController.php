@@ -1009,9 +1009,9 @@ class DeliveryController extends Controller
                 $inputs['license_img'] = $image;
             }
 
-            if (Storage::disk('deliveryImages')->exists($delivery->license_img)) {
+            if (Storage::disk('deliveries')->exists($delivery->license_img)) {
 
-                Storage::disk('deliveryImages')->delete($delivery->license_img);
+                Storage::disk('deliveries')->delete($delivery->license_img);
 
             }
 
@@ -1037,9 +1037,9 @@ class DeliveryController extends Controller
                 $inputs['car_form_img'] = $image;
             }
 
-            if (Storage::disk('deliveryImages')->exists($delivery->car_form_img)) {
+            if (Storage::disk('deliveries')->exists($delivery->car_form_img)) {
 
-                Storage::disk('deliveryImages')->delete($delivery->car_form_img);
+                Storage::disk('deliveries')->delete($delivery->car_form_img);
 
             }
 
@@ -1065,9 +1065,9 @@ class DeliveryController extends Controller
                 $inputs['Insurance_img'] = $image;
             }
 
-            if (Storage::disk('deliveryImages')->exists($delivery->Insurance_img)) {
+            if (Storage::disk('deliveries')->exists($delivery->Insurance_img)) {
 
-                Storage::disk('deliveryImages')->delete($delivery->Insurance_img);
+                Storage::disk('deliveries')->delete($delivery->Insurance_img);
 
             }
 
@@ -1093,9 +1093,9 @@ class DeliveryController extends Controller
                 $inputs['authorization_img'] = $image;
             }
 
-            if (Storage::disk('deliveryImages')->exists($delivery->authorization_img)) {
+            if (Storage::disk('deliveries')->exists($delivery->authorization_img)) {
 
-                Storage::disk('deliveryImages')->delete($delivery->authorization_img);
+                Storage::disk('deliveries')->delete($delivery->authorization_img);
 
             }
 
@@ -1121,9 +1121,9 @@ class DeliveryController extends Controller
                 $inputs['national_img'] = $image;
             }
 
-            if (Storage::disk('deliveryImages')->exists($delivery->national_img)) {
+            if (Storage::disk('deliveries')->exists($delivery->national_img)) {
 
-                Storage::disk('deliveryImages')->delete($delivery->national_img);
+                Storage::disk('deliveries')->delete($delivery->national_img);
 
             }
 

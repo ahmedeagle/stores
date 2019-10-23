@@ -69,7 +69,7 @@ return [
             'visibility' => 'public',
         ],
 
-        'deliveryImages' => [
+        'deliveries' => [
             'driver' => 'local',
             'root' => base_path('public/deliveryImages'),
             'url' => env('APP_URL'). '/public/deliveryImages',
