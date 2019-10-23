@@ -276,7 +276,7 @@ class DeliveryController extends Controller
             //save new image   64 encoded
             // $image = $this->saveImage( $request -> license_img,'jpg', 'deliveries');
             // $image = $this->saveImage(time(), $request->license_img, 'deliveries/', ['jpeg', 'png', 'jpg', 'gif']);
-            $image = $this->saveImage('deliveries/', $request->license_img);
+            $image = $this->saveImage('deliveryImages/', $request->license_img);
 
             if ($image == "") {
                 if ($lang == "ar") {
@@ -299,7 +299,7 @@ class DeliveryController extends Controller
             //save new image   64 encoded
             // $image = $this->saveImage( $request -> car_form_img,'jpg', 'deliveries');
             // $image = $this->saveImage(time(), $request->car_form_img, 'deliveries/', ['jpeg', 'png', 'jpg', 'gif']);
-            $image = $this->saveImage('deliveries/', $request->car_form_img);
+            $image = $this->saveImage('deliveryImages/', $request->car_form_img);
 
             if ($image == "") {
                 if ($lang == "ar") {
@@ -322,7 +322,7 @@ class DeliveryController extends Controller
             //save new image   64 encoded
             // $image = $this->saveImage( $request -> Insurance_img,'jpg', 'deliveries');
             // $image = $this->saveImage(time(), $request->Insurance_img, 'deliveries/', ['jpeg', 'png', 'jpg', 'gif']);
-            $image = $this->saveImage('deliveries/', $request->Insurance_img);
+            $image = $this->saveImage('deliveryImages/', $request->Insurance_img);
 
             if ($image == "") {
                 if ($lang == "ar") {
@@ -345,7 +345,7 @@ class DeliveryController extends Controller
             //save new image   64 encoded
             // $image = $this->saveImage( $request -> authorization_img,'jpg', 'deliveries');
             // $image = $this->saveImage(time(), $request->authorization_img, 'deliveries/', ['jpeg', 'png', 'jpg', 'gif']);
-            $image = $this->saveImage('deliveries/', $request->authorization_img);
+            $image = $this->saveImage('deliveryImages/', $request->authorization_img);
 
             if ($image == "") {
                 if ($lang == "ar") {
@@ -368,7 +368,7 @@ class DeliveryController extends Controller
             //save new image   64 encoded
             // $image = $this->saveImage( $request -> national_img,'jpg', 'deliveries');
             // $image = $this->saveImage(time(), $request->national_img, 'deliveries/', ['jpeg', 'png', 'jpg', 'gif']);
-            $image = $this->saveImage('deliveries/', $request->national_img);
+            $image = $this->saveImage('deliveryImages/', $request->national_img);
 
             if ($image == "") {
                 if ($lang == "ar") {
@@ -994,7 +994,7 @@ class DeliveryController extends Controller
             //save new image   64 encoded
             // $image = $this->saveImage( $request -> license_img,'jpg', 'deliveries');
             // $image = $this->saveImage(time(), $request->license_img, 'deliveries/', ['jpeg', 'png', 'jpg', 'gif']);
-            $image = $this->saveImage('deliveries/', $request->license_img);
+            $image = $this->saveImage('deliveryImages/', $request->license_img);
 
             if ($image == "") {
                 if ($lang == "ar") {
@@ -1009,9 +1009,9 @@ class DeliveryController extends Controller
                 $inputs['license_img'] = $image;
             }
 
-            if (Storage::disk('deliveries')->exists($delivery->license_img)) {
+            if (Storage::disk('deliveryImages')->exists($delivery->license_img)) {
 
-                Storage::disk('deliveries')->delete($delivery->license_img);
+                Storage::disk('deliveryImages')->delete($delivery->license_img);
 
             }
 
@@ -1022,7 +1022,7 @@ class DeliveryController extends Controller
             //save new image   64 encoded
             // $image = $this->saveImage( $request -> car_form_img,'jpg', 'deliveries');
             // $image = $this->saveImage(time(), $request->car_form_img, 'deliveries/', ['jpeg', 'png', 'jpg', 'gif']);
-            $image = $this->saveImage('deliveries/', $request->car_form_img);
+            $image = $this->saveImage('deliveryImages/', $request->car_form_img);
 
             if ($image == "") {
                 if ($lang == "ar") {
@@ -1037,9 +1037,9 @@ class DeliveryController extends Controller
                 $inputs['car_form_img'] = $image;
             }
 
-            if (Storage::disk('deliveries')->exists($delivery->car_form_img)) {
+            if (Storage::disk('deliveryImages')->exists($delivery->car_form_img)) {
 
-                Storage::disk('deliveries')->delete($delivery->car_form_img);
+                Storage::disk('deliveryImages')->delete($delivery->car_form_img);
 
             }
 
@@ -1050,7 +1050,7 @@ class DeliveryController extends Controller
             //save new image   64 encoded
             // $image = $this->saveImage( $request -> Insurance_img,'jpg', 'deliveries');
             // $image = $this->saveImage(time(), $request->Insurance_img, 'deliveries/', ['jpeg', 'png', 'jpg', 'gif']);
-            $image = $this->saveImage('deliveries/', $request->Insurance_img);
+            $image = $this->saveImage('deliveryImages/', $request->Insurance_img);
 
             if ($image == "") {
                 if ($lang == "ar") {
@@ -1065,9 +1065,9 @@ class DeliveryController extends Controller
                 $inputs['Insurance_img'] = $image;
             }
 
-            if (Storage::disk('deliveries')->exists($delivery->Insurance_img)) {
+            if (Storage::disk('deliveryImages')->exists($delivery->Insurance_img)) {
 
-                Storage::disk('deliveries')->delete($delivery->Insurance_img);
+                Storage::disk('deliveryImages')->delete($delivery->Insurance_img);
 
             }
 
@@ -1078,7 +1078,7 @@ class DeliveryController extends Controller
             //save new image   64 encoded
             // $image = $this->saveImage( $request -> authorization_img,'jpg', 'deliveries');
             // $image = $this->saveImage(time(), $request->authorization_img, 'deliveries/', ['jpeg', 'png', 'jpg', 'gif']);
-            $image = $this->saveImage('deliveries/', $request->authorization_img);
+            $image = $this->saveImage('deliveryImages/', $request->authorization_img);
 
             if ($image == "") {
                 if ($lang == "ar") {
@@ -1093,9 +1093,9 @@ class DeliveryController extends Controller
                 $inputs['authorization_img'] = $image;
             }
 
-            if (Storage::disk('deliveries')->exists($delivery->authorization_img)) {
+            if (Storage::disk('deliveryImages')->exists($delivery->authorization_img)) {
 
-                Storage::disk('deliveries')->delete($delivery->authorization_img);
+                Storage::disk('deliveryImages')->delete($delivery->authorization_img);
 
             }
 
@@ -1106,7 +1106,7 @@ class DeliveryController extends Controller
             //save new image   64 encoded
             // $image = $this->saveImage( $request -> national_img,'jpg', 'deliveries');
             // $image = $this->saveImage(time(), $request->national_img, 'deliveries/', ['jpeg', 'png', 'jpg', 'gif']);
-            $image = $this->saveImage('deliveries/', $request->national_img);
+            $image = $this->saveImage('deliveryImages/', $request->national_img);
 
             if ($image == "") {
                 if ($lang == "ar") {
@@ -1121,9 +1121,9 @@ class DeliveryController extends Controller
                 $inputs['national_img'] = $image;
             }
 
-            if (Storage::disk('deliveries')->exists($delivery->national_img)) {
+            if (Storage::disk('deliveryImages')->exists($delivery->national_img)) {
 
-                Storage::disk('deliveries')->delete($delivery->national_img);
+                Storage::disk('deliveryImages')->delete($delivery->national_img);
 
             }
 
