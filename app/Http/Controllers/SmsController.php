@@ -11,7 +11,7 @@ class SmsController extends Controller
         $curl = new \App\Support\SMS\Curl();
         $username = "STORESMAP"; // The user name of gateway
         $password = "e1mLlK2V1XSmdP"; // the password of gateway
-        $sender = "MJRB";
+        $sender = "STORESMAP";
         $url = "http://www.jawalbsms.ws/api.php/sendsms?user=$username&pass=$password&to=$phone&message=$message&sender=$sender";
         $urlDiv = explode("?", $url);
         $result = $curl->_simple_call("post", $urlDiv[0], $urlDiv[1], array("TIMEOUT" => 3));
