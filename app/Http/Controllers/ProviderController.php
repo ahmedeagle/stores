@@ -844,13 +844,14 @@ class ProviderController extends Controller
                 //need to activate account by verfiy phone number
                 if ($getProvider->status == 0 || $getProvider->status == 0) {
 
+                    $data = [];
                     // ############## send activation mobile code ########################################
                     $code = $this->generate_random_number(4);
                     $data['activate_phone_hash'] = json_encode([
                         'code' => $code,
                         'expiry' => Carbon::now()->addDays(1)->timestamp,
                     ]);
-                    // $getProvider->update($data);
+                    Providers::where('provider_id', $getProvider->provider_id)->update($data);
                     $message = (App()->getLocale() == "en") ?
                     "Your Activation Code is :- " . $code :
                     "رقم الدخول الخاص بك هو :- " . $code;
