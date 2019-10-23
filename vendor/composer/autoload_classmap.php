@@ -36,7 +36,7 @@ return array(
     'App\\Http\\Controllers\\Auth\\ResetPasswordController' => $baseDir . '/app/Http/Controllers/Auth/ResetPasswordController.php',
     'App\\Http\\Controllers\\Controller' => $baseDir . '/app/Http/Controllers/Controller.php',
     'App\\Http\\Controllers\\Crons' => $baseDir . '/app/Http/Controllers/Crons.php',
-    'App\\Http\\Controllers\\DeliveryController' => $baseDir . '/app/Http/Controllers/DeliveryController - Copy.php',
+    'App\\Http\\Controllers\\DeliveryController' => $baseDir . '/app/Http/Controllers/DeliveryController.php',
     'App\\Http\\Controllers\\HomeController' => $baseDir . '/app/Http/Controllers/HomeController.php',
     'App\\Http\\Controllers\\NotificationController' => $baseDir . '/app/Http/Controllers/NotificationController.php',
     'App\\Http\\Controllers\\PageController' => $baseDir . '/app/Http/Controllers/PageController.php',
