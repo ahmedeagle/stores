@@ -954,6 +954,7 @@ class DeliveryController extends Controller
             return response()->json(['status' => false, 'errNum' => 20, 'msg' => $msg[20]]);
         }
 
+        $inputs = [];
         $inputs = $request->only('full_name', 'country_id', 'city_id', 'phone', 'car_number');
 
         $delivery = DB::table("deliveries")->where('delivery_id', $deliveryId)->select('phone', 'license_img', 'car_form_img', 'Insurance_img', 'authorization_img', 'national_img')->first();
@@ -1011,7 +1012,7 @@ class DeliveryController extends Controller
             //save new image   64 encoded
             // $image = $this->saveImage( $request -> license_img,'jpg', 'deliveries');
             // $image = $this->saveImage(time(), $request->license_img, 'deliveries/', ['jpeg', 'png', 'jpg', 'gif']);
-            $licenseImg = $this->saveImage('deliveryImages/', $request->license_img);
+            $licenseImg = $this->saveImage('deliveryImages/', $request->license_img, 'license_img');
 
             if ($licenseImg == "") {
                 if ($lang == "ar") {
@@ -1039,7 +1040,7 @@ class DeliveryController extends Controller
             //save new image   64 encoded
             // $image = $this->saveImage( $request -> car_form_img,'jpg', 'deliveries');
             // $image = $this->saveImage(time(), $request->car_form_img, 'deliveries/', ['jpeg', 'png', 'jpg', 'gif']);
-            $carFormImg = $this->saveImage('deliveryImages/', $request->car_form_img);
+            $carFormImg = $this->saveImage('deliveryImages/', $request->car_form_img, 'car_form_img');
 
             if ($carFormImg == "") {
                 if ($lang == "ar") {
@@ -1067,7 +1068,7 @@ class DeliveryController extends Controller
             //save new image   64 encoded
             // $image = $this->saveImage( $request -> Insurance_img,'jpg', 'deliveries');
             // $image = $this->saveImage(time(), $request->Insurance_img, 'deliveries/', ['jpeg', 'png', 'jpg', 'gif']);
-            $InsuranceImg = $this->saveImage('deliveryImages/', $request->Insurance_img);
+            $InsuranceImg = $this->saveImage('deliveryImages/', $request->Insurance_img, 'Insurance_img');
 
             if ($InsuranceImg == "") {
                 if ($lang == "ar") {
@@ -1095,7 +1096,7 @@ class DeliveryController extends Controller
             //save new image   64 encoded
             // $image = $this->saveImage( $request -> authorization_img,'jpg', 'deliveries');
             // $image = $this->saveImage(time(), $request->authorization_img, 'deliveries/', ['jpeg', 'png', 'jpg', 'gif']);
-            $authorizationImg = $this->saveImage('deliveryImages/', $request->authorization_img);
+            $authorizationImg = $this->saveImage('deliveryImages/', $request->authorization_img, 'authorization_img');
 
             if ($authorizationImg == "") {
                 if ($lang == "ar") {
@@ -1123,7 +1124,7 @@ class DeliveryController extends Controller
             //save new image   64 encoded
             // $image = $this->saveImage( $request -> national_img,'jpg', 'deliveries');
             // $image = $this->saveImage(time(), $request->national_img, 'deliveries/', ['jpeg', 'png', 'jpg', 'gif']);
-            $nationalImg = $this->saveImage('deliveryImages/', $request->national_img);
+            $nationalImg = $this->saveImage('deliveryImages/', $request->national_img, 'national_img');
 
             if ($nationalImg == "") {
                 if ($lang == "ar") {
@@ -1149,6 +1150,8 @@ class DeliveryController extends Controller
         $inputs['country_code'] = $this->checkCountryCodeFormate($request->input('country_code'));
 
         try {
+
+            dd($inputs);
 
             DB::transaction(function () use ($inputs, $deliveryId) {
                 DB::table('deliveries')->where('delivery_id', $deliveryId)->update($inputs);
