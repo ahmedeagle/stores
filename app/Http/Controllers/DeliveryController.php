@@ -91,7 +91,7 @@ class DeliveryController extends Controller
                     DB::raw("CONCAT('" . env('APP_URL') . "','/public/deliveryImages/',deliveries.license_img) AS license_img"),
                     DB::raw("CONCAT('" . env('APP_URL') . "','/public/deliveryImages/',deliveries.car_form_img) AS car_form_img"),
                     DB::raw("CONCAT('" . env('APP_URL') . "','/public/deliveryImages/',deliveries.Insurance_img) AS Insurance_img"),
-                    DB::raw("CONCAT('" . env('APP_URL') . "','/public\deliveryImages/',deliveries.authorization_img) AS authorization_img"),
+                    DB::raw("CONCAT('" . env('APP_URL') . "','/public/deliveryImages/',deliveries.authorization_img) AS authorization_img"),
                     DB::raw("CONCAT('" . env('APP_URL') . "','/public/deliveryImages/',deliveries.national_img) AS national_img")
                 )
                 ->first();
@@ -109,7 +109,7 @@ class DeliveryController extends Controller
                     DB::raw("CONCAT('" . env('APP_URL') . "','/public/deliveryImages/',deliveries.license_img) AS license_img"),
                     DB::raw("CONCAT('" . env('APP_URL') . "','/public/deliveryImages/',deliveries.car_form_img) AS car_form_img"),
                     DB::raw("CONCAT('" . env('APP_URL') . "','/public/deliveryImages/',deliveries.Insurance_img) AS Insurance_img"),
-                    DB::raw("CONCAT('" . env('APP_URL') . "','/public\deliveryImages/',deliveries.authorization_img) AS authorization_img"),
+                    DB::raw("CONCAT('" . env('APP_URL') . "','/public/deliveryImages/',deliveries.authorization_img) AS authorization_img"),
                     DB::raw("CONCAT('" . env('APP_URL') . "','/public/deliveryImages/',deliveries.national_img) AS national_img")
                 )
                 ->first();
