@@ -494,7 +494,8 @@ class ProviderController extends Controller
         if ($request->has('commercial_photo')) {
 
             // $image = $this->saveImage( $request -> commercial_photo,'jpg', 'providers');
-            $image = $this->saveImage(time(), $request->commercial_photo, 'providers/', ['jpeg', 'png', 'jpg', 'gif']);
+            // $image = $this->saveImage(time(), $request->commercial_photo, 'providers/', ['jpeg', 'png', 'jpg', 'gif']);
+            $image = $this->saveImage('providers/', $request->commercial_photo);
 
             if ($image == "") {
                 if ($lang == "ar") {
@@ -1310,7 +1311,8 @@ class ProviderController extends Controller
 
                 //save new image    64 encoded
                 // $image = $this->saveImage( $request -> profile_pic,'jpg', 'providers');
-                $image = $this->saveImage(time(), $request->profile_pic, 'providers/', ['jpeg', 'png', 'jpg', 'gif']);
+                // $image = $this->saveImage(time(), $request->profile_pic, 'providers/', ['jpeg', 'png', 'jpg', 'gif']);
+                $image = $this->saveImage('providers/', $request->profile_pic);
 
                 if ($image == "") {
                     if ($lang == "ar") {
@@ -1904,7 +1906,8 @@ class ProviderController extends Controller
             // $image = base64_decode($request->photo);
             // return response()->json(['image'=> $image]);
 
-            $image = $this->saveImage(time(), $request->photo, 'offers/', ['jpeg', 'png', 'jpg', 'gif']);
+            // $image = $this->saveImage(time(), $request->photo, 'offers/', ['jpeg', 'png', 'jpg', 'gif']);
+            $image = $this->saveImage('offers/', $request->photo);
 
             if ($image == "") {
                 if ($lang == "ar") {
@@ -2124,7 +2127,9 @@ class ProviderController extends Controller
             //save new image   64 encoded
 
             //  $image = $this->saveImage($request -> photo,'jpg', 'offers');
-            $image = $this->saveImage(time(), $request->photo, 'offers/', ['jpeg', 'png', 'jpg', 'gif']);
+            // $image = $this->saveImage(time(), $request->photo, 'offers/', ['jpeg', 'png', 'jpg', 'gif']);
+            $image = $this->saveImage('offers/', $request->photo);
+
             $name = $offer->first()->photo;
 
             if (Storage::disk('offers')->exists($name)) {
@@ -2525,7 +2530,8 @@ class ProviderController extends Controller
             foreach ($images as $index => $image) {
 
                 //  $image_name = $this->saveImage($image,'jpg', 'products');
-                $image_name = $this->saveImage(time(), $image, 'products/', ['jpeg', 'png', 'jpg', 'gif']);
+                // $image_name = $this->saveImage(time(), $image, 'products/', ['jpeg', 'png', 'jpg', 'gif']);
+                    $image_name = $this->saveImage('products/', $image);
 
                 if ($image_name != "") {
                     DB::table('product_images')->insert([
@@ -3077,7 +3083,8 @@ class ProviderController extends Controller
                 //save new image   64 encoded
 
                 //   $image = $this->saveImage($image,'jpg', 'products');
-                $image = $this->saveImage(time(), $image, 'products/', ['jpeg', 'png', 'jpg', 'gif']);
+                //   $image = $this->saveImage(time(), $image, 'products/', ['jpeg', 'png', 'jpg', 'gif']);
+                    $image = $this->saveImage('products/', $image);
 
                 if ($image == "") {
                     if ($lang == "ar") {

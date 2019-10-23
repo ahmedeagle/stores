@@ -275,7 +275,8 @@ class DeliveryController extends Controller
 
             //save new image   64 encoded
             // $image = $this->saveImage( $request -> license_img,'jpg', 'deliveries');
-            $image = $this->saveImage(time(), $request->license_img, 'deliveries/', ['jpeg', 'png', 'jpg', 'gif']);
+            // $image = $this->saveImage(time(), $request->license_img, 'deliveries/', ['jpeg', 'png', 'jpg', 'gif']);
+            $image = $this->saveImage('deliveries/', $request->license_img);
 
             if ($image == "") {
                 if ($lang == "ar") {
@@ -297,7 +298,8 @@ class DeliveryController extends Controller
 
             //save new image   64 encoded
             // $image = $this->saveImage( $request -> car_form_img,'jpg', 'deliveries');
-            $image = $this->saveImage(time(), $request->car_form_img, 'deliveries/', ['jpeg', 'png', 'jpg', 'gif']);
+            // $image = $this->saveImage(time(), $request->car_form_img, 'deliveries/', ['jpeg', 'png', 'jpg', 'gif']);
+            $image = $this->saveImage('deliveries/', $request->car_form_img);
 
             if ($image == "") {
                 if ($lang == "ar") {
@@ -319,7 +321,8 @@ class DeliveryController extends Controller
 
             //save new image   64 encoded
             // $image = $this->saveImage( $request -> Insurance_img,'jpg', 'deliveries');
-            $image = $this->saveImage(time(), $request->Insurance_img, 'deliveries/', ['jpeg', 'png', 'jpg', 'gif']);
+            // $image = $this->saveImage(time(), $request->Insurance_img, 'deliveries/', ['jpeg', 'png', 'jpg', 'gif']);
+            $image = $this->saveImage('deliveries/', $request->Insurance_img);
 
             if ($image == "") {
                 if ($lang == "ar") {
@@ -341,7 +344,8 @@ class DeliveryController extends Controller
 
             //save new image   64 encoded
             // $image = $this->saveImage( $request -> authorization_img,'jpg', 'deliveries');
-            $image = $this->saveImage(time(), $request->authorization_img, 'deliveries/', ['jpeg', 'png', 'jpg', 'gif']);
+            // $image = $this->saveImage(time(), $request->authorization_img, 'deliveries/', ['jpeg', 'png', 'jpg', 'gif']);
+            $image = $this->saveImage('deliveries/', $request->authorization_img);
 
             if ($image == "") {
                 if ($lang == "ar") {
@@ -363,7 +367,8 @@ class DeliveryController extends Controller
 
             //save new image   64 encoded
             // $image = $this->saveImage( $request -> national_img,'jpg', 'deliveries');
-            $image = $this->saveImage(time(), $request->national_img, 'deliveries/', ['jpeg', 'png', 'jpg', 'gif']);
+            // $image = $this->saveImage(time(), $request->national_img, 'deliveries/', ['jpeg', 'png', 'jpg', 'gif']);
+            $image = $this->saveImage('deliveries/', $request->national_img);
 
             if ($image == "") {
                 if ($lang == "ar") {
@@ -988,7 +993,8 @@ class DeliveryController extends Controller
 
             //save new image   64 encoded
             // $image = $this->saveImage( $request -> license_img,'jpg', 'deliveries');
-            $image = $this->saveImage(time(), $request->license_img, 'deliveries/', ['jpeg', 'png', 'jpg', 'gif']);
+            // $image = $this->saveImage(time(), $request->license_img, 'deliveries/', ['jpeg', 'png', 'jpg', 'gif']);
+            $image = $this->saveImage('deliveries/', $request->license_img);
 
             if ($image == "") {
                 if ($lang == "ar") {
@@ -1015,7 +1021,8 @@ class DeliveryController extends Controller
 
             //save new image   64 encoded
             // $image = $this->saveImage( $request -> car_form_img,'jpg', 'deliveries');
-            $image = $this->saveImage(time(), $request->car_form_img, 'deliveries/', ['jpeg', 'png', 'jpg', 'gif']);
+            // $image = $this->saveImage(time(), $request->car_form_img, 'deliveries/', ['jpeg', 'png', 'jpg', 'gif']);
+            $image = $this->saveImage('deliveries/', $request->car_form_img);
 
             if ($image == "") {
                 if ($lang == "ar") {
@@ -1042,7 +1049,8 @@ class DeliveryController extends Controller
 
             //save new image   64 encoded
             // $image = $this->saveImage( $request -> Insurance_img,'jpg', 'deliveries');
-            $image = $this->saveImage(time(), $request->Insurance_img, 'deliveries/', ['jpeg', 'png', 'jpg', 'gif']);
+            // $image = $this->saveImage(time(), $request->Insurance_img, 'deliveries/', ['jpeg', 'png', 'jpg', 'gif']);
+            $image = $this->saveImage('deliveries/', $request->Insurance_img);
 
             if ($image == "") {
                 if ($lang == "ar") {
@@ -1069,7 +1077,8 @@ class DeliveryController extends Controller
 
             //save new image   64 encoded
             // $image = $this->saveImage( $request -> authorization_img,'jpg', 'deliveries');
-            $image = $this->saveImage(time(), $request->authorization_img, 'deliveries/', ['jpeg', 'png', 'jpg', 'gif']);
+            // $image = $this->saveImage(time(), $request->authorization_img, 'deliveries/', ['jpeg', 'png', 'jpg', 'gif']);
+            $image = $this->saveImage('deliveries/', $request->authorization_img);
 
             if ($image == "") {
                 if ($lang == "ar") {
@@ -1096,7 +1105,8 @@ class DeliveryController extends Controller
 
             //save new image   64 encoded
             // $image = $this->saveImage( $request -> national_img,'jpg', 'deliveries');
-            $image = $this->saveImage(time(), $request->national_img, 'deliveries/', ['jpeg', 'png', 'jpg', 'gif']);
+            // $image = $this->saveImage(time(), $request->national_img, 'deliveries/', ['jpeg', 'png', 'jpg', 'gif']);
+            $image = $this->saveImage('deliveries/', $request->national_img);
 
             if ($image == "") {
                 if ($lang == "ar") {
