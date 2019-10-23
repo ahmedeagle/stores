@@ -626,6 +626,21 @@ class DeliveryController extends Controller
 
             Deliveries::where('delivery_id', $getDelivery->delivery_id)->update(['device_reg_id' => $request->input('device_reg_id')]);
             if ($getDelivery->account_activated == 0 || $getDelivery->account_activated == "0") {
+
+                 // ############## send activation mobile code ########################################
+                 $data = [];
+                 $code = $this->generate_random_number(4);
+                 $data['activation_code'] = json_encode([
+                     'code' => $code,
+                     'expiry' => Carbon::now()->addDays(1)->timestamp,
+                 ]);
+                 Deliveries::where('delivery_id', $getDelivery->delivery_id)->update($data);
+                 $message = (App()->getLocale() == "en") ?
+                 "Your Activation Code is :- " . $code :
+                 "رقم الدخول الخاص بك هو :- " . $code;
+                 $res = (new SmsController())->send($message, $getDelivery->phone);
+                 // ############## send activation mobile code ########################################
+
                 return response()->json(['status' => false, 'errNum' => 5, 'delivery' => $getDelivery, 'msg' => $msg[5]]);
             } elseif ($getDelivery->publish == 0 || $getDelivery->publish == "0") {
                 return response()->json(['status' => false, 'errNum' => 6, 'delivery' => $getDelivery, 'msg' => $msg[6]]);
@@ -947,8 +962,6 @@ class DeliveryController extends Controller
 
             return response()->json(['status' => false, 'errNum' => 20, 'msg' => $msg[20]]);
         }
-
-        dd($inputs);
 
         if ($inputs['phone'] != $delivery->phone) {
 
