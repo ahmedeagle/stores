@@ -536,6 +536,21 @@ class UserController extends Controller
 
                 );
                 if ($getUser->status == 0 || $getUser->status == "0") {
+
+                    $data = [];
+                    // ############## send activation mobile code ########################################
+                    $code = $this->generate_random_number(4);
+                    $data['activation_code'] = json_encode([
+                        'code' => $code,
+                        'expiry' => Carbon::now()->addDays(1)->timestamp,
+                    ]);
+                    User::where('user_id', $getUser->user_id)->update($data);
+                    $message = (App()->getLocale() == "en") ?
+                    "Your Activation Code is :- " . $code :
+                    "رقم الدخول الخاص بك هو :- " . $code;
+                    $res = (new SmsController())->send($message, $getUser->phone);
+                    // ############## send activation mobile code ########################################
+
                     return response()->json(['status' => false, 'errNum' => 5, 'user' => $userData, 'msg' => $msg[5]]);
                 }
 
