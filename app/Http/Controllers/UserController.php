@@ -24,6 +24,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Input;
 use Mail;
 use Validator;
+use Storage;
 
 class UserController extends Controller
 {
@@ -896,7 +897,7 @@ class UserController extends Controller
                 // $image = $this->saveImage( $request -> profile_pic,'jpg', 'users');
                 // $image = $this->saveImage(time(), $request->profile_pic, 'users/', ['jpeg', 'png', 'jpg', 'gif']);
                 $image = $this->saveImage('users/', $request->profile_pic);
-                
+
                 if ($image == "") {
                     if ($lang == "ar") {
                         $errMsg = "فشل فى رفع الصورة حاول فى وقت  لاحق";
