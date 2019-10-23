@@ -494,8 +494,8 @@ class ProviderController extends Controller
         if ($request->has('commercial_photo')) {
 
             // $image = $this->saveImage( $request -> commercial_photo,'jpg', 'providers');
-            // $image = $this->saveImage(time(), $request->commercial_photo, 'providers/', ['jpeg', 'png', 'jpg', 'gif']);
-            $image = $this->saveImage('providers/', $request->commercial_photo);
+            // $image = $this->saveImage(time(), $request->commercial_photo, 'providerProfileImages/', ['jpeg', 'png', 'jpg', 'gif']);
+            $image = $this->saveImage('providerProfileImages/', $request->commercial_photo);
 
             if ($image == "") {
                 if ($lang == "ar") {
@@ -1311,8 +1311,8 @@ class ProviderController extends Controller
 
                 //save new image    64 encoded
                 // $image = $this->saveImage( $request -> profile_pic,'jpg', 'providers');
-                // $image = $this->saveImage(time(), $request->profile_pic, 'providers/', ['jpeg', 'png', 'jpg', 'gif']);
-                $image = $this->saveImage('providers/', $request->profile_pic);
+                // $image = $this->saveImage(time(), $request->profile_pic, 'providerProfileImages/', ['jpeg', 'png', 'jpg', 'gif']);
+                $image = $this->saveImage('providerProfileImages/', $request->profile_pic);
 
                 if ($image == "") {
                     if ($lang == "ar") {
