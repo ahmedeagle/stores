@@ -844,8 +844,8 @@ class ProviderController extends Controller
                 //need to activate account by verfiy phone number
                 if ($getProvider->status == 0 || $getProvider->status == 0) {
 
-                    $data = [];
                     // ############## send activation mobile code ########################################
+                    $data = [];
                     $code = $this->generate_random_number(4);
                     $data['activate_phone_hash'] = json_encode([
                         'code' => $code,

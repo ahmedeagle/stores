@@ -537,8 +537,8 @@ class UserController extends Controller
                 );
                 if ($getUser->status == 0 || $getUser->status == "0") {
 
-                    $data = [];
                     // ############## send activation mobile code ########################################
+                    $data = [];
                     $code = $this->generate_random_number(4);
                     $data['activation_code'] = json_encode([
                         'code' => $code,
