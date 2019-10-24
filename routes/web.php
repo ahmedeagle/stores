@@ -99,4 +99,7 @@ Route::group(['middleware' => ['api_auth'], 'prefix' => 'api'], function() {
     Route::post('/withdraw_request', 'ProviderController@withdraw');
     Route::get('/withdraw_request', 'ProviderController@echoEmpty');
 
+    Route::post('/addCheckoutPaid', 'ProviderController@addCheckoutPaid');
+	Route::get('/addCheckoutPaid', 'ProviderController@echoEmpty');
+
 });

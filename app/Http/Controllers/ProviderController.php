@@ -5232,4 +5232,137 @@ class ProviderController extends Controller
         }
     }
 
+    public function addCheckoutPaid(Request $request)
+    {
+        /*###############################################################################################
+        'id' => may be ['providers_offers', 'excellence_requests', 'orders_headers']
+        'paid' => 1 == paid | 0 == un paid
+        'type' => [ 0 => 'providers_offers', 1 => 'excellence_requests', 2 => 'orders_headers'], 
+        ################################################################################################*/
+        
+        $lang = $request->input('lang') ? $request->input('lang') : 'ar';
+
+        if ($lang == "ar") {
+            $msg = array(
+                0 => 'تم فحص طلب الدفع بنجاح',
+                1 => 'رقم الطلب مطلوب',
+                2 => 'توكن المستخدم غير موجود ',
+                3 => 'فشل في فحص طلب الدفع ',
+                4 => 'الطلب غير موجود',
+                5 => 'حالة الدفع مطلوبة',
+                6 => 'نوع الطلب مطلوب',
+                7 => 'نوع الطلب غير صحيح',
+            );
+        } else {
+            $msg = array(
+                0 => 'Your payment request has been successfully checked',
+                1 => 'Order id is required',
+                2 => 'access_token required',
+                3 => 'Failed in checkout the order',
+                4 => 'Order not exists',
+                5 => 'Paid is required',
+                6 => 'Order Type is required',
+                7 => 'Order Type is invalid',
+
+            );
+        }
+
+        $messages = array(
+
+            'id.required' => 1,
+            'access_token.required' => 2,
+            'paid.required' =>5,
+            'type.required' => 6,
+        );
+
+        $rules = [
+
+            'access_token' => 'required',
+            'id' => 'required',
+            'paid' => 'required',
+            'type' => 'required',
+
+        ];
+
+        $validator = Validator::make($request->all(), $rules, $messages);
+
+        if ($validator->fails()) {
+            $error = $validator->errors()->first();
+            return response()->json(['status' => false, 'errNum' => (int) $error, 'msg' => $msg[$error]]);
+        }
+
+        $inputs = $request->only('id', 'paid', 'type');
+
+        try{
+
+            if($inputs['type'] == '0'){
+                
+                $row = DB::table('providers_offers')
+                ->join('providers', 'providers.provider_id', '=', 'providers_offers.provider_id')
+                ->where('providers_offers.id', $inputs['id'])
+                ->where('providers.token', $request->access_token)
+                ->select('providers_offers.id')
+                ->first();
+
+                if($row){
+                    DB::table('providers_offers')->where('id', $inputs['id'])->update([
+                        'paid' => $inputs['paid']
+                    ]);
+                    return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[0]]);
+                }
+                else{
+                    return response()->json(['status' => false, 'errNum' => 4, 'msg' => $msg[4]]);
+                }
+
+            }
+            elseif($inputs['type'] == '1'){
+                
+                $row = DB::table('excellence_requests')
+                ->join('providers', 'providers.provider_id', '=', 'excellence_requests.provider_id')
+                ->where('excellence_requests.id', $inputs['id'])
+                ->where('providers.token', $request->access_token)
+                ->select('excellence_requests.id')
+                ->first();
+
+                if($row){
+                    DB::table('excellence_requests')->where('id', $inputs['id'])->update([
+                        'paid' => $inputs['paid']
+                    ]);
+                    return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[0]]);
+                }
+                else{
+                    return response()->json(['status' => false, 'errNum' => 4, 'msg' => $msg[4]]);
+                }
+
+            }
+            elseif($inputs['type'] == '2'){
+               
+                $row = DB::table('orders_headers')
+                ->join('users', 'users.user_id', '=', 'orders_headers.user_id')
+                ->where('orders_headers.user_id', $inputs['id'])
+                ->where('users.token', $request->access_token)
+                ->select('orders_headers.order_id')
+                ->first();
+
+                if($row){
+                    DB::table('orders_headers')->where('order_id', $inputs['id'])->update([
+                        'paid' => $inputs['paid']
+                    ]);
+                    return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[0]]);
+                }
+                else{
+                    return response()->json(['status' => false, 'errNum' => 4, 'msg' => $msg[4]]);
+                }
+
+            }
+            else{
+                return response()->json(['status' => false, 'errNum' => 7, 'msg' => $msg[7]]);
+            }
+
+        } catch (Exception $e) {
+            return response()->json(['status' => false, 'errNum' => 3, 'msg' => $msg[3]]);
+        }
+
+    }
+
 }
