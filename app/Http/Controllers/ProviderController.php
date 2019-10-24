@@ -4297,6 +4297,9 @@ class ProviderController extends Controller
             ->join('users', 'orders_headers.user_id', 'users.user_id')
             ->join('payment_types', 'orders_headers.payment_type', '=', 'payment_types.payment_id')
             ->join('order_status', 'orders_headers.status_id', '=', 'order_status.status_id')
+
+            // ->where('order_status.status_id', '!=', '1')
+
             ->select(
                 'orders_headers.order_id',
                 'orders_headers.order_code',

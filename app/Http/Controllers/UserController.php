@@ -3456,7 +3456,8 @@ class UserController extends Controller
             $provider_order_rate = [];
         }
 
-        $order_status = DB::table('order_status')->whereIn('status_id', [1, 2, 3, 4])
+        // $order_status = DB::table('order_status')->whereIn('status_id', [1, 2, 3, 4])
+        $order_status = DB::table('order_status')->whereIn('status_id', [2, 3, 4])
             ->select(
                 'status_id',
                 $status_col,
