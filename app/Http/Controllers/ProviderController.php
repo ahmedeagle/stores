@@ -1943,7 +1943,24 @@ class ProviderController extends Controller
 
             $id = DB::table('providers_offers')->insertGetId($inputs);
 
-            return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[0], 'offer_id' => $id]);
+            $start_date = strtotime($request->start_date);
+            $end_date = strtotime($request->end_date);
+            $diffDate = $end_date - $start_date;
+            $days = $diffDate / (60 * 60 * 24);
+    
+            $offer_day_coast = DB::table('app_settings')
+            ->value('offer_day_coast');
+            $cost = floatval($offer_day_coast) * (int) $days;
+
+            $data = [
+                'offer_id' => $id,
+                'days' => $days,
+                'cost' => $cost,
+            ];
+
+            return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[0], 'data' => $data]);
+
+            // return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[0], 'offer_id' => $id]);
 
         } catch (Exception $e) {
             return response()->json(['status' => false, 'errNum' => 7, 'msg' => $msg[7]]);
