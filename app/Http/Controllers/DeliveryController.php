@@ -1560,8 +1560,8 @@ class DeliveryController extends Controller
                 8 => 'عفوا لقدم تم الموافقه علي هذا الطلب من قبل موصل اخر ',
                 9 => 'عفوا لا يمكن توصيل هذا الطلب ',
                 10 => 'عفوا لقد تم قبول الطلب من قبلكم مسبقا ',
-                11 => 'لابد من الموافقه علي الطلب اولا ومن قم الغاءه ',
-                12 => 'لايمكنك هذا الاجراء جيث تم العاء هذا الطلب من قبل ',
+                11 => 'لابد من الموافقه علي الطلب اولا ومن ثم الغاءه ',
+                12 => 'لايمكنك هذا الاجراء حيث تم إلغاء هذا الطلب من قبل ',
                 13 => 'عفوا  لقد تم الغاء الطلب مسبقا ',
                 14 => 'لابد من الموافقه علي الطلب اولا ',
                 15 => 'لا يمكن تسليم هذا الطلب ',
@@ -1676,6 +1676,9 @@ class DeliveryController extends Controller
             // here delivery cancel orders
 
             //send notify to order's provider and user
+
+            // $providerAppLang = DB::table('providers')->where('provider_id', $get->provider_id)->value('lang');
+
             if ($lang == 'ar') {
                 $push_notif_title = 'رفض الموصل ';
                 $push_notif_message = "لقد نم  رفض الطلب  {order_id}من الموصل  {$delivery_id}";
@@ -1759,6 +1762,8 @@ class DeliveryController extends Controller
 
                 //update order status to provider to 3 // delivered status
                 DB::table('orders_headers')->where('order_id', $order_id)->update(['status_id' => 3]);
+
+                // $providerAppLang = DB::table('providers')->where('provider_id', $get->provider_id)->value('lang');
 
                 if ($lang == 'ar') {
                     $push_notif_title = 'تم توصيل الطلب ';

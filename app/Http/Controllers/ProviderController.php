@@ -4411,9 +4411,18 @@ class ProviderController extends Controller
             return response()->json(['status' => false, 'errNum' => 6, 'msg' => $msg[6]]);
         }
 
+
+        $order_id = $request->input('order_id');
+        //get order
+        $orderDetails = DB::table('orders_headers')->where('order_id', $order_id)->select(
+                'user_id', 'payment_type', 'total_value', 'provider_id', 'status_id')->first();
+
+
+        $recieverAppLang = DB::table('users')->where('user_id', $orderDetails->user_id)->value('lang');
+
         $type = $request->input('type');
         if ($type == "1") {
-            if ($lang == 'ar') {
+            if ($recieverAppLang == 'ar') {
                 $push_notif_title = 'قبول الطلب';
                 $push_notif_message = 'قام مقدم الخدمة بقبول طلبك';
             } else {
@@ -4422,7 +4431,7 @@ class ProviderController extends Controller
             }
             $status = 2;
         } else {
-            if ($lang == 'ar') {
+            if ($recieverAppLang == 'ar') {
                 $push_notif_title = 'رفض الطلب';
                 $push_notif_message = 'قام مقدم الخدمه برفض طلبك  وتم استرجاع المبلغ برصيدك  ' . $request->input('order_id');
             } else {
@@ -4432,11 +4441,11 @@ class ProviderController extends Controller
             $status = 4;
         }
         try {
-            $order_id = $request->input('order_id');
-            //get order
-            $orderDetails = DB::table('orders_headers')->where('order_id', $order_id)->select(
-                'user_id', 'payment_type', 'total_value', 'provider_id', 'status_id')->first();
-            //return "provider_id : " . var_dump($provider_id) . " order_id " . var_dump($orderDetails->provider_id);
+            // $order_id = $request->input('order_id');
+            // //get order
+            // $orderDetails = DB::table('orders_headers')->where('order_id', $order_id)->select(
+            //     'user_id', 'payment_type', 'total_value', 'provider_id', 'status_id')->first();
+            
             if ($provider_id != $orderDetails->provider_id) {
                 return response()->json(['status' => false, 'errNum' => 6, 'msg' => $msg[6]]);
             }
@@ -4700,7 +4709,9 @@ class ProviderController extends Controller
 
             DB::table('orders_headers')->where('orders_headers.order_id', $order_id)->update($updates);
 
-            if ($lang == "ar") {
+            $recieverAppLang = DB::table('users')->where('user_id', $order_data->user_id)->value('lang');
+
+            if ($recieverAppLang == "ar") {
                 $userTitle = "تم تعديل حالة طلبك -" . $order_id;
                 $userMessage = "تم تعديل حالة طلبك ";
             } else {

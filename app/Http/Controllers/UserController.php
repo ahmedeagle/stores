@@ -2489,8 +2489,8 @@ class UserController extends Controller
                 22 => 'الاضافات غير موجوده ',
                 23 => 'القيمه المدفوعه لا تساوي قيمه الطلب ',
             );
-            $push_notif_title = "طلب جديد";
-            $push_notif_message = "تم إضافة طلب جديد ";
+            // $push_notif_title = "طلب جديد";
+            // $push_notif_message = "تم إضافة طلب جديد ";
         } else {
             $msg = array(
                 0 => 'Process done successfully',
@@ -2518,8 +2518,8 @@ class UserController extends Controller
                 23 => 'Paid amount not equal to order amount ',
 
             );
-            $push_notif_title = "New order";
-            $push_notif_message = "A new order has been added  ";
+            // $push_notif_title = "New order";
+            // $push_notif_message = "A new order has been added  ";
         }
 
         $products = $request->input('products');
@@ -2901,12 +2901,24 @@ class UserController extends Controller
 
             });
 
+            $provider_token = Providers::where('provider_id', $data['provider'])->first();
+
+            $recieverAppLang = $provider_token->lang;
+
+            if($recieverAppLang == 'ar'){
+                $push_notif_title = "طلب جديد";
+                $push_notif_message = "تم إضافة طلب جديد ";
+            }
+            else{
+                $push_notif_title = "New order";
+                $push_notif_message = "A new order has been added  ";
+            }
+
             $notif_data = array();
             $notif_data['title'] = $push_notif_title . '-' . $id;
             $notif_data['message'] = $push_notif_message;
             $notif_data['order_id'] = $id;
             $notif_data['notif_type'] = 'order';
-            $provider_token = Providers::where('provider_id', $data['provider'])->first();
 
             $providerAllowNewOrderNotify = (new NotifyC())->check_notification($data['provider'], 'providers', 'new_order');
 
@@ -3108,8 +3120,8 @@ class UserController extends Controller
                 11 => 'لقج تم الغاء الطلب مسبقا ',
                 12 => 'لابد من ادخال سبب الرفض ',
             );
-            $push_notif_title = 'إلغاء طلب';
-            $push_notif_message = 'تم إلغاء  الطلب رقم  بسبب ';
+            // $push_notif_title = 'إلغاء طلب';
+            // $push_notif_message = 'تم إلغاء  الطلب رقم  بسبب ';
         } else {
             $msg = array(
                 0 => 'Order has been canceled',
@@ -3127,8 +3139,8 @@ class UserController extends Controller
                 12 => 'Must Enter Cancellation reason',
             );
 
-            $push_notif_title = 'Order canceled';
-            $push_notif_message = 'the order has been cancelled  because ';
+            // $push_notif_title = 'Order canceled';
+            // $push_notif_message = 'the order has been cancelled  because ';
         }
 
         $messages = array(
@@ -3238,13 +3250,24 @@ class UserController extends Controller
 
             });
 
+
+            $actor_token = DB::table($notify_type_table)->where($notify_column, $actor_id)->first();
+            $recieverAppLang = $actor_token->lang;
+
+            if($recieverAppLang == 'ar'){
+                $push_notif_title = 'إلغاء طلب';
+                $push_notif_message = 'تم إلغاء  الطلب رقم  بسبب ';
+            }
+            else{
+                $push_notif_title = 'Order canceled';
+                $push_notif_message = 'the order has been cancelled because ';
+            }
+
             $notif_data = array();
             $notif_data['title'] = $push_notif_title . '-' . $order_id;
             $notif_data['message'] = $push_notif_message . '-' . $request->reason;
             $notif_data['order_id'] = $order_id;
             $notif_data['notif_type'] = 'cancel_order';
-
-            $actor_token = DB::table($notify_type_table)->where($notify_column, $actor_id)->first();
 
             /*
             if($provider_token && $providerAllowNewOrderNotify == 1){
