@@ -40,7 +40,7 @@ trait Helpers {
     //     return $fileName;
     // }
 
-    public function saveImage($folder, $photo, $name=''){
+    public function saveImage($folder, $photo, $name = ''){
 
         $img = str_replace('data:image/jpg;base64,', '', $photo);
         $img = str_replace('data:image/png;base64,', '', $img);
@@ -48,7 +48,7 @@ trait Helpers {
         $img = str_replace('data:image/jpeg;base64,', '', $img);
         $img = str_replace(' ', '+', $img);
         $data = base64_decode($img);
-        $filename = time() . '_' . $name . '.png';
+        $filename = $name == '' ? time() . '.png' : time() . '_' . $name . '.png';
         $path = $folder . $filename;
         file_put_contents($path, $data);
         return $filename;

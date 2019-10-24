@@ -292,6 +292,9 @@ class UserController extends Controller
         $user->token = $token;
         $user->device_reg_id = $device_reg_id;
 
+        // add app lang to users
+        $user->lang = $request->input('lang') ? $request->input('lang') : 'ar';
+
         //save user
         $userSave = $user->save();
 
