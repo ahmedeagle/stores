@@ -284,6 +284,9 @@ class ProviderController extends Controller
         $data['provider_token'] = $request->input('provider_token');
         $data['provider_rate'] = 0;
 
+        // add app lang to providers
+        $data['lang'] = $request->input('lang') ? $request->input('lang') : 'ar';
+
         // send activation code to provider
 
         $code = $this->generate_random_number(4);
@@ -319,6 +322,7 @@ class ProviderController extends Controller
                     'activate_phone_hash' => $data['activate_phone_hash'],
                     'token' => $data['token'],
                     'profile_pic' => $data['image'],
+                    'lang' => $data['lang'],
                 ]);
 
                 if ($id) {
