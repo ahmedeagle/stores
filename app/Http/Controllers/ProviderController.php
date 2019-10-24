@@ -5235,9 +5235,9 @@ class ProviderController extends Controller
     public function addCheckoutPaid(Request $request)
     {
         /*###############################################################################################
-        'id' => may be ['providers_offers', 'excellence_requests', 'orders_headers']
-        'paid' => 1 == paid | 0 == un paid
-        'type' => [ 0 => 'providers_offers', 1 => 'excellence_requests', 2 => 'orders_headers'], 
+        ## 'id' => may be ['providers_offers', 'excellence_requests', 'orders_headers']
+        ## 'paid' => 1 == paid | 0 == un paid
+        ## 'type' => [ 0 => 'providers_offers', 1 => 'excellence_requests', 2 => 'orders_headers'], 
         ################################################################################################*/
         
         $lang = $request->input('lang') ? $request->input('lang') : 'ar';
@@ -5357,6 +5357,91 @@ class ProviderController extends Controller
             }
             else{
                 return response()->json(['status' => false, 'errNum' => 7, 'msg' => $msg[7]]);
+            }
+
+        } catch (Exception $e) {
+            return response()->json(['status' => false, 'errNum' => 3, 'msg' => $msg[3]]);
+        }
+
+    }
+
+    public function changeAppLanguage(Request $request)
+    {
+        /*###############################################################################################
+        ## 'type' => [ 0 => 'providers', 1 => 'users', 2 => 'deliveries'], 
+        ################################################################################################*/
+
+        $lang = $request->input('lang') ? $request->input('lang') : 'ar';
+
+        if ($lang == "ar") {
+            $msg = array(
+                0 => 'تم تغيير اللغة بنجاح',
+                1 => 'اللغة مطلوب',
+                2 => 'توكن المستخدم غير موجود ',
+                3 => 'فشل في تغيير اللغة ',
+                4 => 'هذا العضو غير موجود',
+                5 => 'النوع مطلوب',
+            );
+        } else {
+            $msg = array(
+                0 => 'Language has been successfully changed',
+                1 => 'Language is required',
+                2 => 'access_token is required',
+                3 => 'Failed to change the language',
+                4 => 'This member does not exist',
+                5 => 'Type is required',
+            );
+        }
+
+        $messages = array(
+            'lang.required' => 1,
+            'access_token.required' => 2,
+            'type.required' => 5,
+        );
+
+        $rules = [
+            'access_token' => 'required',
+            'lang' => 'required',
+            'type' => 'required',
+        ];
+
+        $validator = Validator::make($request->all(), $rules, $messages);
+
+        if ($validator->fails()) {
+            $error = $validator->errors()->first();
+            return response()->json(['status' => false, 'errNum' => (int) $error, 'msg' => $msg[$error]]);
+        }
+
+        $inputs = $request->only('lang', 'type');
+
+        try{
+
+            $table_name = '';
+            if($inputs['type'] == '0'){
+                $table_name = 'providers';
+            }
+            elseif($inputs['type'] == '1'){
+                $table_name = 'users';
+            }
+            elseif($inputs['type'] == '2'){
+                $table_name = 'deliveries';
+            }
+            else{
+                $table_name = '';
+                return response()->json(['status' => false, 'errNum' => 4, 'msg' => $msg[4]]);
+            }
+            $row = DB::table($table_name)
+                ->where('token', $request->access_token)
+                ->first();
+
+            if($row){
+                DB::table($table_name)->where('token', $request->access_token)->update([
+                    'lang' => $inputs['lang']
+                ]);
+                return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[0]]);
+            }
+            else{
+                return response()->json(['status' => false, 'errNum' => 4, 'msg' => $msg[4]]);
             }
 
         } catch (Exception $e) {
