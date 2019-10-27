@@ -4995,8 +4995,8 @@ class ProviderController extends Controller
         }
 
         $financialTransactions = DB::table('withdraw_balance')
-            ->join('providers', "providers.provider_id", "withdraw_balance.actor_id")
-            ->where('withdraw_balance.type', 'providers')
+            ->join('providers', "providers.provider_id", '=', "withdraw_balance.actor_id")
+            ->where('withdraw_balance.type', 'provider')
             ->select(
                 "withdraw_balance.*",
                 "providers.full_name AS name"
