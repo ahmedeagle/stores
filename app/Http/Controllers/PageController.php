@@ -38,6 +38,7 @@ class PageController extends Controller
 
         return response()->json(['status' => true, "errNum" => 0, "msg" => trans("messages.success"), "page" => $pages]);
     }
+
     public function get_page(Request $request)
     {
         $lang = $request->input('lang');

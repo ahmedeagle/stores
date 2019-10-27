@@ -24,6 +24,7 @@ use Illuminate\Support\Facades\Input;
 use Mail;
 use Storage;
 use Validator;
+use Hash;
 
 class ProviderController extends Controller
 {
@@ -953,12 +954,14 @@ class ProviderController extends Controller
         $rules = [
             "password" => "required|min:8|confirmed",
             "access_token" => "required",
+            "old_password" => "required",
         ];
 
         $messages = [
             "required" => 1,
             'password.min' => 2,
             'password.confirmed' => 3,
+            'old_password.required' => 5,
         ];
 
         if ($lang == "ar") {
@@ -967,7 +970,8 @@ class ProviderController extends Controller
                 2 => 'كلمه المرور  8 احرف ع الاقل ',
                 3 => 'كلمة المرور غير متطابقه ',
                 4 => 'تم تغيير كلمة  المرور بنجاح ',
-
+                5 => 'لابد من ادخال كلمة المرور الحالية',
+                6 => 'كلمة المرور الحالية غير صحيحة',
             );
 
         } else {
@@ -976,6 +980,8 @@ class ProviderController extends Controller
                 2 => 'password minimum characters is 8',
                 3 => 'password not confirmed',
                 4 => 'password successfully updated',
+                5 => 'Current password is required',
+                6 => 'Current password is invalid',
             );
 
         }
@@ -986,15 +992,25 @@ class ProviderController extends Controller
             $error = $validator->errors()->first();
             return response()->json(['status' => false, 'errNum' => (int) $error, 'msg' => $msg[$error]]);
         }
+        
+        //check for old password
+        $check = Providers::where('token', $request->access_token)
+            ->where('password', md5($request->old_password))
+            ->first();
 
-        $provider = Providers::where('provider_id', $this->get_id($request, 'providers', 'provider_id'))
+        if ($check) {
+
+            $provider = Providers::where('provider_id', $this->get_id($request, 'providers', 'provider_id'))
             ->update([
-
                 'password' => md5($request->input('password')),
                 'activate_phone_hash' => null,
             ]);
+            return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[4]]);
 
-        return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[4]]);
+        } else {
+            return response()->json(['status' => false, 'errNum' => 6, 'msg' => $msg[6]]);
+        }
+
     }
 
     public function getProfileData(Request $request)
@@ -1951,9 +1967,9 @@ class ProviderController extends Controller
             $end_date = strtotime($request->end_date);
             $diffDate = $end_date - $start_date;
             $days = $diffDate / (60 * 60 * 24);
-    
+
             $offer_day_coast = DB::table('app_settings')
-            ->value('offer_day_coast');
+                ->value('offer_day_coast');
             $cost = floatval($offer_day_coast) * (int) $days;
 
             $data = [
@@ -2567,7 +2583,7 @@ class ProviderController extends Controller
 
                 //  $image_name = $this->saveImage($image,'jpg', 'products');
                 // $image_name = $this->saveImage(time(), $image, 'products/', ['jpeg', 'png', 'jpg', 'gif']);
-                    $image_name = $this->saveImage('products/', $image);
+                $image_name = $this->saveImage('products/', $image);
 
                 if ($image_name != "") {
                     DB::table('product_images')->insert([
@@ -3120,7 +3136,7 @@ class ProviderController extends Controller
 
                 //   $image = $this->saveImage($image,'jpg', 'products');
                 //   $image = $this->saveImage(time(), $image, 'products/', ['jpeg', 'png', 'jpg', 'gif']);
-                    $image = $this->saveImage('products/', $image);
+                $image = $this->saveImage('products/', $image);
 
                 if ($image == "") {
                     if ($lang == "ar") {
@@ -4319,7 +4335,7 @@ class ProviderController extends Controller
             ->join('payment_types', 'orders_headers.payment_type', '=', 'payment_types.payment_id')
             ->join('order_status', 'orders_headers.status_id', '=', 'order_status.status_id')
 
-            // ->where('order_status.status_id', '!=', '1')
+        // ->where('order_status.status_id', '!=', '1')
 
             ->select(
                 'orders_headers.order_id',
@@ -4411,12 +4427,10 @@ class ProviderController extends Controller
             return response()->json(['status' => false, 'errNum' => 6, 'msg' => $msg[6]]);
         }
 
-
         $order_id = $request->input('order_id');
         //get order
         $orderDetails = DB::table('orders_headers')->where('order_id', $order_id)->select(
-                'user_id', 'payment_type', 'total_value', 'provider_id', 'status_id')->first();
-
+            'user_id', 'payment_type', 'total_value', 'provider_id', 'status_id')->first();
 
         $recieverAppLang = DB::table('users')->where('user_id', $orderDetails->user_id)->value('lang');
 
@@ -4445,7 +4459,7 @@ class ProviderController extends Controller
             // //get order
             // $orderDetails = DB::table('orders_headers')->where('order_id', $order_id)->select(
             //     'user_id', 'payment_type', 'total_value', 'provider_id', 'status_id')->first();
-            
+
             if ($provider_id != $orderDetails->provider_id) {
                 return response()->json(['status' => false, 'errNum' => 6, 'msg' => $msg[6]]);
             }
@@ -5252,9 +5266,9 @@ class ProviderController extends Controller
         /*###############################################################################################
         ## 'id' => may be ['providers_offers', 'excellence_requests', 'orders_headers']
         ## 'paid' => 1 == paid | 0 == un paid
-        ## 'type' => [ 0 => 'providers_offers', 1 => 'excellence_requests', 2 => 'orders_headers'], 
+        ## 'type' => [ 0 => 'providers_offers', 1 => 'excellence_requests', 2 => 'orders_headers'],
         ################################################################################################*/
-        
+
         $lang = $request->input('lang') ? $request->input('lang') : 'ar';
 
         if ($lang == "ar") {
@@ -5286,7 +5300,7 @@ class ProviderController extends Controller
 
             'id.required' => 1,
             'access_token.required' => 2,
-            'paid.required' =>5,
+            'paid.required' => 5,
             'type.required' => 6,
         );
 
@@ -5308,69 +5322,63 @@ class ProviderController extends Controller
 
         $inputs = $request->only('id', 'paid', 'type');
 
-        try{
+        try {
 
-            if($inputs['type'] == '0'){
-                
+            if ($inputs['type'] == '0') {
+
                 $row = DB::table('providers_offers')
-                ->join('providers', 'providers.provider_id', '=', 'providers_offers.provider_id')
-                ->where('providers_offers.id', $inputs['id'])
-                ->where('providers.token', $request->access_token)
-                ->select('providers_offers.id')
-                ->first();
+                    ->join('providers', 'providers.provider_id', '=', 'providers_offers.provider_id')
+                    ->where('providers_offers.id', $inputs['id'])
+                    ->where('providers.token', $request->access_token)
+                    ->select('providers_offers.id')
+                    ->first();
 
-                if($row){
+                if ($row) {
                     DB::table('providers_offers')->where('id', $inputs['id'])->update([
-                        'paid' => $inputs['paid']
+                        'paid' => $inputs['paid'],
                     ]);
                     return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[0]]);
-                }
-                else{
+                } else {
                     return response()->json(['status' => false, 'errNum' => 4, 'msg' => $msg[4]]);
                 }
 
-            }
-            elseif($inputs['type'] == '1'){
-                
+            } elseif ($inputs['type'] == '1') {
+
                 $row = DB::table('excellence_requests')
-                ->join('providers', 'providers.provider_id', '=', 'excellence_requests.provider_id')
-                ->where('excellence_requests.id', $inputs['id'])
-                ->where('providers.token', $request->access_token)
-                ->select('excellence_requests.id')
-                ->first();
+                    ->join('providers', 'providers.provider_id', '=', 'excellence_requests.provider_id')
+                    ->where('excellence_requests.id', $inputs['id'])
+                    ->where('providers.token', $request->access_token)
+                    ->select('excellence_requests.id')
+                    ->first();
 
-                if($row){
+                if ($row) {
                     DB::table('excellence_requests')->where('id', $inputs['id'])->update([
-                        'paid' => $inputs['paid']
+                        'paid' => $inputs['paid'],
                     ]);
                     return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[0]]);
-                }
-                else{
+                } else {
                     return response()->json(['status' => false, 'errNum' => 4, 'msg' => $msg[4]]);
                 }
 
-            }
-            elseif($inputs['type'] == '2'){
-               
+            } elseif ($inputs['type'] == '2') {
+
                 $row = DB::table('orders_headers')
-                ->join('users', 'users.user_id', '=', 'orders_headers.user_id')
-                ->where('orders_headers.user_id', $inputs['id'])
-                ->where('users.token', $request->access_token)
-                ->select('orders_headers.order_id')
-                ->first();
+                    ->join('users', 'users.user_id', '=', 'orders_headers.user_id')
+                    ->where('orders_headers.user_id', $inputs['id'])
+                    ->where('users.token', $request->access_token)
+                    ->select('orders_headers.order_id')
+                    ->first();
 
-                if($row){
+                if ($row) {
                     DB::table('orders_headers')->where('order_id', $inputs['id'])->update([
-                        'paid' => $inputs['paid']
+                        'paid' => $inputs['paid'],
                     ]);
                     return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[0]]);
-                }
-                else{
+                } else {
                     return response()->json(['status' => false, 'errNum' => 4, 'msg' => $msg[4]]);
                 }
 
-            }
-            else{
+            } else {
                 return response()->json(['status' => false, 'errNum' => 7, 'msg' => $msg[7]]);
             }
 
@@ -5383,7 +5391,7 @@ class ProviderController extends Controller
     public function changeAppLanguage(Request $request)
     {
         /*###############################################################################################
-        ## 'type' => [ 0 => 'providers', 1 => 'users', 2 => 'deliveries'], 
+        ## 'type' => [ 0 => 'providers', 1 => 'users', 2 => 'deliveries'],
         ################################################################################################*/
 
         $lang = $request->input('lang') ? $request->input('lang') : 'ar';
@@ -5429,19 +5437,16 @@ class ProviderController extends Controller
 
         $inputs = $request->only('lang', 'type');
 
-        try{
+        try {
 
             $table_name = '';
-            if($inputs['type'] == '0'){
+            if ($inputs['type'] == '0') {
                 $table_name = 'providers';
-            }
-            elseif($inputs['type'] == '1'){
+            } elseif ($inputs['type'] == '1') {
                 $table_name = 'users';
-            }
-            elseif($inputs['type'] == '2'){
+            } elseif ($inputs['type'] == '2') {
                 $table_name = 'deliveries';
-            }
-            else{
+            } else {
                 $table_name = '';
                 return response()->json(['status' => false, 'errNum' => 4, 'msg' => $msg[4]]);
             }
@@ -5449,13 +5454,12 @@ class ProviderController extends Controller
                 ->where('token', $request->access_token)
                 ->first();
 
-            if($row){
+            if ($row) {
                 DB::table($table_name)->where('token', $request->access_token)->update([
-                    'lang' => $inputs['lang']
+                    'lang' => $inputs['lang'],
                 ]);
                 return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[0]]);
-            }
-            else{
+            } else {
                 return response()->json(['status' => false, 'errNum' => 4, 'msg' => $msg[4]]);
             }
 
@@ -5465,4 +5469,86 @@ class ProviderController extends Controller
 
     }
 
+    public function logout(Request $request)
+    {
+        /*###############################################################################################
+        ## 'type' => [ 0 => 'providers', 1 => 'users', 2 => 'deliveries'],
+        ################################################################################################*/
+
+        $lang = $request->input('lang') ? $request->input('lang') : 'ar';
+
+        if ($lang == "ar") {
+            $msg = array(
+                0 => 'تم تسجيل الخروج بنجاح',
+                1 => 'اللغة مطلوب',
+                2 => 'توكن المستخدم غير موجود ',
+                3 => 'فشل في تسجيل الدخول ',
+                4 => 'هذا العضو غير موجود',
+                5 => 'النوع مطلوب',
+            );
+        } else {
+            $msg = array(
+                0 => 'User logged out successfully',
+                1 => 'Language is required',
+                2 => 'access_token is required',
+                3 => 'Failed to logout',
+                4 => 'This member does not exist',
+                5 => 'Type is required',
+            );
+        }
+
+        $messages = array(
+            'lang.required' => 1,
+            'access_token.required' => 2,
+            'type.required' => 5,
+        );
+
+        $rules = [
+            'access_token' => 'required',
+            'lang' => 'required',
+            'type' => 'required',
+        ];
+
+        $validator = Validator::make($request->all(), $rules, $messages);
+
+        if ($validator->fails()) {
+            $error = $validator->errors()->first();
+            return response()->json(['status' => false, 'errNum' => (int) $error, 'msg' => $msg[$error]]);
+        }
+
+        $inputs = $request->only('type');
+
+        try {
+
+            $table_name = '';
+            if ($inputs['type'] == '0') {
+                $table_name = 'providers';
+            } elseif ($inputs['type'] == '1') {
+                $table_name = 'users';
+            } elseif ($inputs['type'] == '2') {
+                $table_name = 'deliveries';
+            } else {
+                $table_name = '';
+                return response()->json(['status' => false, 'errNum' => 4, 'msg' => $msg[4]]);
+            }
+
+            $row = DB::table($table_name)
+                ->where('token', $request->access_token)
+                ->first();
+
+            if ($row) {
+                
+                //update device FCM token
+                // Providers::where('provider_id', $row->provider_id)->update([ 'device_reg_id' => null ]);
+                
+                return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[0]]);
+            } else {
+                return response()->json(['status' => false, 'errNum' => 4, 'msg' => $msg[4]]);
+            }
+
+        } catch (Exception $e) {
+            return response()->json(['status' => false, 'errNum' => 3, 'msg' => $msg[3]]);
+        }
+
+    }
 }
