@@ -74,7 +74,10 @@ Route::group(['middleware' => ['api_auth'], 'prefix' => 'api'], function() {
 	Route::post('/updatePassword', 'ProviderController@updatePassword');
 	Route::get('/updatePassword', 'ProviderController@echoEmpty');
 
-  
+	Route::post('/resetPassword', 'ProviderController@resetPassword');
+	Route::get('/resetPassword', 'ProviderController@echoEmpty');
+
+
 
 	Route::post('/prepareEditProfile', 'ProviderController@getProfileData');
 	Route::get('/prepareEditProfile', 'ProviderController@echoEmpty');

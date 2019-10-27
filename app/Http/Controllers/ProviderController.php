@@ -946,6 +946,56 @@ class ProviderController extends Controller
 
     }
 
+    public function resetPassword(Request $request)
+    {
+
+        $lang = $request->input('lang');
+
+        $rules = [
+            "password" => "required|min:8|confirmed",
+            "access_token" => "required",
+        ];
+
+        $messages = [
+            "required" => 1,
+            'password.min' => 2,
+            'password.confirmed' => 3,
+        ];
+
+        if ($lang == "ar") {
+            $msg = array(
+                1 => 'لابد من ادخال كلمة المرور ',
+                2 => 'كلمه المرور 8 احرف ع الاقل ',
+                3 => 'كلمة المرور غير متطابقه ',
+                4 => 'تم تغيير كلمة المرور بنجاح ',
+            );
+
+        } else {
+            $msg = array(
+                1 => 'password field required',
+                2 => 'password minimum characters is 8',
+                3 => 'password not confirmed',
+                4 => 'password successfully updated',
+            );
+
+        }
+
+        $validator = Validator::make($request->all(), $rules, $messages);
+
+        if ($validator->fails()) {
+            $error = $validator->errors()->first();
+            return response()->json(['status' => false, 'errNum' => (int) $error, 'msg' => $msg[$error]]);
+        }
+
+        $provider = Providers::where('provider_id', $this->get_id($request, 'providers', 'provider_id'))
+        ->update([
+            'password' => md5($request->input('password')),
+            'activate_phone_hash' => null,
+        ]);
+        return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[4]]);
+
+    }
+
     public function updatePassword(Request $request)
     {
 
