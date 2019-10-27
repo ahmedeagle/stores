@@ -731,7 +731,7 @@ class DeliveryController extends Controller
 
     }
 
-    public function updatePassword(Request $request)
+    public function resetPassword(Request $request)
     {
 
         $lang = $request->input('lang');
@@ -752,9 +752,9 @@ class DeliveryController extends Controller
         if ($lang == "ar") {
             $msg = array(
                 1 => 'لابد من ادخال كلمة المرور ',
-                2 => 'كلمه المرور  8 احرف ع الاقل ',
+                2 => 'كلمه المرور 8 احرف ع الاقل ',
                 3 => 'كلمة المرور غير متطابقه ',
-                4 => 'تم تغيير كلمة  المرور بنجاح ',
+                4 => 'تم تغيير كلمة المرور بنجاح ',
                 5 => 'توكن غالموصل ير موجود',
 
             );
@@ -785,6 +785,73 @@ class DeliveryController extends Controller
             ]);
 
         return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[4]]);
+    }
+
+    public function updatePassword(Request $request)
+    {
+
+        $lang = $request->input('lang');
+
+        $rules = [
+            "password" => "required|min:8|confirmed",
+            "access_token" => "required",
+            "old_password" => "required",
+        ];
+
+        $messages = [
+            "required" => 1,
+            'password.min' => 2,
+            'password.confirmed' => 3,
+            'old_password.required' => 5,
+        ];
+
+        if ($lang == "ar") {
+            $msg = array(
+                1 => 'لابد من ادخال كلمة المرور ',
+                2 => 'كلمه المرور 8 أحرف على الاقل ',
+                3 => 'كلمة المرور غير متطابقه ',
+                4 => 'تم تغيير كلمة المرور بنجاح ',
+                5 => 'لابد من ادخال كلمة المرور الحالية',
+                6 => 'كلمة المرور الحالية غير صحيحة',
+            );
+
+        } else {
+            $msg = array(
+                1 => 'password field required',
+                2 => 'password minimum characters is 8',
+                3 => 'password not confirmed',
+                4 => 'password successfully updated',
+                5 => 'Current password is required',
+                6 => 'Current password is invalid',
+            );
+
+        }
+
+        $validator = Validator::make($request->all(), $rules, $messages);
+
+        if ($validator->fails()) {
+            $error = $validator->errors()->first();
+            return response()->json(['status' => false, 'errNum' => (int) $error, 'msg' => $msg[$error]]);
+        }
+        
+        //check for old password
+        $check = Deliveries::where('token', $request->access_token)
+            ->where('password', md5($request->old_password))
+            ->first();
+
+        if ($check) {
+
+            Deliveries::where('delivery_id', $this->get_id($request, 'deliveries', 'delivery_id'))
+            ->update([
+                'password' => md5($request->input('password')),
+                'activate_phone_hash' => null,
+            ]);
+            return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[4]]);
+
+        } else {
+            return response()->json(['status' => false, 'errNum' => 6, 'msg' => $msg[6]]);
+        }
+
     }
 
     public function editProfile(Request $request)

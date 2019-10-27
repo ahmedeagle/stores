@@ -73,6 +73,9 @@ Route::group(['middleware' => ['api_auth'], 'prefix' => 'api'], function() {
 	Route::post('/userUpdatePassword', 'UserController@updatePassword');
 	Route::get('/userUpdatePassword', 'UserController@echoEmpty');
 
+	Route::post('/resetPassword', 'UserController@resetPassword');
+	Route::get('/resetPassword', 'UserController@echoEmpty');
+
 	Route::post('/mainCats', 'UserController@mainCats');
 	Route::get('/mainCats', 'UserController@echoEmpty');
 
