@@ -1017,9 +1017,9 @@ class ProviderController extends Controller
         if ($lang == "ar") {
             $msg = array(
                 1 => 'لابد من ادخال كلمة المرور ',
-                2 => 'كلمه المرور  8 احرف ع الاقل ',
+                2 => 'كلمه المرور 8 احرف ع الاقل ',
                 3 => 'كلمة المرور غير متطابقه ',
-                4 => 'تم تغيير كلمة  المرور بنجاح ',
+                4 => 'تم تغيير كلمة المرور بنجاح ',
                 5 => 'لابد من ادخال كلمة المرور الحالية',
                 6 => 'كلمة المرور الحالية غير صحيحة',
             );
@@ -5571,14 +5571,25 @@ class ProviderController extends Controller
         try {
 
             $table_name = '';
+            $column_name = '';
             if ($inputs['type'] == '0') {
+
                 $table_name = 'providers';
+                $column_name = 'provider_id';
+
             } elseif ($inputs['type'] == '1') {
+
                 $table_name = 'users';
+                $column_name = 'user_id';
+
             } elseif ($inputs['type'] == '2') {
+
                 $table_name = 'deliveries';
+                $column_name = 'delivery_id';
+
             } else {
                 $table_name = '';
+                $column_name = '';
                 return response()->json(['status' => false, 'errNum' => 4, 'msg' => $msg[4]]);
             }
 
@@ -5588,8 +5599,10 @@ class ProviderController extends Controller
 
             if ($row) {
                 
-                //update device FCM token
-                // Providers::where('provider_id', $row->provider_id)->update([ 'device_reg_id' => null ]);
+                // update device FCM token
+                DB::table($table_name)
+                ->where($column_name, $row->{$column_name})
+                ->update([ 'device_reg_id' => null ]);
                 
                 return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[0]]);
             } else {
