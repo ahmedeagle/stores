@@ -34,8 +34,8 @@ Route::group(['middleware' => ['api_auth'], 'prefix' => 'api'], function () {
     Route::post('/deliveryUpdatePassword', 'DeliveryController@updatePassword');
     Route::get('/deliveryUpdatePassword', 'DeliveryController@echoEmpty');
 
-    Route::post('/resetPassword', 'DeliveryController@resetPassword');
-    Route::get('/resetPassword', 'DeliveryController@echoEmpty');
+    Route::post('/deliveryResetPassword', 'DeliveryController@resetPassword');
+    Route::get('/deliveryResetPassword', 'DeliveryController@echoEmpty');
 
     Route::post('/editDeliveryProfile', 'DeliveryController@editProfile');
     Route::get('/editDeliveryProfile', 'DeliveryController@echoEmpty');
