@@ -2617,7 +2617,7 @@ class DeliveryController extends Controller
             }
             date_default_timezone_set('Asia/Riyadh');
             $timestamp = date("Y/m/d H:i:s", time());
-            $balance = array('current_balance' => $current, 'due_balance' => $due, 'forbidden_balance' => $forbidden, "updated_at" => $timestamp);
+            $balance = array('current_balance' => $current, "updated_at" => $timestamp);
             return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[0], 'balance' => $balance, "bank_name" => $bank_name, "bank_phone" => $bank_phone, "account_num" => $bank_account_num, "bank_username" => $bank_username]);
         }
     }

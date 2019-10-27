@@ -4482,7 +4482,7 @@ class UserController extends Controller
 
             $msg = array(
                 0 => 'تم جلب البيانات ',
-                1 => 'رقم  التاجر  غير موجود ',
+                1 => 'رقم التاجر غير موجود ',
                 2 => 'لا يوجد بيانات',
                 3 => 'المتجر غير موجود ',
             );
@@ -4491,7 +4491,7 @@ class UserController extends Controller
 
             $msg = array(
                 0 => 'successfully done',
-                1 => 'checkoutId  required',
+                1 => 'checkout id required',
                 3 => 'faild to process ',
             );
 

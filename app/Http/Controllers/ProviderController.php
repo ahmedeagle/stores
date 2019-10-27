@@ -4542,6 +4542,7 @@ class ProviderController extends Controller
 
                 // if order reject and payment is VISA
                 if ($status == 4 || $status == "4") {
+                    // payment_type != 1 ==> VISA
                     if ($payment_type != 1 && $payment_type != "1") {
 
                         $balance = DB::table("balances")
@@ -4554,12 +4555,15 @@ class ProviderController extends Controller
                                 ->where("actor_id", $order->user_id)
                                 ->where("actor_type", "user")
                                 ->update([
-                                    "balance" => $balance->balance + $order->total_value,
+                                    "current_balance" => $balance->current_balance + $order->total_value,
                                 ]);
                         }
 
                     }
                 }
+
+
+                
             });
 
             $notif_data = array();
@@ -5314,7 +5318,7 @@ class ProviderController extends Controller
     public function addCheckoutPaid(Request $request)
     {
         /*###############################################################################################
-        ## 'id' => may be ['providers_offers', 'excellence_requests', 'orders_headers']
+        ## 'id' => may be id of ['providers_offers', 'excellence_requests', 'orders_headers']
         ## 'paid' => 1 == paid | 0 == un paid
         ## 'type' => [ 0 => 'providers_offers', 1 => 'excellence_requests', 2 => 'orders_headers'],
         ################################################################################################*/
