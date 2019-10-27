@@ -1134,6 +1134,7 @@ class UserController extends Controller
                 ->where("providers.publish", 1)
                 ->select(
                     "providers.provider_id",
+                    "providers.category_id",
                     "providers.store_name AS store_name",
                     "providers.provider_rate",
                     "providers.membership_id",
@@ -1154,6 +1155,7 @@ class UserController extends Controller
                 ->where("providers.publish", 1)
                 ->select(
                     "providers.provider_id",
+                    "providers.category_id",
                     "providers.store_name AS store_name",
                     "providers.provider_rate",
                     "providers.membership_id",
