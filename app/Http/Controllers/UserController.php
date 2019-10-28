@@ -3913,6 +3913,7 @@ class UserController extends Controller
                 )
             )
             ->get();
+
         $usedCredit = DB::table('orders_headers')->where('user_id', $request->input('user_id'))
             ->whereIn('status_id', [5, 6, 7, 9])
             ->where('payment_type', '!=', 1)
@@ -3953,144 +3954,144 @@ class UserController extends Controller
         return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[0], 'total_balance' => $user_balance, 'balance_details' => $details, 'usedCredit' => $usedCredit, 'invitationCredits' => $invitationCredits, 'withdrawed_balance' => $withdrawed_balance, "bank_name" => $bank_name, "bank_phone" => $bank_phone, "account_num" => $bank_account_num, "bank_username" => $bank_username]);
     }
 
-    public function balance_withdraw(Request $request)
-    {
-        $lang = $request->input('lang');
-        if ($lang == "ar") {
-            $msg = array(
-                0 => 'تم إضافة الطلب بنجاح',
-                1 => 'user_id مطلوب',
-                2 => 'المبلغ المراد سحبه مطلوب',
-                3 => 'المبلغ المراد سحبه يجب ان يكون رقم',
-                4 => 'إسم البنك مطلوب',
-                5 => 'إسم صاحب الحساب مطلوب',
-                6 => 'رقم الحساب مطلوب',
-                7 => 'رقم الجوار مطلوب',
-                8 => 'فشلت العلمية من فضلك حاول مره اخرى',
-                9 => 'هناك طلب لك ما زال معلق لا يمكنك عمل الطلب حاليا',
-                10 => 'ليس لديك رصيد كافى لاتمام هذه العملية',
-                11 => 'الرصيد المطلوب اقل من الحد الادنى لسحب الرصيد',
-            );
-        } else {
-            $msg = array(
-                0 => 'Added successfully',
-                1 => 'user_id is required',
-                2 => 'value is required',
-                3 => 'value must be a nubmer',
-                4 => 'Bank name is required',
-                5 => 'Name is required',
-                6 => 'Account number is required',
-                7 => 'Phone number is required',
-                8 => 'Process failed, please try again',
-                9 => 'You have a pending request, you can\'t add that request',
-                10 => 'You do not have enough balance to execute this process',
-                11 => 'the requested balance is less than minimum balance to withdraw',
-            );
-        }
+    // public function balance_withdraw(Request $request)
+    // {
+    //     $lang = $request->input('lang');
+    //     if ($lang == "ar") {
+    //         $msg = array(
+    //             0 => 'تم إضافة الطلب بنجاح',
+    //             1 => 'user_id مطلوب',
+    //             2 => 'المبلغ المراد سحبه مطلوب',
+    //             3 => 'المبلغ المراد سحبه يجب ان يكون رقم',
+    //             4 => 'إسم البنك مطلوب',
+    //             5 => 'إسم صاحب الحساب مطلوب',
+    //             6 => 'رقم الحساب مطلوب',
+    //             7 => 'رقم الجوار مطلوب',
+    //             8 => 'فشلت العلمية من فضلك حاول مره اخرى',
+    //             9 => 'هناك طلب لك ما زال معلق لا يمكنك عمل الطلب حاليا',
+    //             10 => 'ليس لديك رصيد كافى لاتمام هذه العملية',
+    //             11 => 'الرصيد المطلوب اقل من الحد الادنى لسحب الرصيد',
+    //         );
+    //     } else {
+    //         $msg = array(
+    //             0 => 'Added successfully',
+    //             1 => 'user_id is required',
+    //             2 => 'value is required',
+    //             3 => 'value must be a nubmer',
+    //             4 => 'Bank name is required',
+    //             5 => 'Name is required',
+    //             6 => 'Account number is required',
+    //             7 => 'Phone number is required',
+    //             8 => 'Process failed, please try again',
+    //             9 => 'You have a pending request, you can\'t add that request',
+    //             10 => 'You do not have enough balance to execute this process',
+    //             11 => 'the requested balance is less than minimum balance to withdraw',
+    //         );
+    //     }
 
-        $messages = array(
-            'user_id.required' => 1,
-            'value.required' => 2,
-            'value.numeric' => 3,
-            'bank_name.required' => 4,
-            'name.required' => 5,
-            'account_num.required' => 6,
-            'phone.required' => 7,
-        );
+    //     $messages = array(
+    //         'user_id.required' => 1,
+    //         'value.required' => 2,
+    //         'value.numeric' => 3,
+    //         'bank_name.required' => 4,
+    //         'name.required' => 5,
+    //         'account_num.required' => 6,
+    //         'phone.required' => 7,
+    //     );
 
-        $validator = Validator::make($request->all(), [
-            'user_id' => 'required',
-            'value' => 'required|numeric',
-            'bank_name' => 'required',
-            'name' => 'required',
-            'account_num' => 'required',
-            'phone' => 'required',
-        ], $messages);
+    //     $validator = Validator::make($request->all(), [
+    //         'user_id' => 'required',
+    //         'value' => 'required|numeric',
+    //         'bank_name' => 'required',
+    //         'name' => 'required',
+    //         'account_num' => 'required',
+    //         'phone' => 'required',
+    //     ], $messages);
 
-        if ($validator->fails()) {
-            $error = $validator->errors()->first();
-            return response()->json(['status' => false, 'errNum' => (int) $error, 'msg' => $msg[$error]]);
-        }
+    //     if ($validator->fails()) {
+    //         $error = $validator->errors()->first();
+    //         return response()->json(['status' => false, 'errNum' => (int) $error, 'msg' => $msg[$error]]);
+    //     }
 
-        // insert bank account data into database
-        $actor_bank_data = DB::table("withdraw_balance")
-            ->where("actor_id", $request->input("user_id"))
-            ->where("type", "user")
-            ->first();
-        // if($actor_bank_data !== null){
-        //     // update bank data
-        //     DB::table("withdraw_balance")
-        //         ->where("actor_id" , $request->input("user_id"))
-        //         ->where("type" , "user")
-        //         ->update([
-        //             "name" => $request->input("name"),
-        //             "phone" => $request->input("phone"),
-        //             "bank_name" => $request->input("bank_name"),
-        //             "account_num" => $request->input("account_num"),
-        //             "updated_at" =>date('Y-m-d h:i:s')
-        //         ]);
+    //     // insert bank account data into database
+    //     $actor_bank_data = DB::table("withdraw_balance")
+    //         ->where("actor_id", $request->input("user_id"))
+    //         ->where("type", "user")
+    //         ->first();
+    //     // if($actor_bank_data !== null){
+    //     //     // update bank data
+    //     //     DB::table("withdraw_balance")
+    //     //         ->where("actor_id" , $request->input("user_id"))
+    //     //         ->where("type" , "user")
+    //     //         ->update([
+    //     //             "name" => $request->input("name"),
+    //     //             "phone" => $request->input("phone"),
+    //     //             "bank_name" => $request->input("bank_name"),
+    //     //             "account_num" => $request->input("account_num"),
+    //     //             "updated_at" =>date('Y-m-d h:i:s')
+    //     //         ]);
 
-        // }else{
-        //     // insert bank data
-        //     DB::table("withdraw_balance")
-        //         ->insert([
-        //             "actor_id" => $request->input("user_id"),
-        //             "type" => "user",
-        //             "name" => $request->input("name"),
-        //             "phone" => $request->input("phone"),
-        //             "bank_name" => $request->input("bank_name"),
-        //             "account_num" => $request->input("account_num"),
-        //             "created_at" =>date('Y-m-d h:i:s')
-        //         ]);
-        // }
+    //     // }else{
+    //     //     // insert bank data
+    //     //     DB::table("withdraw_balance")
+    //     //         ->insert([
+    //     //             "actor_id" => $request->input("user_id"),
+    //     //             "type" => "user",
+    //     //             "name" => $request->input("name"),
+    //     //             "phone" => $request->input("phone"),
+    //     //             "bank_name" => $request->input("bank_name"),
+    //     //             "account_num" => $request->input("account_num"),
+    //     //             "created_at" =>date('Y-m-d h:i:s')
+    //     //         ]);
+    //     // }
 
-        //check if there is a pending request
-        $check = DB::table('withdraw_balance')->where('actor_id', $request->input('user_id'))->where('type', 'user')->where('status', 1)->first();
-        if ($check != null) {
-            return response()->json(['status' => false, 'errNum' => 9, 'msg' => $msg[9]]);
-        }
+    //     //check if there is a pending request
+    //     $check = DB::table('withdraw_balance')->where('actor_id', $request->input('user_id'))->where('type', 'user')->where('status', 1)->first();
+    //     if ($check != null) {
+    //         return response()->json(['status' => false, 'errNum' => 9, 'msg' => $msg[9]]);
+    //     }
 
-        // check if the user requested blance is avaliable
-        $user_balace = DB::table("balances")
-            ->select("current_balance")
-            ->where("actor_id", $request->input("user_id"))
-            ->where("type", "user")
-            ->first();
-        if ($user_balace != null) {
-            $user_current_balance = $user_balace->current_balance;
-        } else {
-            return response()->json(['status' => false, 'errNum' => 10, 'msg' => $msg[10]]);
-        }
+    //     // check if the user requested blance is avaliable
+    //     $user_balace = DB::table("balances")
+    //         ->select("current_balance")
+    //         ->where("actor_id", $request->input("user_id"))
+    //         ->where("type", "user")
+    //         ->first();
+    //     if ($user_balace != null) {
+    //         $user_current_balance = $user_balace->current_balance;
+    //     } else {
+    //         return response()->json(['status' => false, 'errNum' => 10, 'msg' => $msg[10]]);
+    //     }
 
-        if ($request->input("value") > $user_current_balance) {
-            return response()->json(['status' => false, 'errNum' => 10, 'msg' => $msg[10]]);
-        }
+    //     if ($request->input("value") > $user_current_balance) {
+    //         return response()->json(['status' => false, 'errNum' => 10, 'msg' => $msg[10]]);
+    //     }
 
-        //check if the current balance is greater than min limit of withdrawing
-        $min_balance = DB::table("app_settings")
-            ->select("min_balace_to_withdraw")
-            ->first();
-        if ($request->input("value") < $min_balance->min_balace_to_withdraw) {
-            return response()->json(['status' => false, 'errNum' => 11, 'msg' => $msg[11]]);
-        }
+    //     //check if the current balance is greater than min limit of withdrawing
+    //     $min_balance = DB::table("app_settings")
+    //         ->select("min_balace_to_withdraw")
+    //         ->first();
+    //     if ($request->input("value") < $min_balance->min_balace_to_withdraw) {
+    //         return response()->json(['status' => false, 'errNum' => 11, 'msg' => $msg[11]]);
+    //     }
 
-        $check = DB::table('withdraw_balance')->insert([
-            'actor_id' => $request->input('user_id'),
-            'due_balance' => 0,
-            'current_balance' => $request->input('value'),
-            'type' => 'user',
-            'name' => $request->input('name'),
-            'bank_name' => $request->input('bank_name'),
-            'account_num' => $request->input('account_num'),
-            'phone' => $request->input('phone'),
-        ]);
+    //     $check = DB::table('withdraw_balance')->insert([
+    //         'actor_id' => $request->input('user_id'),
+    //         'due_balance' => 0,
+    //         'current_balance' => $request->input('value'),
+    //         'type' => 'user',
+    //         'name' => $request->input('name'),
+    //         'bank_name' => $request->input('bank_name'),
+    //         'account_num' => $request->input('account_num'),
+    //         'phone' => $request->input('phone'),
+    //     ]);
 
-        if ($check) {
-            return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[0]]);
-        } else {
-            return response()->json(['status' => false, 'errNum' => 8, 'msg' => $msg[8]]);
-        }
-    }
+    //     if ($check) {
+    //         return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[0]]);
+    //     } else {
+    //         return response()->json(['status' => false, 'errNum' => 8, 'msg' => $msg[8]]);
+    //     }
+    // }
 
     public function provider_evaluate(Request $request)
     {

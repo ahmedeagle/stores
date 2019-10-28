@@ -4986,21 +4986,21 @@ class ProviderController extends Controller
         }
         else{
 
-            if (isset($get_provider_bank) && $get_provider_bank->count() > 0) {
-                //return empty($get_provider_bank);
+            // if (isset($get_provider_bank) && $get_provider_bank->count() > 0) {
+            //     //return empty($get_provider_bank);
     
-                $last_entry = $get_provider_bank[count($get_provider_bank) - 1];
-                $bank_name = $last_entry->bank_name;
-                $bank_account = $last_entry->account_num;
-                $bank_username = $last_entry->name;
-                $bank_phone = $last_entry->phone;
-            } else {
+            //     $last_entry = $get_provider_bank[count($get_provider_bank) - 1];
+            //     $bank_name = $last_entry->bank_name;
+            //     $bank_account = $last_entry->account_num;
+            //     $bank_username = $last_entry->name;
+            //     $bank_phone = $last_entry->phone;
+            // } else {
     
-                $bank_name = "";
-                $bank_account = "";
-                $bank_username = "";
-                $bank_phone = "";
-            }
+            //     $bank_name = "";
+            //     $bank_account = "";
+            //     $bank_username = "";
+            //     $bank_phone = "";
+            // }
     
             $financialTransactions = DB::table('withdraw_balance')
                 ->join('providers', "providers.provider_id", '=', "withdraw_balance.actor_id")
@@ -5017,6 +5017,10 @@ class ProviderController extends Controller
 
     public function withdraw(Request $request)
     {
+        /*###############################################################################################
+        ## 'type' => [ 0 => 'provider', 1 => 'delivery'],
+        ################################################################################################*/
+
         $lang = $request->input('lang');
         if ($lang == "ar") {
             $msg = array(
@@ -5036,8 +5040,8 @@ class ProviderController extends Controller
                 13 => 'رصيدك الحالى اقل من الحد الادنى لسحب الرصيد',
                 14 => "النوع يجب ان يكون اما مقدم او مسوق",
                 15 => "النوع مطلوب",
-                16 => "forbidden_balance  مطلوب ",
-                17 => "forbidden_balance لابد ان يكون ارقام ",
+                // 16 => "forbidden_balance  مطلوب ",
+                // 17 => "forbidden_balance لابد ان يكون ارقام ",
                 18 => "النوع لابد ان يكون  providers or deliveries ",
                 19 => "المستخدم غير موجود ",
 
@@ -5060,8 +5064,8 @@ class ProviderController extends Controller
                 13 => "Your balance is less than minimum balance to withdraw",
                 14 => "type must be either provider or marketer",
                 15 => "type is required",
-                16 => "forbidden_balance is required",
-                17 => 'forbidden_balance must be a number',
+                // 16 => "forbidden_balance is required",
+                // 17 => 'forbidden_balance must be a number',
                 18 => 'type must be only providers or deliveries ',
                 19 => "actor not found",
 
@@ -5073,24 +5077,24 @@ class ProviderController extends Controller
             'current_balance.required' => 2,
             'type.required' => 15,
             'current_balance.numeric' => 7,
-            'due_balance.required' => 3,
+            // 'due_balance.required' => 3,
             'bank_name.required' => 8,
-            'name.required' => 9,
+            // 'name.required' => 9,
             'account_num.required' => 10,
-            'phone.required' => 11,
-            'forbidden_balance.required' => 16,
-            'forbidden_balance.numeric' => 17,
+            // 'phone.required' => 11,
+            // 'forbidden_balance.required' => 16,
+            // 'forbidden_balance.numeric' => 17,
             'type.in' => 18,
 
         );
 
         $validator = Validator::make($request->all(), [
             'access_token' => 'required',
-            'type' => 'required|in:providers,deliveries',
+            'type' => 'required|in:0,1',
             'bank_name' => 'required',
-            'name' => 'required',
+            // 'name' => 'required',
             'account_num' => 'required',
-            'phone' => 'required',
+            // 'phone' => 'required',
 
         ], $messages);
 
@@ -5099,24 +5103,27 @@ class ProviderController extends Controller
             return response()->json(['status' => false, 'errNum' => (int) $error, 'msg' => $msg[$error]]);
         }
 
+        $table_name = "";
         $type = "";
-        if ($request->input("type") == "providers") {
-            $type = "providers";
+        if ($request->input("type") == 0) {
+            $type = "provider";
+            $table_name = "providers";
             $colum = "provider_id";
-        } elseif ($request->input("type") == "deliveries") {
-            $type = "deliveries";
+        } elseif ($request->input("type") == 1) {
+            $type = "delivery";
+            $table_name = "deliveries";
             $colum = "delivery_id";
         } else {
             return response()->json(['status' => false, 'msg' => $msg[14]]);
         }
 
-        $actor_id = $this->get_id($request, $type, $colum);
+        $actor_id = $this->get_id($request, $table_name, $colum);
 
         if ($actor_id == 0) {
             return response()->json(['status' => false, 'errNum' => 19, 'msg' => $msg[19]]);
         }
 
-        $check = DB::table($type)->where($colum, $actor_id)->first();
+        $check = DB::table($table_name)->where($colum, $actor_id)->first();
 
         if (!$check) {
             return response()->json(['status' => false, 'errNum' => 19, 'msg' => $msg[19]]);
@@ -5131,8 +5138,8 @@ class ProviderController extends Controller
         //check if there is pending requests
         $check = DB::table('withdraw_balance')->where('actor_id', $actor_id)
             ->where('type', $type)
-            ->where('status', 1)
-
+            // ->where('status', 1)
+            ->where('status', 0)
             ->first();
 
         // cannot withdraw when has pending request
@@ -5140,12 +5147,9 @@ class ProviderController extends Controller
             return response()->json(['status' => false, 'errNum' => 5, 'msg' => $msg[5]]);
         }
 
-        if ($type == "providers") {
-
+        if ($type == "provider") {
             $balType = "provider";
-
         } else {
-
             $balType = "delivery";
         }
 
@@ -5169,14 +5173,14 @@ class ProviderController extends Controller
         $insert = DB::table("withdraw_balance")->insert([
             'actor_id' => $actor_id,
             'current_balance' => $provider_balace->current_balance,
-            'due_balance' => $provider_balace->due_balance,
-            'forbidden' => $provider_balace->forbidden_balance,
+            // 'due_balance' => $provider_balace->due_balance,
+            // 'forbidden' => $provider_balace->forbidden_balance,
             'type' => $type,
             'status' => 0,
             'bank_name' => $request->input('bank_name'),
-            'name' => $request->input('name'),
+            // 'name' => $request->input('name'),
             'account_num' => $request->input('account_num'),
-            'phone' => $request->input('phone'),
+            // 'phone' => $request->input('phone'),
 
         ]);
         if ($insert) {
@@ -5625,4 +5629,6 @@ class ProviderController extends Controller
         }
 
     }
+
+
 }
