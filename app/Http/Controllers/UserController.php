@@ -4057,7 +4057,7 @@ class UserController extends Controller
             $msg = array(
                 0 => '',
                 1 => 'access_token is required',
-                2 => 'user_id not exists',
+                2 => 'user not exists',
                 3 => 'data retrieved successfully',
 
             );
@@ -4088,14 +4088,14 @@ class UserController extends Controller
             return response()->json(['status' => false, 'errNum' => 2, 'msg' => $msg[2]]);
         }
 
-        if ($check->invitationCode) {
+        if ($check->invitation_code) {
 
-            return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[3], 'invitationCode' => $check->invitationCode]);
+            return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[3], 'invitationCode' => $check->invitation_code]);
         }
 
         $randCode = $this->getRandomString(9);
 
-        DB::table('users')->where('user_id', $user_id)->update(['invitationCode' => $randCode]);
+        DB::table('users')->where('user_id', $user_id)->update(['invitation_code' => $randCode]);
 
         return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[3], 'invitationCode' => $randCode]);
 

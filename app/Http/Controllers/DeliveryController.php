@@ -2679,7 +2679,7 @@ class DeliveryController extends Controller
             $msg = array(
                 0 => '',
                 1 => 'access_token is required',
-                2 => 'delivery_id not exists',
+                2 => 'delivery not exists',
                 3 => 'data retrieved successfully',
 
             );
