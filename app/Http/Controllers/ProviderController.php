@@ -5005,7 +5005,7 @@ class ProviderController extends Controller
             $financialTransactions = DB::table('withdraw_balance')
                 ->join('providers', "providers.provider_id", '=', "withdraw_balance.actor_id")
                 ->where('withdraw_balance.type', 'provider')
-                ->select(['withdraw_balance.current_balance AS balance', 'withdraw_balance.status', 'withdraw_balance.created_at','withdraw_balance.account_num'])
+                ->select(['withdraw_balance.current_balance AS balance', 'withdraw_balance.status', 'withdraw_balance.created_at', /* Return last 3 characters from 'account_num' */ DB::raw('RIGHT(withdraw_balance.account_num, 3) as account_num')])
                 ->get();
     
             return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[0], 'balance' => $current_balance, 'financialTransactions' => $financialTransactions]);
