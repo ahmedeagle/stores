@@ -3844,13 +3844,115 @@ class UserController extends Controller
         return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[0], 'countries' => $countries]);
     }
 
-    public function get_user_balance(Request $request)
+    // public function get_user_balance(Request $request)
+    // {
+    //     $lang = $request->input('lang');
+    //     if ($lang == "ar") {
+    //         $msg = array(
+    //             0 => '',
+    //             1 => 'user_id مطلوب',
+    //         );
+    //         $canceled = ' ريال محولة من إلغاء طلب بتاريخ ';
+    //         $refused = ' ريال محولة من رفض طلب بتاريخ ';
+    //         $notanswered = ' ريال محولة من طلب لم يتم الرد عليه بتاريخ ';
+    //         $failed = ' ريال محولة من طلب فشل توصيله بتاريخ ';
+    //         $else = ' ريال محولة من مصدر غير معروف بتاريخ ';
+    //     } else {
+    //         $msg = array(
+    //             0 => '',
+    //             1 => 'user_id is required',
+    //         );
+    //         $canceled = ' SR from canceled order at ';
+    //         $refused = ' SR from refused order at ';
+    //         $notanswered = ' SR from not responded order at ';
+    //         $failed = ' SR from failed to delivered order at ';
+    //         $else = ' SR from unkonwn source at ';
+    //     }
+
+    //     $messages = array(
+    //         'user_id.required' => 1,
+    //     );
+
+    //     $validator = Validator::make($request->all(), [
+    //         'user_id' => 'required',
+    //     ], $messages);
+
+    //     if ($validator->fails()) {
+    //         $error = $validator->errors()->first();
+    //         return response()->json(['status' => false, 'errNum' => (int) $error, 'msg' => $msg[$error]]);
+    //     }
+
+    //     $userData = User::where('user_id', $request->input('user_id'))
+    //         ->select('points', 'invitation_code')->first();
+
+    //     if ($userData != null) {
+    //         $user_balance = $userData->points;
+    //         $user_code = $userData->invitation_code;
+    //     } else {
+    //         $user_balance = 0;
+    //         $user_code = "";
+    //     }
+
+    //     //get user balance details
+    //     $details = DB::table('orders_headers')->where('user_id', $request->input('user_id'))
+    //         ->whereIn('status_id', [5, 6, 7, 9])
+    //         ->where('payment_type', '!=', 1)
+    //         ->select('total_value', DB::raw('DATE(created_at) AS day'), 'status_id AS status',
+    //             DB::raw(
+    //                 '(CASE status_id
+	// 										  			WHEN 5 THEN CONCAT(total_value, "' . $failed . '", DATE(created_at))
+	// 										  			WHEN 6 THEN CONCAT(total_value, "' . $refused . '", DATE(created_at))
+	// 										  			WHEN 7 THEN CONCAT(total_value, "' . $notanswered . '", DATE(created_at))
+	// 										  			WHEN 9 THEN CONCAT(total_value, "' . $canceled . '", DATE(created_at))
+	// 										  			ELSE CONCAT(total_value,"' . $else . '",DATE(created_at)) END) AS full_text'
+    //             )
+    //         )
+    //         ->get();
+
+    //     $usedCredit = DB::table('orders_headers')->where('user_id', $request->input('user_id'))
+    //         ->whereIn('status_id', [5, 6, 7, 9])
+    //         ->where('payment_type', '!=', 1)
+    //         ->sum('used_points');
+
+    //     $withdrawed_balance = DB::table('withdraw_balance')->where('actor_id', $request->input('user_id'))
+    //         ->where('type', 'user')
+    //         ->where('status', 2)
+    //         ->sum('current_balance');
+    //     if ($withdrawed_balance == null || empty($withdrawed_balance)) {
+    //         $withdrawed_balance = 0;
+    //     }
+    //     if ($user_code != "") {
+    //         $invitationCredits = User::where('used_invitation_code', $user_code)->sum('invitation_credits');
+    //     } else {
+    //         $invitationCredits = 0;
+    //     }
+
+    //     // get user bank data
+    //     $delivery_bank = DB::table("withdraw_balance")
+    //         ->select("*")
+    //         ->where("actor_id", $request->input("user_id"))
+    //         ->where("type", "user")
+    //         ->get();
+
+    //     if (count($delivery_bank) > 0) {
+    //         $last_entry = $delivery_bank[count($delivery_bank) - 1];
+    //         $bank_name = $last_entry->bank_name;
+    //         $bank_phone = $last_entry->phone;
+    //         $bank_username = $last_entry->name;
+    //         $bank_account_num = $last_entry->account_num;
+    //     } else {
+    //         $bank_name = "";
+    //         $bank_phone = "";
+    //         $bank_username = "";
+    //         $bank_account_num = "";
+    //     }
+
+    //     return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[0], 'total_balance' => $user_balance, 'balance_details' => $details, 'usedCredit' => $usedCredit, 'invitationCredits' => $invitationCredits, 'withdrawed_balance' => $withdrawed_balance, "bank_name" => $bank_name, "bank_phone" => $bank_phone, "account_num" => $bank_account_num, "bank_username" => $bank_username]);
+    // }
+
+    public function getUserBalance(Request $request)
     {
-        /*###############################################################################################
-        ## 'flag' => [ 0 => 'only balance', 1 => 'balance with transactions']
-        ################################################################################################*/
-        
-        $flag = $request->input('flag') ? $request->input('flag') : 0;
+    
         $lang = $request->input('lang');
         if ($lang == "ar") {
             $msg = array(
@@ -3938,6 +4040,7 @@ class UserController extends Controller
             ->where("actor_id", $request->input("user_id"))
             ->where("type", "user")
             ->get();
+
         if (count($delivery_bank) > 0) {
             $last_entry = $delivery_bank[count($delivery_bank) - 1];
             $bank_name = $last_entry->bank_name;
@@ -3953,6 +4056,7 @@ class UserController extends Controller
 
         return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[0], 'total_balance' => $user_balance, 'balance_details' => $details, 'usedCredit' => $usedCredit, 'invitationCredits' => $invitationCredits, 'withdrawed_balance' => $withdrawed_balance, "bank_name" => $bank_name, "bank_phone" => $bank_phone, "account_num" => $bank_account_num, "bank_username" => $bank_username]);
     }
+
 
     // public function balance_withdraw(Request $request)
     // {

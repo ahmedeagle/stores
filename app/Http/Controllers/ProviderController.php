@@ -4949,13 +4949,6 @@ class ProviderController extends Controller
             return response()->json(['status' => false, 'errNum' => (int) $error, 'msg' => $msg[$error]]);
         }
 
-        // check if the user has bank data
-        $get_provider_bank = DB::table("withdraw_balance")
-            ->select("*")
-            ->where("actor_id", $request->input("provider_id"))
-            ->where("type", "provider")
-            ->get();
-
         $provider_id = $this->get_id($request, 'providers', 'provider_id');
 
         if ($provider_id == 0) {
@@ -4986,6 +4979,13 @@ class ProviderController extends Controller
         }
         else{
 
+            // // check if the user has bank data
+            // $get_provider_bank = DB::table("withdraw_balance")
+            // ->select("*")
+            // ->where("actor_id", $request->input("provider_id"))
+            // ->where("type", "provider")
+            // ->get();
+
             // if (isset($get_provider_bank) && $get_provider_bank->count() > 0) {
             //     //return empty($get_provider_bank);
     
@@ -5004,6 +5004,7 @@ class ProviderController extends Controller
     
             $financialTransactions = DB::table('withdraw_balance')
                 ->join('providers', "providers.provider_id", '=', "withdraw_balance.actor_id")
+                ->where("withdraw_balance.actor_id", $provider_id)
                 ->where('withdraw_balance.type', 'provider')
                 ->select(['withdraw_balance.current_balance AS balance', 'withdraw_balance.status', 'withdraw_balance.created_at', /* Return last 3 characters from 'account_num' */ DB::raw('RIGHT(withdraw_balance.account_num, 3) as account_num')])
                 ->get();

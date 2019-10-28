@@ -177,7 +177,8 @@ Route::group(['middleware' => ['api_auth'], 'prefix' => 'api'], function() {
 	Route::get('/get_checkout_id', 'UserController@echoEmpty');	
 	 
 
-	Route::post('/getUserBalances', 'UserController@get_user_balance');
+	// Route::post('/getUserBalances', 'UserController@get_user_balance');
+	Route::post('/getUserBalances', 'UserController@getUserBalance');
 	Route::get('/getUserBalances', 'UserController@echoEmpty');
 
 });

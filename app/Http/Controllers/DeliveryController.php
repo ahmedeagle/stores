@@ -2551,80 +2551,116 @@ class DeliveryController extends Controller
             $msg = array(
                 0 => '',
                 1 => 'رقم الموصل مطلوب',
+                2 => 'الموصل غير موجود',
+                3 => 'التمييز مطلوب',
             );
         } else {
             $msg = array(
                 0 => '',
-                1 => 'delivery_id is required',
+                1 => 'access_token is required',
+                2 => 'delivery not exists',
+                3 => 'flag is required',
             );
         }
 
         $messages = array(
             'required' => 1,
+            'flag.required' => 3,
         );
 
         $validator = Validator::make($request->all(), [
-            'delivery_id' => 'required',
+            'access_token' => 'required',
+            'flag' => 'required',
         ], $messages);
 
         if ($validator->fails()) {
             $error = $validator->errors()->first();
             return response()->json(['status' => false, 'errNum' => (int) $error, 'msg' => $msg[$error]]);
-        } else {
+        } 
+        else {
+
+            $delivery_id = $this->get_id($request, 'deliveries', 'delivery_id');
+
             $balance = DB::table('balances')
-                ->where('actor_id', $request->input('delivery_id'))
+                ->where('actor_id', $delivery_id)
                 ->where('type', 'delivery')
-                ->select('due_balance', 'current_balance', 'forbidden_balance')
+                ->select('current_balance')
                 ->first();
-            //get current balance
-            $current = DB::table('orders_headers')
-                ->where('payment_type', 2)
-                ->where('status_id', 4)
-                ->where('delivery_id', $request->input('delivery_id'))
-                ->where('delivery_balance_status', 1)
-                ->where('delivery_complain_flag', 0)
-                ->sum(DB::raw('delivery_price - delivery_app_value'));
 
-            //get due balance
-            $due = DB::table('orders_headers')
-                ->where('payment_type', 1)
-                ->where('status_id', 4)
-                ->where('provider_id', $request->input('provider_id'))
-                ->where('delivery_balance_status', 1)
-                ->sum('delivery_app_value');
+            if($balance){
 
-            //forbidden balance
-            $forbidden = DB::table('orders_headers')
-                ->where('payment_type', 2)
-                ->where('status_id', 4)
-                ->where('provider_id', $request->input('provider_id'))
-                ->where('delivery_balance_status', 1)
-                ->where('delivery_complain_flag', 1)
-                ->sum(DB::raw('delivery_price - delivery_app_value'));
+                if($flag == 0){
+                    return response()->json([ 'status' => true, 'errNum' => 0, 'msg' => $msg[0], 'balance' => $balance->current_balance ]);
+                }
+                else{
 
-            // delivery bank data
-            // check if the user has bank data
-            $delivery_bank = DB::table("withdraw_balance")
-                ->select("*")
-                ->where("actor_id", $request->input("delivery_id"))
-                ->where("type", "delivery")
-                ->get();
-            if ($delivery_bank !== null && count($delivery_bank) != 0) {
-                $last_entry = $delivery_bank[count($delivery_bank) - 1];
-                $bank_name = $last_entry->bank_name;
-                $bank_phone = $last_entry->phone;
-                $bank_username = $last_entry->name;
-                $bank_account_num = $last_entry->account_num;
-            } else {
-                $bank_name = "";
-                $bank_phone = "";
-                $bank_username = "";
-                $bank_account_num = "";
+                    $financialTransactions = DB::table('withdraw_balance')
+                    ->where("actor_id", $delivery_id)
+                    ->where("type", "delivery")
+                    ->select(['current_balance AS balance', 'status', 'created_at', /* Return last 3 characters from 'account_num' */ DB::raw('RIGHT(account_num, 3) as account_num')])
+                    ->get();
+        
+                    return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[0], 'balance' => $balance->current_balance, 'financialTransactions' => $financialTransactions]);
+
+                }
+
             }
-            date_default_timezone_set('Asia/Riyadh');
-            $timestamp = date("Y/m/d H:i:s", time());
-            $balance = array('current_balance' => $current, "updated_at" => $timestamp);
-            return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[0], 'balance' => $balance, "bank_name" => $bank_name, "bank_phone" => $bank_phone, "account_num" => $bank_account_num, "bank_username" => $bank_username]);
+            else{
+                return response()->json(['status' => false, 'errNum' => 2, 'msg' => $msg[2]]);
+            }
+
+
+
+            // //get current balance
+            // $current = DB::table('orders_headers')
+            //     ->where('payment_type', 2)
+            //     ->where('status_id', 4)
+            //     ->where('delivery_id', $request->input('delivery_id'))
+            //     ->where('delivery_balance_status', 1)
+            //     ->where('delivery_complain_flag', 0)
+            //     ->sum(DB::raw('delivery_price - delivery_app_value'));
+
+            // //get due balance
+            // $due = DB::table('orders_headers')
+            //     ->where('payment_type', 1)
+            //     ->where('status_id', 4)
+            //     ->where('provider_id', $request->input('provider_id'))
+            //     ->where('delivery_balance_status', 1)
+            //     ->sum('delivery_app_value');
+
+            // //forbidden balance
+            // $forbidden = DB::table('orders_headers')
+            //     ->where('payment_type', 2)
+            //     ->where('status_id', 4)
+            //     ->where('provider_id', $request->input('provider_id'))
+            //     ->where('delivery_balance_status', 1)
+            //     ->where('delivery_complain_flag', 1)
+            //     ->sum(DB::raw('delivery_price - delivery_app_value'));
+
+            // // delivery bank data
+            // // check if the user has bank data
+            // $delivery_bank = DB::table("withdraw_balance")
+            //     ->select("*")
+            //     ->where("actor_id", $request->input("delivery_id"))
+            //     ->where("type", "delivery")
+            //     ->get();
+            // if ($delivery_bank !== null && count($delivery_bank) != 0) {
+            //     $last_entry = $delivery_bank[count($delivery_bank) - 1];
+            //     $bank_name = $last_entry->bank_name;
+            //     $bank_phone = $last_entry->phone;
+            //     $bank_username = $last_entry->name;
+            //     $bank_account_num = $last_entry->account_num;
+            // } else {
+            //     $bank_name = "";
+            //     $bank_phone = "";
+            //     $bank_username = "";
+            //     $bank_account_num = "";
+            // }
+            // date_default_timezone_set('Asia/Riyadh');
+            // $timestamp = date("Y/m/d H:i:s", time());
+            // $balance = array('current_balance' => $current, "updated_at" => $timestamp);
+            // return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[0], 'balance' => $balance, "bank_name" => $bank_name, "bank_phone" => $bank_phone, "account_num" => $bank_account_num, "bank_username" => $bank_username]);
+
         }
     }
 
