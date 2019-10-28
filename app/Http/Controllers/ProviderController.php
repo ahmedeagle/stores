@@ -4911,28 +4911,37 @@ class ProviderController extends Controller
 
     public function getProviderBalance(Request $request)
     {
+        /*###############################################################################################
+        ## 'flag' => [ 0 => 'only balance', 1 => 'balance with transactions']
+        ################################################################################################*/
+
+        $flag = $request->input('flag') ? $request->input('flag') : 0;
         $lang = $request->input('lang');
+
         if ($lang == "ar") {
             $msg = array(
                 0 => '',
                 1 => 'رقم مقدم الخدمه مطلوب',
                 2 => 'المتجر غير موجود',
+                3 => 'التمييز مطلوب',
             );
         } else {
             $msg = array(
                 0 => '',
                 1 => 'access_token is required',
                 2 => 'provider not exists',
-
+                3 => 'flag is required',
             );
         }
 
         $messages = array(
             'required' => 1,
+            'flag.required' => 3,
         );
 
         $validator = Validator::make($request->all(), [
             'access_token' => 'required',
+            'flag' => 'required',
         ], $messages);
 
         if ($validator->fails()) {
@@ -4959,52 +4968,50 @@ class ProviderController extends Controller
             return response()->json(['status' => false, 'errNum' => 2, 'msg' => $msg[2]]);
         }
 
-        //get balaces
+        //get balances
         $balance = DB::table('balances')
-            ->where('actor_id', $provider_id)
-            ->where('type', 'provider')
-            ->select('current_balance', 'due_balance', 'updated_at', 'forbidden_balance')
-            ->first();
+        ->where('actor_id', $provider_id)
+        ->where('type', 'provider')
+        ->select('current_balance')
+        ->first();
 
         if ($balance) {
             $current_balance = $balance->current_balance;
-            $due_balance = $balance->due_balance;
-            $forbidden = $balance->forbidden_balance;
-            $updated = $balance->updated_at;
         } else {
             $current_balance = "";
-            $due_balance = "";
-            $forbidden = "";
-            $updated = "";
         }
 
-        if (isset($get_provider_bank) && $get_provider_bank->count() > 0) {
-            //return empty($get_provider_bank);
+        if($flag == 0){
+            return response()->json([ 'status' => true, 'errNum' => 0, 'msg' => $msg[0], 'balance' => $current_balance ]);
+        }
+        else{
 
-            $last_entry = $get_provider_bank[count($get_provider_bank) - 1];
-            $bank_name = $last_entry->bank_name;
-            $bank_account = $last_entry->account_num;
-            $bank_username = $last_entry->name;
-            $bank_phone = $last_entry->phone;
-        } else {
-
-            $bank_name = "";
-            $bank_account = "";
-            $bank_username = "";
-            $bank_phone = "";
+            if (isset($get_provider_bank) && $get_provider_bank->count() > 0) {
+                //return empty($get_provider_bank);
+    
+                $last_entry = $get_provider_bank[count($get_provider_bank) - 1];
+                $bank_name = $last_entry->bank_name;
+                $bank_account = $last_entry->account_num;
+                $bank_username = $last_entry->name;
+                $bank_phone = $last_entry->phone;
+            } else {
+    
+                $bank_name = "";
+                $bank_account = "";
+                $bank_username = "";
+                $bank_phone = "";
+            }
+    
+            $financialTransactions = DB::table('withdraw_balance')
+                ->join('providers', "providers.provider_id", '=', "withdraw_balance.actor_id")
+                ->where('withdraw_balance.type', 'provider')
+                ->select(['withdraw_balance.current_balance AS balance', 'withdraw_balance.status', 'withdraw_balance.created_at','withdraw_balance.account_num'])
+                ->get();
+    
+            return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[0], 'balance' => $current_balance, 'financialTransactions' => $financialTransactions]);
         }
 
-        $financialTransactions = DB::table('withdraw_balance')
-            ->join('providers', "providers.provider_id", '=', "withdraw_balance.actor_id")
-            ->where('withdraw_balance.type', 'provider')
-            ->select(
-                "withdraw_balance.*",
-                "providers.full_name AS name"
-
-            )
-            ->get();
-
-        return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[0], 'balance' => ["current_balance" => $current_balance, "due_balance" => $due_balance, "forbidden_balance" => $forbidden, "updated_at" => $updated], 'bank_name' => $bank_name, 'bank_username' => $bank_username, 'bank_phone' => $bank_phone, 'account_num' => $bank_account, 'financialTransactions' => $financialTransactions]);
+        // return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[0], 'balance' => ["current_balance" => $current_balance, "due_balance" => $due_balance, "forbidden_balance" => $forbidden, "updated_at" => $updated], 'bank_name' => $bank_name, 'bank_username' => $bank_username, 'bank_phone' => $bank_phone, 'account_num' => $bank_account, 'financialTransactions' => $financialTransactions]);
 
     }
 

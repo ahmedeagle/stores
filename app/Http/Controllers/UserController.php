@@ -3846,6 +3846,11 @@ class UserController extends Controller
 
     public function get_user_balance(Request $request)
     {
+        /*###############################################################################################
+        ## 'flag' => [ 0 => 'only balance', 1 => 'balance with transactions']
+        ################################################################################################*/
+        
+        $flag = $request->input('flag') ? $request->input('flag') : 0;
         $lang = $request->input('lang');
         if ($lang == "ar") {
             $msg = array(
