@@ -2664,6 +2664,67 @@ class DeliveryController extends Controller
         }
     }
 
+    public function getDeliveryInvitationCode(Request $request)
+    {
+
+        $lang = $request->input('lang');
+        if ($lang == "ar") {
+            $msg = array(
+                0 => '',
+                1 => 'رقم الموصل مطلوب',
+                2 => 'الموصل غير موجود',
+                3 => 'تم جلب البيانات ',
+            );
+        } else {
+            $msg = array(
+                0 => '',
+                1 => 'access_token is required',
+                2 => 'delivery_id not exists',
+                3 => 'data retrieved successfully',
+
+            );
+        }
+
+        $messages = array(
+            'required' => 1,
+        );
+
+        $validator = Validator::make($request->all(), [
+            'access_token' => 'required',
+        ], $messages);
+
+        if ($validator->fails()) {
+            $error = $validator->errors()->first();
+            return response()->json(['status' => false, 'errNum' => (int) $error, 'msg' => $msg[$error]]);
+        }
+
+        $delivery_id = $this->get_id($request, 'deliveries', 'delivery_id');
+
+        if ($delivery_id == 0) {
+            return response()->json(['status' => false, 'errNum' => 2, 'msg' => $msg[2]]);
+        }
+
+        $check = DB::table('deliveries')->where('delivery_id', $delivery_id)->first();
+
+        if (!$check) {
+            return response()->json(['status' => false, 'errNum' => 2, 'msg' => $msg[2]]);
+        }
+
+        if ($check->invitationCode) {
+
+            return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[3], 'invitationCode' => $check->invitationCode]);
+        }
+
+        $randCode = $this->getRandomString(9);
+
+        DB::table('deliveries')->where('delivery_id', $delivery_id)->update(['invitationCode' => $randCode]);
+
+        return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[3], 'invitationCode' => $randCode]);
+
+    }
+
+
+
     // public function withdraw(Request $request)
     // {
     //     $lang = $request->input('lang');

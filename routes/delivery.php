@@ -60,6 +60,10 @@ Route::group(['middleware' => ['api_auth'], 'prefix' => 'api'], function () {
 
 
     Route::post('/getDeliveryBalances', 'DeliveryController@getDeliveryBalance');
-	Route::get('/getDeliveryBalances', 'DeliveryController@echoEmpty');
+    Route::get('/getDeliveryBalances', 'DeliveryController@echoEmpty');
+    
+
+    Route::post('/getDeliveryInvitationCode', 'DeliveryController@getDeliveryInvitationCode');
+	Route::get('/getDeliveryInvitationCode', 'DeliveryController@echoEmpty');
 
 });
