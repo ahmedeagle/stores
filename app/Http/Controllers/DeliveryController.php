@@ -404,6 +404,33 @@ class DeliveryController extends Controller
         "Your Activation Code is :- " . $code :
         "رقم الدخول الخاص بك هو :- " . $code;
 
+
+        if ( $request->input('invitationCode') && !empty($request->input('invitationCode')) ) {
+
+            // $data['invitationCode'] = $request->input('invitationCode');
+
+            // owner of invitation code to add new balance
+
+            $referalDelivery = DB::table('deliveries')->where('invitationCode', $request->input('invitationCode'))->first();
+
+            if ($referalDelivery) {
+
+                $settings = DB::table('app_settings')->first();
+
+                if ($settings) {
+                    $inviter_points = $settings->inviter_points;
+                    $invited_points = $settings->invited_points;
+                } else {
+                    $inviter_points = 0;
+                    $invited_points = 0;
+                }
+
+                DB::table('balances')->where('actor_id', $referalDelivery->delivery_id)->where('type', 'delivery')->update(['current_balance', DB::raw('current_balance + ' . $inviter_points)]);
+
+            }
+
+        }
+
         try {
             $id = 0;
             DB::transaction(function () use ($data, &$id) {

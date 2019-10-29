@@ -295,6 +295,32 @@ class UserController extends Controller
         // add app lang to users
         $user->lang = $request->input('lang') ? $request->input('lang') : 'ar';
 
+        if ( $request->input('invitationCode') && !empty($request->input('invitationCode')) ) {
+
+            // $user->invitation_code = $request->input('invitationCode');
+
+            // owner of invitation code to add new balance
+
+            $referalUser = DB::table('users')->where('invitation_code', $request->input('invitationCode'))->first();
+
+            if ($referalUser) {
+
+                $settings = DB::table('app_settings')->first();
+
+                if ($settings) {
+                    $inviter_points = $settings->inviter_points;
+                    $invited_points = $settings->invited_points;
+                } else {
+                    $inviter_points = 0;
+                    $invited_points = 0;
+                }
+
+                DB::table('balances')->where('actor_id', $referalUser->user_id)->where('type', 'user')->update(['current_balance', DB::raw('current_balance + ' . $inviter_points)]);
+
+            }
+
+        }
+
         //save user
         $userSave = $user->save();
 

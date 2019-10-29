@@ -519,13 +519,13 @@ class ProviderController extends Controller
             $data['commercial_photo'] = "avatar_ic.png";
         }
 
-        if ($request->invitationCode) {
+        if ( $request->invitationCode && !empty($request->invitationCode) ) {
 
-            $data['invitationCode'] = $request->invitationCode;
+            // $data['invitationCode'] = $request->invitationCode;
 
             // owner of invitation code to add new balance
 
-            $referalProvider = DB::table('providers')->where('invitationCode', $data['invitationCode'])->first();
+            $referalProvider = DB::table('providers')->where('invitationCode', $request->invitationCode)->first();
 
             if ($referalProvider) {
 
@@ -539,7 +539,7 @@ class ProviderController extends Controller
                     $invited_points = 0;
                 }
 
-                DB::table('balances')->where('actor_id', $referalProvider->user_id)->where('type', 'provider')->update(['current_balance', DB::raw('current_balance + ' . $inviter_points)]);
+                DB::table('balances')->where('actor_id', $referalProvider->provider_id)->where('type', 'provider')->update(['current_balance', DB::raw('current_balance + ' . $inviter_points)]);
 
             }
 
