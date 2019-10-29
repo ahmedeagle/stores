@@ -2016,7 +2016,7 @@ class ProviderController extends Controller
             $start_date = strtotime($request->start_date);
             $end_date = strtotime($request->end_date);
             $diffDate = $end_date - $start_date;
-            $days = $diffDate / (60 * 60 * 24);
+            $days = intval(round($diffDate / (60 * 60 * 24)));
 
             $offer_day_coast = DB::table('app_settings')
                 ->value('offer_day_coast');
