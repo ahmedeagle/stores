@@ -2288,7 +2288,6 @@ class ProviderController extends Controller
                 4 => 'Failed to change status',
                 5 => 'Offer not exists',
                 6 => 'money is invalid',
-
             );
         }
 
