@@ -115,7 +115,7 @@ class ProviderController extends Controller
 
         if ($validator->fails()) {
             $error = $validator->errors()->first();
-            return response()->json(['status' => false, 'errNum' => (int) $error, 'msg' => $msg[$error]]);
+            return response()->json(['status' => false, 'errNum' => (int)$error, 'msg' => $msg[$error]]);
         }
 
         if ($lang == "ar") {
@@ -245,7 +245,7 @@ class ProviderController extends Controller
 
         if ($validator->fails()) {
             $error = $validator->errors()->first();
-            return response()->json(['status' => false, 'errNum' => (int) $error, 'msg' => $msg[$error]]);
+            return response()->json(['status' => false, 'errNum' => (int)$error, 'msg' => $msg[$error]]);
         }
 
         $rateCounter = 0;
@@ -300,8 +300,8 @@ class ProviderController extends Controller
         ]);
 
         $message = (App()->getLocale() == "en") ?
-        "Your Activation Code is :- " . $code :
-        "رقم الدخول الخاص بك هو :- " . $code;
+            "Your Activation Code is :- " . $code :
+            "رقم الدخول الخاص بك هو :- " . $code;
 
         $id = "";
 
@@ -482,7 +482,7 @@ class ProviderController extends Controller
 
         if ($validator->fails()) {
             $error = $validator->errors()->first();
-            return response()->json(['status' => false, 'errNum' => (int) $error, 'msg' => $msg[$error]]);
+            return response()->json(['status' => false, 'errNum' => (int)$error, 'msg' => $msg[$error]]);
         }
 
         $data['category_id'] = $request->category_id;
@@ -519,7 +519,7 @@ class ProviderController extends Controller
             $data['commercial_photo'] = "avatar_ic.png";
         }
 
-        if ( $request->invitationCode && !empty($request->invitationCode) ) {
+        if ($request->invitationCode && !empty($request->invitationCode)) {
 
             // $data['invitationCode'] = $request->invitationCode;
 
@@ -533,10 +533,10 @@ class ProviderController extends Controller
 
                 if ($settings) {
                     $inviter_points = $settings->inviter_points;
-                    $invited_points = $settings->invited_points;
+//                    $invited_points = $settings->invited_points;
                 } else {
                     $inviter_points = 0;
-                    $invited_points = 0;
+//                    $invited_points = 0;
                 }
 
                 DB::table('balances')->where('actor_id', $referalProvider->provider_id)->where('type', 'provider')->update(['current_balance', DB::raw('current_balance + ' . $inviter_points)]);
@@ -555,10 +555,8 @@ class ProviderController extends Controller
             foreach ($request->delivery_method_id as $deliveryId) {
 
                 DB::table('providers_delivery_methods')->insert([
-
                     'provider_id' => $id,
                     'delivery_method' => $deliveryId,
-
                 ]);
 
             }
@@ -666,7 +664,7 @@ class ProviderController extends Controller
 
         if ($validator->fails()) {
             $error = $validator->errors()->first();
-            return response()->json(['status' => false, 'errNum' => (int) $error, 'msg' => $msg[$error]]);
+            return response()->json(['status' => false, 'errNum' => (int)$error, 'msg' => $msg[$error]]);
         }
 
         $provider = Providers::where('provider_id', $this->get_id($request, 'providers', 'provider_id'));
@@ -726,7 +724,7 @@ class ProviderController extends Controller
 
         if ($validator->fails()) {
             $error = $validator->errors()->first();
-            return response()->json(['status' => false, 'errNum' => (int) $error, 'msg' => $msg[$error]]);
+            return response()->json(['status' => false, 'errNum' => (int)$error, 'msg' => $msg[$error]]);
         }
 
         $data = [];
@@ -743,8 +741,8 @@ class ProviderController extends Controller
         $provider->update($data);
 
         $message = (App()->getLocale() == "en") ?
-        "Your Activation Code is :- " . $code :
-        "رقم الدخول الخاص بك هو :- " . $code;
+            "Your Activation Code is :- " . $code :
+            "رقم الدخول الخاص بك هو :- " . $code;
 
         $res = (new SmsController())->send($message, $provider->first()->phone);
 
@@ -797,12 +795,12 @@ class ProviderController extends Controller
         if ($validator->fails()) {
             $errors = $validator->errors();
             $error = $errors->first();
-            return response()->json(['status' => false, 'errNum' => (int) $error, 'msg' => $msg[$error]]);
+            return response()->json(['status' => false, 'errNum' => (int)$error, 'msg' => $msg[$error]]);
         } else {
             $getProvider = Providers::where('providers.password', md5($request->input('password')))
                 ->where(function ($q) use ($request) {
-                    $q->where('providers.phone', $request->input('phone'))
-                    /*  ->orWhere(DB::raw('CONCAT(providers.country_code,providers.phone)'), $request->input('phone'))*/;
+                    $q->where('providers.phone', $request->input('phone'))/*  ->orWhere(DB::raw('CONCAT(providers.country_code,providers.phone)'), $request->input('phone'))*/
+                    ;
                 })
                 ->join('city', 'providers.city_id', 'city.city_id')
                 ->select('providers.*', $city_col)
@@ -858,8 +856,8 @@ class ProviderController extends Controller
                     ]);
                     Providers::where('provider_id', $getProvider->provider_id)->update($data);
                     $message = (App()->getLocale() == "en") ?
-                    "Your Activation Code is :- " . $code :
-                    "رقم الدخول الخاص بك هو :- " . $code;
+                        "Your Activation Code is :- " . $code :
+                        "رقم الدخول الخاص بك هو :- " . $code;
                     $res = (new SmsController())->send($message, $getProvider->phone);
                     // ############## send activation mobile code ########################################
 
@@ -917,7 +915,7 @@ class ProviderController extends Controller
 
         if ($validator->fails()) {
             $error = $validator->errors()->first();
-            return response()->json(['status' => false, 'errNum' => (int) $error, 'msg' => $msg[$error]]);
+            return response()->json(['status' => false, 'errNum' => (int)$error, 'msg' => $msg[$error]]);
         }
 
         //select provider base on his/her phone number if exists
@@ -928,8 +926,8 @@ class ProviderController extends Controller
         $code = $this->generate_random_number(4);
 
         $message = (App()->getLocale() == "en") ?
-        "Your Activation Code is :- " . $code :
-        $code . "رقم الدخول الخاص بك هو :- ";
+            "Your Activation Code is :- " . $code :
+            $code . "رقم الدخول الخاص بك هو :- ";
 
         $activate_phone_hash = json_encode([
             'code' => $code,
@@ -984,14 +982,14 @@ class ProviderController extends Controller
 
         if ($validator->fails()) {
             $error = $validator->errors()->first();
-            return response()->json(['status' => false, 'errNum' => (int) $error, 'msg' => $msg[$error]]);
+            return response()->json(['status' => false, 'errNum' => (int)$error, 'msg' => $msg[$error]]);
         }
 
         $provider = Providers::where('provider_id', $this->get_id($request, 'providers', 'provider_id'))
-        ->update([
-            'password' => md5($request->input('password')),
-            'activate_phone_hash' => null,
-        ]);
+            ->update([
+                'password' => md5($request->input('password')),
+                'activate_phone_hash' => null,
+            ]);
         return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[4]]);
 
     }
@@ -1040,9 +1038,9 @@ class ProviderController extends Controller
 
         if ($validator->fails()) {
             $error = $validator->errors()->first();
-            return response()->json(['status' => false, 'errNum' => (int) $error, 'msg' => $msg[$error]]);
+            return response()->json(['status' => false, 'errNum' => (int)$error, 'msg' => $msg[$error]]);
         }
-        
+
         //check for old password
         $check = Providers::where('token', $request->access_token)
             ->where('password', md5($request->old_password))
@@ -1051,10 +1049,10 @@ class ProviderController extends Controller
         if ($check) {
 
             $provider = Providers::where('provider_id', $this->get_id($request, 'providers', 'provider_id'))
-            ->update([
-                'password' => md5($request->input('password')),
-                'activate_phone_hash' => null,
-            ]);
+                ->update([
+                    'password' => md5($request->input('password')),
+                    'activate_phone_hash' => null,
+                ]);
             return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[4]]);
 
         } else {
@@ -1100,7 +1098,7 @@ class ProviderController extends Controller
 
         if ($validator->fails()) {
             $error = $validator->errors()->first();
-            return response()->json(['status' => false, 'errNum' => (int) $error, 'msg' => $msg[$error]]);
+            return response()->json(['status' => false, 'errNum' => (int)$error, 'msg' => $msg[$error]]);
         } else {
 
             if ($this->get_id($request, 'providers', 'provider_id') == 0) {
@@ -1139,15 +1137,15 @@ class ProviderController extends Controller
             // get all countries and add choosen to provider registed country
 
             $countries =
-            DB::table('country')
-                ->where('publish', 1)
-                ->select(
-                    'country_id',
-                    $country_col,
-                    DB::raw('IF(country_id = ' . $providerCountry . ', true, false) AS choosen'),
-                    'country_code'
-                )
-                ->get();
+                DB::table('country')
+                    ->where('publish', 1)
+                    ->select(
+                        'country_id',
+                        $country_col,
+                        DB::raw('IF(country_id = ' . $providerCountry . ', true, false) AS choosen'),
+                        'country_code'
+                    )
+                    ->get();
 
             //get main categories
 
@@ -1167,12 +1165,12 @@ class ProviderController extends Controller
 
             $cities =
 
-            DB::table('city')
-                ->select(
-                    'city_id',
-                    $city_col,
-                    DB::raw('IF(city_id = ' . $providerCity . ', 1, 0) AS choosen')
-                )->get();
+                DB::table('city')
+                    ->select(
+                        'city_id',
+                        $city_col,
+                        DB::raw('IF(city_id = ' . $providerCity . ', 1, 0) AS choosen')
+                    )->get();
 
             //get delivery Methods available
 
@@ -1318,7 +1316,7 @@ class ProviderController extends Controller
 
         if ($validator->fails()) {
             $error = $validator->errors()->first();
-            return response()->json(['status' => false, 'errNum' => (int) $error, 'msg' => $msg[$error]]);
+            return response()->json(['status' => false, 'errNum' => (int)$error, 'msg' => $msg[$error]]);
         }
 
         if (in_array(2, $request->delivery_method_id)) {
@@ -1371,8 +1369,8 @@ class ProviderController extends Controller
             $input['phoneactivated'] = "0";
 
             $message = (App()->getLocale() == "en") ?
-            "Your Activation Code is :- " . $code :
-            $code . "رقم الدخول الخاص بك هو :- ";
+                "Your Activation Code is :- " . $code :
+                $code . "رقم الدخول الخاص بك هو :- ";
 
             (new SmsController())->send($message, $provider->first()->phone);
 
@@ -1501,7 +1499,7 @@ class ProviderController extends Controller
 
         if ($validator->fails()) {
             $error = $validator->errors()->first();
-            return response()->json(['status' => false, 'errNum' => (int) $error, 'msg' => $msg[$error]]);
+            return response()->json(['status' => false, 'errNum' => (int)$error, 'msg' => $msg[$error]]);
         }
 
         $provider_id = $this->get_id($request, 'providers', 'provider_id');
@@ -1559,7 +1557,7 @@ class ProviderController extends Controller
 
         if ($validator->fails()) {
             $error = $validator->errors()->first();
-            return response()->json(['status' => false, 'errNum' => (int) $error, 'msg' => $msg[$error]]);
+            return response()->json(['status' => false, 'errNum' => (int)$error, 'msg' => $msg[$error]]);
         }
 
         $providerCats = DB::table('providers')
@@ -1606,7 +1604,7 @@ class ProviderController extends Controller
 
         if ($validator->fails()) {
             $error = $validator->errors()->first();
-            return response()->json(['status' => false, 'errNum' => (int) $error, 'msg' => $msg[$error]]);
+            return response()->json(['status' => false, 'errNum' => (int)$error, 'msg' => $msg[$error]]);
         }
 
         $inputs = $request->only('store_cat_ar_name', 'store_cat_en_name');
@@ -1667,7 +1665,7 @@ class ProviderController extends Controller
 
         if ($validator->fails()) {
             $error = $validator->errors()->first();
-            return response()->json(['status' => false, 'errNum' => (int) $error, 'msg' => $msg[$error]]);
+            return response()->json(['status' => false, 'errNum' => (int)$error, 'msg' => $msg[$error]]);
         }
 
         $inputs = $request->only('cat_id');
@@ -1744,7 +1742,7 @@ class ProviderController extends Controller
 
         if ($validator->fails()) {
             $error = $validator->errors()->first();
-            return response()->json(['status' => false, 'errNum' => (int) $error, 'msg' => $msg[$error]]);
+            return response()->json(['status' => false, 'errNum' => (int)$error, 'msg' => $msg[$error]]);
         }
 
         $inputs = $request->only('store_cat_ar_name', 'store_cat_en_name');
@@ -1819,7 +1817,7 @@ class ProviderController extends Controller
 
         if ($validator->fails()) {
             $error = $validator->errors()->first();
-            return response()->json(['status' => false, 'errNum' => (int) $error, 'msg' => $msg[$error]]);
+            return response()->json(['status' => false, 'errNum' => (int)$error, 'msg' => $msg[$error]]);
         }
 
         $inputs['provider_id'] = $this->get_id($request, 'providers', 'provider_id');
@@ -1887,7 +1885,7 @@ class ProviderController extends Controller
 
         if ($validator->fails()) {
             $error = $validator->errors()->first();
-            return response()->json(['status' => false, 'errNum' => (int) $error, 'msg' => $msg[$error]]);
+            return response()->json(['status' => false, 'errNum' => (int)$error, 'msg' => $msg[$error]]);
         }
 
         $providerOffers = DB::table('providers')
@@ -1972,7 +1970,7 @@ class ProviderController extends Controller
 
         if ($validator->fails()) {
             $error = $validator->errors()->first();
-            return response()->json(['status' => false, 'errNum' => (int) $error, 'msg' => $msg[$error]]);
+            return response()->json(['status' => false, 'errNum' => (int)$error, 'msg' => $msg[$error]]);
         }
 
         $inputs = $request->only('offer_title', 'start_date', 'end_date', 'city_id');
@@ -2020,7 +2018,7 @@ class ProviderController extends Controller
 
             $offer_day_coast = DB::table('app_settings')
                 ->value('offer_day_coast');
-            $cost = floatval($offer_day_coast) * (int) $days;
+            $cost = floatval($offer_day_coast) * (int)$days;
 
             $data = [
                 'offer_id' => $id,
@@ -2080,7 +2078,7 @@ class ProviderController extends Controller
 
         if ($validator->fails()) {
             $error = $validator->errors()->first();
-            return response()->json(['status' => false, 'errNum' => (int) $error, 'msg' => $msg[$error]]);
+            return response()->json(['status' => false, 'errNum' => (int)$error, 'msg' => $msg[$error]]);
         }
 
         $inputs['provider_id'] = $this->get_id($request, 'providers', 'provider_id');
@@ -2201,7 +2199,7 @@ class ProviderController extends Controller
 
         if ($validator->fails()) {
             $error = $validator->errors()->first();
-            return response()->json(['status' => false, 'errNum' => (int) $error, 'msg' => $msg[$error]]);
+            return response()->json(['status' => false, 'errNum' => (int)$error, 'msg' => $msg[$error]]);
         }
 
         $inputs['provider_id'] = $this->get_id($request, 'providers', 'provider_id');
@@ -2311,7 +2309,7 @@ class ProviderController extends Controller
 
         if ($validator->fails()) {
             $error = $validator->errors()->first();
-            return response()->json(['status' => false, 'errNum' => (int) $error, 'msg' => $msg[$error]]);
+            return response()->json(['status' => false, 'errNum' => (int)$error, 'msg' => $msg[$error]]);
         }
 
         $inputs['provider_id'] = $this->get_id($request, 'providers', 'provider_id');
@@ -2393,7 +2391,7 @@ class ProviderController extends Controller
 
         if ($validator->fails()) {
             $error = $validator->errors()->first();
-            return response()->json(['status' => false, 'errNum' => (int) $error, 'msg' => $msg[$error]]);
+            return response()->json(['status' => false, 'errNum' => (int)$error, 'msg' => $msg[$error]]);
         }
 
         $inputs['provider_id'] = $this->get_id($request, 'providers', 'provider_id');
@@ -2549,7 +2547,7 @@ class ProviderController extends Controller
         if ($validator->fails()) {
             $error = $validator->errors()->first();
 
-            return response()->json(['status' => false, 'errNum' => (int) $error, 'msg' => $msg[$error]]);
+            return response()->json(['status' => false, 'errNum' => (int)$error, 'msg' => $msg[$error]]);
         }
 
         $provider_id = $this->get_id($request, 'providers', 'provider_id');
@@ -2714,7 +2712,7 @@ class ProviderController extends Controller
 
         if ($validator->fails()) {
             $error = $validator->errors()->first();
-            return response()->json(['status' => false, 'errNum' => (int) $error, 'msg' => $msg[$error]]);
+            return response()->json(['status' => false, 'errNum' => (int)$error, 'msg' => $msg[$error]]);
         }
 
         //products with last inserted image
@@ -2796,7 +2794,7 @@ class ProviderController extends Controller
 
         if ($validator->fails()) {
             $error = $validator->errors()->first();
-            return response()->json(['status' => false, 'errNum' => (int) $error, 'msg' => $msg[$error]]);
+            return response()->json(['status' => false, 'errNum' => (int)$error, 'msg' => $msg[$error]]);
         }
 
         $inputs['provider_id'] = $this->get_id($request, 'providers', 'provider_id');
@@ -2879,7 +2877,7 @@ class ProviderController extends Controller
 
         if ($validator->fails()) {
             $error = $validator->errors()->first();
-            return response()->json(['status' => false, 'errNum' => (int) $error, 'msg' => $msg[$error]]);
+            return response()->json(['status' => false, 'errNum' => (int)$error, 'msg' => $msg[$error]]);
         }
 
         $provider_id = $this->get_id($request, 'providers', 'provider_id');
@@ -3080,7 +3078,7 @@ class ProviderController extends Controller
         if ($validator->fails()) {
             $error = $validator->errors()->first();
 
-            return response()->json(['status' => false, 'errNum' => (int) $error, 'msg' => $msg[$error]]);
+            return response()->json(['status' => false, 'errNum' => (int)$error, 'msg' => $msg[$error]]);
         }
 
         $provider_id = $this->get_id($request, 'providers', 'provider_id');
@@ -3405,7 +3403,7 @@ class ProviderController extends Controller
 
         if ($validator->fails()) {
             $error = $validator->errors()->first();
-            return response()->json(['status' => false, 'errNum' => (int) $error, 'msg' => $msg[$error]]);
+            return response()->json(['status' => false, 'errNum' => (int)$error, 'msg' => $msg[$error]]);
         }
 
         $providerJobs = DB::table('providers')
@@ -3455,7 +3453,7 @@ class ProviderController extends Controller
 
         if ($validator->fails()) {
             $error = $validator->errors()->first();
-            return response()->json(['status' => false, 'errNum' => (int) $error, 'msg' => $msg[$error]]);
+            return response()->json(['status' => false, 'errNum' => (int)$error, 'msg' => $msg[$error]]);
         }
 
         $inputs = $request->only('job_title', 'job_desc');
@@ -3515,7 +3513,7 @@ class ProviderController extends Controller
 
         if ($validator->fails()) {
             $error = $validator->errors()->first();
-            return response()->json(['status' => false, 'errNum' => (int) $error, 'msg' => $msg[$error]]);
+            return response()->json(['status' => false, 'errNum' => (int)$error, 'msg' => $msg[$error]]);
         }
 
         $inputs['provider_id'] = $this->get_id($request, 'providers', 'provider_id');
@@ -3599,7 +3597,7 @@ class ProviderController extends Controller
 
         if ($validator->fails()) {
             $error = $validator->errors()->first();
-            return response()->json(['status' => false, 'errNum' => (int) $error, 'msg' => $msg[$error]]);
+            return response()->json(['status' => false, 'errNum' => (int)$error, 'msg' => $msg[$error]]);
         }
 
         $inputs = $request->only('job_title', 'job_desc');
@@ -3673,7 +3671,7 @@ class ProviderController extends Controller
 
         if ($validator->fails()) {
             $error = $validator->errors()->first();
-            return response()->json(['status' => false, 'errNum' => (int) $error, 'msg' => $msg[$error]]);
+            return response()->json(['status' => false, 'errNum' => (int)$error, 'msg' => $msg[$error]]);
         }
 
         $inputs['provider_id'] = $this->get_id($request, 'providers', 'provider_id');
@@ -3746,7 +3744,7 @@ class ProviderController extends Controller
 
         if ($validator->fails()) {
             $error = $validator->errors()->first();
-            return response()->json(['status' => false, 'errNum' => (int) $error, 'msg' => $msg[$error]]);
+            return response()->json(['status' => false, 'errNum' => (int)$error, 'msg' => $msg[$error]]);
         }
 
         $user_id = 0;
@@ -3824,7 +3822,7 @@ class ProviderController extends Controller
 
         if ($validator->fails()) {
             $error = $validator->errors()->first();
-            return response()->json(['status' => false, 'errNum' => (int) $error, 'msg' => $msg[$error]]);
+            return response()->json(['status' => false, 'errNum' => (int)$error, 'msg' => $msg[$error]]);
         }
 
         $inputs['provider_id'] = $this->get_id($request, 'providers', 'provider_id');
@@ -3886,7 +3884,7 @@ class ProviderController extends Controller
 
         if ($validator->fails()) {
             $error = $validator->errors()->first();
-            return response()->json(['status' => false, 'errNum' => (int) $error, 'msg' => $msg[$error]]);
+            return response()->json(['status' => false, 'errNum' => (int)$error, 'msg' => $msg[$error]]);
         }
 
         $provider_id = $this->get_id($request, 'providers', 'provider_id');
@@ -4040,7 +4038,7 @@ class ProviderController extends Controller
 
         if ($validator->fails()) {
             $error = $validator->errors()->first();
-            return response()->json(['status' => false, 'errNum' => (int) $error, 'msg' => $msg[$error]]);
+            return response()->json(['status' => false, 'errNum' => (int)$error, 'msg' => $msg[$error]]);
         }
 
         $inputs = $request->only('name', 'start_date', 'end_date', 'country_code', 'phone', 'main_category_id');
@@ -4104,7 +4102,7 @@ class ProviderController extends Controller
 
         if ($validator->fails()) {
             $error = $validator->errors()->first();
-            return response()->json(['status' => false, 'errNum' => (int) $error, 'msg' => $msg[$error]]);
+            return response()->json(['status' => false, 'errNum' => (int)$error, 'msg' => $msg[$error]]);
         }
 
         $inputs['provider_id'] = $this->get_id($request, 'providers', 'provider_id');
@@ -4182,7 +4180,7 @@ class ProviderController extends Controller
 
         if ($validator->fails()) {
             $error = $validator->errors()->first();
-            return response()->json(['status' => false, 'errNum' => (int) $error, 'msg' => $msg[$error]]);
+            return response()->json(['status' => false, 'errNum' => (int)$error, 'msg' => $msg[$error]]);
         }
 
         $inputs['provider_id'] = $this->get_id($request, 'providers', 'provider_id');
@@ -4195,7 +4193,6 @@ class ProviderController extends Controller
                 'excellence_requests.id' => $request->request_id,
 
             ])
-
             ->select(
                 'excellence_requests.id As request_id',
                 'excellence_requests.status',
@@ -4205,7 +4202,6 @@ class ProviderController extends Controller
                 DB::raw('DATE(excellence_requests.end_date) AS end_date')
 
             )
-
             ->first();
 
         $coastPerDay = DB::table('app_settings')->select('excellence_day_coast')->first();
@@ -4230,7 +4226,7 @@ class ProviderController extends Controller
 
             if ($coastPerDay->excellence_day_coast > 0) {
 
-                $providerRequest->daysCount = (int) $days;
+                $providerRequest->daysCount = (int)$days;
                 $providerRequest->totalCost = $days * $coastPerDay->excellence_day_coast;
             } else {
                 $providerRequest->daysCount = 0;
@@ -4342,7 +4338,7 @@ class ProviderController extends Controller
 
         if ($validator->fails()) {
             $error = $validator->errors()->first();
-            return response()->json(['status' => false, 'errNum' => (int) $error, 'msg' => $msg[$error]]);
+            return response()->json(['status' => false, 'errNum' => (int)$error, 'msg' => $msg[$error]]);
         }
 
         $provider_id = $this->get_id($request, 'providers', 'provider_id');
@@ -4383,8 +4379,7 @@ class ProviderController extends Controller
             ->join('users', 'orders_headers.user_id', 'users.user_id')
             ->join('payment_types', 'orders_headers.payment_type', '=', 'payment_types.payment_id')
             ->join('order_status', 'orders_headers.status_id', '=', 'order_status.status_id')
-
-        // ->where('order_status.status_id', '!=', '1')
+            // ->where('order_status.status_id', '!=', '1')
 
             ->select(
                 'orders_headers.order_id',
@@ -4402,7 +4397,6 @@ class ProviderController extends Controller
                 DB::raw('DATE(orders_headers.created_at) AS created_date'),
                 DB::raw('TIME(orders_headers.created_at) AS created_time')
             )
-
             ->orderBy('orders_headers.order_id', 'DESC')
             ->paginate(10);
 
@@ -4461,7 +4455,7 @@ class ProviderController extends Controller
 
         if ($validator->fails()) {
             $error = $validator->errors()->first();
-            return response()->json(['status' => false, 'errNum' => (int) $error, 'msg' => $msg[$error]]);
+            return response()->json(['status' => false, 'errNum' => (int)$error, 'msg' => $msg[$error]]);
         }
 
         $provider_id = $this->get_id($request, 'providers', 'provider_id');
@@ -4562,7 +4556,6 @@ class ProviderController extends Controller
                 }
 
 
-                
             });
 
             $notif_data = array();
@@ -4652,7 +4645,7 @@ class ProviderController extends Controller
         if ($validator->fails()) {
 
             $error = $validator->errors()->first();
-            return response()->json(['status' => false, 'errNum' => (int) $error, 'msg' => $msg[$error]]);
+            return response()->json(['status' => false, 'errNum' => (int)$error, 'msg' => $msg[$error]]);
         }
 
         $order_id = $request->input('order_id');
@@ -4880,7 +4873,7 @@ class ProviderController extends Controller
 
         if ($validator->fails()) {
             $error = $validator->errors()->first();
-            return response()->json(['status' => false, 'errNum' => (int) $error, 'msg' => $msg[$error]]);
+            return response()->json(['status' => false, 'errNum' => (int)$error, 'msg' => $msg[$error]]);
         }
 
         $provider_id = $this->get_id($request, 'providers', 'provider_id');
@@ -4945,7 +4938,7 @@ class ProviderController extends Controller
 
         if ($validator->fails()) {
             $error = $validator->errors()->first();
-            return response()->json(['status' => false, 'errNum' => (int) $error, 'msg' => $msg[$error]]);
+            return response()->json(['status' => false, 'errNum' => (int)$error, 'msg' => $msg[$error]]);
         }
 
         $provider_id = $this->get_id($request, 'providers', 'provider_id');
@@ -4962,10 +4955,10 @@ class ProviderController extends Controller
 
         //get balances
         $balance = DB::table('balances')
-        ->where('actor_id', $provider_id)
-        ->where('type', 'provider')
-        ->select('current_balance')
-        ->first();
+            ->where('actor_id', $provider_id)
+            ->where('type', 'provider')
+            ->select('current_balance')
+            ->first();
 
         if ($balance) {
             $current_balance = $balance->current_balance;
@@ -4973,10 +4966,9 @@ class ProviderController extends Controller
             $current_balance = "";
         }
 
-        if($flag == 0){
-            return response()->json([ 'status' => true, 'errNum' => 0, 'msg' => $msg[0], 'balance' => $current_balance ]);
-        }
-        else{
+        if ($flag == 0) {
+            return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[0], 'balance' => $current_balance]);
+        } else {
 
             // // check if the user has bank data
             // $get_provider_bank = DB::table("withdraw_balance")
@@ -4987,27 +4979,27 @@ class ProviderController extends Controller
 
             // if (isset($get_provider_bank) && $get_provider_bank->count() > 0) {
             //     //return empty($get_provider_bank);
-    
+
             //     $last_entry = $get_provider_bank[count($get_provider_bank) - 1];
             //     $bank_name = $last_entry->bank_name;
             //     $bank_account = $last_entry->account_num;
             //     $bank_username = $last_entry->name;
             //     $bank_phone = $last_entry->phone;
             // } else {
-    
+
             //     $bank_name = "";
             //     $bank_account = "";
             //     $bank_username = "";
             //     $bank_phone = "";
             // }
-    
+
             $financialTransactions = DB::table('withdraw_balance')
                 ->join('providers', "providers.provider_id", '=', "withdraw_balance.actor_id")
                 ->where("withdraw_balance.actor_id", $provider_id)
                 ->where('withdraw_balance.type', 'provider')
                 ->select(['withdraw_balance.current_balance AS balance', 'withdraw_balance.status', 'withdraw_balance.created_at', /* Return last 3 characters from 'account_num' */ DB::raw('RIGHT(withdraw_balance.account_num, 3) as account_num')])
                 ->get();
-    
+
             return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[0], 'balance' => $current_balance, 'financialTransactions' => $financialTransactions]);
         }
 
@@ -5100,7 +5092,7 @@ class ProviderController extends Controller
 
         if ($validator->fails()) {
             $error = $validator->errors()->first();
-            return response()->json(['status' => false, 'errNum' => (int) $error, 'msg' => $msg[$error]]);
+            return response()->json(['status' => false, 'errNum' => (int)$error, 'msg' => $msg[$error]]);
         }
 
         $table_name = "";
@@ -5267,7 +5259,7 @@ class ProviderController extends Controller
 
         if ($validator->fails()) {
             $error = $validator->errors()->first();
-            return response()->json(['status' => false, 'errNum' => (int) $error, 'msg' => $msg[$error]]);
+            return response()->json(['status' => false, 'errNum' => (int)$error, 'msg' => $msg[$error]]);
         }
 
         $type = "providers";
@@ -5291,8 +5283,7 @@ class ProviderController extends Controller
 
         //(SELECT users.full_name FROM users WHERE orders_headers.user_id = users.user_id) AS user_name
         $virtualTble = "SELECT orders_headers.order_id , orders_headers.order_code, orders_headers.total_value,orders_headers.status_id ,orders_headers.user_id ,(SELECT order_status.{$status_col} FROM order_status WHERE orders_headers.status_id = order_status.status_id) AS status_text,(SELECT users.full_name FROM users WHERE orders_headers.user_id = users.user_id) AS user_name
- 	   	 FROM `orders_headers` WHERE orders_headers.provider_id ={$actor_id}"
-        ;
+ 	   	 FROM `orders_headers` WHERE orders_headers.provider_id ={$actor_id}";
 
         $conditions = [];
 
@@ -5382,7 +5373,7 @@ class ProviderController extends Controller
 
         if ($validator->fails()) {
             $error = $validator->errors()->first();
-            return response()->json(['status' => false, 'errNum' => (int) $error, 'msg' => $msg[$error]]);
+            return response()->json(['status' => false, 'errNum' => (int)$error, 'msg' => $msg[$error]]);
         }
 
         $inputs = $request->only('id', 'paid', 'type');
@@ -5497,7 +5488,7 @@ class ProviderController extends Controller
 
         if ($validator->fails()) {
             $error = $validator->errors()->first();
-            return response()->json(['status' => false, 'errNum' => (int) $error, 'msg' => $msg[$error]]);
+            return response()->json(['status' => false, 'errNum' => (int)$error, 'msg' => $msg[$error]]);
         }
 
         $inputs = $request->only('lang', 'type');
@@ -5578,7 +5569,7 @@ class ProviderController extends Controller
 
         if ($validator->fails()) {
             $error = $validator->errors()->first();
-            return response()->json(['status' => false, 'errNum' => (int) $error, 'msg' => $msg[$error]]);
+            return response()->json(['status' => false, 'errNum' => (int)$error, 'msg' => $msg[$error]]);
         }
 
         $inputs = $request->only('type');
@@ -5613,12 +5604,12 @@ class ProviderController extends Controller
                 ->first();
 
             if ($row) {
-                
+
                 // update device FCM token
                 DB::table($table_name)
-                ->where($column_name, $row->{$column_name})
-                ->update([ 'device_reg_id' => null ]);
-                
+                    ->where($column_name, $row->{$column_name})
+                    ->update(['device_reg_id' => null]);
+
                 return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[0]]);
             } else {
                 return response()->json(['status' => false, 'errNum' => 4, 'msg' => $msg[4]]);
