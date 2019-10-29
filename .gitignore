@@ -1,6 +1,7 @@
 /node_modules
 /public
 /.vagrant
+/.idea
 Homestead.json
 Homestead.yaml
 npm-debug.log
