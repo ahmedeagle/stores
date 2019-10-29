@@ -149,6 +149,7 @@ class UserController extends Controller
             );
             $city_col = "city_ar_name AS city_name";
         } else {
+
             $messagesStr = array(
                 1 => 'Full Name is required',
                 2 => 'Full Name must be more than 3 characters',
@@ -269,8 +270,8 @@ class UserController extends Controller
         ]);
 
         $message = (App()->getLocale() == "en") ?
-        "Your Activation Code is :- " . $code :
-        "رقم الدخول الخاص بك هو :- " . $code;
+            "Your Activation Code is :- " . $code :
+            "رقم الدخول الخاص بك هو :- " . $code;
 
         //users model object
         $user = new User();
@@ -482,8 +483,8 @@ class UserController extends Controller
         $user->update($data);
 
         $message = (App()->getLocale() == "en") ?
-        "Your Activation Code is :- " . $code :
-        "رقم الدخول الخاص بك هو :- " . $code;
+            "Your Activation Code is :- " . $code :
+            "رقم الدخول الخاص بك هو :- " . $code;
 
         $res = (new SmsController())->send($message, $user->first()->phone);
 
@@ -575,8 +576,8 @@ class UserController extends Controller
                     ]);
                     User::where('user_id', $getUser->user_id)->update($data);
                     $message = (App()->getLocale() == "en") ?
-                    "Your Activation Code is :- " . $code :
-                    "رقم الدخول الخاص بك هو :- " . $code;
+                        "Your Activation Code is :- " . $code :
+                        "رقم الدخول الخاص بك هو :- " . $code;
                     $res = (new SmsController())->send($message, $getUser->phone);
                     // ############## send activation mobile code ########################################
 
@@ -640,8 +641,8 @@ class UserController extends Controller
         $code = $this->generate_random_number(4);
 
         $message = (App()->getLocale() == "en") ?
-        "Your Activation Code is :- " . $code :
-        $code . "رقم الدخول الخاص بك هو :- ";
+            "Your Activation Code is :- " . $code :
+            $code . "رقم الدخول الخاص بك هو :- ";
 
         $activation_code = json_encode([
             'code' => $code,
@@ -760,7 +761,7 @@ class UserController extends Controller
             $error = $validator->errors()->first();
             return response()->json(['status' => false, 'errNum' => (int) $error, 'msg' => $msg[$error]]);
         }
-        
+
         //check for old password
         $check = User::where('token', $request->access_token)
             ->where('password', md5($request->old_password))
@@ -769,10 +770,10 @@ class UserController extends Controller
         if ($check) {
 
             User::where('user_id', $this->get_id($request, 'users', 'user_id'))
-            ->update([
-                'password' => md5($request->input('password')),
-                'activate_phone_hash' => null,
-            ]);
+                ->update([
+                    'password' => md5($request->input('password')),
+                    'activate_phone_hash' => null,
+                ]);
             return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[4]]);
 
         } else {
@@ -982,8 +983,8 @@ class UserController extends Controller
             $input['status'] = "0";
 
             $message = (App()->getLocale() == "en") ?
-            "Your Activation Code is :- " . $code :
-            $code . "رقم الدخول الخاص بك هو :- ";
+                "Your Activation Code is :- " . $code :
+                $code . "رقم الدخول الخاص بك هو :- ";
 
             (new SmsController())->send($message, $user->first()->phone);
 
@@ -3826,7 +3827,7 @@ class UserController extends Controller
             ->select("future_orders")
             ->first();
         $deliveries = DB::table("delivery_methods")->join('providers_delivery_methods', 'providers_delivery_methods.delivery_method', '=', 'delivery_methods.method_id')->select('method_id', $delivery_col)->
-            where('provider_id', $request->input('provider_id'))->get();
+        where('provider_id', $request->input('provider_id'))->get();
 
         if ($request->input("user_id") == "0") {
             return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[0], 'addresses' => [], 'deliveries' => $deliveries, "is_provider_allow_future_orders" => $provider_info->future_orders]);
@@ -3926,11 +3927,11 @@ class UserController extends Controller
     //         ->select('total_value', DB::raw('DATE(created_at) AS day'), 'status_id AS status',
     //             DB::raw(
     //                 '(CASE status_id
-	// 										  			WHEN 5 THEN CONCAT(total_value, "' . $failed . '", DATE(created_at))
-	// 										  			WHEN 6 THEN CONCAT(total_value, "' . $refused . '", DATE(created_at))
-	// 										  			WHEN 7 THEN CONCAT(total_value, "' . $notanswered . '", DATE(created_at))
-	// 										  			WHEN 9 THEN CONCAT(total_value, "' . $canceled . '", DATE(created_at))
-	// 										  			ELSE CONCAT(total_value,"' . $else . '",DATE(created_at)) END) AS full_text'
+    // 										  			WHEN 5 THEN CONCAT(total_value, "' . $failed . '", DATE(created_at))
+    // 										  			WHEN 6 THEN CONCAT(total_value, "' . $refused . '", DATE(created_at))
+    // 										  			WHEN 7 THEN CONCAT(total_value, "' . $notanswered . '", DATE(created_at))
+    // 										  			WHEN 9 THEN CONCAT(total_value, "' . $canceled . '", DATE(created_at))
+    // 										  			ELSE CONCAT(total_value,"' . $else . '",DATE(created_at)) END) AS full_text'
     //             )
     //         )
     //         ->get();
@@ -3978,36 +3979,28 @@ class UserController extends Controller
 
     public function getUserBalance(Request $request)
     {
-    
+
         $lang = $request->input('lang');
         if ($lang == "ar") {
             $msg = array(
                 0 => '',
-                1 => 'user_id مطلوب',
+                1 => 'رقم العضو مطلوب',
+                2 => 'العضو غير موجود',
             );
-            $canceled = ' ريال محولة من إلغاء طلب بتاريخ ';
-            $refused = ' ريال محولة من رفض طلب بتاريخ ';
-            $notanswered = ' ريال محولة من طلب لم يتم الرد عليه بتاريخ ';
-            $failed = ' ريال محولة من طلب فشل توصيله بتاريخ ';
-            $else = ' ريال محولة من مصدر غير معروف بتاريخ ';
         } else {
             $msg = array(
                 0 => '',
-                1 => 'user_id is required',
+                1 => 'access_token is required',
+                2 => 'user not exists',
             );
-            $canceled = ' SR from canceled order at ';
-            $refused = ' SR from refused order at ';
-            $notanswered = ' SR from not responded order at ';
-            $failed = ' SR from failed to delivered order at ';
-            $else = ' SR from unkonwn source at ';
         }
 
         $messages = array(
-            'user_id.required' => 1,
+            'required' => 1,
         );
 
         $validator = Validator::make($request->all(), [
-            'user_id' => 'required',
+            'access_token' => 'required',
         ], $messages);
 
         if ($validator->fails()) {
@@ -4015,57 +4008,32 @@ class UserController extends Controller
             return response()->json(['status' => false, 'errNum' => (int) $error, 'msg' => $msg[$error]]);
         }
 
-        $userData = User::where('user_id', $request->input('user_id'))
-            ->select('points', 'invitation_code')->first();
+        $user_id = $this->get_id($request, 'users', 'user_id');
 
-        if ($userData != null) {
-            $user_balance = $userData->points;
-            $user_code = $userData->invitation_code;
-        } else {
-            $user_balance = 0;
-            $user_code = "";
+        if ($user_id == 0) {
+            return response()->json(['status' => false, 'errNum' => 2, 'msg' => $msg[2]]);
         }
 
-        $usedCredit = DB::table('orders_headers')->where('user_id', $request->input('user_id'))
-            ->whereIn('status_id', [5, 6, 7, 9])
-            ->where('payment_type', '!=', 1)
-            ->sum('used_points');
+        $check = DB::table('users')->where('user_id', $user_id)->first();
 
-        $withdrawed_balance = DB::table('withdraw_balance')->where('actor_id', $request->input('user_id'))
+        if (!$check) {
+            return response()->json(['status' => false, 'errNum' => 2, 'msg' => $msg[2]]);
+        }
+
+        //get balances
+        $balance = DB::table('balances')
+            ->where('actor_id', $user_id)
             ->where('type', 'user')
-            ->where('status', 1)
-            ->sum('current_balance');
+            ->select('current_balance')
+            ->first();
 
-        if ($withdrawed_balance == null || empty($withdrawed_balance)) {
-            $withdrawed_balance = 0;
-        }
-        if ($user_code != "") {
-            $invitationCredits = User::where('used_invitation_code', $user_code)->sum('invitation_credits');
+        if ($balance) {
+            $current_balance = $balance->current_balance;
         } else {
-            $invitationCredits = 0;
+            $current_balance = "";
         }
 
-        // get user bank data
-        $user_bank = DB::table("withdraw_balance")
-            ->select("*")
-            ->where("actor_id", $request->input("user_id"))
-            ->where("type", "user")
-            ->get();
-
-        if (count($user_bank) > 0) {
-            $last_entry = $user_bank[count($user_bank) - 1];
-            $bank_name = $last_entry->bank_name;
-            $bank_phone = $last_entry->phone;
-            $bank_username = $last_entry->name;
-            $bank_account_num = $last_entry->account_num;
-        } else {
-            $bank_name = "";
-            $bank_phone = "";
-            $bank_username = "";
-            $bank_account_num = "";
-        }
-
-        return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[0], 'balance' => $user_balance ]);
+        return response()->json([ 'status' => true, 'errNum' => 0, 'msg' => $msg[0], 'balance' => $current_balance ]);
     }
 
     public function getUserInvitationCode(Request $request)
@@ -4627,8 +4595,8 @@ class UserController extends Controller
 
         $url = "https://test.oppwa.com/v1/checkouts";
         $data =
-        "entityId=8a8294174d0595bb014d05d82e5b01d2" .
-        "&amount=" . $request->total_paid_amount .
+            "entityId=8a8294174d0595bb014d05d82e5b01d2" .
+            "&amount=" . $request->total_paid_amount .
             "&currency=SAR" .
             "&paymentType=DB" .
             "&notificationUrl=http://localhost/storemapv2/public/api/notify_payment";
