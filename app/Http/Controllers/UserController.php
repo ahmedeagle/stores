@@ -4592,7 +4592,38 @@ class UserController extends Controller
 			return response()->json(['status' => false, 'errNum' => (int)$error, 'msg' => $msg[$error]]);
 		}
 
-		$url = "https://test.oppwa.com/v1/checkouts";
+        $url  = "https://test.oppwa.com/v1/checkouts";
+        $data =
+            "entityId=8ac7a4ca6d0680f7016d14c5bbb716d8" .
+            "&amount=".$request->total_paid_amount.
+            "&currency=SAR" .
+            "&paymentType=DB" .
+            "&notificationUrl=".
+            "&merchantTransactionId=400".
+            "&testMode=EXTERNAL".
+            "&customer.email=info@wisyst.info";
+        try{
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+                'Authorization:Bearer OGFjN2E0Y2E2ZDA2ODBmNzAxNmQxNGM1NzMwYzE2ZDR8QVpZRXI1ZzZjZQ'));
+            curl_setopt($ch, CURLOPT_POST, 1);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);// this should be set to true in production
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            $responseData = curl_exec($ch);
+            if(curl_errno($ch)) {
+                // return response()->json(['status' => false, 'errNum' => 3, 'msg' => $msg[3]]);
+            }
+            curl_close($ch);
+        }catch (\Exception $ex) {
+            return response()->json(['status' => false, 'errNum' => 3, 'msg' => $ex->getMessage() ]);
+        }
+        $id  =  json_decode($responseData)->id;
+        return response()->json(['status' => true, 'errNum' => 0, 'checkoutId' => $id, 'msg' => $msg[0]]);
+
+
+		/*$url = "https://test.oppwa.com/v1/checkouts";
 		$data =
 			"entityId=8a8294174d0595bb014d05d82e5b01d2" .
 			"&amount=" . $request->total_paid_amount .
@@ -4619,7 +4650,7 @@ class UserController extends Controller
 
 		$id = json_decode($responseData)->id;
 
-		return response()->json(['status' => true, 'errNum' => 0, 'checkoutId' => $id, 'msg' => $msg[0]]);
+		return response()->json(['status' => true, 'errNum' => 0, 'checkoutId' => $id, 'msg' => $msg[0]]);*/
 	}
 
 	public function check_status(Request $request)
@@ -4659,7 +4690,27 @@ class UserController extends Controller
 			return response()->json(['status' => false, 'errNum' => (int)$error, 'msg' => $msg[$error]]);
 		}
 
-		$url = "https://test.oppwa.com/v1/checkouts/{$request->checkoutId}/payment";
+
+        $url = "https://test.oppwa.com/v1/checkouts/{$request->checkoutId}/payment";
+        $url .= "?entityId=8ac7a4ca6d0680f7016d14c5bbb716d8";
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+            'Authorization:Bearer OGFjN2E0Y2E2ZDA2ODBmNzAxNmQxNGM1NzMwYzE2ZDR8QVpZRXI1ZzZjZQ'));
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);// this should be set to true in production
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $responseData = curl_exec($ch);
+        if(curl_errno($ch)) {
+            return curl_error($ch);
+        }
+        curl_close($ch);
+        $r = json_decode($responseData);
+        return response()->json(['status' => true, 'errNum' => 0, 'msg' => $r->result->description]);
+
+
+
+		/*$url = "https://test.oppwa.com/v1/checkouts/{$request->checkoutId}/payment";
 		$url .= "?entityId=8a8294174d0595bb014d05d82e5b01d2";
 
 		$ch = curl_init();
@@ -4677,7 +4728,10 @@ class UserController extends Controller
 		curl_close($ch);
 
 		$r = json_decode($responseData);
-		return response()->json(['status' => true, 'errNum' => 0, 'msg' => $r->result->description]);
+		return response()->json(['status' => true, 'errNum' => 0, 'msg' => $r->result->description]);*/
+
+
+
 
 
 		/*if ($r->result->description == "Request successfully processed in 'Merchant in Connector Test Mode'") {
