@@ -4601,7 +4601,7 @@ class UserController extends Controller
             "&paymentType=DB" .
             "&notificationUrl=http://www.wisyst.com/notify".
             "&merchantTransactionId=400".
-            "&testMode=EXTERNAL".
+            "&testMode=INTERNAL".
             "&customer.email=info@wisyst.info";
         try{
             $ch = curl_init();
