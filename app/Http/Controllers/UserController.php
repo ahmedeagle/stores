@@ -4598,6 +4598,7 @@ class UserController extends Controller
 			"&amount=" . $request->total_paid_amount .
 			"&currency=SAR" .
 			"&paymentType=DB" .
+            "&testMode=EXTERNAL" .
 			"&notificationUrl=http://localhost/storemapv2/public/api/notify_payment";
 
 		$ch = curl_init();
