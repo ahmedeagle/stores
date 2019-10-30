@@ -1309,11 +1309,13 @@ class UserController extends Controller
 
         //get provider data
         $provider = Providers::where('provider_id', $providerId)
+			->leftJoin('categories', 'providers.category_id', 'categories.cat_id')
             ->select('provider_id',
                 'store_name',
                 'membership_id',
                 'delivery_price',
-                DB::raw("CONCAT('" . env('APP_URL') . "','/public/providerProfileImages/',providers.profile_pic) AS profile_pic"),
+				DB::raw("CONCAT('" . env('APP_URL') . "','/public/providerProfileImages/',providers.profile_pic) AS profile_pic"),
+				DB::raw("CONCAT('" . env('APP_URL') . "','/public/categoriesImages/',categories.cat_img) AS cat_img"),
                 DB::raw(" '" . $totalAverage . "' AS provider_rate")
 
             )
@@ -1403,7 +1405,7 @@ class UserController extends Controller
         if ($lang == "ar") {
             $msg = array(
                 0 => 'تم جلب البيانات بنجاح ',
-                1 => 'لابد من رقم  ألمنتج  ',
+                1 => 'لابد من رقم المنتج  ',
                 2 => ' المنتج  غير موجود ',
                 3 => 'المستخدم غير موجود ',
             );
@@ -4600,6 +4602,7 @@ class UserController extends Controller
             "&currency=SAR" .
             "&paymentType=DB" .
             "&notificationUrl=http://localhost/storemapv2/public/api/notify_payment";
+            "&shopperResultUrl=https://wisyst.info";
 
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
