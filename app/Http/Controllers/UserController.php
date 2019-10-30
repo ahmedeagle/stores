@@ -4594,7 +4594,7 @@ class UserController extends Controller
 
         $url  = "https://test.oppwa.com/v1/checkouts";
         $data =
-            "entityId=8ac7a4ca6d0680f7016d14c5bbb716d8" .
+            "entityId=8a8294174d0595bb014d05d82e5b01d2" .
             "&amount=".$request->total_paid_amount.
             "&currency=SAR" .
             "&paymentType=DB" .
@@ -4606,7 +4606,7 @@ class UserController extends Controller
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_URL, $url);
             curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-                'Authorization:Bearer OGFjN2E0Y2E2ZDA2ODBmNzAxNmQxNGM1NzMwYzE2ZDR8QVpZRXI1ZzZjZQ'));
+                'Authorization:Bearer OGE4Mjk0MTc0ZDA1OTViYjAxNGQwNWQ4MjllNzAxZDF8OVRuSlBjMm45aA=='));
             curl_setopt($ch, CURLOPT_POST, 1);
             curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);// this should be set to true in production
@@ -4692,11 +4692,11 @@ class UserController extends Controller
 
 
         $url = "https://test.oppwa.com/v1/checkouts/{$request->checkoutId}/payment";
-        $url .= "?entityId=8ac7a4ca6d0680f7016d14c5bbb716d8";
+        $url .= "?entityId=8a8294174d0595bb014d05d82e5b01d2";
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-            'Authorization:Bearer OGFjN2E0Y2E2ZDA2ODBmNzAxNmQxNGM1NzMwYzE2ZDR8QVpZRXI1ZzZjZQ'));
+            'Authorization:Bearer OGE4Mjk0MTc0ZDA1OTViYjAxNGQwNWQ4MjllNzAxZDF8OVRuSlBjMm45aA=='));
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);// this should be set to true in production
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);

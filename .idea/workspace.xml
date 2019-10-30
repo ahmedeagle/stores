@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="661b7e20-c39c-40c9-a1b6-c0928f1d6fc1" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/Http/Controllers/UserController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/UserController.php" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -19,8 +18,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/Http/Controllers/UserController.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="227">
-              <caret line="4601" column="41" lean-forward="true" selection-start-line="4601" selection-start-column="41" selection-end-line="4601" selection-end-column="41" />
+            <state relative-caret-position="467">
+              <caret line="4694" column="59" selection-start-line="4694" selection-start-column="59" selection-end-line="4694" selection-end-column="59" />
             </state>
           </provider>
         </entry>
@@ -166,12 +165,12 @@
       <workItem from="1572436058116" duration="3915000" />
       <workItem from="1572440634095" duration="184000" />
       <workItem from="1572440839132" duration="3497000" />
-      <workItem from="1572444848384" duration="425000" />
+      <workItem from="1572444848384" duration="628000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="4106000" />
+    <option name="totallyTimeSpent" value="4309000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1296" height="1000" extended-state="6" />
@@ -250,8 +249,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/Http/Controllers/UserController.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="227">
-          <caret line="4601" column="41" lean-forward="true" selection-start-line="4601" selection-start-column="41" selection-end-line="4601" selection-end-column="41" />
+        <state relative-caret-position="467">
+          <caret line="4694" column="59" selection-start-line="4694" selection-start-column="59" selection-end-line="4694" selection-end-column="59" />
         </state>
       </provider>
     </entry>
