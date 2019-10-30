@@ -169,9 +169,7 @@ class ProviderController extends Controller
                     }
 
                 } else {
-
                     $method->choosen = 0;
-
                 }
 
             }
