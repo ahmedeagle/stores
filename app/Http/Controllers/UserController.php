@@ -4596,8 +4596,8 @@ class UserController extends Controller
         $data =
             "entityId=8a8294174d0595bb014d05d82e5b01d2" .
             "&amount=".$request->total_paid_amount.
-            "&currency=SAR" .
-//            "&currency=EUR" .
+//            "&currency=SAR" .
+            "&currency=EUR" .
             "&paymentType=DB" .
             "&notificationUrl=http://www.wisyst.com/notify".
             "&merchantTransactionId=400".
