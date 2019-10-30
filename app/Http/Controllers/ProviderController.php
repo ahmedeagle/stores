@@ -185,6 +185,7 @@ class ProviderController extends Controller
 
         $lang = $request->input('lang');
         $status = 0;
+		$msg = [];
         if ($lang == "ar") {
             $msg = array(
                 0 => 'تم التسجيل بنجاح',
