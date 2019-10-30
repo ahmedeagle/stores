@@ -4598,7 +4598,7 @@ class UserController extends Controller
             "&amount=".$request->total_paid_amount.
             "&currency=SAR" .
             "&paymentType=DB" .
-            "&notificationUrl=".
+            "&notificationUrl=http://www.wisyst.com/notify".
             "&merchantTransactionId=400".
             "&testMode=EXTERNAL".
             "&customer.email=info@wisyst.info";
