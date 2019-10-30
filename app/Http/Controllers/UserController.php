@@ -4676,10 +4676,10 @@ class UserController extends Controller
 		curl_close($ch);
 
 		$r = json_decode($responseData);
-		return response()->json(['status' => true, 'errNum' => 0, 'msg' => $r->result]);
+		return response()->json(['status' => true, 'errNum' => 0, 'msg' => $r->result->description]);
 
 
-		
+
 //		if ($r->result->description == "Request successfully processed in 'Merchant in Connector Test Mode'") {
 //			// make order
 ////			if (1 == 2) {
