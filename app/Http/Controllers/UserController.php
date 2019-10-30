@@ -4592,21 +4592,15 @@ class UserController extends Controller
 			return response()->json(['status' => false, 'errNum' => (int)$error, 'msg' => $msg[$error]]);
 		}
 
-		$url = "https://test.oppwa.com/v1/checkouts?";
+		$url = "https://test.oppwa.com/v1/checkouts";
 		$data =
 			"entityId=8a8294174d0595bb014d05d82e5b01d2" .
 			"&amount=" . $request->total_paid_amount .
 			"&currency=SAR" .
 			"&paymentType=DB" .
 			"&notificationUrl=http://localhost/storemapv2/public/api/notify_payment";
-//$data =
-//			"entityId=8a8294174d0595bb014d05d82e5b01d2" .
-//			"&amount=" . $request->total_paid_amount .
-//			"&currency=SAR" .
-//			"&paymentType=DB" .
-//			"&notificationUrl=http://localhost/storemapv2/public/api/notify_payment";
 
-		/*$ch = curl_init();
+		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_URL, $url);
 		curl_setopt($ch, CURLOPT_HTTPHEADER, array(
 			'Authorization:Bearer OGE4Mjk0MTc0ZDA1OTViYjAxNGQwNWQ4MjllNzAxZDF8OVRuSlBjMm45aA=='));
@@ -4620,28 +4614,11 @@ class UserController extends Controller
 
 			return response()->json(['status' => false, 'errNum' => 3, 'msg' => $msg[3]]);
 		}
-		curl_close($ch);*/
-
-
-		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_URL, $url . $data);
-		curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-			'Authorization:Bearer OGFjN2E0Y2E2ZDA2ODBmNzAxNmQxNGM1NzMwYzE2ZDR8QVpZRXI1ZzZjZQ'));
-		curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
-		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);// this should be set to true in production
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-		$responseData = curl_exec($ch);
-		if(curl_errno($ch)) {
-			return curl_error($ch);
-		}
 		curl_close($ch);
-		$r = json_decode($responseData);
-		return $this->returnData('status',$r->result,trans('messages.Payment status'), 'S001');
 
+		$id = json_decode($responseData)->id;
 
-		// $id = json_decode($responseData)->id;
-
-		// return response()->json(['status' => true, 'errNum' => 0, 'checkoutId' => $id, 'msg' => $msg[0]]);
+		return response()->json(['status' => true, 'errNum' => 0, 'checkoutId' => $id, 'msg' => $msg[0]]);
 	}
 
 	public function check_status(Request $request)
