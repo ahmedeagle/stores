@@ -164,7 +164,7 @@ class ProviderController extends Controller
 
                     $method->choosen = 1;
 
-                    if ($method_id == 2) {
+                    if ($method->method_id == 2) {
                         $method->price = $provider->delivery_price;
                     }
 
