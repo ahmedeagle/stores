@@ -89,29 +89,10 @@
     </include_path>
   </component>
   <component name="ProjectId" id="1SvF2diBvPBVhrboRBRY1LQDRzE" />
-  <component name="ProjectView">
-    <navigator proportions="" version="1">
-      <foldersAlwaysOnTop value="true" />
-    </navigator>
-    <panes>
-      <pane id="ProjectPane">
-        <subPane>
-          <expand>
-            <path>
-              <item name="stores" type="b2602c69:ProjectViewProjectNode" />
-              <item name="stores" type="462c0819:PsiDirectoryNode" />
-            </path>
-          </expand>
-          <select />
-        </subPane>
-      </pane>
-      <pane id="Scope" />
-    </panes>
-  </component>
   <component name="PropertiesComponent">
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
+    <property name="settings.editor.selected.configurable" value="editor.preferences.fonts.default" />
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -139,7 +120,7 @@
       <workItem from="1572427890391" duration="4259000" />
       <workItem from="1572434346748" duration="930000" />
       <workItem from="1572435968027" duration="66000" />
-      <workItem from="1572436058116" duration="664000" />
+      <workItem from="1572436058116" duration="2075000" />
     </task>
     <servers />
   </component>
