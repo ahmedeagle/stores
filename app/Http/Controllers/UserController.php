@@ -4676,19 +4676,23 @@ class UserController extends Controller
 		curl_close($ch);
 
 		$r = json_decode($responseData);
-		if ($r->result->description == "Request successfully processed in 'Merchant in Connector Test Mode'") {
-			// make order
-			if (1 == 2) {
-				//Session::flash('success', $mgs[0]);
+		return response()->json(['status' => true, 'errNum' => 0, 'msg' => $r->result]);
 
-				return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[0]]);
-			} else {
-				return response()->json(['status' => false, 'errNum' => 3, 'msg' => $msg[3]]);
-			}
-		} else {
-			// Error in payment
-			return response()->json(['status' => false, 'errNum' => 3, 'msg' => $msg[3]]);
-		}
+
+		
+//		if ($r->result->description == "Request successfully processed in 'Merchant in Connector Test Mode'") {
+//			// make order
+////			if (1 == 2) {
+////				//Session::flash('success', $mgs[0]);
+////
+////				return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[0]]);
+////			} else {
+////				return response()->json(['status' => false, 'errNum' => 3, 'msg' => $msg[3]]);
+////			}
+//		} else {
+//			// Error in payment
+//			return response()->json(['status' => false, 'errNum' => 3, 'msg' => $msg[3]]);
+//		}
 
 	}
 
