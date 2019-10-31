@@ -18,10 +18,10 @@
         
         <!-- Css Base And Vendor 
         ===================================-->
-        <link rel="stylesheet" href="{{ url('admin-assets/print/vendor/bootstrap/bootstrap.min.rtl.css') }}">
+        <link rel="stylesheet" href="<?php echo e(url('admin-assets/print/vendor/bootstrap/bootstrap.min.rtl.css')); ?>">
         <!-- Site Css
         ====================================-->
-        <link rel="stylesheet" href="{{ url('admin-assets/print/css/style.css') }}">
+        <link rel="stylesheet" href="<?php echo e(url('admin-assets/print/css/style.css')); ?>">
         
         <!--[if lt IE 9]>
             <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
@@ -39,7 +39,7 @@
                 </div>
                 <div class="col-xs-2">
                     <div class="logo" style="overflow: visible;">
-                        <img src="{{ url('admin-assets/print/images/unnamed.png') }}">
+                        <img src="<?php echo e(url('admin-assets/print/images/unnamed.png')); ?>">
                     </div>
                 </div>
                 <div class="col-xs-5 en-text slogon">
@@ -51,10 +51,10 @@
             </div><!--End  bill header-->
             <div class="bill-info">
                 <div class=" col-xs-4 quantity">
-                    <span>{{ $value }}</span>
+                    <span><?php echo e($value); ?></span>
                 </div>
                 <div class="col-xs-4 bill-title">
-                    <span>{{ $kind }}</span>
+                    <span><?php echo e($kind); ?></span>
                     <!-- <span>support exchange</span> -->
                 </div>
                 <div class="col-xs-4 en-text">No :</div>
@@ -65,13 +65,13 @@
                 <div class="en-text">Date :</div>
             </div><!--End bill content-->
             <div class="bill-content">
-                <div class="ar-text">{{ ($kind == "سند صرف")? "صرفنا إلى " : "قبضننا من" }} السيد / ة:  </div>
-                <div class="user-sign">{{ $name }}</div>
+                <div class="ar-text"><?php echo e(($kind == "سند صرف")? "صرفنا إلى " : "قبضننا من"); ?> السيد / ة:  </div>
+                <div class="user-sign"><?php echo e($name); ?></div>
                 <div class="en-text">received from :</div>
             </div><!--End bill content-->
             <div class="bill-content">
                 <div class="ar-text">الملبغ بالريال السعودى :</div>
-                <div class="user-sign"> {{ $value }} </div>
+                <div class="user-sign"> <?php echo e($value); ?> </div>
                 <div class="en-text">amount [SR] : </div>
             </div><!--End bill content-->
             <div class="bill-content">
@@ -122,7 +122,7 @@
         </div>
         <!-- JS Base And Vendor 
         ===================================-->
-        <script src="{{ url('admin-assets/print/vendor/jquery/jquery-3.2.1.js') }}"></script>
-        <script src="{{ url('admin-assets/print/vendor/bootstrap/bootstrap.min.js') }}"></script>
+        <script src="<?php echo e(url('admin-assets/print/vendor/jquery/jquery-3.2.1.js')); ?>"></script>
+        <script src="<?php echo e(url('admin-assets/print/vendor/bootstrap/bootstrap.min.js')); ?>"></script>
           
     </body>
