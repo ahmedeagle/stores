@@ -1065,7 +1065,7 @@ class DeliveryController extends Controller
 
         if ($inputs['phone'] != $delivery->phone) {
 
-            $rules['phone'] = array('required', 'numeric', 'regex:/^(05|5)([0-9]{8})$/', 'unique:deliveries,phone');
+            $rules['phone'] = array('required', 'numeric', 'regex:/^(05|5)([0-9]{8})$/', 'unique:deliveries,phone,'. $deliveryId);
 
             $inputs['account_activated'] = "0";
             $inputs['status'] = "0";

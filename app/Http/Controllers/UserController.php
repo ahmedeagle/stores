@@ -895,6 +895,7 @@ class UserController extends Controller
 				6 => ' رقم الجوال لابد ان يكون ارقام ',
 				7 => 'صوره الملف الشخصي غير  صالحة ',
 				8 => 'صيغه الهاتف غير صحيحة ',
+				9 => 'رقم الهاتف موجود من قبل من فضلك ادخل رقم اخر ',
 
 			);
 
@@ -909,6 +910,7 @@ class UserController extends Controller
 				6 => ' phone number must be numeric',
 				7 => 'profile picture not valid',
 				8 => 'phone number format invalid',
+				9 => 'phone number used before',
 
 			);
 		}
@@ -921,7 +923,7 @@ class UserController extends Controller
 			'phone.numeric' => 6,
 			'mimes' => 7,
 			'regex' => 8,
-
+			'phone.unique' => 9,
 		);
 
 		$rules = [
@@ -947,7 +949,7 @@ class UserController extends Controller
 
 		if ($input['phone'] != $user->first()->phone) {
 
-			$rules['phone'] = array('required', 'numeric', 'regex:/^(05|5)([0-9]{8})$/', 'unique:users,phone');
+			$rules['phone'] = array('required', 'numeric', 'regex:/^(05|5)([0-9]{8})$/', 'unique:users,phone,' . $userId);
 			$rules['country_code'] = "required";
 
 		} else {
