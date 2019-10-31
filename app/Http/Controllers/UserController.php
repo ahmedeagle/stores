@@ -4708,7 +4708,7 @@ class UserController extends Controller
         }
         curl_close($ch);
         $r = json_decode($responseData);
-        return response()->json(['status' => true, 'errNum' => 0, 'msg' => $r->result->description]);
+        return response()->json(['status' => true, 'errNum' => 0, 'msg' => $r->result->description, 'code' => $r->result->code]);
 
 
 
