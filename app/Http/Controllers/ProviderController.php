@@ -5174,13 +5174,13 @@ class ProviderController extends Controller
 			return response()->json(['status' => false, 'errNum' => 13, 'msg' => $msg[13]]);
 		}
 
-		if ($provider_balace->current_balance < $request->input(current_balance)) {
+		if ($provider_balace->current_balance < $request->input('current_balance')) {
 			return response()->json(['status' => false, 'errNum' => 12, 'msg' => $msg[12]]);
 		}
 
 		$insert = DB::table("withdraw_balance")->insert([
 			'actor_id' => $actor_id,
-			'current_balance' => $request->input(current_balance),
+			'current_balance' => $request->input('current_balance'),
 			// 'due_balance' => $provider_balace->due_balance,
 			// 'forbidden' => $provider_balace->forbidden_balance,
 			'type' => $type,
