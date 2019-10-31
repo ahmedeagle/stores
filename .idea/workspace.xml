@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="661b7e20-c39c-40c9-a1b6-c0928f1d6fc1" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/UserController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/UserController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/ProviderController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/ProviderController.php" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -19,10 +19,10 @@
   <component name="FileEditorManager">
     <leaf>
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/app/Http/Controllers/UserController.php">
+        <entry file="file://$PROJECT_DIR$/app/Http/Controllers/ProviderController.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="387">
-              <caret line="4710" column="105" selection-start-line="4710" selection-start-column="105" selection-end-line="4710" selection-end-column="105" />
+            <state relative-caret-position="294">
+              <caret line="1129" column="26" lean-forward="true" selection-start-line="1129" selection-start-column="26" selection-end-line="1129" selection-end-column="26" />
             </state>
           </provider>
         </entry>
@@ -41,8 +41,8 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/app/Http/Controllers/ProviderController.php" />
         <option value="$PROJECT_DIR$/app/Http/Controllers/UserController.php" />
+        <option value="$PROJECT_DIR$/app/Http/Controllers/ProviderController.php" />
       </list>
     </option>
   </component>
@@ -177,12 +177,12 @@
       <workItem from="1572440839132" duration="3497000" />
       <workItem from="1572444848384" duration="2158000" />
       <workItem from="1572447027018" duration="728000" />
-      <workItem from="1572505536493" duration="3780000" />
+      <workItem from="1572505536493" duration="4599000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="10347000" />
+    <option name="totallyTimeSpent" value="11166000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -282,13 +282,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/Http/Controllers/ProviderController.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="66">
-          <caret line="2095" column="23" lean-forward="true" selection-start-line="2095" selection-start-column="23" selection-end-line="2095" selection-end-column="23" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/routes/provider.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="262">
@@ -298,8 +291,15 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/Http/Controllers/UserController.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="387">
-          <caret line="4710" column="105" selection-start-line="4710" selection-start-column="105" selection-end-line="4710" selection-end-column="105" />
+        <state relative-caret-position="435">
+          <caret line="4707" column="9" lean-forward="true" selection-start-line="4707" selection-start-column="9" selection-end-line="4707" selection-end-column="9" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/Http/Controllers/ProviderController.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="294">
+          <caret line="1129" column="26" lean-forward="true" selection-start-line="1129" selection-start-column="26" selection-end-line="1129" selection-end-column="26" />
         </state>
       </provider>
     </entry>

@@ -1125,7 +1125,7 @@ class ProviderController extends Controller
 					'providers.delivery_method_id',
 					'city.' . $city_col,
 
-					DB::raw("CONCAT('" . url('/') . "','/providers/',providers.profile_pic) AS profile_pic")
+					DB::raw("CONCAT('" . url('/') . "','/providerProfileImages/',providers.profile_pic) AS profile_pic")
 				)
 				->first();
 
