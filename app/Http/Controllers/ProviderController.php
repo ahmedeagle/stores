@@ -2641,7 +2641,7 @@ class ProviderController extends Controller
 
 				//  $image_name = $this->saveImage($image,'jpg', 'products');
 				// $image_name = $this->saveImage(time(), $image, 'products/', ['jpeg', 'png', 'jpg', 'gif']);
-				$image_name = $this->saveImage('products/', $image);
+				$image_name = $this->saveImage('products/', $image, $index);
 
 				if ($image_name != "") {
 					DB::table('product_images')->insert([
@@ -3194,7 +3194,7 @@ class ProviderController extends Controller
 
 				//   $image = $this->saveImage($image,'jpg', 'products');
 				//   $image = $this->saveImage(time(), $image, 'products/', ['jpeg', 'png', 'jpg', 'gif']);
-				$image = $this->saveImage('products/', $image);
+				$image = $this->saveImage('products/', $image, $index);
 
 				if ($image == "") {
 					if ($lang == "ar") {

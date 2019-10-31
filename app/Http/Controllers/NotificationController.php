@@ -92,7 +92,7 @@ class NotificationController extends Controller
                 $colum = 'user_id';
                 break;
 
-            case 'user':
+            case 'delivery':
                 $actor = 'deliveries';
                 $table = 'deliveries';
                 $colum = 'delivery_id';
