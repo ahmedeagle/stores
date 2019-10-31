@@ -5029,7 +5029,7 @@ class ProviderController extends Controller
 			$msg = array(
 				0 => 'تمت العملية بنجاح',
 				1 => 'رقم صاحب الطلب مطلوب',
-				2 => 'الرصيد الحالى مطلوب',
+				2 => 'الرصيد مطلوب',
 				3 => 'الرصيد المستحق مطلوب',
 				4 => 'فشلت العملية من فضلك حاول لاحقا',
 				5 => 'لديك طلبات لم يتم الرد عليها بعد',
@@ -5053,7 +5053,7 @@ class ProviderController extends Controller
 			$msg = array(
 				0 => 'Process done successfully',
 				1 => 'actor_id is required',
-				2 => 'current_balance is required',
+				2 => 'balance is required',
 				3 => 'due_balance is required',
 				4 => 'Process failed, please try again later',
 				5 => 'You already have pending requests',
@@ -5095,6 +5095,7 @@ class ProviderController extends Controller
 			'access_token' => 'required',
 			'type' => 'required|in:0,1',
 			'bank_name' => 'required',
+			'current_balance' => 'required',
 			// 'name' => 'required',
 			'account_num' => 'required',
 			// 'phone' => 'required',
@@ -5132,11 +5133,11 @@ class ProviderController extends Controller
 			return response()->json(['status' => false, 'errNum' => 19, 'msg' => $msg[19]]);
 		}
 
-		// insert bank account data into database
+		/*// insert bank account data into database
 		$actor_bank_data = DB::table("withdraw_balance")
 			->where("actor_id", $actor_id)
 			->where("type", $type)
-			->first();
+			->first();*/
 
 		//check if there is pending requests
 		$check = DB::table('withdraw_balance')->where('actor_id', $actor_id)
@@ -5163,7 +5164,7 @@ class ProviderController extends Controller
 			->where("type", $balType)
 			->first();
 
-		$provider_current_balance = $provider_balace->current_balance;
+//		$provider_current_balance = $provider_balace->current_balance;
 
 		//check if the current balance is greater than min limit of withdrawing
 		$min_balance = DB::table("app_settings")
@@ -5173,9 +5174,13 @@ class ProviderController extends Controller
 			return response()->json(['status' => false, 'errNum' => 13, 'msg' => $msg[13]]);
 		}
 
+		if ($provider_balace->current_balance < $request->input(current_balance)) {
+			return response()->json(['status' => false, 'errNum' => 12, 'msg' => $msg[12]]);
+		}
+
 		$insert = DB::table("withdraw_balance")->insert([
 			'actor_id' => $actor_id,
-			'current_balance' => $provider_balace->current_balance,
+			'current_balance' => $request->input(current_balance),
 			// 'due_balance' => $provider_balace->due_balance,
 			// 'forbidden' => $provider_balace->forbidden_balance,
 			'type' => $type,

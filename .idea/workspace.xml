@@ -21,8 +21,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/Http/Controllers/ProviderController.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="294">
-              <caret line="1129" column="26" lean-forward="true" selection-start-line="1129" selection-start-column="26" selection-end-line="1129" selection-end-column="26" />
+            <state relative-caret-position="343">
+              <caret line="5189" column="60" lean-forward="true" selection-start-line="5189" selection-start-column="60" selection-end-line="5189" selection-end-column="60" />
             </state>
           </provider>
         </entry>
@@ -33,6 +33,10 @@
     <findStrings>
       <find>ProviderOffer</find>
       <find>editProviderOffer</find>
+      <find>Profile</find>
+      <find>'/providers/',providers.profile_pic</find>
+      <find>$provider_current_balance</find>
+      <find>$actor_bank_data</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -177,12 +181,12 @@
       <workItem from="1572440839132" duration="3497000" />
       <workItem from="1572444848384" duration="2158000" />
       <workItem from="1572447027018" duration="728000" />
-      <workItem from="1572505536493" duration="4599000" />
+      <workItem from="1572505536493" duration="5915000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="11166000" />
+    <option name="totallyTimeSpent" value="12482000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -289,17 +293,24 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/app/Http/Controllers/DeliveryController.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="182">
+          <caret line="1075" column="32" lean-forward="true" selection-start-line="1075" selection-start-column="32" selection-end-line="1075" selection-end-column="32" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/app/Http/Controllers/UserController.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="435">
-          <caret line="4707" column="9" lean-forward="true" selection-start-line="4707" selection-start-column="9" selection-end-line="4707" selection-end-column="9" />
+        <state relative-caret-position="262">
+          <caret line="855" column="77" selection-start-line="855" selection-start-column="70" selection-end-line="855" selection-end-column="77" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/Http/Controllers/ProviderController.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="294">
-          <caret line="1129" column="26" lean-forward="true" selection-start-line="1129" selection-start-column="26" selection-end-line="1129" selection-end-column="26" />
+        <state relative-caret-position="343">
+          <caret line="5189" column="60" lean-forward="true" selection-start-line="5189" selection-start-column="60" selection-end-line="5189" selection-end-column="60" />
         </state>
       </provider>
     </entry>
