@@ -2561,6 +2561,9 @@ class UserController extends Controller
 		//  total value is  total price + delivery_price
 		// net value is product value - app value   net which provider earn
 
+		//get app percentage
+		$app_settings = DB::table('app_settings')->first();
+
 		$lang = $request->input('lang');
 
 		if ($lang == "ar") {
@@ -2767,6 +2770,7 @@ class UserController extends Controller
 			//second step calculate total qty and price and disc
 			$totalQty += $products[$i]['qty'];
 			$totalPrice += ($productPrice + $options_added_price) * $products[$i]['qty'];
+			$totalPrice += ( (int)$app_settings->tax * $totalPrice ) / 100;
 			$totalDisc += $products[$i]['discount'];
 			$net += $products[$i]['qty'] * ($productPrice + $options_added_price); // need to subtract the discount from the net value
 
@@ -2801,7 +2805,7 @@ class UserController extends Controller
 
 		if ($request->input("payment_method") == 2 || $request->input("payment_method") == 3) {
 			$rules['total_paid_amount'] = "required";
-			$rules['process_number'] = "required";
+//			$rules['process_number'] = "required";
 		}
 
 		$validator = Validator::make($request->all(), $rules, $messages);
@@ -2845,8 +2849,6 @@ class UserController extends Controller
 
          */
 
-		//get app percentage
-		$app_settings = DB::table('app_settings')->first();
 		if ($app_settings) {
 			$percentage = $app_settings->app_percentage;
 			$kilo_price = $app_settings->kilo_price;
@@ -2886,14 +2888,14 @@ class UserController extends Controller
 
 		// if payment by visa must ensure paid amount equal order total value
 		if ($payment_method == 2 || $payment_method == 3) {
-			if ($request->input("total_paid_amount") != $paid_price) {
+			if ($request->input("total_paid_amount") != $totalPrice) {
 				return response()->json([
 					"status" => false,
 					"errNum" => 23,
 					"msg" => $msg[23],
 				]);
 			}
-			$data['process_number'] = $request->input("process_number");
+			// $data['process_number'] = $request->input("process_number");
 		}
 
 		//we will set this to zero till split payment method is activated
@@ -3420,9 +3422,9 @@ class UserController extends Controller
 		if ($lang == "ar") {
 			$msg = array(
 				0 => 'يوجد بيانات',
-				1 => 'لا يوجد تفاصيل ',
-				2 => 'رقم  الاوردر  مطلوب',
-				3 => 'الطلب غير موجود ',
+				1 => 'لا يوجد تفاصيل',
+				2 => 'رقم الاوردر مطلوب',
+				3 => 'الطلب غير موجود',
 			);
 			$payment_col = "payment_types.payment_ar_name AS payment_method";
 			$delivery_col = "delivery_methods.method_ar_name AS delivery_method";
@@ -3463,6 +3465,7 @@ class UserController extends Controller
 			->join('order_status', 'orders_headers.status_id', '=', 'order_status.status_id')
 			->select('orders_headers.order_code',
 				'orders_headers.order_id',
+				'orders_headers.provider_id',
 				'orders_headers.status_id',
 				'orders_headers.status_id',
 				$status_col,
@@ -3600,6 +3603,11 @@ class UserController extends Controller
 			$app_percentage = 0;
 		}
 
+		$provider_rate_sum = DB::table('providers_rates')->where('provider_id', $order->provider_id)->Sum('rates');
+		$provider_rate_count = DB::table('providers_rates')->where('provider_id', $order->provider_id)->Count('rates');
+
+		$provider_rate = round($provider_rate_sum / $provider_rate_count);
+
 		//$orderOptions = DB::table('order_products_options') -> where('order_id',$request->input('order_id')) -> join('product_options','order_products_options.option_id','=','product_options.id') -> select('product_options.name','product_options.id','product_options.price')  -> get();
 
 		return response()->json([
@@ -3611,7 +3619,7 @@ class UserController extends Controller
 			'app_percentage' => $app_percentage,
 			'order_status' => $order_status,
 			'provider_order_rate' => $provider_order_rate,
-			'',
+			'provider_rate' => $provider_rate,
 
 		]);
 
