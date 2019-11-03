@@ -3606,7 +3606,7 @@ class UserController extends Controller
 		$provider_rate_sum = DB::table('providers_rates')->where('provider_id', $order->provider_id)->sum('rates');
 		$provider_rate_count = DB::table('providers_rates')->where('provider_id', $order->provider_id)->count('rates');
 
-		dd($provider_rate_sum);
+		dd($provider_rate_count);
 
 		$provider_rate = round($provider_rate_sum / $provider_rate_count);
 
