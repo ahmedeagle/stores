@@ -3603,8 +3603,8 @@ class UserController extends Controller
 			$app_percentage = 0;
 		}
 
-		$provider_rate_sum = DB::table('providers_rates')->where('provider_id', $order->provider_id)->Sum('rates');
-		$provider_rate_count = DB::table('providers_rates')->where('provider_id', $order->provider_id)->Count('rates');
+		$provider_rate_sum = DB::table('providers_rates')->where('provider_id', $order->provider_id)->sum('rates');
+		$provider_rate_count = DB::table('providers_rates')->where('provider_id', $order->provider_id)->count('rates');
 
 		$provider_rate = round($provider_rate_sum / $provider_rate_count);
 

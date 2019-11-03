@@ -36,8 +36,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/Http/Controllers/UserController.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="278">
-              <caret line="2773" column="46" lean-forward="true" selection-start-line="2773" selection-start-column="46" selection-end-line="2773" selection-end-column="46" />
+            <state relative-caret-position="198">
+              <caret line="3606" column="109" selection-start-line="3606" selection-start-column="109" selection-end-line="3606" selection-end-column="109" />
               <folding>
                 <element signature="e#103830#105042#0#PHP" />
               </folding>
@@ -107,8 +107,8 @@
       <find>generate_random_number</find>
       <find>produc</find>
       <find>rate</find>
-      <find>orderDeta</find>
       <find>addOrder</find>
+      <find>orderDeta</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -260,12 +260,12 @@
       <workItem from="1572505536493" duration="7024000" />
       <workItem from="1572523475114" duration="5430000" />
       <workItem from="1572765254432" duration="3241000" />
-      <workItem from="1572773672182" duration="3804000" />
+      <workItem from="1572773672182" duration="3958000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="26066000" />
+    <option name="totallyTimeSpent" value="26220000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -507,8 +507,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/Http/Controllers/UserController.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="278">
-          <caret line="2773" column="46" lean-forward="true" selection-start-line="2773" selection-start-column="46" selection-end-line="2773" selection-end-column="46" />
+        <state relative-caret-position="198">
+          <caret line="3606" column="109" selection-start-line="3606" selection-start-column="109" selection-end-line="3606" selection-end-column="109" />
           <folding>
             <element signature="e#103830#105042#0#PHP" />
           </folding>
