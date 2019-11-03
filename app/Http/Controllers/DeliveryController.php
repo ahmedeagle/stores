@@ -1378,7 +1378,8 @@ class DeliveryController extends Controller
 
                     }
 
-                    $order->status = " بأنتظار الموافقه ";
+//                    $order->status = " بأنتظار الموافقه ";
+                    $order->status = 1;
                     unset($order->delivery_id);
 
                 }
@@ -1400,7 +1401,8 @@ class DeliveryController extends Controller
 
                     }
 
-                    $order->status = "موافق عليه ";
+//                    $order->status = "موافق عليه ";
+                    $order->status = 2;
                     unset($order->delivery_id);
                 }
             }
@@ -1426,9 +1428,11 @@ class DeliveryController extends Controller
                     }
 
                     if ($order->delivery_id == 0) {
-                        $order->status = "ملغي";
+//                        $order->status = "ملغي";
+                        $order->status = 0;
                     } else {
-                        $order->status = "تم التسليم ";
+//                        $order->status = "تم التسليم ";
+                        $order->status = 3;
                     }
 
                     unset($order->delivery_id);
@@ -1601,7 +1605,8 @@ class DeliveryController extends Controller
             $provider_order_rate = "";
         }
 
-        $order_status = DB::table('order_status')->whereIn('status_id', [1, 2, 3, 4])
+//        $order_status = DB::table('order_status')->whereIn('status_id', [1, 2, 3, 4])
+        $order_status = DB::table('order_status')->whereIn('status_id', [2, 3, 4])
             ->select(
                 'status_id',
                 $status_col,
@@ -1623,7 +1628,7 @@ class DeliveryController extends Controller
             'order' => $order,
             'products' => $products,
             'app_percentage' => $app_percentage,
-            //'order_status'        => $order_status,
+            'order_status'        => $order_status,
             'provider_order_rate' => $provider_order_rate,
 
         ]);
@@ -1885,7 +1890,7 @@ class DeliveryController extends Controller
 
         if ($userAllowOrdersStatus == 1) {
 
-            // send firbase notifications
+            // send firebase notifications
             (new Push())->send($get->user_device_reg, $notif_data, (new Push())->user_key);
 
             // store notification to DB
