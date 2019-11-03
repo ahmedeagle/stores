@@ -3606,6 +3606,8 @@ class UserController extends Controller
 		$provider_rate_sum = DB::table('providers_rates')->where('provider_id', $order->provider_id)->sum('rates');
 		$provider_rate_count = DB::table('providers_rates')->where('provider_id', $order->provider_id)->count('rates');
 
+		dd($provider_rate_sum);
+
 		$provider_rate = round($provider_rate_sum / $provider_rate_count);
 
 		//$orderOptions = DB::table('order_products_options') -> where('order_id',$request->input('order_id')) -> join('product_options','order_products_options.option_id','=','product_options.id') -> select('product_options.name','product_options.id','product_options.price')  -> get();
