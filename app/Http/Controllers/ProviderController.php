@@ -4550,16 +4550,16 @@ class ProviderController extends Controller
 					if ($payment_type != 1 && $payment_type != "1") {
 
 						$balance = DB::table("balances")
-							->where("actor_id", $order->user_id)
+							->where("actor_id", $user_id)
 							->where("actor_type", "user")
 							->first();
 
 						if ($balance) {
 							DB::table("balances")
-								->where("actor_id", $order->user_id)
+								->where("actor_id", $user_id)
 								->where("actor_type", "user")
 								->update([
-									"current_balance" => $balance->current_balance + $order->total_value,
+									"current_balance" => $balance->current_balance + $total_value,
 								]);
 						}
 
