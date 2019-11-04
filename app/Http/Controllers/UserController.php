@@ -949,7 +949,7 @@ class UserController extends Controller
 
 		if ($input['phone'] != $user->first()->phone) {
 
-			$rules['phone'] = array('required', 'numeric', 'regex:/^(05|5)([0-9]{8})$/', 'unique:users,phone,' . $userId);
+			$rules['phone'] = array('required', 'numeric', 'regex:/^(05|5)([0-9]{8})$/', 'unique:users,phone,' . $userId .',user_id');
 			$rules['country_code'] = "required";
 
 		} else {
@@ -2896,6 +2896,7 @@ class UserController extends Controller
 				]);
 			}
 			// $data['process_number'] = $request->input("process_number");
+			 $data['process_number'] = mt_rand();
 		}
 
 		//we will set this to zero till split payment method is activated
@@ -2969,6 +2970,7 @@ class UserController extends Controller
 					'marketer_percentage' => $data['marketer_percentage'],
 					'marketer_value' => $data['provider_marketer_value'],
 					'provider_marketer_code' => $data['provider_marketer_code'],
+					'process_number' => $data['process_number'] ? $data['process_number'] : null,
 				]);
 				$serial = 1;
 

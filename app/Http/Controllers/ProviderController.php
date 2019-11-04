@@ -1294,7 +1294,7 @@ class ProviderController extends Controller
 
 		if ($input['phone'] != $provider->first()->phone) {
 
-			$rules['phone'] = array('required', 'regex:/^(05|5)([0-9]{8})$/', 'numeric', 'unique:providers,phone,' . $id);
+			$rules['phone'] = array('required', 'regex:/^(05|5)([0-9]{8})$/', 'numeric', 'unique:providers,phone,' . $id . ',provider_id');
 			$rules['country_code'] = "required";
 
 		} else {

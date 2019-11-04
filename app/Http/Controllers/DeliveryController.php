@@ -945,7 +945,9 @@ class DeliveryController extends Controller
 
         //  return response() -> json($request);
         $lang = $request->input('lang');
-        if ($lang == "ar") {
+		$deliveryId = $this->get_id($request, 'deliveries', 'delivery_id');
+
+		if ($lang == "ar") {
             $msg = array(
                 0 => 'تم  تحديث الملف نجاح',
                 1 => 'كل الحقول مطلوبه',
@@ -1033,6 +1035,7 @@ class DeliveryController extends Controller
             'authorization_img_ext' => 'required_with:authorization_img',
             'national_img' => 'sometimes|nullable',
             'national_img_ext' => 'required_with:national_img',
+            'phone' => 'required|numeric|unique:deliveries,phone,'. $deliveryId . ',delivery_id',
 
         ];
 
@@ -1044,8 +1047,6 @@ class DeliveryController extends Controller
             return response()->json(['status' => false, 'errNum' => (int) $error, 'msg' => $msg[$error]]);
 
         }
-
-        $deliveryId = $this->get_id($request, 'deliveries', 'delivery_id');
 
         if ($deliveryId == 0) {
             return response()->json(['status' => false, 'errNum' => 20, 'msg' => $msg[20]]);
@@ -1065,9 +1066,7 @@ class DeliveryController extends Controller
 
         if ($inputs['phone'] != $delivery->phone) {
 
-            $rules['phone'] = array('required', 'numeric', 'regex:/^(05|5)([0-9]{8})$/', 'unique:deliveries,phone,'. $deliveryId);
-
-            $inputs['account_activated'] = "0";
+//            $rules['phone'] = array('required', 'numeric', 'regex:/^(05|5)([0-9]{8})$/', 'unique:deliveries,phone,'. $deliveryId);
             $inputs['status'] = "0";
 
             $code = $this->generate_random_number(4);
@@ -1087,8 +1086,7 @@ class DeliveryController extends Controller
 
         } else {
 
-            $rules['phone'] = array('required', 'numeric', 'regex:/^(05|5)([0-9]{8})$/');
-
+//            $rules['phone'] = array('required', 'numeric', 'regex:/^(05|5)([0-9]{8})$/');
             $isPhoneChanged = false;
 
         }
