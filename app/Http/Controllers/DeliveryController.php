@@ -1365,9 +1365,9 @@ class DeliveryController extends Controller
 				'orders_headers.order_id',
 				'orders_headers.order_code',
 				'orders_headers.delivery_id',
-				'orders_headers.total_value',
-				'orders_headers.status_id AS status',
-				$status_col
+				'orders_headers.total_value'
+//				,'orders_headers.status_id AS status',
+//				$status_col
 			)
 			->orderBy('orders_headers.order_id', 'DESC')
 			->paginate(10);
@@ -1390,8 +1390,8 @@ class DeliveryController extends Controller
 					}
 
 //                    $order->status = " بأنتظار الموافقه ";
-//					$order->status = 1;
-//					$order->status_text = $status_pending;
+					$order->status = 1;
+					$order->status_text = $status_pending;
 					unset($order->delivery_id);
 
 				}
@@ -1414,8 +1414,8 @@ class DeliveryController extends Controller
 					}
 
 //                    $order->status = "موافق عليه ";
-//					$order->status = 2;
-//					$order->status_text = $status_approved;
+					$order->status = 2;
+					$order->status_text = $status_approved;
 					unset($order->delivery_id);
 				}
 			}
@@ -1442,12 +1442,12 @@ class DeliveryController extends Controller
 
 					if ($order->delivery_id == 0) {
 //                        $order->status = "ملغي";
-//						$order->status = 0;
-//						$order->status_text = $status_canceled;
+						$order->status = 0;
+						$order->status_text = $status_canceled;
 					} else {
 //                        $order->status = "تم التسليم ";
-//						$order->status = 3;
-//						$order->status_text = $status_delivered;
+						$order->status = 3;
+						$order->status_text = $status_delivered;
 
 					}
 
