@@ -1601,16 +1601,17 @@ class DeliveryController extends Controller
 
 		if ($status == 3 || $status == "3") {
 
-			$provider_order_rate = DB::table('provider_evaluation')
+			$provider_order_rate = DB::table('providers_rates')
 				->where('order_id', $request->input('order_id'))
 				->select(
-					DB::raw("IFNULL(((quality + autotype + packing + maturity + ask_again) / 5), 0) AS order_rate"),
+//					DB::raw("IFNULL(((quality + autotype + packing + maturity + ask_again) / 5), 0) AS order_rate"),
 					DB::raw("IFNULL(((comment)), 0) AS comment"))
 				->first();
 
 			if ($provider_order_rate) {
 				$provider_order_rate = [
-					"rate" => $provider_order_rate->order_rate,
+//					"rate" => $provider_order_rate->order_rate,
+					"rate" => 5,
 					"comment" => $provider_order_rate->comment,
 				];
 			} else {
