@@ -1637,8 +1637,6 @@ class DeliveryController extends Controller
 			}
 		}
 
-		dd($choosen_status);
-
 		$order_status = DB::table('order_status')->whereIn('status_id', [3, 4])
 			->select(
 				'status_id',
