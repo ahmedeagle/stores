@@ -1627,7 +1627,7 @@ class DeliveryController extends Controller
 			->where('delivery_id', $order->delivery_id)
 			->value('status');
 
-		$choosen_status = 0;
+		$choosen_status = '';
 		if ($new_status == 2) {
 			$choosen_status = 3;
 		} elseif ($new_status == 0) {
@@ -2404,7 +2404,7 @@ class DeliveryController extends Controller
 				$delivery_col = "delivery_methods.method_en_name AS delivery_method";
 				$status_col = "order_status.en_desc AS status_text";
 			}
-
+	
 			$messages = array(
 				'delivery_id.required' => 1,
 				'type.required' => 2,
@@ -2415,7 +2415,7 @@ class DeliveryController extends Controller
 				'delivery_id' => 'required|exists:deliveries,delivery_id',
 				'type'        => 'required|in:1,2,4',
 			], $messages);
-
+	
 			if ($validator->fails()) {
 				$error = $validator->errors()->first();
 				return response()->json(['status' => false, 'errNum' => (int)$error, 'msg' => $msg[$error]]);
@@ -2454,7 +2454,7 @@ class DeliveryController extends Controller
 					$inCondition = [4, 5, 6, 7];
 					// array_push($conditions, ['orders_headers.status_id' , '=', 6]);
 				}
-
+	
 				//get orders
 				if (empty($allPages) || $allPages == "0" || $allPages == 0) {
 					$orders = DB::table('orders_headers')
@@ -2503,7 +2503,7 @@ class DeliveryController extends Controller
 						->orderBy('orders_headers.order_id', 'DESC')
 						->get();
 				}
-
+	
 				//get allowed time to accept the order
 				if ($type == 1) {
 					$get_time_counter = DB::table("app_settings")->first();
@@ -2518,7 +2518,7 @@ class DeliveryController extends Controller
 					$time_counter_in_hours = 0;
 					$time_counter_in_min = 0;
 				}
-
+	
 				$today_date = date('Y-m-d');
 				$now = date('h:i:s');
 				return response()->json([
@@ -2610,7 +2610,7 @@ class DeliveryController extends Controller
 						->where('order_id', $order_id)
 						->where('delivery_id', $delivery_id)
 						->first();
-
+					
 					if ($delivered_order) {
 						DB::table("rejectedorders_delivery")
 							->where('order_id', $order_id)
