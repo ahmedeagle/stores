@@ -1334,7 +1334,7 @@ class DeliveryController extends Controller
 		$conditions[] = ['orders_headers.delivery_method', '=', 3]; // delivery method  is "by delivery"
 
 		$inCondition = [];
-		if ($type == 1) {
+		if ($type == 1) {//new
 
 			$inCondition = [2];
 			$conditions[] = ['orders_headers.delivery_id', '=', 0]; // delivery method  is "by
@@ -1433,7 +1433,7 @@ class DeliveryController extends Controller
 						'order_id' => $order->order_id,
 						'delivery_id' => $delivery_id,
 
-					])->whereIn('status', [0, 2])->first();
+					])->whereIn('status', [0,2])->first();
 
 					if (!$cancelFromThisDeliveryBefore) {
 
@@ -1621,14 +1621,25 @@ class DeliveryController extends Controller
 			$provider_order_rate = "";
 		}
 
-//        $order_status = DB::table('order_status')->whereIn('status_id', [1, 2, 3, 4])
-//		$order_status = DB::table('order_status')->whereIn('status_id', [2, 3, 4])
+
+		$new_status = DB::table('rejectedorders_delivery')
+			->where('order_id', $order->order_id)
+			->where('delivery_id', $order->delivery_id)
+			->value('status');
+
+		$choosen_status = 0;
+		if($new_status == 2) {
+			$choosen_status = 3;
+		}
+		elseif($new_status == 0) {
+			$choosen_status = 4;
+		}
 
 		$order_status = DB::table('order_status')->whereIn('status_id', [3, 4])
 			->select(
 				'status_id',
 				$status_col,
-				DB::raw('false AS choosen')
+				DB::raw('IF(status_id = ' . $choosen_status . ', true, false) AS choosen')
 			)->get();
 
 		$percentage = DB::table('app_settings')->select('app_percentage')->first();
@@ -1718,7 +1729,7 @@ class DeliveryController extends Controller
 			'order_id' => 'required',
 			'access_token' => 'required|exists:deliveries,token',
 //			'status_id' => 'required|in:0,1,2',
-			'status_id' => 'required',
+			'status_id' => 'required',   // 3 -> delivered   4 ->  cancel by delivery
 
 		], $messages);
 
@@ -2365,7 +2376,7 @@ class DeliveryController extends Controller
 		return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[0], 'data' => $data]);
 	}
 
-	public function getDeliveryOrders(Request $request)
+/*	public function getDeliveryOrders(Request $request)
 	{
 		$lang = $request->input('lang');
 		$allPages = $request->input('allPages');
@@ -2403,7 +2414,7 @@ class DeliveryController extends Controller
 		);
 		$validator = Validator::make($request->all(), [
 			'delivery_id' => 'required|exists:deliveries,delivery_id',
-			'type' => 'required|in:1,2,4',
+			'type'        => 'required|in:1,2,4',
 		], $messages);
 
 		if ($validator->fails()) {
@@ -2522,7 +2533,7 @@ class DeliveryController extends Controller
 				'now' => $now,
 			]);
 		}
-	}
+	}*/
 
 	public function orderAcceptance(Request $request)
 	{
@@ -2571,7 +2582,7 @@ class DeliveryController extends Controller
 
 			if ($type == "accept") {
 //				$status = 8;
-				$status = 3;
+				$status = 1;// 1 in reject rejectedorders_delivery table
 				if ($lang == "ar") {
 					$notify_title = "تم قبول الطلب";
 					$notify_message = "تم قبول الطلب من قبل الموصل";
@@ -2581,7 +2592,7 @@ class DeliveryController extends Controller
 				}
 			} else {
 //				$status = 2;
-				$status = 4;
+				$status = 0; // 0 in reject rejectedorders_delivery table
 				if ($lang == "ar") {
 					$notify_title = "رفض الطلب";
 					$notify_message = "تم رفض الطلب من قبل الموصل";
@@ -2595,7 +2606,11 @@ class DeliveryController extends Controller
 				$delivery_id = $this->get_id($request, 'deliveries', 'delivery_id');
 				$order_id = $request->input('order_id');
 				DB::transaction(function () use ($status, $order_id, $delivery_id) {
-					DB::table("orders_headers")->where('order_id', $order_id)->update(['status_id' => $status]);
+					DB::table("rejectedorders_delivery")
+						->where('order_id', $order_id)
+						->where('delivery_id', $delivery_id)
+						->update(['status' => $status]);
+//					DB::table("orders_headers")->where('order_id', $order_id)->update(['status_id' => $status]);
 //					DB::table("order_details")->where('order_id', $order_id)->update(['status' => $status]);
 				});
 				$notif_data = array();
