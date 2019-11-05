@@ -1310,7 +1310,7 @@ class DeliveryController extends Controller
 			'type' => 'required|in:1,2,3',
 		], $messages);
 
-		// 1 -> new orders 2-> current accepted  orders 3-> cancelled orders + deliveried orders
+		// 1 -> new orders 2-> current accepted orders  3-> cancelled orders + deliveried orders
 
 		if ($validator->fails()) {
 			$error = $validator->errors()->first();
@@ -1341,9 +1341,10 @@ class DeliveryController extends Controller
 
 			//  array_push($conditions, [DB::raw('orders_headers.created_at') , '>', Carbon::now()->addHours(1)->subMinutes($time_counter_in_min)]);
 
-		} elseif ($type == 2) {
+		} elseif ($type == 2) { // p
 			$inCondition = [2];
 			$conditions[] = ['orders_headers.order_id', '>', 0];
+//			$conditions[] = ['orders_headers.delivery_id', '>', 0];
 			//array_push($conditions, [DB::raw('DATE(orders_headers.expected_delivery_time)') , '<=', $today]);
 		} elseif ($type == 3) {
 			$inCondition = [1, 2, 3];
@@ -1390,7 +1391,7 @@ class DeliveryController extends Controller
 					}
 
 //                    $order->status = " بأنتظار الموافقه ";
-					$order->status = 1;
+					$order->status = 1; // '1' in delivery and '2' in provider
 					$order->status_text = $status_pending;
 					unset($order->delivery_id);
 
@@ -1414,7 +1415,7 @@ class DeliveryController extends Controller
 					}
 
 //                    $order->status = "موافق عليه ";
-					$order->status = 2;
+					$order->status = 2; // '2' in delivery and '2' in provider
 					$order->status_text = $status_approved;
 					unset($order->delivery_id);
 				}
@@ -1524,7 +1525,6 @@ class DeliveryController extends Controller
 			->select('orders_headers.order_code',
 				'orders_headers.order_id',
 				'orders_headers.status_id',
-				'orders_headers.status_id',
 				$status_col,
 				'orders_headers.total_value AS total',
 				'orders_headers.net_value AS net_value', // order price with out any delivery price just products with options
@@ -1622,11 +1622,13 @@ class DeliveryController extends Controller
 		}
 
 //        $order_status = DB::table('order_status')->whereIn('status_id', [1, 2, 3, 4])
-		$order_status = DB::table('order_status')->whereIn('status_id', [2, 3, 4])
+//		$order_status = DB::table('order_status')->whereIn('status_id', [2, 3, 4])
+		$order_status = DB::table('order_status')->whereIn('status_id', [3, 4])
 			->select(
 				'status_id',
 				$status_col,
-				DB::raw('IF(status_id = ' . $order->status_id . ', true, false) AS choosen')
+//				DB::raw('IF(status_id = ' . $order->status_id . ', true, false) AS choosen')
+				DB::raw('false AS choosen')
 			)->get();
 
 		$percentage = DB::table('app_settings')->select('app_percentage')->first();

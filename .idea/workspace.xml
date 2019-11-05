@@ -35,12 +35,20 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/Http/Controllers/DeliveryController.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="278">
-              <caret line="1360" column="54" selection-start-line="1360" selection-start-column="54" selection-end-line="1360" selection-end-column="54" />
+            <state relative-caret-position="506">
+              <caret line="1628" column="28" lean-forward="true" selection-start-line="1628" selection-start-column="28" selection-end-line="1628" selection-end-column="28" />
               <folding>
-                <element signature="e#40607#41441#0#PHP" />
-                <element signature="e#40881#41088#0#PHP" />
+                <element signature="e#48679#49271#0#PHP" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/routes/delivery.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="576">
+              <caret line="45" column="59" selection-start-line="45" selection-start-column="50" selection-end-line="45" selection-end-column="59" />
             </state>
           </provider>
         </entry>
@@ -60,7 +68,6 @@
       <find>generate_random_number</find>
       <find>produc</find>
       <find>rate</find>
-      <find>orderDeta</find>
       <find>Profile</find>
       <find>addOrder</find>
       <find>UpdateProfile</find>
@@ -78,6 +85,7 @@
       <find>orders</find>
       <find>deliveryChangeOrderStatus</find>
       <find>changeOrderStatus</find>
+      <find>orderDeta</find>
       <find>newOrders</find>
     </findStrings>
   </component>
@@ -184,6 +192,11 @@
               <item name="stores" type="b2602c69:ProjectViewProjectNode" />
               <item name="stores" type="462c0819:PsiDirectoryNode" />
             </path>
+            <path>
+              <item name="stores" type="b2602c69:ProjectViewProjectNode" />
+              <item name="stores" type="462c0819:PsiDirectoryNode" />
+              <item name="routes" type="462c0819:PsiDirectoryNode" />
+            </path>
           </expand>
           <select />
         </subPane>
@@ -234,12 +247,12 @@
       <workItem from="1572773672182" duration="6502000" />
       <workItem from="1572848401090" duration="3570000" />
       <workItem from="1572852001377" duration="5783000" />
-      <workItem from="1572934962796" duration="10652000" />
+      <workItem from="1572934962796" duration="13203000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="48769000" />
+    <option name="totallyTimeSpent" value="51320000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -474,18 +487,17 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/routes/delivery.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="356">
-          <caret line="51" column="83" selection-start-line="51" selection-start-column="66" selection-end-line="51" selection-end-column="83" />
+        <state relative-caret-position="576">
+          <caret line="45" column="59" selection-start-line="45" selection-start-column="50" selection-end-line="45" selection-end-column="59" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/Http/Controllers/DeliveryController.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="278">
-          <caret line="1360" column="54" selection-start-line="1360" selection-start-column="54" selection-end-line="1360" selection-end-column="54" />
+        <state relative-caret-position="506">
+          <caret line="1628" column="28" lean-forward="true" selection-start-line="1628" selection-start-column="28" selection-end-line="1628" selection-end-column="28" />
           <folding>
-            <element signature="e#40607#41441#0#PHP" />
-            <element signature="e#40881#41088#0#PHP" />
+            <element signature="e#48679#49271#0#PHP" />
           </folding>
         </state>
       </provider>
