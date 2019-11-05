@@ -1365,8 +1365,7 @@ class DeliveryController extends Controller
 				'orders_headers.order_id',
 				'orders_headers.order_code',
 				'orders_headers.delivery_id',
-				'orders_headers.total_value',
-//				$status_col
+				'orders_headers.total_value'
 			)
 			->orderBy('orders_headers.order_id', 'DESC')
 			->paginate(10);
