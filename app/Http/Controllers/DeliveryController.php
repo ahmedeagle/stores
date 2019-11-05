@@ -1474,10 +1474,10 @@ class DeliveryController extends Controller
 		if ($lang == "ar") {
 			$msg = array(
 				0 => 'يوجد بيانات',
-				1 => 'لا يوجد تفاصيل ',
-				2 => 'رقم   الطلب  مطلوب',
-				3 => 'الطلب غير موجود ',
-				4 => ' الموصل  غير موجود ',
+				1 => 'لا يوجد تفاصيل',
+				2 => 'رقم الطلب مطلوب',
+				3 => 'الطلب غير موجود',
+				4 => 'الموصل غير موجود',
 			);
 			$payment_col = "payment_types.payment_ar_name AS payment_method";
 			$delivery_col = "delivery_methods.method_ar_name AS delivery_method";
