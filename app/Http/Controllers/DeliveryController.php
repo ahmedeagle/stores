@@ -14,6 +14,7 @@ use App\Deliveries;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\NotificationController as NotifyC;
 use App\Http\Controllers\PushNotificationController as Push;
+use App\Http\Controllers\PushNotificationController as Push;
 use App\Traits\Helpers;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -2610,7 +2611,8 @@ class DeliveryController extends Controller
 
 				if ($provider_data != null) {
 					if ($provider_data->device_reg_id != null) {
-						$push_notif = $this->singleSend($provider_data->device_reg_id, $notif_data, $this->provider_key);
+						$push_notif = (new Push())->send($provider_data->device_reg_id, $notif_data, (new Push())->provider_key);
+//						$push_notif = $this->singleSend($provider_data->device_reg_id, $notif_data, $this->provider_key);
 					}
 				}
 
