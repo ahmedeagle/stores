@@ -14,7 +14,6 @@ use App\Deliveries;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\NotificationController as NotifyC;
 use App\Http\Controllers\PushNotificationController as Push;
-use App\Http\Controllers\PushNotificationController as Push;
 use App\Traits\Helpers;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
