@@ -1485,6 +1485,12 @@ class DeliveryController extends Controller
 			$payment_col = "payment_types.payment_ar_name AS payment_method";
 			$delivery_col = "delivery_methods.method_ar_name AS delivery_method";
 			$status_col = 'order_status.ar_desc AS order_status';
+
+			$status_canceled = 'ملغى';
+			$status_approved = 'موافق علية';
+			$status_delivered = 'تم التسليم';
+			$status_new_order = 'طلب جديد';
+
 		} else {
 			$msg = array(
 				0 => 'Retrieved successfully',
@@ -1496,6 +1502,11 @@ class DeliveryController extends Controller
 			$payment_col = "payment_types.payment_en_name AS payment_method";
 			$delivery_col = "delivery_methods.method_en_name AS delivery_method";
 			$status_col = 'order_status.en_desc AS order_status';
+
+			$status_canceled = 'Canceled';
+			$status_approved = 'Approved';
+			$status_delivered = 'Delivered';
+			$status_new_order = 'New Order';
 		}
 
 		$messages = array(
@@ -1593,6 +1604,32 @@ class DeliveryController extends Controller
 
 		if ($order) {
 			$status = $order->status_id;
+
+			$rejectedOrders = DB::table('rejectedorders_delivery')->where([
+				'order_id' => $order->order_id,
+				'delivery_id' => $order->delivery_id,
+
+			])->first();
+
+			if($rejectedOrders){
+				if ($rejectedOrders->status == 0){
+					$order->delivery_order_status = $rejectedOrders;
+					$order->delivery_order_status_text = $status_canceled;
+				}
+				elseif ($rejectedOrders->status == 1){
+					$order->delivery_order_status = $rejectedOrders;
+					$order->delivery_order_status_text = $status_approved;
+				}
+				elseif ($rejectedOrders->status == 2){
+					$order->delivery_order_status = $rejectedOrders;
+					$order->delivery_order_status_text = $status_delivered;
+				}
+			}
+			else{
+				$order->delivery_order_status = 5;
+				$order->delivery_order_status_text = $status_new_order;
+			}
+
 		} else {
 			$status = "";
 		}
