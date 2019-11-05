@@ -1613,15 +1613,15 @@ class DeliveryController extends Controller
 
 			if($rejectedOrders){
 				if ($rejectedOrders->status == 0){
-					$order->delivery_order_status = $rejectedOrders;
+					$order->delivery_order_status = 0;
 					$order->delivery_order_status_text = $status_canceled;
 				}
 				elseif ($rejectedOrders->status == 1){
-					$order->delivery_order_status = $rejectedOrders;
+					$order->delivery_order_status = 1;
 					$order->delivery_order_status_text = $status_approved;
 				}
 				elseif ($rejectedOrders->status == 2){
-					$order->delivery_order_status = $rejectedOrders;
+					$order->delivery_order_status = 2;
 					$order->delivery_order_status_text = $status_delivered;
 				}
 			}
