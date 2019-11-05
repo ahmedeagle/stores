@@ -1627,7 +1627,7 @@ class DeliveryController extends Controller
 			->where('delivery_id', $order->delivery_id)
 			->first();
 
-		$choosen_status = '';
+		$choosen_status = -1;
 
 		if ($new_status){
 			if ($new_status->status == 2) {
