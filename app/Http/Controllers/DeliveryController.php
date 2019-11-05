@@ -1625,13 +1625,16 @@ class DeliveryController extends Controller
 		$new_status = DB::table('rejectedorders_delivery')
 			->where('order_id', $order->order_id)
 			->where('delivery_id', $order->delivery_id)
-			->value('status');
+			->first();
 
 		$choosen_status = '';
-		if ($new_status == 2) {
-			$choosen_status = 3;
-		} elseif ($new_status == 0) {
-			$choosen_status = 4;
+
+		if ($new_status){
+			if ($new_status->status == 2) {
+				$choosen_status = 3;
+			} elseif ($new_status->status == 0) {
+				$choosen_status = 4;
+			}
 		}
 
 		dd($choosen_status);
