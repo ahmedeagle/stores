@@ -1623,11 +1623,11 @@ class DeliveryController extends Controller
 
 //        $order_status = DB::table('order_status')->whereIn('status_id', [1, 2, 3, 4])
 //		$order_status = DB::table('order_status')->whereIn('status_id', [2, 3, 4])
+
 		$order_status = DB::table('order_status')->whereIn('status_id', [3, 4])
 			->select(
 				'status_id',
 				$status_col,
-//				DB::raw('IF(status_id = ' . $order->status_id . ', true, false) AS choosen')
 				DB::raw('false AS choosen')
 			)->get();
 
