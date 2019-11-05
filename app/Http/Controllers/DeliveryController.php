@@ -1433,7 +1433,7 @@ class DeliveryController extends Controller
 						'order_id' => $order->order_id,
 						'delivery_id' => $delivery_id,
 
-					])->whereIn('status', [0,2])->first();
+					])->whereIn('status', [0, 2])->first();
 
 					if (!$cancelFromThisDeliveryBefore) {
 
@@ -1628,10 +1628,9 @@ class DeliveryController extends Controller
 			->value('status');
 
 		$choosen_status = 0;
-		if($new_status == 2) {
+		if ($new_status == 2) {
 			$choosen_status = 3;
-		}
-		elseif($new_status == 0) {
+		} elseif ($new_status == 0) {
 			$choosen_status = 4;
 		}
 
@@ -2376,164 +2375,164 @@ class DeliveryController extends Controller
 		return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[0], 'data' => $data]);
 	}
 
-/*	public function getDeliveryOrders(Request $request)
-	{
-		$lang = $request->input('lang');
-		$allPages = $request->input('allPages');
-		if ($lang == "ar") {
-			$msg = array(
-				0 => '',
-				1 => 'رقم الموصل مطلوب',
-				2 => 'نوع الطلبات مطلوب',
-				3 => 'نوع العمليه يجب ان يكون 1 او 2 او 4',
-				4 => 'لا يوجد طلبات بعد',
-				5 => 'رقم الموصل غير صحيح',
-			);
-			$payment_col = "payment_types.payment_ar_name AS payment_method";
-			$delivery_col = "delivery_methods.method_ar_name AS delivery_method";
-			$status_col = "order_status.ar_desc AS status_text";
-		} else {
-			$msg = array(
-				0 => '',
-				1 => 'delivery_id is required',
-				2 => 'type is required',
-				3 => 'type must be 1, 2 or 4',
-				4 => 'There is no ordes yet',
-				5 => 'Invalid delivery id',
-			);
-			$payment_col = "payment_types.payment_en_name AS payment_method";
-			$delivery_col = "delivery_methods.method_en_name AS delivery_method";
-			$status_col = "order_status.en_desc AS status_text";
-		}
-
-		$messages = array(
-			'delivery_id.required' => 1,
-			'type.required' => 2,
-			'in' => 3,
-			'exists' => 5,
-		);
-		$validator = Validator::make($request->all(), [
-			'delivery_id' => 'required|exists:deliveries,delivery_id',
-			'type'        => 'required|in:1,2,4',
-		], $messages);
-
-		if ($validator->fails()) {
-			$error = $validator->errors()->first();
-			return response()->json(['status' => false, 'errNum' => (int)$error, 'msg' => $msg[$error]]);
-		} else {
-			$delivery_id = $request->input('delivery_id');
-			$type = $request->input('type');
-			$today = date('Y-m-d');
-			$conditions[] = ['deliveries.delivery_id', '=', $delivery_id];
-			$inCondition = [];
-//            if($type == 1){
-			//                $inCondition = [3];
-			//                // array_push($conditions, ['orders_headers.status_id' , '=', 3]);
-			//            }elseif($type == 2){
-			//                $inCondition = [8];
-			//                // array_push($conditions, ['orders_headers.status_id' , '>', 3]);
-			//                // array_push($conditions, ['orders_headers.status_id' , '!=', 6]);
-			//                array_push($conditions, [DB::raw('DATE(orders_headers.expected_delivery_time)') , '<=', $today]);
-			//            }elseif($type == 3){
-			//                $inCondition = [8];
-			//                // array_push($conditions, ['orders_headers.status_id' , '>', 3]);
-			//                // array_push($conditions, ['orders_headers.status_id' , '!=', 6]);
-			//                array_push($conditions, [DB::raw('DATE(orders_headers.expected_delivery_time)') , '>', $today]);
-			//            }else{
-			//                $inCondition = [4,5,6,7];
-			//                // array_push($conditions, ['orders_headers.status_id' , '=', 6]);
-			//            }
-			if ($type == 1) {
-				$inCondition = [3];
-				// array_push($conditions, ['orders_headers.status_id' , '=', 3]);
-			} elseif ($type == 2) {
-				$inCondition = [8];
-				// array_push($conditions, ['orders_headers.status_id' , '>', 3]);
-				// array_push($conditions, ['orders_headers.status_id' , '!=', 6]);
-				//array_push($conditions, [DB::raw('DATE(orders_headers.expected_delivery_time)') , '<=', $today]);
+	/*	public function getDeliveryOrders(Request $request)
+		{
+			$lang = $request->input('lang');
+			$allPages = $request->input('allPages');
+			if ($lang == "ar") {
+				$msg = array(
+					0 => '',
+					1 => 'رقم الموصل مطلوب',
+					2 => 'نوع الطلبات مطلوب',
+					3 => 'نوع العمليه يجب ان يكون 1 او 2 او 4',
+					4 => 'لا يوجد طلبات بعد',
+					5 => 'رقم الموصل غير صحيح',
+				);
+				$payment_col = "payment_types.payment_ar_name AS payment_method";
+				$delivery_col = "delivery_methods.method_ar_name AS delivery_method";
+				$status_col = "order_status.ar_desc AS status_text";
 			} else {
-				$inCondition = [4, 5, 6, 7];
-				// array_push($conditions, ['orders_headers.status_id' , '=', 6]);
+				$msg = array(
+					0 => '',
+					1 => 'delivery_id is required',
+					2 => 'type is required',
+					3 => 'type must be 1, 2 or 4',
+					4 => 'There is no ordes yet',
+					5 => 'Invalid delivery id',
+				);
+				$payment_col = "payment_types.payment_en_name AS payment_method";
+				$delivery_col = "delivery_methods.method_en_name AS delivery_method";
+				$status_col = "order_status.en_desc AS status_text";
 			}
 
-			//get orders
-			if (empty($allPages) || $allPages == "0" || $allPages == 0) {
-				$orders = DB::table('orders_headers')
-					->where($conditions)
-					->whereIn('orders_headers.status_id', $inCondition)
-					->join('providers', 'orders_headers.provider_id', '=', 'providers.provider_id')
-					->join('deliveries', 'orders_headers.delivery_id', '=', 'deliveries.delivery_id')
-					->join('delivery_methods', 'orders_headers.delivery_method', '=', 'delivery_methods.method_id')
-					->join('payment_types', 'orders_headers.payment_type', '=', 'payment_types.payment_id')
-					->join('order_status', 'orders_headers.status_id', '=', 'order_status.status_id')
-					->select(
-						'orders_headers.user_longitude',
-						'orders_headers.user_latitude',
-						'orders_headers.order_id',
-						'providers.brand_name AS provider_name',
-						'orders_headers.address',
-						$payment_col, $delivery_col,
-						DB::raw("(SELECT count(order_details.id) FROM order_details WHERE order_details.order_id = orders_headers.order_id) AS meals_count"),
-						$status_col,
-						DB::raw('DATE(orders_headers.created_at) AS created_date'),
-						DB::raw('TIME(orders_headers.transfer_to_delivery_at) AS created_time')
-					)
-					->orderBy('orders_headers.order_id', 'DESC')
-					->paginate(10);
-			} else {
-				$orders['data'] = DB::table('orders_headers')->where($conditions)
-					->whereIn('orders_headers.status_id', $inCondition)
-					->join('providers', 'orders_headers.provider_id', '=', 'providers.provider_id')
-					->join('deliveries', 'orders_headers.delivery_id', '=', 'deliveries.delivery_id')
-					->join('delivery_methods', 'orders_headers.delivery_method', '=', 'delivery_methods.method_id')
-					->join('payment_types', 'orders_headers.payment_type', '=', 'payment_types.payment_id')
-					->join('order_status', 'orders_headers.status_id', '=', 'order_status.status_id')
-					->select(
-						'orders_headers.user_longitude',
-						'orders_headers.user_latitude',
-						'orders_headers.order_id',
-						'providers.brand_name AS provider_name',
-						'orders_headers.address',
-						$payment_col,
-						$delivery_col,
-						DB::raw("(SELECT count(order_details.id) FROM order_details WHERE order_details.order_id = orders_headers.order_id) AS meals_count"),
-						$status_col,
-						DB::raw('DATE(orders_headers.created_at) AS created_date'),
-						DB::raw('TIME(orders_headers.transfer_to_delivery_at) AS created_time')
-					)
-					->orderBy('orders_headers.order_id', 'DESC')
-					->get();
-			}
+			$messages = array(
+				'delivery_id.required' => 1,
+				'type.required' => 2,
+				'in' => 3,
+				'exists' => 5,
+			);
+			$validator = Validator::make($request->all(), [
+				'delivery_id' => 'required|exists:deliveries,delivery_id',
+				'type'        => 'required|in:1,2,4',
+			], $messages);
 
-			//get allowed time to accept the order
-			if ($type == 1) {
-				$get_time_counter = DB::table("app_settings")->first();
-				if ($get_time_counter != null) {
-					$time_counter_in_hours = ($get_time_counter->max_time_to_accept_order) / 60;
-					$time_counter_in_min = $get_time_counter->max_time_to_accept_order;
+			if ($validator->fails()) {
+				$error = $validator->errors()->first();
+				return response()->json(['status' => false, 'errNum' => (int)$error, 'msg' => $msg[$error]]);
+			} else {
+				$delivery_id = $request->input('delivery_id');
+				$type = $request->input('type');
+				$today = date('Y-m-d');
+				$conditions[] = ['deliveries.delivery_id', '=', $delivery_id];
+				$inCondition = [];
+	//            if($type == 1){
+				//                $inCondition = [3];
+				//                // array_push($conditions, ['orders_headers.status_id' , '=', 3]);
+				//            }elseif($type == 2){
+				//                $inCondition = [8];
+				//                // array_push($conditions, ['orders_headers.status_id' , '>', 3]);
+				//                // array_push($conditions, ['orders_headers.status_id' , '!=', 6]);
+				//                array_push($conditions, [DB::raw('DATE(orders_headers.expected_delivery_time)') , '<=', $today]);
+				//            }elseif($type == 3){
+				//                $inCondition = [8];
+				//                // array_push($conditions, ['orders_headers.status_id' , '>', 3]);
+				//                // array_push($conditions, ['orders_headers.status_id' , '!=', 6]);
+				//                array_push($conditions, [DB::raw('DATE(orders_headers.expected_delivery_time)') , '>', $today]);
+				//            }else{
+				//                $inCondition = [4,5,6,7];
+				//                // array_push($conditions, ['orders_headers.status_id' , '=', 6]);
+				//            }
+				if ($type == 1) {
+					$inCondition = [3];
+					// array_push($conditions, ['orders_headers.status_id' , '=', 3]);
+				} elseif ($type == 2) {
+					$inCondition = [8];
+					// array_push($conditions, ['orders_headers.status_id' , '>', 3]);
+					// array_push($conditions, ['orders_headers.status_id' , '!=', 6]);
+					//array_push($conditions, [DB::raw('DATE(orders_headers.expected_delivery_time)') , '<=', $today]);
+				} else {
+					$inCondition = [4, 5, 6, 7];
+					// array_push($conditions, ['orders_headers.status_id' , '=', 6]);
+				}
+
+				//get orders
+				if (empty($allPages) || $allPages == "0" || $allPages == 0) {
+					$orders = DB::table('orders_headers')
+						->where($conditions)
+						->whereIn('orders_headers.status_id', $inCondition)
+						->join('providers', 'orders_headers.provider_id', '=', 'providers.provider_id')
+						->join('deliveries', 'orders_headers.delivery_id', '=', 'deliveries.delivery_id')
+						->join('delivery_methods', 'orders_headers.delivery_method', '=', 'delivery_methods.method_id')
+						->join('payment_types', 'orders_headers.payment_type', '=', 'payment_types.payment_id')
+						->join('order_status', 'orders_headers.status_id', '=', 'order_status.status_id')
+						->select(
+							'orders_headers.user_longitude',
+							'orders_headers.user_latitude',
+							'orders_headers.order_id',
+							'providers.brand_name AS provider_name',
+							'orders_headers.address',
+							$payment_col, $delivery_col,
+							DB::raw("(SELECT count(order_details.id) FROM order_details WHERE order_details.order_id = orders_headers.order_id) AS meals_count"),
+							$status_col,
+							DB::raw('DATE(orders_headers.created_at) AS created_date'),
+							DB::raw('TIME(orders_headers.transfer_to_delivery_at) AS created_time')
+						)
+						->orderBy('orders_headers.order_id', 'DESC')
+						->paginate(10);
+				} else {
+					$orders['data'] = DB::table('orders_headers')->where($conditions)
+						->whereIn('orders_headers.status_id', $inCondition)
+						->join('providers', 'orders_headers.provider_id', '=', 'providers.provider_id')
+						->join('deliveries', 'orders_headers.delivery_id', '=', 'deliveries.delivery_id')
+						->join('delivery_methods', 'orders_headers.delivery_method', '=', 'delivery_methods.method_id')
+						->join('payment_types', 'orders_headers.payment_type', '=', 'payment_types.payment_id')
+						->join('order_status', 'orders_headers.status_id', '=', 'order_status.status_id')
+						->select(
+							'orders_headers.user_longitude',
+							'orders_headers.user_latitude',
+							'orders_headers.order_id',
+							'providers.brand_name AS provider_name',
+							'orders_headers.address',
+							$payment_col,
+							$delivery_col,
+							DB::raw("(SELECT count(order_details.id) FROM order_details WHERE order_details.order_id = orders_headers.order_id) AS meals_count"),
+							$status_col,
+							DB::raw('DATE(orders_headers.created_at) AS created_date'),
+							DB::raw('TIME(orders_headers.transfer_to_delivery_at) AS created_time')
+						)
+						->orderBy('orders_headers.order_id', 'DESC')
+						->get();
+				}
+
+				//get allowed time to accept the order
+				if ($type == 1) {
+					$get_time_counter = DB::table("app_settings")->first();
+					if ($get_time_counter != null) {
+						$time_counter_in_hours = ($get_time_counter->max_time_to_accept_order) / 60;
+						$time_counter_in_min = $get_time_counter->max_time_to_accept_order;
+					} else {
+						$time_counter_in_hours = 0;
+						$time_counter_in_min = 0;
+					}
 				} else {
 					$time_counter_in_hours = 0;
 					$time_counter_in_min = 0;
 				}
-			} else {
-				$time_counter_in_hours = 0;
-				$time_counter_in_min = 0;
-			}
 
-			$today_date = date('Y-m-d');
-			$now = date('h:i:s');
-			return response()->json([
-				'status' => true,
-				'errNum' => 0,
-				'msg' => $msg[0],
-				'orders' => $orders,
-				'time_counter_in_min' => $time_counter_in_min,
-				'time_counter_in_hours' => $time_counter_in_hours,
-				'today_date' => $today_date,
-				'now' => $now,
-			]);
-		}
-	}*/
+				$today_date = date('Y-m-d');
+				$now = date('h:i:s');
+				return response()->json([
+					'status' => true,
+					'errNum' => 0,
+					'msg' => $msg[0],
+					'orders' => $orders,
+					'time_counter_in_min' => $time_counter_in_min,
+					'time_counter_in_hours' => $time_counter_in_hours,
+					'today_date' => $today_date,
+					'now' => $now,
+				]);
+			}
+		}*/
 
 	public function orderAcceptance(Request $request)
 	{
@@ -2606,10 +2605,22 @@ class DeliveryController extends Controller
 				$delivery_id = $this->get_id($request, 'deliveries', 'delivery_id');
 				$order_id = $request->input('order_id');
 				DB::transaction(function () use ($status, $order_id, $delivery_id) {
-					DB::table("rejectedorders_delivery")
+
+					$delivered_order = DB::table("rejectedorders_delivery")
 						->where('order_id', $order_id)
 						->where('delivery_id', $delivery_id)
-						->update(['status' => $status]);
+						->first();
+
+					if ($delivered_order) {
+						DB::table("rejectedorders_delivery")
+							->where('order_id', $order_id)
+							->where('delivery_id', $delivery_id)
+							->update(['status' => $status]);
+					} 
+					else {
+						DB::table('rejectedorders_delivery')->insert(['order_id' => $order_id, 'delivery_id' => $delivery_id, "status" => $status]);
+					}
+
 //					DB::table("orders_headers")->where('order_id', $order_id)->update(['status_id' => $status]);
 //					DB::table("order_details")->where('order_id', $order_id)->update(['status' => $status]);
 				});
