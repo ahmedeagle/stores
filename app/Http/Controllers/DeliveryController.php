@@ -1627,7 +1627,7 @@ class DeliveryController extends Controller
 			->where('delivery_id', $order->delivery_id)
 			->value('status');
 
-		$choosen_status = '';
+		$choosen_status = 100;
 		if ($new_status == 2) {
 			$choosen_status = 3;
 		} elseif ($new_status == 0) {
