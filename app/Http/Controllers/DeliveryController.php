@@ -1627,12 +1627,14 @@ class DeliveryController extends Controller
 			->where('delivery_id', $order->delivery_id)
 			->value('status');
 
-		$choosen_status = 100;
+		$choosen_status = '';
 		if ($new_status == 2) {
 			$choosen_status = 3;
 		} elseif ($new_status == 0) {
 			$choosen_status = 4;
 		}
+
+		dd($choosen_status);
 
 		$order_status = DB::table('order_status')->whereIn('status_id', [3, 4])
 			->select(
