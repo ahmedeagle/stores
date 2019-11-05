@@ -2624,7 +2624,7 @@ class DeliveryController extends Controller
 						DB::table('rejectedorders_delivery')->insert(['order_id' => $order_id, 'delivery_id' => $delivery_id, "status" => $status]);
 					}
 
-//					DB::table("orders_headers")->where('order_id', $order_id)->update(['delivery_id' => $delivery_id]);
+					DB::table("orders_headers")->where('order_id', $order_id)->update(['delivery_id' => $delivery_id]);
 
 //					DB::table("orders_headers")->where('order_id', $order_id)->update(['status_id' => $status]);
 //					DB::table("order_details")->where('order_id', $order_id)->update(['status' => $status]);
