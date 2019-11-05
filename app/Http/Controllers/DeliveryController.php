@@ -1341,7 +1341,7 @@ class DeliveryController extends Controller
 
 			//  array_push($conditions, [DB::raw('orders_headers.created_at') , '>', Carbon::now()->addHours(1)->subMinutes($time_counter_in_min)]);
 
-		} elseif ($type == 2) { // p
+		} elseif ($type == 2) { // current
 			$inCondition = [2];
 			$conditions[] = ['orders_headers.order_id', '>', 0];
 //			$conditions[] = ['orders_headers.delivery_id', '>', 0];
@@ -2570,7 +2570,8 @@ class DeliveryController extends Controller
 			$type = $request->input('type');
 
 			if ($type == "accept") {
-				$status = 8;
+//				$status = 8;
+				$status = 3;
 				if ($lang == "ar") {
 					$notify_title = "تم قبول الطلب";
 					$notify_message = "تم قبول الطلب من قبل الموصل";
@@ -2579,7 +2580,8 @@ class DeliveryController extends Controller
 					$notify_message = "delivery accepted this order";
 				}
 			} else {
-				$status = 2;
+//				$status = 2;
+				$status = 4;
 				if ($lang == "ar") {
 					$notify_title = "رفض الطلب";
 					$notify_message = "تم رفض الطلب من قبل الموصل";
@@ -2594,7 +2596,7 @@ class DeliveryController extends Controller
 				$order_id = $request->input('order_id');
 				DB::transaction(function () use ($status, $order_id, $delivery_id) {
 					DB::table("orders_headers")->where('order_id', $order_id)->update(['status_id' => $status]);
-					DB::table("order_details")->where('order_id', $order_id)->update(['status' => $status]);
+//					DB::table("order_details")->where('order_id', $order_id)->update(['status' => $status]);
 				});
 				$notif_data = array();
 				$notif_data['title'] = $notify_title;
