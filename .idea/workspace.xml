@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="661b7e20-c39c-40c9-a1b6-c0928f1d6fc1" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/Http/Controllers/DeliveryController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/DeliveryController.php" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -36,14 +35,13 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/Http/Controllers/DeliveryController.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="374">
-              <caret line="1356" column="27" lean-forward="true" selection-start-line="1356" selection-start-column="27" selection-end-line="1356" selection-end-column="27" />
+            <state relative-caret-position="484">
+              <caret line="1297" column="42" selection-start-line="1297" selection-start-column="42" selection-end-line="1297" selection-end-column="42" />
               <folding>
-                <element signature="e#61095#63095#0#PHP" />
-                <element signature="e#62109#63084#0#PHP" />
-                <element signature="e#64970#66288#0#PHP" />
-                <element signature="e#66300#68326#0#PHP" />
-                <element signature="e#68327#69965#0#PHP" />
+                <element signature="e#64591#69965#0#PHP" />
+                <element signature="e#64624#66288#0#PHP" />
+                <element signature="e#54130#55708#0#PHP" />
+                <element signature="e#55757#56990#0#PHP" />
                 <element signature="e#70507#71232#0#PHP" />
                 <element signature="e#71290#71699#1#PHP" />
                 <element signature="e#96336#97119#0#PHP" />
@@ -53,11 +51,19 @@
           </provider>
         </entry>
       </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/routes/delivery.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="356">
+              <caret line="51" column="83" selection-start-line="51" selection-start-column="66" selection-end-line="51" selection-end-column="83" />
+            </state>
+          </provider>
+        </entry>
+      </file>
     </leaf>
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>getProviderOrders</find>
       <find>offer</find>
       <find>offerDeta</find>
       <find>OrderDetails</find>
@@ -82,11 +88,12 @@
       <find>accep</find>
       <find>cancel_order</find>
       <find>orderAcceptance</find>
-      <find>changeOrderStatus</find>
       <find>get_list_of_orders</find>
-      <find>newOrders</find>
       <find>Orders</find>
       <find>orders</find>
+      <find>deliveryChangeOrderStatus</find>
+      <find>changeOrderStatus</find>
+      <find>newOrders</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -242,12 +249,12 @@
       <workItem from="1572773672182" duration="6502000" />
       <workItem from="1572848401090" duration="3570000" />
       <workItem from="1572852001377" duration="5783000" />
-      <workItem from="1572934962796" duration="5515000" />
+      <workItem from="1572934962796" duration="7843000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="43632000" />
+    <option name="totallyTimeSpent" value="45960000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -473,13 +480,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/routes/delivery.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="358">
-          <caret line="45" column="59" selection-start-line="45" selection-start-column="50" selection-end-line="45" selection-end-column="59" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/routes/user.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="262">
@@ -487,16 +487,22 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/routes/delivery.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="356">
+          <caret line="51" column="83" selection-start-line="51" selection-start-column="66" selection-end-line="51" selection-end-column="83" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/app/Http/Controllers/DeliveryController.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="374">
-          <caret line="1356" column="27" lean-forward="true" selection-start-line="1356" selection-start-column="27" selection-end-line="1356" selection-end-column="27" />
+        <state relative-caret-position="484">
+          <caret line="1297" column="42" selection-start-line="1297" selection-start-column="42" selection-end-line="1297" selection-end-column="42" />
           <folding>
-            <element signature="e#61095#63095#0#PHP" />
-            <element signature="e#62109#63084#0#PHP" />
-            <element signature="e#64970#66288#0#PHP" />
-            <element signature="e#66300#68326#0#PHP" />
-            <element signature="e#68327#69965#0#PHP" />
+            <element signature="e#64591#69965#0#PHP" />
+            <element signature="e#64624#66288#0#PHP" />
+            <element signature="e#54130#55708#0#PHP" />
+            <element signature="e#55757#56990#0#PHP" />
             <element signature="e#70507#71232#0#PHP" />
             <element signature="e#71290#71699#1#PHP" />
             <element signature="e#96336#97119#0#PHP" />

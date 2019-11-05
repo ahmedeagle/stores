@@ -1273,6 +1273,12 @@ class DeliveryController extends Controller
 			$payment_col = "payment_types.payment_ar_name AS payment_method";
 			$delivery_col = "delivery_methods.method_ar_name AS delivery_method";
 			$status_col = "order_status.ar_desc AS status_text";
+
+			$status_pending = "معلق";
+			$status_approved = "موافق عليه";
+			$status_canceled = "ملغى";
+			$status_delivered = "تم التسليم";
+
 		} else {
 			$msg = array(
 				0 => '',
@@ -1285,6 +1291,12 @@ class DeliveryController extends Controller
 			$payment_col = "payment_types.payment_en_name AS payment_method";
 			$delivery_col = "delivery_methods.method_en_name AS delivery_method";
 			$status_col = "order_status.en_desc AS status_text";
+
+			$status_pending = "Pending";
+			$status_approved = "Approved";
+			$status_canceled = "Canceled";
+			$status_delivered = "Delivered";
+
 		}
 
 		$messages = array(
@@ -1354,7 +1366,7 @@ class DeliveryController extends Controller
 				'orders_headers.order_code',
 				'orders_headers.delivery_id',
 				'orders_headers.total_value',
-				$status_col
+//				$status_col
 			)
 			->orderBy('orders_headers.order_id', 'DESC')
 			->paginate(10);
@@ -1378,6 +1390,7 @@ class DeliveryController extends Controller
 
 //                    $order->status = " بأنتظار الموافقه ";
 					$order->status = 1;
+					$order->status_text = $status_pending;
 					unset($order->delivery_id);
 
 				}
@@ -1401,6 +1414,7 @@ class DeliveryController extends Controller
 
 //                    $order->status = "موافق عليه ";
 					$order->status = 2;
+					$order->status_text = $status_approved;
 					unset($order->delivery_id);
 				}
 			}
@@ -1428,9 +1442,12 @@ class DeliveryController extends Controller
 					if ($order->delivery_id == 0) {
 //                        $order->status = "ملغي";
 						$order->status = 0;
+						$order->status_text = $status_canceled;
 					} else {
 //                        $order->status = "تم التسليم ";
 						$order->status = 3;
+						$order->status_text = $status_delivered;
+
 					}
 
 					unset($order->delivery_id);
@@ -1649,7 +1666,8 @@ class DeliveryController extends Controller
 				0 => 'تمت العمليه بنجاح',
 				1 => 'كل الحقول مطلوبه',
 				2 => 'فشلت العمليه من فضلك حاول لاحقا',
-				3 => 'رقم الحالة يجب ان يكون  0 او 1 او 2',
+//				3 => 'رقم الحالة يجب ان يكون  0 او 1 او 2',
+				3 => 'رقم الحالة مطلوب',
 				4 => 'رقم الموصل مطلوب إذا كان رقم الحاله = 3 و طريقة التوصيل = 1',
 				5 => 'رقم الموصل خطأ',
 				6 => 'التاجر  غير موجود ',
@@ -1669,7 +1687,8 @@ class DeliveryController extends Controller
 				0 => 'Process done successfully',
 				1 => 'All fields are required',
 				2 => 'Process failed, please try again later',
-				3 => 'status_id must be 0 ,1 or 2',
+//				3 => 'status_id must be 0 ,1 or 2',
+				3 => 'status_id is required',
 				4 => 'delivery id is required if status id = 3 AND delivery_method = 1',
 				5 => 'Invalid delivery_id',
 				6 => 'Provider not exists',
@@ -1687,14 +1706,16 @@ class DeliveryController extends Controller
 
 		$messages = array(
 			'required' => 1,
-			'in' => 3,
+//			'in' => 3,
+			'status_id.required' => 3,
 			'access_token.exists' => 7,
 		);
 
 		$validator = Validator::make($request->all(), [
 			'order_id' => 'required',
 			'access_token' => 'required|exists:deliveries,token',
-			'status_id' => 'required|in:0,1,2',
+//			'status_id' => 'required|in:0,1,2',
+			'status_id' => 'required',
 
 		], $messages);
 
@@ -1768,7 +1789,7 @@ class DeliveryController extends Controller
 
 			}
 
-		} elseif ($status == 0) {
+		} elseif ($status == 4) { /* $status == 0 */
 
 			// here delivery cancel orders
 
@@ -1830,7 +1851,7 @@ class DeliveryController extends Controller
 		} else {
 
 			//order deliveried
-			if ($status == 2) {
+			if ($status == 3) { /* $status == 2 */
 
 				$checkIfApprovedBefore = DB::table('rejectedorders_delivery')->where([
 					'order_id' => $order_id,
