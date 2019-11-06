@@ -1462,7 +1462,7 @@ class DeliveryController extends Controller
 
 //		$orders = array_values($orders);
 
-		dd($orders->data->toArray());
+		dd($orders->toArray());
 
 		return response()->json([
 			'status' => true,
