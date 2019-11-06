@@ -1473,7 +1473,6 @@ class DeliveryController extends Controller
 
 
 		$itemsTransformed = collect($data)
-			->getCollection()
 			->map(function ($item) {
 				return [
 					"order_id" => $item->order_id,
