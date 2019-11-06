@@ -1461,8 +1461,8 @@ class DeliveryController extends Controller
 
 		}
 
-		$res = $orders->toArray();
-		$orders->data = array_values($res['data']);
+//		$res = $orders->toArray();
+//		$orders->data = array_values($res['data']);
 
 //		dd($orders->data);
 
@@ -1472,11 +1472,36 @@ class DeliveryController extends Controller
 //		});
 
 
+		$itemsTransformed = $orders
+			->getCollection()
+			->map(function ($item) {
+				return [
+					"order_id" => $item->order_id,
+					"order_code" => $item->order_code,
+					"total_value" => $item->total_value,
+					"status" => $item->status,
+					"status_text" => $item->status_text,
+				];
+			})->toArray();
+
+		$itemsTransformedAndPaginated = new \Illuminate\Pagination\LengthAwarePaginator(
+			$itemsTransformed,
+			$orders->total(),
+			$orders->perPage(),
+			$orders->currentPage(), [
+				'path' => \Request::url(),
+				'query' => [
+					'page' => $orders->currentPage()
+				]
+			]
+		);
+
+
 		return response()->json([
 			'status' => true,
 			'errNum' => 0,
 			'msg' => $msg[0],
-			'orders' => $orders,
+			'orders' => $itemsTransformedAndPaginated,
 
 		]);
 	}
@@ -1623,21 +1648,18 @@ class DeliveryController extends Controller
 
 			])->first();
 
-			if($rejectedOrders){
-				if ($rejectedOrders->status == 0){
+			if ($rejectedOrders) {
+				if ($rejectedOrders->status == 0) {
 					$order->delivery_order_status = 0;
 					$order->delivery_order_status_text = $status_canceled;
-				}
-				elseif ($rejectedOrders->status == 1){
+				} elseif ($rejectedOrders->status == 1) {
 					$order->delivery_order_status = 1;
 					$order->delivery_order_status_text = $status_approved;
-				}
-				elseif ($rejectedOrders->status == 2){
+				} elseif ($rejectedOrders->status == 2) {
 					$order->delivery_order_status = 2;
 					$order->delivery_order_status_text = $status_delivered;
 				}
-			}
-			else{
+			} else {
 				$order->delivery_order_status = 5;
 				$order->delivery_order_status_text = $status_new_order;
 			}
@@ -1679,7 +1701,7 @@ class DeliveryController extends Controller
 
 		$choosen_status = -1;
 
-		if ($new_status){
+		if ($new_status) {
 			if ($new_status->status == 2) {
 				$choosen_status = 3;
 			} elseif ($new_status->status == 0) {
@@ -2663,14 +2685,13 @@ class DeliveryController extends Controller
 						->where('order_id', $order_id)
 						->where('delivery_id', $delivery_id)
 						->first();
-					
+
 					if ($delivered_order) {
 						DB::table("rejectedorders_delivery")
 							->where('order_id', $order_id)
 							->where('delivery_id', $delivery_id)
 							->update(['status' => $status]);
-					} 
-					else {
+					} else {
 						DB::table('rejectedorders_delivery')->insert(['order_id' => $order_id, 'delivery_id' => $delivery_id, "status" => $status]);
 					}
 
