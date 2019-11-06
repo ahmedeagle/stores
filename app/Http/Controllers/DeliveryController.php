@@ -1455,8 +1455,7 @@ class DeliveryController extends Controller
 					unset($order->delivery_id);
 
 				}
-
-//				dd($orders->toArray());
+				
 			}
 
 		}
@@ -1464,24 +1463,15 @@ class DeliveryController extends Controller
 		$res = $orders->toArray();
 		$data = array_values($res['data']);
 
-//		dd(collect($data));
-//		dd($orders->data);
-
-//		$orders->getCollection()->transform(function ($value) {
-//			// Your code here
-//			dd($value);
-//		});
-
-
 		$itemsTransformed = collect($data)
-			->map(function ($item) {
-				return [
+			->map(function ($item, $i) {
+				return [$i=>[
 					"order_id" => $item['order_id'],
 					"order_code" => $item['order_code'],
 					"total_value" => $item['total_value'],
 					"status" => $item['status'],
 					"status_text" => $item['status_text'],
-				];
+				]];
 			})->toArray();
 
 		$itemsTransformedAndPaginated = new \Illuminate\Pagination\LengthAwarePaginator(
