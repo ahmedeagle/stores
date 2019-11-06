@@ -696,7 +696,6 @@ class DeliveryController extends Controller
 				3 => 'رقم الهاتف غير موجود ',
 				4 => 'تم ارسال كود تفعيل الي هاتفك ',
 				5 => 'رقم الهاتف غير مفعل ',
-				6 => 'ؤ',
 
 			);
 
@@ -732,11 +731,11 @@ class DeliveryController extends Controller
 
 		$delivery = Deliveries::where('delivery_id', $DeliveryData->delivery_id);
 
-		if ($delivery->first()->account_activated == '0' or $delivery->first()->account_activated == 0) {
+		/*if ($delivery->first()->account_activated == '0' or $delivery->first()->account_activated == 0) {
 
 			return response()->json(['status' => false, 'errNum' => 5, 'msg' => $msg[5]]);
 
-		}
+		}*/
 
 		$code = $this->generate_random_number(4);
 

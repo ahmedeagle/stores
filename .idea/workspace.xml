@@ -31,20 +31,27 @@
     <favorites_list name="stores" />
   </component>
   <component name="FileEditorManager">
-    <leaf>
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/Http/Controllers/DeliveryController.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="395">
-              <caret line="1541" column="39" selection-start-line="1541" selection-start-column="39" selection-end-line="1541" selection-end-column="39" />
+            <state relative-caret-position="406">
+              <caret line="737" column="11" selection-start-line="733" selection-start-column="8" selection-end-line="737" selection-end-column="11" />
               <folding>
                 <element signature="e#196#215#0#PHP" expanded="true" />
                 <element signature="e#42368#43104#0#PHP" />
                 <element signature="e#43128#43681#0#PHP" />
                 <element signature="e#43757#44520#0#PHP" />
-                <element signature="e#49276#49638#0#PHP" />
-                <element signature="e#50570#51180#0#PHP" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/Http/Controllers/UserController.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="630">
+              <caret line="636" column="41" selection-start-line="636" selection-start-column="41" selection-end-line="636" selection-end-column="41" />
             </state>
           </provider>
         </entry>
@@ -53,9 +60,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>process_number</find>
-      <find>UpdatePro</find>
-      <find>get_</find>
       <find>get_offers</find>
       <find>getOffers</find>
       <find>cancel_order</find>
@@ -83,6 +87,9 @@
       <find>orderDeta</find>
       <find>newOrders</find>
       <find>newOrder</find>
+      <find>reset</find>
+      <find>forget</find>
+      <find>forgetPa</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -265,11 +272,12 @@
       <workItem from="1573021755712" duration="8648000" />
       <workItem from="1573038586270" duration="599000" />
       <workItem from="1573043461402" duration="1196000" />
+      <workItem from="1573046904969" duration="196000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="71464000" />
+    <option name="totallyTimeSpent" value="71660000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -511,22 +519,20 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/Http/Controllers/UserController.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="342">
-          <caret line="3592" selection-start-line="3592" selection-end-line="3593" />
+        <state relative-caret-position="630">
+          <caret line="636" column="41" selection-start-line="636" selection-start-column="41" selection-end-line="636" selection-end-column="41" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/Http/Controllers/DeliveryController.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="395">
-          <caret line="1541" column="39" selection-start-line="1541" selection-start-column="39" selection-end-line="1541" selection-end-column="39" />
+        <state relative-caret-position="406">
+          <caret line="737" column="11" selection-start-line="733" selection-start-column="8" selection-end-line="737" selection-end-column="11" />
           <folding>
             <element signature="e#196#215#0#PHP" expanded="true" />
             <element signature="e#42368#43104#0#PHP" />
             <element signature="e#43128#43681#0#PHP" />
             <element signature="e#43757#44520#0#PHP" />
-            <element signature="e#49276#49638#0#PHP" />
-            <element signature="e#50570#51180#0#PHP" />
           </folding>
         </state>
       </provider>
