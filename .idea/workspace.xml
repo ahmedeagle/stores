@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="661b7e20-c39c-40c9-a1b6-c0928f1d6fc1" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/Http/Controllers/DeliveryController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/DeliveryController.php" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -35,62 +36,12 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/Http/Controllers/DeliveryController.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="342">
-              <caret line="1622" column="43" lean-forward="true" selection-start-line="1622" selection-start-column="43" selection-end-line="1622" selection-end-column="43" />
+            <state relative-caret-position="483">
+              <caret line="1375" column="18" selection-start-line="1375" selection-start-column="18" selection-end-line="1375" selection-end-column="18" />
               <folding>
                 <element signature="e#196#215#0#PHP" expanded="true" />
-                <element signature="e#45500#45692#0#PHP" />
-                <element signature="e#48679#49271#0#PHP" />
-                <element signature="e#71334#77922#0#PHP" />
+                <element signature="e#42368#43104#0#PHP" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/Http/Controllers/ProviderController.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="262">
-              <caret line="4291" column="37" selection-start-line="4291" selection-start-column="35" selection-end-line="4291" selection-end-column="37" />
-              <folding>
-                <element signature="e#10706#17469#0#PHP" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/routes/delivery.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="500">
-              <caret line="51" column="83" selection-start-line="51" selection-start-column="66" selection-end-line="51" selection-end-column="83" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/routes/provider.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="308">
-              <caret line="243" column="61" selection-start-line="243" selection-start-column="56" selection-end-line="243" selection-end-column="61" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/routes/user.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="326">
-              <caret line="152" column="64" selection-start-line="152" selection-start-column="49" selection-end-line="152" selection-end-column="64" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/Http/Controllers/UserController.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="342">
-              <caret line="3592" selection-start-line="3592" selection-end-line="3593" />
             </state>
           </provider>
         </entry>
@@ -119,16 +70,16 @@
       <find>accept</find>
       <find>orders</find>
       <find>neworder</find>
-      <find>newOrders</find>
       <find>deliveryChangeOrderStatus</find>
       <find>changeOrderStatus</find>
       <find>[1</find>
       <find>Order</find>
-      <find>[1,2</find>
       <find>rejectedorders_delivery</find>
       <find>deliveryOrderAcceptance</find>
       <find>accep</find>
       <find>orderDeta</find>
+      <find>[1,2</find>
+      <find>newOrders</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -226,7 +177,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -261,6 +211,7 @@
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -307,12 +258,13 @@
       <workItem from="1572773672182" duration="6502000" />
       <workItem from="1572848401090" duration="3570000" />
       <workItem from="1572852001377" duration="5783000" />
-      <workItem from="1572934962796" duration="22394000" />
+      <workItem from="1572934962796" duration="22904000" />
+      <workItem from="1573021755712" duration="1633000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="60511000" />
+    <option name="totallyTimeSpent" value="62654000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -545,13 +497,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/Http/Controllers/UserController.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="342">
-          <caret line="3592" selection-start-line="3592" selection-end-line="3593" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/routes/delivery.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="500">
@@ -559,15 +504,20 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/Http/Controllers/DeliveryController.php">
+    <entry file="file://$PROJECT_DIR$/app/Http/Controllers/UserController.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="342">
-          <caret line="1622" column="43" lean-forward="true" selection-start-line="1622" selection-start-column="43" selection-end-line="1622" selection-end-column="43" />
+          <caret line="3592" selection-start-line="3592" selection-end-line="3593" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/Http/Controllers/DeliveryController.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="483">
+          <caret line="1375" column="18" selection-start-line="1375" selection-start-column="18" selection-end-line="1375" selection-end-column="18" />
           <folding>
             <element signature="e#196#215#0#PHP" expanded="true" />
-            <element signature="e#45500#45692#0#PHP" />
-            <element signature="e#48679#49271#0#PHP" />
-            <element signature="e#71334#77922#0#PHP" />
+            <element signature="e#42368#43104#0#PHP" />
           </folding>
         </state>
       </provider>
