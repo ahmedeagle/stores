@@ -35,12 +35,18 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/Http/Controllers/DeliveryController.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="917">
-              <caret line="1457" column="16" selection-start-line="1457" selection-start-column="16" selection-end-line="1457" selection-end-column="16" />
+            <state relative-caret-position="344">
+              <caret line="1468" column="36" lean-forward="true" selection-start-line="1468" selection-start-column="36" selection-end-line="1468" selection-end-column="36" />
               <folding>
                 <element signature="e#196#215#0#PHP" expanded="true" />
                 <element signature="e#42368#43104#0#PHP" />
                 <element signature="e#43128#43681#0#PHP" />
+                <element signature="e#43757#44520#0#PHP" />
+                <element signature="e#49462#49824#0#PHP" />
+                <element signature="e#50093#50670#0#PHP" />
+                <element signature="e#50756#51366#0#PHP" />
+                <element signature="e#51552#51705#0#PHP" />
+                <element signature="e#51725#51911#0#PHP" />
               </folding>
             </state>
           </provider>
@@ -77,8 +83,8 @@
       <find>rejectedorders_delivery</find>
       <find>deliveryOrderAcceptance</find>
       <find>accep</find>
-      <find>orderDeta</find>
       <find>[1,2</find>
+      <find>orderDeta</find>
       <find>newOrders</find>
     </findStrings>
   </component>
@@ -259,12 +265,12 @@
       <workItem from="1572848401090" duration="3570000" />
       <workItem from="1572852001377" duration="5783000" />
       <workItem from="1572934962796" duration="22904000" />
-      <workItem from="1573021755712" duration="6988000" />
+      <workItem from="1573021755712" duration="7836000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="68009000" />
+    <option name="totallyTimeSpent" value="68857000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -513,12 +519,18 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/Http/Controllers/DeliveryController.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="917">
-          <caret line="1457" column="16" selection-start-line="1457" selection-start-column="16" selection-end-line="1457" selection-end-column="16" />
+        <state relative-caret-position="344">
+          <caret line="1468" column="36" lean-forward="true" selection-start-line="1468" selection-start-column="36" selection-end-line="1468" selection-end-column="36" />
           <folding>
             <element signature="e#196#215#0#PHP" expanded="true" />
             <element signature="e#42368#43104#0#PHP" />
             <element signature="e#43128#43681#0#PHP" />
+            <element signature="e#43757#44520#0#PHP" />
+            <element signature="e#49462#49824#0#PHP" />
+            <element signature="e#50093#50670#0#PHP" />
+            <element signature="e#50756#51366#0#PHP" />
+            <element signature="e#51552#51705#0#PHP" />
+            <element signature="e#51725#51911#0#PHP" />
           </folding>
         </state>
       </provider>
