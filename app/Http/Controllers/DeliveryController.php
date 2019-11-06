@@ -1460,7 +1460,8 @@ class DeliveryController extends Controller
 
 		}
 
-//		$orders = array_values($orders);
+		$res = $orders->toArray();
+		$orders->data = array_values($res['data']);
 
 		dd($orders->toArray());
 
