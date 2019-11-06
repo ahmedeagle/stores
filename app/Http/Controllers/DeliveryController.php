@@ -1463,8 +1463,6 @@ class DeliveryController extends Controller
 		$res = $orders->toArray();
 		$orders->data = array_values($res['data']);
 
-		dd($orders->data);
-
 		return response()->json([
 			'status' => true,
 			'errNum' => 0,
