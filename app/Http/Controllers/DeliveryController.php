@@ -1455,7 +1455,7 @@ class DeliveryController extends Controller
 					unset($order->delivery_id);
 
 				}
-				
+
 			}
 
 		}
@@ -1464,14 +1464,14 @@ class DeliveryController extends Controller
 		$data = array_values($res['data']);
 
 		$itemsTransformed = collect($data)
-			->map(function ($item, $i) {
-				return [$i=>[
+			->map(function ($item) {
+				return [
 					"order_id" => $item['order_id'],
 					"order_code" => $item['order_code'],
 					"total_value" => $item['total_value'],
 					"status" => $item['status'],
 					"status_text" => $item['status_text'],
-				]];
+				];
 			})->toArray();
 
 		$itemsTransformedAndPaginated = new \Illuminate\Pagination\LengthAwarePaginator(
@@ -1708,12 +1708,14 @@ class DeliveryController extends Controller
 				DB::raw('IF(status_id = ' . $choosen_status . ', true, false) AS choosen')
 			)->get();
 
-		$percentage = DB::table('app_settings')->select('app_percentage')->first();
+		$percentage = DB::table('app_settings')->select('app_percentage, tax')->first();
 
 		if ($percentage) {
 			$app_percentage = $percentage->app_percentage;
+			$tax = $percentage->tax;
 		} else {
 			$app_percentage = 0;
+			$tax = 0;
 		}
 
 		return response()->json([
@@ -1723,6 +1725,7 @@ class DeliveryController extends Controller
 			'order' => $order,
 			'products' => $products,
 			'app_percentage' => $app_percentage,
+			'tax' => $tax,
 			'order_status' => $order_status,
 			'provider_order_rate' => $provider_order_rate,
 
