@@ -1461,8 +1461,8 @@ class DeliveryController extends Controller
 
 		}
 
-//		$res = $orders->toArray();
-//		$orders->data = array_values($res['data']);
+		$res = $orders->toArray();
+		$data = array_values($res['data']);
 
 //		dd($orders->data);
 
@@ -1472,7 +1472,7 @@ class DeliveryController extends Controller
 //		});
 
 
-		$itemsTransformed = $orders
+		$itemsTransformed = collect($data)
 			->getCollection()
 			->map(function ($item) {
 				return [
