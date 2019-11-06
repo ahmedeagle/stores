@@ -1460,7 +1460,7 @@ class DeliveryController extends Controller
 
 		}
 
-		$orders = array_values($orders);
+//		$orders = array_values($orders);
 
 		return response()->json([
 			'status' => true,
