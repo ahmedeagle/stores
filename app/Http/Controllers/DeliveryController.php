@@ -1708,7 +1708,7 @@ class DeliveryController extends Controller
 				DB::raw('IF(status_id = ' . $choosen_status . ', true, false) AS choosen')
 			)->get();
 
-		$percentage = DB::table('app_settings')->select('app_percentage, tax')->first();
+		$percentage = DB::table('app_settings')->select('app_percentage', 'tax')->first();
 
 		if ($percentage) {
 			$app_percentage = $percentage->app_percentage;
