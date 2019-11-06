@@ -36,7 +36,7 @@
         <entry file="file://$PROJECT_DIR$/app/Http/Controllers/DeliveryController.php">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="504">
-              <caret line="1464" column="35" selection-start-line="1464" selection-start-column="35" selection-end-line="1464" selection-end-column="35" />
+              <caret line="1464" column="20" lean-forward="true" selection-start-line="1464" selection-start-column="20" selection-end-line="1464" selection-end-column="20" />
               <folding>
                 <element signature="e#196#215#0#PHP" expanded="true" />
                 <element signature="e#42368#43104#0#PHP" />
@@ -259,12 +259,12 @@
       <workItem from="1572848401090" duration="3570000" />
       <workItem from="1572852001377" duration="5783000" />
       <workItem from="1572934962796" duration="22904000" />
-      <workItem from="1573021755712" duration="3258000" />
+      <workItem from="1573021755712" duration="3296000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="64279000" />
+    <option name="totallyTimeSpent" value="64317000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -514,7 +514,7 @@
     <entry file="file://$PROJECT_DIR$/app/Http/Controllers/DeliveryController.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="504">
-          <caret line="1464" column="35" selection-start-line="1464" selection-start-column="35" selection-end-line="1464" selection-end-column="35" />
+          <caret line="1464" column="20" lean-forward="true" selection-start-line="1464" selection-start-column="20" selection-end-line="1464" selection-end-column="20" />
           <folding>
             <element signature="e#196#215#0#PHP" expanded="true" />
             <element signature="e#42368#43104#0#PHP" />
