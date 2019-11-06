@@ -1373,7 +1373,7 @@ class DeliveryController extends Controller
 			->orderBy('orders_headers.order_id', 'DESC')
 			->paginate(10);
 
-		dd($orders);
+		dd($orders->toArray());
 
 		// if return new orders
 		if ($type == 1) {
