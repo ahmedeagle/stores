@@ -1461,8 +1461,8 @@ class DeliveryController extends Controller
 
 		}
 
-		$res = $orders->toArray();
-		$orders->data = array_values($res['data']);
+//		$res = $orders->toArray();
+//		$orders->data = array_values($res['data']);
 
 //		dd($orders->data);
 
@@ -1470,6 +1470,16 @@ class DeliveryController extends Controller
 //			// Your code here
 //			dd($value);
 //		});
+
+
+		$orders = $orders
+			->getCollection()
+			->map(function($item) {
+				return [
+					'data' => array_values($item),
+				];
+			})->toArray();
+
 
 
 		return response()->json([
