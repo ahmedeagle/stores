@@ -1639,6 +1639,8 @@ class DeliveryController extends Controller
 
 			])->first();
 
+			dd($rejectedOrders);
+
 			if ($rejectedOrders) {
 				if ($rejectedOrders->status == 0) {
 					$order->delivery_order_status = 0;
