@@ -1464,7 +1464,7 @@ class DeliveryController extends Controller
 		$res = $orders->toArray();
 		$data = array_values($res['data']);
 
-		dd(collect($data));
+//		dd(collect($data));
 //		dd($orders->data);
 
 //		$orders->getCollection()->transform(function ($value) {
@@ -1476,11 +1476,11 @@ class DeliveryController extends Controller
 		$itemsTransformed = collect($data)
 			->map(function ($item) {
 				return [
-					"order_id" => $item->order_id,
-					"order_code" => $item->order_code,
-					"total_value" => $item->total_value,
-					"status" => $item->status,
-					"status_text" => $item->status_text,
+					"order_id" => $item['order_id'],
+					"order_code" => $item['order_code'],
+					"total_value" => $item['total_value'],
+					"status" => $item['status'],
+					"status_text" => $item['status_text'],
 				];
 			})->toArray();
 
