@@ -866,12 +866,14 @@ class DeliveryController extends Controller
 			->where('password', md5($request->old_password))
 			->first();
 
+		dd(md5($request->old_password));
+
 		if ($check) {
 
 			Deliveries::where('delivery_id', $this->get_id($request, 'deliveries', 'delivery_id'))
 				->update([
 					'password' => md5($request->input('password')),
-					'activate_phone_hash' => null,
+//					'activate_phone_hash' => null,
 				]);
 			return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[4]]);
 
