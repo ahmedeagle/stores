@@ -1539,12 +1539,12 @@ class DeliveryController extends Controller
 		$messages = array(
 			'required' => 2,
 			'exists' => 3,
-
+			'access_token.exists' => 4,
 		);
 
 		$validator = Validator::make($request->all(), [
 			'order_id' => 'required|exists:orders_headers,order_id',
-
+			'access_token' => 'required|exists:deliveries,token',
 		], $messages);
 
 		if ($validator->fails()) {
@@ -1629,16 +1629,17 @@ class DeliveryController extends Controller
 
 		//return response()->json(["dataa" , $details]);
 
+		$delivery_id = $this->get_id($request, 'deliveries', 'delivery_id');
+
 		if ($order) {
 			$status = $order->status_id;
 
 			$rejectedOrders = DB::table('rejectedorders_delivery')->where([
 				'order_id' => $order->order_id,
-				'delivery_id' => $order->delivery_id,
+//				'delivery_id' => $order->delivery_id,
+				'delivery_id' => $delivery_id,
 
 			])->first();
-
-			dd($rejectedOrders);
 
 			if ($rejectedOrders) {
 				if ($rejectedOrders->status == 0) {
@@ -1688,7 +1689,8 @@ class DeliveryController extends Controller
 
 		$new_status = DB::table('rejectedorders_delivery')
 			->where('order_id', $order->order_id)
-			->where('delivery_id', $order->delivery_id)
+//			->where('delivery_id', $order->delivery_id)
+			->where('delivery_id', $delivery_id)
 			->first();
 
 		$choosen_status = -1;
