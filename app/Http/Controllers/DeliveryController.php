@@ -866,7 +866,7 @@ class DeliveryController extends Controller
 			->where('password', md5($request->old_password))
 			->first();
 
-		dd(md5($request->old_password));
+		dd($check);
 
 		if ($check) {
 
