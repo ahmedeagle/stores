@@ -1453,9 +1453,9 @@ class DeliveryController extends Controller
 					}
 
 					unset($order->delivery_id);
+					array_values($orders);
 
 				}
-				array_values($orders);
 
 			}
 
