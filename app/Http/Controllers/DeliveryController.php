@@ -1455,11 +1455,12 @@ class DeliveryController extends Controller
 					unset($order->delivery_id);
 
 				}
-				array_values($orders->toArray());
 
 			}
 
 		}
+
+		$orders->data = array_values($orders->data);
 
 		return response()->json([
 			'status' => true,
