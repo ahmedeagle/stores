@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="661b7e20-c39c-40c9-a1b6-c0928f1d6fc1" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/DeliveryController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/DeliveryController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -35,18 +35,15 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/Http/Controllers/DeliveryController.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="278">
-              <caret line="1707" lean-forward="true" selection-start-line="1707" selection-end-line="1707" />
+            <state relative-caret-position="331">
+              <caret line="1645" column="43" selection-start-line="1645" selection-start-column="43" selection-end-line="1645" selection-end-column="43" />
               <folding>
                 <element signature="e#196#215#0#PHP" expanded="true" />
                 <element signature="e#42368#43104#0#PHP" />
                 <element signature="e#43128#43681#0#PHP" />
                 <element signature="e#43757#44520#0#PHP" />
-                <element signature="e#49462#49824#0#PHP" />
-                <element signature="e#50093#50670#0#PHP" />
-                <element signature="e#50756#51366#0#PHP" />
-                <element signature="e#51552#51705#0#PHP" />
-                <element signature="e#51725#51911#0#PHP" />
+                <element signature="e#49276#49638#0#PHP" />
+                <element signature="e#50570#51180#0#PHP" />
               </folding>
             </state>
           </provider>
@@ -56,7 +53,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>UpdateProfile</find>
       <find>process_number</find>
       <find>UpdatePro</find>
       <find>get_</find>
@@ -86,6 +82,7 @@
       <find>[1,2</find>
       <find>orderDeta</find>
       <find>newOrders</find>
+      <find>newOrder</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -183,6 +180,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -217,7 +215,6 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -265,12 +262,14 @@
       <workItem from="1572848401090" duration="3570000" />
       <workItem from="1572852001377" duration="5783000" />
       <workItem from="1572934962796" duration="22904000" />
-      <workItem from="1573021755712" duration="7933000" />
+      <workItem from="1573021755712" duration="8648000" />
+      <workItem from="1573038586270" duration="599000" />
+      <workItem from="1573043461402" duration="788000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="68954000" />
+    <option name="totallyTimeSpent" value="71056000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -519,18 +518,15 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/Http/Controllers/DeliveryController.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="278">
-          <caret line="1707" lean-forward="true" selection-start-line="1707" selection-end-line="1707" />
+        <state relative-caret-position="331">
+          <caret line="1645" column="43" selection-start-line="1645" selection-start-column="43" selection-end-line="1645" selection-end-column="43" />
           <folding>
             <element signature="e#196#215#0#PHP" expanded="true" />
             <element signature="e#42368#43104#0#PHP" />
             <element signature="e#43128#43681#0#PHP" />
             <element signature="e#43757#44520#0#PHP" />
-            <element signature="e#49462#49824#0#PHP" />
-            <element signature="e#50093#50670#0#PHP" />
-            <element signature="e#50756#51366#0#PHP" />
-            <element signature="e#51552#51705#0#PHP" />
-            <element signature="e#51725#51911#0#PHP" />
+            <element signature="e#49276#49638#0#PHP" />
+            <element signature="e#50570#51180#0#PHP" />
           </folding>
         </state>
       </provider>
