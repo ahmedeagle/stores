@@ -1373,8 +1373,6 @@ class DeliveryController extends Controller
 			->orderBy('orders_headers.order_id', 'DESC')
 			->paginate(10);
 
-		dd($orders->toArray());
-
 		// if return new orders
 		if ($type == 1) {
 
@@ -1457,6 +1455,7 @@ class DeliveryController extends Controller
 					unset($order->delivery_id);
 
 				}
+				array_values($orders);
 
 			}
 
