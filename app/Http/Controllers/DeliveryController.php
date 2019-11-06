@@ -1456,6 +1456,7 @@ class DeliveryController extends Controller
 
 				}
 
+				dd($orders->toArray());
 			}
 
 		}
@@ -1465,10 +1466,10 @@ class DeliveryController extends Controller
 
 //		dd($orders->data);
 
-		$orders->getCollection()->transform(function ($value) {
-			// Your code here
-			dd($value);
-		});
+//		$orders->getCollection()->transform(function ($value) {
+//			// Your code here
+//			dd($value);
+//		});
 
 
 		return response()->json([
