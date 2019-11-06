@@ -1464,6 +1464,7 @@ class DeliveryController extends Controller
 		$res = $orders->toArray();
 		$data = array_values($res['data']);
 
+		dd(collect($data));
 //		dd($orders->data);
 
 //		$orders->getCollection()->transform(function ($value) {
