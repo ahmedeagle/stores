@@ -1472,16 +1472,6 @@ class DeliveryController extends Controller
 //		});
 
 
-		$orders = $orders
-			->getCollection()
-			->map(function($item) {
-				return [
-					'data' => array_values($item),
-				];
-			})->toArray();
-
-
-
 		return response()->json([
 			'status' => true,
 			'errNum' => 0,
