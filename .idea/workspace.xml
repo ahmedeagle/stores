@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="661b7e20-c39c-40c9-a1b6-c0928f1d6fc1" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/Http/Controllers/DeliveryController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/DeliveryController.php" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -36,10 +35,13 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/Http/Controllers/DeliveryController.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="279">
-              <caret line="1048" column="9" lean-forward="true" selection-start-line="1048" selection-start-column="9" selection-end-line="1048" selection-end-column="9" />
+            <state relative-caret-position="232">
+              <caret line="364" lean-forward="true" selection-start-line="364" selection-end-line="364" />
               <folding>
                 <element signature="e#196#215#0#PHP" expanded="true" />
+                <element signature="e#6315#7163#0#PHP" />
+                <element signature="e#7186#8013#0#PHP" />
+                <element signature="e#8495#9422#0#PHP" />
                 <element signature="e#9781#10458#0#PHP" />
                 <element signature="e#10484#11167#0#PHP" />
                 <element signature="e#11194#11883#0#PHP" />
@@ -76,7 +78,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>order</find>
       <find>getOrderDetails</find>
       <find>news</find>
       <find>Orders</find>
@@ -106,6 +107,7 @@
       <find>updatePass</find>
       <find>updatePassword</find>
       <find>updateProfile</find>
+      <find>license_img</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -289,12 +291,12 @@
       <workItem from="1573038586270" duration="599000" />
       <workItem from="1573043461402" duration="1196000" />
       <workItem from="1573046904969" duration="3041000" />
-      <workItem from="1573108020523" duration="1283000" />
+      <workItem from="1573108020523" duration="1596000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="75788000" />
+    <option name="totallyTimeSpent" value="76101000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -543,10 +545,13 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/Http/Controllers/DeliveryController.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="279">
-          <caret line="1048" column="9" lean-forward="true" selection-start-line="1048" selection-start-column="9" selection-end-line="1048" selection-end-column="9" />
+        <state relative-caret-position="232">
+          <caret line="364" lean-forward="true" selection-start-line="364" selection-end-line="364" />
           <folding>
             <element signature="e#196#215#0#PHP" expanded="true" />
+            <element signature="e#6315#7163#0#PHP" />
+            <element signature="e#7186#8013#0#PHP" />
+            <element signature="e#8495#9422#0#PHP" />
             <element signature="e#9781#10458#0#PHP" />
             <element signature="e#10484#11167#0#PHP" />
             <element signature="e#11194#11883#0#PHP" />
