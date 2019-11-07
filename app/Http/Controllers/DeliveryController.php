@@ -1062,7 +1062,7 @@ class DeliveryController extends Controller
 			return response()->json(['status' => false, 'errNum' => 20, 'msg' => $msg[20]]);
 		}
 
-		// dd($request->all());
+//		 dd($request->all(), $inputs);
 
 		if ($inputs['phone'] != $delivery->phone) {
 
@@ -1084,7 +1084,8 @@ class DeliveryController extends Controller
 
 			$isPhoneChanged = true;
 
-		} else {
+		}
+		else {
 
 //            $rules['phone'] = array('required', 'numeric', 'regex:/^(05|5)([0-9]{8})$/');
 			$isPhoneChanged = false;
@@ -1102,7 +1103,7 @@ class DeliveryController extends Controller
 
 		}
 
-		if ($request->license_img) {
+		if ($request->license_img && !empty($request->license_img)) {
 
 			//save new image   64 encoded
 			// $image = $this->saveImage( $request -> license_img,'jpg', 'deliveries');
@@ -1130,7 +1131,7 @@ class DeliveryController extends Controller
 
 		}
 
-		if ($request->car_form_img) {
+		if ($request->car_form_img && !empty($request->car_form_img)) {
 
 			//save new image   64 encoded
 			// $image = $this->saveImage( $request -> car_form_img,'jpg', 'deliveries');
@@ -1158,7 +1159,7 @@ class DeliveryController extends Controller
 
 		}
 
-		if ($request->Insurance_img) {
+		if ($request->Insurance_img && !empty($request->Insurance_img)) {
 
 			//save new image   64 encoded
 			// $image = $this->saveImage( $request -> Insurance_img,'jpg', 'deliveries');
@@ -1186,7 +1187,7 @@ class DeliveryController extends Controller
 
 		}
 
-		if ($request->authorization_img) {
+		if ($request->authorization_img && !empty($request->authorization_img)) {
 
 			//save new image   64 encoded
 			// $image = $this->saveImage( $request -> authorization_img,'jpg', 'deliveries');
@@ -1214,7 +1215,7 @@ class DeliveryController extends Controller
 
 		}
 
-		if ($request->national_img) {
+		if ($request->national_img && !empty($request->national_img)) {
 
 			//save new image   64 encoded
 			// $image = $this->saveImage( $request -> national_img,'jpg', 'deliveries');
