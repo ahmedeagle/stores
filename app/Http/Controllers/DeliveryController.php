@@ -1036,7 +1036,8 @@ class DeliveryController extends Controller
 			'national_img' => 'sometimes|nullable',
 			'national_img_ext' => 'required_with:national_img',
 			'phone' => 'required|numeric|unique:deliveries,phone,' . $deliveryId . ',delivery_id',
-
+			"password" => "min:8|confirmed",
+			
 		];
 
 		$validator = Validator::make($request->all(), $rules, $messages);
