@@ -237,7 +237,7 @@ class UserController extends Controller
 		}
 
 		$profile_pic = "avatar_ic.png";
-		if ($request->input('profile_pic')) {
+		if ($request->input('profile_pic') && !empty($request->profile_pic)) {
 
 			//save new image   64 encoded
 			// $image = $this->saveImage( $request -> profile_pic,'jpg', 'users');
@@ -995,7 +995,7 @@ class UserController extends Controller
 			$isPhoneChanged = false;
 		}
 
-		if ($request->profile_pic) {
+		if ($request->profile_pic && !empty($request->profile_pic)) {
 
 			if ($user->first()->profile_pic != null && $user->first()->profile_pic != "") {
 
