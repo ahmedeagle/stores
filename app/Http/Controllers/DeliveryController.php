@@ -1249,7 +1249,6 @@ class DeliveryController extends Controller
 		try {
 
 			DB::transaction(function () use ($inputs, $deliveryId) {
-				dd($inputs);
 				DB::table('deliveries')->where('delivery_id', $deliveryId)->update($inputs);
 			});
 
