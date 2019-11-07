@@ -272,7 +272,7 @@ class DeliveryController extends Controller
 		$data = $request->only('full_name', 'country_id', 'city_id', 'phone', 'car_number', 'latitude', 'longitude', 'device_reg_id');
 
 		$license_img = "";
-		if ($request->input('license_img')) {
+		if ($request->input('license_img') && !empty($request->license_img)) {
 
 			//save new image   64 encoded
 			// $image = $this->saveImage( $request -> license_img,'jpg', 'deliveries');
@@ -295,7 +295,7 @@ class DeliveryController extends Controller
 		}
 
 		$car_form_img = "";
-		if ($request->input('car_form_img')) {
+		if ($request->input('car_form_img')  && !empty($request->car_form_img)) {
 
 			//save new image   64 encoded
 			// $image = $this->saveImage( $request -> car_form_img,'jpg', 'deliveries');
@@ -318,7 +318,7 @@ class DeliveryController extends Controller
 		}
 
 		$Insurance_img = "";
-		if ($request->input('Insurance_img')) {
+		if ($request->input('Insurance_img')  && !empty($request->Insurance_img)) {
 
 			//save new image   64 encoded
 			// $image = $this->saveImage( $request -> Insurance_img,'jpg', 'deliveries');
@@ -341,7 +341,7 @@ class DeliveryController extends Controller
 		}
 
 		$authorization_img = "";
-		if ($request->input('authorization_img')) {
+		if ($request->input('authorization_img') && !empty($request->authorization_img)) {
 
 			//save new image   64 encoded
 			// $image = $this->saveImage( $request -> authorization_img,'jpg', 'deliveries');
@@ -364,7 +364,7 @@ class DeliveryController extends Controller
 		}
 
 		$national_img = "";
-		if ($request->input('national_img')) {
+		if ($request->input('national_img') && !empty($request->national_img)) {
 
 			//save new image   64 encoded
 			// $image = $this->saveImage( $request -> national_img,'jpg', 'deliveries');
@@ -434,7 +434,7 @@ class DeliveryController extends Controller
 
 		try {
 			$id = 0;
-			DB::transaction(function () use ($data, &$id) {
+			DB::transaction(function () use ($msg, $data, &$id) {
 				$id = DB::table('deliveries')->insertGetId($data);
 
 				if (!$id) {
