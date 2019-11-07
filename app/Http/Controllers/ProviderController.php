@@ -258,7 +258,7 @@ class ProviderController extends Controller
 
 		$data['image'] = "avatar_ic.png";
 
-		if ($request->input('profile_pic')) {
+		if ($request->input('profile_pic') && !empty($request->profile_pic)) {
 
 			$image = $request->input('profile_pic');
 			//save new image
@@ -305,7 +305,7 @@ class ProviderController extends Controller
 		$id = "";
 
 		try {
-			DB::transaction(function () use ($data, &$id) {
+			DB::transaction(function () use ($msg, $data, &$id) {
 
 				$id = Providers::insertGetId([
 					'full_name' => $data['full_name'],
@@ -1379,7 +1379,7 @@ class ProviderController extends Controller
 			$code = "";
 		}
 
-		if ($request->profile_pic) {
+		if ($request->profile_pic && !empty($request->profile_pic)) {
 
 			$image = $request->profile_pic;
 			if ($provider->first()->profile_pic != null && $provider->first()->profile_pic != "") {
