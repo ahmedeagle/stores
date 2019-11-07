@@ -272,7 +272,7 @@ class DeliveryController extends Controller
 		$data = $request->only('full_name', 'country_id', 'city_id', 'phone', 'car_number', 'latitude', 'longitude', 'device_reg_id');
 
 		$license_img = "";
-		if ($request->input('license_img') && !empty($request->license_img)) {
+		if ($request->input('license_img') && $request->license_img != null && !empty($request->license_img)) {
 
 			//save new image   64 encoded
 			// $image = $this->saveImage( $request -> license_img,'jpg', 'deliveries');
@@ -295,7 +295,7 @@ class DeliveryController extends Controller
 		}
 
 		$car_form_img = "";
-		if ($request->input('car_form_img')  && !empty($request->car_form_img)) {
+		if ($request->input('car_form_img') && $request->car_form_img != null  && !empty($request->car_form_img)) {
 
 			//save new image   64 encoded
 			// $image = $this->saveImage( $request -> car_form_img,'jpg', 'deliveries');
@@ -318,7 +318,7 @@ class DeliveryController extends Controller
 		}
 
 		$Insurance_img = "";
-		if ($request->input('Insurance_img')  && !empty($request->Insurance_img)) {
+		if ($request->input('Insurance_img') && $request->Insurance_img != null  && !empty($request->Insurance_img)) {
 
 			//save new image   64 encoded
 			// $image = $this->saveImage( $request -> Insurance_img,'jpg', 'deliveries');
@@ -341,7 +341,7 @@ class DeliveryController extends Controller
 		}
 
 		$authorization_img = "";
-		if ($request->input('authorization_img') && !empty($request->authorization_img)) {
+		if ($request->input('authorization_img') && $request->authorization_img != null && !empty($request->authorization_img)) {
 
 			//save new image   64 encoded
 			// $image = $this->saveImage( $request -> authorization_img,'jpg', 'deliveries');
@@ -364,7 +364,7 @@ class DeliveryController extends Controller
 		}
 
 		$national_img = "";
-		if ($request->input('national_img') && !empty($request->national_img)) {
+		if ($request->input('national_img') && $request->national_img != null && !empty($request->national_img)) {
 
 			//save new image   64 encoded
 			// $image = $this->saveImage( $request -> national_img,'jpg', 'deliveries');
@@ -1104,9 +1104,7 @@ class DeliveryController extends Controller
 
 		}
 
-		return response()->json(['status' => false, 'errNum' => 30, 'msg' => $request->license_img]);
-
-		if ($request->license_img && !empty($request->license_img)) {
+		if ($request->license_img && $request->license_img != null && !empty($request->license_img)) {
 
 			//save new image   64 encoded
 			// $image = $this->saveImage( $request -> license_img,'jpg', 'deliveries');
@@ -1134,7 +1132,7 @@ class DeliveryController extends Controller
 
 		}
 
-		if ($request->car_form_img && !empty($request->car_form_img)) {
+		if ($request->car_form_img && $request->car_form_img != null && !empty($request->car_form_img)) {
 
 			//save new image   64 encoded
 			// $image = $this->saveImage( $request -> car_form_img,'jpg', 'deliveries');
@@ -1162,7 +1160,7 @@ class DeliveryController extends Controller
 
 		}
 
-		if ($request->Insurance_img && !empty($request->Insurance_img)) {
+		if ($request->Insurance_img && $request->Insurance_img != null && !empty($request->Insurance_img)) {
 
 			//save new image   64 encoded
 			// $image = $this->saveImage( $request -> Insurance_img,'jpg', 'deliveries');
@@ -1190,7 +1188,7 @@ class DeliveryController extends Controller
 
 		}
 
-		if ($request->authorization_img && !empty($request->authorization_img)) {
+		if ($request->authorization_img && $request->authorization_img != null && !empty($request->authorization_img)) {
 
 			//save new image   64 encoded
 			// $image = $this->saveImage( $request -> authorization_img,'jpg', 'deliveries');
@@ -1218,7 +1216,7 @@ class DeliveryController extends Controller
 
 		}
 
-		if ($request->national_img && !empty($request->national_img)) {
+		if ($request->national_img && $request->national_img != null && !empty($request->national_img)) {
 
 			//save new image   64 encoded
 			// $image = $this->saveImage( $request -> national_img,'jpg', 'deliveries');
@@ -1251,6 +1249,7 @@ class DeliveryController extends Controller
 		try {
 
 			DB::transaction(function () use ($inputs, $deliveryId) {
+				dd($inputs);
 				DB::table('deliveries')->where('delivery_id', $deliveryId)->update($inputs);
 			});
 
