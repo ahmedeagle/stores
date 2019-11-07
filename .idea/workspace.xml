@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="661b7e20-c39c-40c9-a1b6-c0928f1d6fc1" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/DeliveryController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/DeliveryController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/UserController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/UserController.php" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -33,35 +33,19 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/app/Http/Controllers/DeliveryController.php">
+        <entry file="file://$PROJECT_DIR$/app/Http/Controllers/UserController.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="420">
-              <caret line="1028" column="53" selection-start-line="1028" selection-start-column="53" selection-end-line="1028" selection-end-column="53" />
-              <folding>
-                <element signature="e#196#215#0#PHP" expanded="true" />
-                <element signature="e#6315#7163#0#PHP" />
-                <element signature="e#7186#8013#0#PHP" />
-                <element signature="e#8495#9422#0#PHP" />
-                <element signature="e#9781#10491#0#PHP" />
-                <element signature="e#10517#11235#0#PHP" />
-                <element signature="e#11262#11987#0#PHP" />
-                <element signature="e#12018#12770#0#PHP" />
-                <element signature="e#12796#13513#0#PHP" />
-                <element signature="e#33840#34729#0#PHP" />
-                <element signature="e#34669#35539#0#PHP" />
-                <element signature="e#35543#36428#0#PHP" />
-                <element signature="e#36432#37365#0#PHP" />
-                <element signature="e#37369#38242#0#PHP" />
-              </folding>
+            <state relative-caret-position="470">
+              <caret line="775" column="19" lean-forward="true" selection-start-line="775" selection-start-column="19" selection-end-line="775" selection-end-column="19" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/routes/delivery.php">
+        <entry file="file://$PROJECT_DIR$/app/Http/Controllers/ProviderController.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="358">
-              <caret line="42" column="32" selection-start-line="42" selection-start-column="18" selection-end-line="42" selection-end-column="32" />
+            <state relative-caret-position="293">
+              <caret line="1383" column="42" selection-start-line="1383" selection-start-column="31" selection-end-line="1383" selection-end-column="42" />
             </state>
           </provider>
         </entry>
@@ -92,7 +76,6 @@
       <find>forget</find>
       <find>forgetPa</find>
       <find>logout</find>
-      <find>updatePass</find>
       <find>updatePassword</find>
       <find>license_img</find>
       <find>updateP</find>
@@ -100,6 +83,7 @@
       <find>profile_pic</find>
       <find>sign</find>
       <find>updatePr</find>
+      <find>updatePass</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -112,8 +96,8 @@
         <option value="$PROJECT_DIR$/app/Http/Controllers/NotificationController.php" />
         <option value="$PROJECT_DIR$/routes/delivery.php" />
         <option value="$PROJECT_DIR$/app/Http/Controllers/ProviderController.php" />
-        <option value="$PROJECT_DIR$/app/Http/Controllers/UserController.php" />
         <option value="$PROJECT_DIR$/app/Http/Controllers/DeliveryController.php" />
+        <option value="$PROJECT_DIR$/app/Http/Controllers/UserController.php" />
       </list>
     </option>
   </component>
@@ -283,12 +267,12 @@
       <workItem from="1573038586270" duration="599000" />
       <workItem from="1573043461402" duration="1196000" />
       <workItem from="1573046904969" duration="3041000" />
-      <workItem from="1573108020523" duration="5439000" />
+      <workItem from="1573108020523" duration="7330000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="79944000" />
+    <option name="totallyTimeSpent" value="81835000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -511,43 +495,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/Http/Controllers/ProviderController.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="293">
-          <caret line="1383" column="42" selection-start-line="1383" selection-start-column="31" selection-end-line="1383" selection-end-column="42" />
-          <folding>
-            <element signature="e#10706#17469#0#PHP" />
-            <element signature="e#37137#37499#0#PHP" />
-            <element signature="e#37860#38299#0#PHP" />
-            <element signature="e#38384#38621#0#PHP" />
-            <element signature="e#38625#39178#0#PHP" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/Http/Controllers/UserController.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="598">
-          <caret line="256" column="13" lean-forward="true" selection-start-line="256" selection-start-column="13" selection-end-line="256" selection-end-column="13" />
-          <folding>
-            <element signature="e#27052#27162#0#PHP" />
-            <element signature="e#27409#27927#0#PHP" />
-            <element signature="e#27931#28875#0#PHP" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/routes/delivery.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="358">
-          <caret line="42" column="32" selection-start-line="42" selection-start-column="18" selection-end-line="42" selection-end-column="32" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/Http/Controllers/DeliveryController.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="420">
-          <caret line="1028" column="53" selection-start-line="1028" selection-start-column="53" selection-end-line="1028" selection-end-column="53" />
+        <state relative-caret-position="244">
+          <caret line="1017" lean-forward="true" selection-start-line="1017" selection-end-line="1017" />
           <folding>
             <element signature="e#196#215#0#PHP" expanded="true" />
             <element signature="e#6315#7163#0#PHP" />
@@ -564,6 +515,27 @@
             <element signature="e#36432#37365#0#PHP" />
             <element signature="e#37369#38242#0#PHP" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/routes/delivery.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="358">
+          <caret line="42" column="32" selection-start-line="42" selection-start-column="18" selection-end-line="42" selection-end-column="32" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/Http/Controllers/ProviderController.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="293">
+          <caret line="1383" column="42" selection-start-line="1383" selection-start-column="31" selection-end-line="1383" selection-end-column="42" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/Http/Controllers/UserController.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="470">
+          <caret line="775" column="19" lean-forward="true" selection-start-line="775" selection-start-column="19" selection-end-line="775" selection-end-column="19" />
         </state>
       </provider>
     </entry>

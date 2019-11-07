@@ -772,7 +772,7 @@ class UserController extends Controller
 			User::where('user_id', $this->get_id($request, 'users', 'user_id'))
 				->update([
 					'password' => md5($request->input('password')),
-					'activate_phone_hash' => null,
+//					'activate_phone_hash' => null,
 				]);
 			return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[4]]);
 
