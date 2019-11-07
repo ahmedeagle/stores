@@ -2886,6 +2886,8 @@ class UserController extends Controller
 		$provider_marketer_value = 0;
 		$points = 0;
 
+		$data['process_number'] = '';
+
 		// if payment by visa must ensure paid amount equal order total value
 		if ($payment_method == 2 || $payment_method == 3) {
 			if ($request->input("total_paid_amount") != $totalPrice) {
@@ -2974,7 +2976,7 @@ class UserController extends Controller
 					'marketer_percentage' => $data['marketer_percentage'],
 					'marketer_value' => $data['provider_marketer_value'],
 					'provider_marketer_code' => $data['provider_marketer_code'],
-					'process_number' => $data['process_number'] ? $data['process_number'] : null,
+					'process_number' => $data['process_number'] == '' ? null : $data['process_number'],
 				]);
 				$serial = 1;
 
