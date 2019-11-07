@@ -2926,7 +2926,11 @@ class UserController extends Controller
 			$data['products'] = $products;
 			$data['balance_flag'] = 0; // this app not use poins and balances
 
-			$userInfo = DB::table('user_addresses')->join('users', 'user_addresses.user_id', '=', 'users.user_id')->where('user_addresses.user_id', $user)->select('user_addresses.phone', 'user_addresses.address', 'users.email')->first();
+			$userInfo = DB::table('user_addresses')
+				->join('users', 'user_addresses.user_id', '=', 'users.user_id')
+				->where('user_addresses.user_id', $user)
+				->select('user_addresses.phone', 'user_addresses.address', 'users.email')
+				->first();
 
 			if (!$userInfo) {
 				return response()->json(['status' => false, 'errNum' => 19, 'msg' => $msg[19]]);
