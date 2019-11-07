@@ -35,17 +35,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/Http/Controllers/UserController.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="470">
-              <caret line="775" column="19" lean-forward="true" selection-start-line="775" selection-start-column="19" selection-end-line="775" selection-end-column="19" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/Http/Controllers/ProviderController.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="293">
-              <caret line="1383" column="42" selection-start-line="1383" selection-start-column="31" selection-end-line="1383" selection-end-column="42" />
+            <state relative-caret-position="630">
+              <caret line="2933" lean-forward="true" selection-start-line="2933" selection-end-line="2933" />
             </state>
           </provider>
         </entry>
@@ -54,7 +45,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>singleSend</find>
       <find>orderAcceptance</find>
       <find>send</find>
       <find>push</find>
@@ -84,6 +74,7 @@
       <find>sign</find>
       <find>updatePr</find>
       <find>updatePass</find>
+      <find>addOrder</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -267,12 +258,12 @@
       <workItem from="1573038586270" duration="599000" />
       <workItem from="1573043461402" duration="1196000" />
       <workItem from="1573046904969" duration="3041000" />
-      <workItem from="1573108020523" duration="7330000" />
+      <workItem from="1573108020523" duration="8134000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="81835000" />
+    <option name="totallyTimeSpent" value="82639000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -527,15 +518,15 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/Http/Controllers/ProviderController.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="293">
-          <caret line="1383" column="42" selection-start-line="1383" selection-start-column="31" selection-end-line="1383" selection-end-column="42" />
+        <state relative-caret-position="-746">
+          <caret line="995" column="30" selection-start-line="995" selection-start-column="20" selection-end-line="995" selection-end-column="30" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/Http/Controllers/UserController.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="470">
-          <caret line="775" column="19" lean-forward="true" selection-start-line="775" selection-start-column="19" selection-end-line="775" selection-end-column="19" />
+        <state relative-caret-position="630">
+          <caret line="2933" lean-forward="true" selection-start-line="2933" selection-end-line="2933" />
         </state>
       </provider>
     </entry>
