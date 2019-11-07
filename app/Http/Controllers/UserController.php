@@ -1796,7 +1796,7 @@ class UserController extends Controller
 
 				$product->provider_average_rate = $totalAverage;
 
-				if ($data) {
+				if ($images) {
 					$product->product_image = $images->product_image;
 				} else {
 					$product->product_image = "";
