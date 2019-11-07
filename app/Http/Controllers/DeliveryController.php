@@ -1037,7 +1037,7 @@ class DeliveryController extends Controller
 			'national_img_ext' => 'required_with:national_img',
 			'phone' => 'required|numeric|unique:deliveries,phone,' . $deliveryId . ',delivery_id',
 			"password" => "min:8|confirmed",
-			
+
 		];
 
 		$validator = Validator::make($request->all(), $rules, $messages);
@@ -1103,6 +1103,8 @@ class DeliveryController extends Controller
 			$inputs['longitude'] = $request->longitude;
 
 		}
+
+		return response()->json(['status' => false, 'errNum' => 30, 'msg' => $request->license_img]);
 
 		if ($request->license_img && !empty($request->license_img)) {
 
