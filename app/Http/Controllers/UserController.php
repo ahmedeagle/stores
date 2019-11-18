@@ -3479,7 +3479,7 @@ class UserController extends Controller
 				'orders_headers.order_id',
 				'orders_headers.provider_id',
 				'orders_headers.status_id',
-				'orders_headers.status_id',
+				'orders_headers.rejected_reason',
 				$status_col,
 				'orders_headers.total_value AS total',
 				'orders_headers.net_value AS net_value', // order price with out any delivery price just products with options
