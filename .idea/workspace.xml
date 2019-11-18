@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="661b7e20-c39c-40c9-a1b6-c0928f1d6fc1" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/Http/Controllers/UserController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/UserController.php" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -31,12 +32,36 @@
     <favorites_list name="stores" />
   </component>
   <component name="FileEditorManager">
-    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+    <leaf>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/Http/Controllers/DeliveryController.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="1702">
+              <caret line="2675" column="17" lean-forward="true" selection-start-line="2675" selection-start-column="17" selection-end-line="2675" selection-end-column="17" />
+              <folding>
+                <element signature="e#196#215#0#PHP" expanded="true" />
+                <element signature="e#6315#7163#0#PHP" />
+                <element signature="e#7186#8013#0#PHP" />
+                <element signature="e#8495#9422#0#PHP" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/Http/Controllers/UserController.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="534">
-              <caret line="1803" lean-forward="true" selection-start-line="1803" selection-end-line="1803" />
+            <state relative-caret-position="246">
+              <caret line="3184" lean-forward="true" selection-start-line="3184" selection-end-line="3184" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/routes/user.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="263">
+              <caret line="148" column="27" selection-start-line="148" selection-start-column="18" selection-end-line="148" selection-end-column="27" />
             </state>
           </provider>
         </entry>
@@ -45,11 +70,7 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>orderAcceptance</find>
-      <find>send</find>
-      <find>push</find>
       <find>accept</find>
-      <find>orders</find>
       <find>neworder</find>
       <find>deliveryChangeOrderStatus</find>
       <find>changeOrderStatus</find>
@@ -75,6 +96,10 @@
       <find>updatePr</find>
       <find>updatePass</find>
       <find>addOrder</find>
+      <find>getUserFavorites</find>
+      <find>OrderAcceptance</find>
+      <find>get_list_of_orders</find>
+      <find>orders</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -160,11 +185,11 @@
       <path value="$PROJECT_DIR$/vendor/swiftmailer/swiftmailer" />
     </include_path>
   </component>
-  <component name="ProjectFrameBounds">
-    <option name="x" value="-8" />
-    <option name="y" value="-8" />
-    <option name="width" value="1296" />
-    <option name="height" value="1000" />
+  <component name="ProjectFrameBounds" extendedState="6">
+    <option name="x" value="10" />
+    <option name="y" value="20" />
+    <option name="width" value="1260" />
+    <option name="height" value="944" />
   </component>
   <component name="ProjectId" id="1SvF2diBvPBVhrboRBRY1LQDRzE" />
   <component name="ProjectView">
@@ -172,6 +197,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -206,7 +232,6 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -259,12 +284,13 @@
       <workItem from="1573043461402" duration="1196000" />
       <workItem from="1573046904969" duration="3041000" />
       <workItem from="1573108020523" duration="8134000" />
-      <workItem from="1573128266503" duration="3319000" />
+      <workItem from="1573128266503" duration="4284000" />
+      <workItem from="1574069706533" duration="1263000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="85958000" />
+    <option name="totallyTimeSpent" value="88186000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -276,7 +302,7 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1296" height="1000" extended-state="0" />
+    <frame x="-8" y="-8" width="1296" height="1000" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" weight="0.25" />
@@ -473,40 +499,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/routes/user.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="262">
-          <caret line="72" column="36" selection-start-line="72" selection-start-column="18" selection-end-line="72" selection-end-column="36" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/routes/provider.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="278">
           <caret line="74" column="28" selection-start-line="74" selection-start-column="28" selection-end-line="74" selection-end-column="28" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/Http/Controllers/DeliveryController.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="244">
-          <caret line="1017" lean-forward="true" selection-start-line="1017" selection-end-line="1017" />
-          <folding>
-            <element signature="e#196#215#0#PHP" expanded="true" />
-            <element signature="e#6315#7163#0#PHP" />
-            <element signature="e#7186#8013#0#PHP" />
-            <element signature="e#8495#9422#0#PHP" />
-            <element signature="e#9781#10491#0#PHP" />
-            <element signature="e#10517#11235#0#PHP" />
-            <element signature="e#11262#11987#0#PHP" />
-            <element signature="e#12018#12770#0#PHP" />
-            <element signature="e#12796#13513#0#PHP" />
-            <element signature="e#33840#34729#0#PHP" />
-            <element signature="e#34669#35539#0#PHP" />
-            <element signature="e#35543#36428#0#PHP" />
-            <element signature="e#36432#37365#0#PHP" />
-            <element signature="e#37369#38242#0#PHP" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -524,10 +520,30 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/app/Http/Controllers/DeliveryController.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1702">
+          <caret line="2675" column="17" lean-forward="true" selection-start-line="2675" selection-start-column="17" selection-end-line="2675" selection-end-column="17" />
+          <folding>
+            <element signature="e#196#215#0#PHP" expanded="true" />
+            <element signature="e#6315#7163#0#PHP" />
+            <element signature="e#7186#8013#0#PHP" />
+            <element signature="e#8495#9422#0#PHP" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/routes/user.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="263">
+          <caret line="148" column="27" selection-start-line="148" selection-start-column="18" selection-end-line="148" selection-end-column="27" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/app/Http/Controllers/UserController.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="534">
-          <caret line="1803" lean-forward="true" selection-start-line="1803" selection-end-line="1803" />
+        <state relative-caret-position="246">
+          <caret line="3184" lean-forward="true" selection-start-line="3184" selection-end-line="3184" />
         </state>
       </provider>
     </entry>
