@@ -4435,6 +4435,7 @@ class ProviderController extends Controller
 				6 => 'ليس لديك صلاحية لتعديل هذا الطلب',
 				7 => 'لقد تم الغاء الطلب من قبل ',
 				8 => 'لقد تم قبول العرض من قبل ',
+				9 => 'يرجى إدخال سبب الرفض',
 			);
 		} else {
 			$msg = array(
@@ -4447,6 +4448,7 @@ class ProviderController extends Controller
 				6 => 'you can not access this order',
 				7 => 'Order Rejected Before!',
 				8 => 'Order already Accepted before!',
+				9 => 'Please, Enter the rejected reason',
 
 			);
 		}
@@ -4456,12 +4458,14 @@ class ProviderController extends Controller
 			'access_token.required' => 2,
 			'type.required' => 3,
 			'in' => 4,
+			'rejected_reason.required_if' => 9,
 		);
 
 		$validator = Validator::make($request->all(), [
 			'order_id' => 'required',
 			'access_token' => 'required',
 			'type' => 'required|in:0,1',
+			'rejected_reason' => 'required_if:type,0'
 		], $messages);
 
 		if ($validator->fails()) {
@@ -4482,6 +4486,7 @@ class ProviderController extends Controller
 		}
 
 		$order_id = $request->input('order_id');
+		$rejected_reason = $request->input('rejected_reason');
 		//get order
 		$orderDetails = DB::table('orders_headers')->where('order_id', $order_id)->select(
 			'user_id', 'payment_type', 'total_value', 'provider_id', 'status_id')->first();
@@ -4534,9 +4539,13 @@ class ProviderController extends Controller
 				return response()->json(['status' => false, 'errNum' => 5, 'msg' => $msg[5]]);
 			}
 
-			DB::transaction(function () use ($status, $order_id, $provider_id, $payment_type, $total_value, $user_id) {
+			DB::transaction(function () use ($status, $order_id, $rejected_reason, $provider_id, $payment_type, $total_value, $user_id) {
 
-				DB::table("orders_headers")->where('order_id', $order_id)->update(['status_id' => $status]);
+				DB::table("orders_headers")->where('order_id', $order_id)
+					->update([
+						'status_id' => $status,
+						'rejected_reason' => !empty($rejected_reason) ? $rejected_reason : null,
+					]);
 
 				date_default_timezone_set('Asia/Riyadh');
 
