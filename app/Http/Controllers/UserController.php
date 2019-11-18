@@ -1314,6 +1314,7 @@ class UserController extends Controller
 			->leftJoin('categories', 'providers.category_id', 'categories.cat_id')
 			->select('provider_id',
 				'store_name',
+				'phone',
 				'membership_id',
 				'delivery_price',
 				DB::raw("CONCAT('" . env('APP_URL') . "','/public/providerProfileImages/',providers.profile_pic) AS profile_pic"),
@@ -1357,7 +1358,7 @@ class UserController extends Controller
 				if ($data) {
 					$product->product_image = $data->product_image;
 				} else {
-					$meal->product_image = "";
+					$product->product_image = "";
 				}
 
 			}
