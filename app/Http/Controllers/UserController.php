@@ -3180,6 +3180,9 @@ class UserController extends Controller
 			->join('users', 'orders_headers.user_id', 'users.user_id')
 			->join('payment_types', 'orders_headers.payment_type', '=', 'payment_types.payment_id')
 			->join('order_status', 'orders_headers.status_id', '=', 'order_status.status_id')
+
+			->leftJoin('rejectedorders_delivery', 'orders_headers.order_id', '=', 'rejectedorders_delivery.order_id')
+
 			->select(
 				'orders_headers.order_id',
 				'orders_headers.order_code',
@@ -3195,7 +3198,8 @@ class UserController extends Controller
 				$status_col,
 				'orders_headers.status_id',
 				DB::raw('DATE(orders_headers.created_at) AS created_date'),
-				DB::raw('TIME(orders_headers.created_at) AS created_time')
+				DB::raw('TIME(orders_headers.created_at) AS created_time'),
+				'rejectedorders_delivery.status AS delivery_status'
 			)
 			->orderBy('orders_headers.order_id', 'DESC')
 			->paginate(10);
