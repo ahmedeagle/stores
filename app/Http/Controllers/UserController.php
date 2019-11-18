@@ -949,7 +949,7 @@ class UserController extends Controller
 
 		if ($input['phone'] != $user->first()->phone) {
 
-			$rules['phone'] = array('required', 'numeric', 'regex:/^(05|5)([0-9]{8})$/', 'unique:users,phone,' . $userId .',user_id');
+			$rules['phone'] = array('required', 'numeric', 'regex:/^(05|5)([0-9]{8})$/', 'unique:users,phone,' . $userId . ',user_id');
 			$rules['country_code'] = "required";
 
 		} else {
@@ -2771,7 +2771,7 @@ class UserController extends Controller
 			//second step calculate total qty and price and disc
 			$totalQty += $products[$i]['qty'];
 			$totalPrice += ($productPrice + $options_added_price) * $products[$i]['qty'];
-			$totalPrice += ( (int)$app_settings->tax * $totalPrice ) / 100;
+			$totalPrice += ((int)$app_settings->tax * $totalPrice) / 100;
 			$totalDisc += $products[$i]['discount'];
 			$net += $products[$i]['qty'] * ($productPrice + $options_added_price); // need to subtract the discount from the net value
 
@@ -2899,7 +2899,7 @@ class UserController extends Controller
 				]);
 			}
 			// $data['process_number'] = $request->input("process_number");
-			 $data['process_number'] = mt_rand();
+			$data['process_number'] = mt_rand();
 		}
 
 		//we will set this to zero till split payment method is activated
@@ -3181,9 +3181,7 @@ class UserController extends Controller
 			->join('users', 'orders_headers.user_id', 'users.user_id')
 			->join('payment_types', 'orders_headers.payment_type', '=', 'payment_types.payment_id')
 			->join('order_status', 'orders_headers.status_id', '=', 'order_status.status_id')
-
 			->leftJoin('rejectedorders_delivery', 'orders_headers.order_id', '=', 'rejectedorders_delivery.order_id')
-
 			->select(
 				'orders_headers.order_id',
 				'orders_headers.order_code',
@@ -3476,6 +3474,7 @@ class UserController extends Controller
 			->join('providers', 'orders_headers.provider_id', '=', 'providers.provider_id')
 			->join('users', 'orders_headers.user_id', '=', 'users.user_id')
 			->join('order_status', 'orders_headers.status_id', '=', 'order_status.status_id')
+			->leftJoin('rejectedorders_delivery', 'orders_headers.order_id', '=', 'rejectedorders_delivery.order_id')
 			->select('orders_headers.order_code',
 				'orders_headers.order_id',
 				'orders_headers.provider_id',
@@ -3506,7 +3505,8 @@ class UserController extends Controller
 				'providers.latitude AS provider_latitude',
 				'providers.membership_id',
 				DB::raw('IFNULL(DATE(orders_headers.created_at), "") AS order_date'),
-				DB::raw('IFNULL(TIME(orders_headers.created_at), "") AS order_time')
+				DB::raw('IFNULL(TIME(orders_headers.created_at), "") AS order_time'),
+				'rejectedorders_delivery.status AS delivery_status'
 
 			)
 			->first();
@@ -4615,37 +4615,37 @@ class UserController extends Controller
 			return response()->json(['status' => false, 'errNum' => (int)$error, 'msg' => $msg[$error]]);
 		}
 
-        $url  = "https://test.oppwa.com/v1/checkouts";
-        $data =
-            "entityId=8a8294174d0595bb014d05d82e5b01d2" .
-            "&amount=".$request->total_paid_amount.
+		$url = "https://test.oppwa.com/v1/checkouts";
+		$data =
+			"entityId=8a8294174d0595bb014d05d82e5b01d2" .
+			"&amount=" . $request->total_paid_amount .
 //            "&currency=SAR" .
-            "&currency=EUR" .
-            "&paymentType=DB" .
-            "&notificationUrl=http://www.wisyst.com/notify".
-            "&merchantTransactionId=400".
+			"&currency=EUR" .
+			"&paymentType=DB" .
+			"&notificationUrl=http://www.wisyst.com/notify" .
+			"&merchantTransactionId=400" .
 //            "&testMode=EXTERNAL".
-            "&testMode=INTERNAL".
-            "&customer.email=info@wisyst.info";
-        try{
-            $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, $url);
-            curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-                'Authorization:Bearer OGE4Mjk0MTc0ZDA1OTViYjAxNGQwNWQ4MjllNzAxZDF8OVRuSlBjMm45aA=='));
-            curl_setopt($ch, CURLOPT_POST, 1);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);// this should be set to true in production
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            $responseData = curl_exec($ch);
-            if(curl_errno($ch)) {
-                // return response()->json(['status' => false, 'errNum' => 3, 'msg' => $msg[3]]);
-            }
-            curl_close($ch);
-        }catch (\Exception $ex) {
-            return response()->json(['status' => false, 'errNum' => 3, 'msg' => $ex->getMessage() ]);
-        }
-        $id  =  json_decode($responseData)->id;
-        return response()->json(['status' => true, 'errNum' => 0, 'checkoutId' => $id, 'msg' => $msg[0]]);
+			"&testMode=INTERNAL" .
+			"&customer.email=info@wisyst.info";
+		try {
+			$ch = curl_init();
+			curl_setopt($ch, CURLOPT_URL, $url);
+			curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+				'Authorization:Bearer OGE4Mjk0MTc0ZDA1OTViYjAxNGQwNWQ4MjllNzAxZDF8OVRuSlBjMm45aA=='));
+			curl_setopt($ch, CURLOPT_POST, 1);
+			curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);// this should be set to true in production
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+			$responseData = curl_exec($ch);
+			if (curl_errno($ch)) {
+				// return response()->json(['status' => false, 'errNum' => 3, 'msg' => $msg[3]]);
+			}
+			curl_close($ch);
+		} catch (\Exception $ex) {
+			return response()->json(['status' => false, 'errNum' => 3, 'msg' => $ex->getMessage()]);
+		}
+		$id = json_decode($responseData)->id;
+		return response()->json(['status' => true, 'errNum' => 0, 'checkoutId' => $id, 'msg' => $msg[0]]);
 
 
 		/*$url = "https://test.oppwa.com/v1/checkouts";
@@ -4716,23 +4716,22 @@ class UserController extends Controller
 		}
 
 
-        $url = "https://test.oppwa.com/v1/checkouts/{$request->checkoutId}/payment";
-        $url .= "?entityId=8a8294174d0595bb014d05d82e5b01d2";
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-            'Authorization:Bearer OGE4Mjk0MTc0ZDA1OTViYjAxNGQwNWQ4MjllNzAxZDF8OVRuSlBjMm45aA=='));
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);// this should be set to true in production
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        $responseData = curl_exec($ch);
-        if(curl_errno($ch)) {
-            return curl_error($ch);
-        }
-        curl_close($ch);
-        $r = json_decode($responseData);
-        return response()->json(['status' => true, 'errNum' => 0, 'msg' => $r->result->description, 'code' => $r->result->code]);
-
+		$url = "https://test.oppwa.com/v1/checkouts/{$request->checkoutId}/payment";
+		$url .= "?entityId=8a8294174d0595bb014d05d82e5b01d2";
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, $url);
+		curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+			'Authorization:Bearer OGE4Mjk0MTc0ZDA1OTViYjAxNGQwNWQ4MjllNzAxZDF8OVRuSlBjMm45aA=='));
+		curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
+		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);// this should be set to true in production
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		$responseData = curl_exec($ch);
+		if (curl_errno($ch)) {
+			return curl_error($ch);
+		}
+		curl_close($ch);
+		$r = json_decode($responseData);
+		return response()->json(['status' => true, 'errNum' => 0, 'msg' => $r->result->description, 'code' => $r->result->code]);
 
 
 		/*$url = "https://test.oppwa.com/v1/checkouts/{$request->checkoutId}/payment";
@@ -4754,9 +4753,6 @@ class UserController extends Controller
 
 		$r = json_decode($responseData);
 		return response()->json(['status' => true, 'errNum' => 0, 'msg' => $r->result->description]);*/
-
-
-
 
 
 		/*if ($r->result->description == "Request successfully processed in 'Merchant in Connector Test Mode'") {
