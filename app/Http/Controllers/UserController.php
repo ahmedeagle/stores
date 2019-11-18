@@ -3352,11 +3352,15 @@ class UserController extends Controller
 		try {
 
 			$order_id = $request->input('order_id');
+			$rejected_reason = $request->input('reason');
 			$status = 4; // cancel status
 
-			DB::transaction(function () use ($status, $order_id, $actor_id, $payment_type, $total_value) {
+			DB::transaction(function () use ($status, $order_id, $rejected_reason, $actor_id, $payment_type, $total_value) {
 
-				DB::table("orders_headers")->where('order_id', $order_id)->update(['status_id' => $status]);
+				DB::table("orders_headers")->where('order_id', $order_id)->update([
+					'status_id' => $status,
+					'rejected_reason' => !empty($rejected_reason) ? $rejected_reason : null,
+				]);
 
 				DB::table("order_products")->where('order_id', $order_id)->update(['status' => $status]);
 
