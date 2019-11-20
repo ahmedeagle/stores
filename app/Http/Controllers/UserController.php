@@ -4587,19 +4587,19 @@ class UserController extends Controller
 		if ($lang == "ar") {
 
 			$msg = array(
-				0 => 'تم جلب البيانات ',
-				1 => 'رقم  التاجر  غير موجود ',
-				2 => 'لا يوجد بيانات',
-				3 => 'المتجر غير موجود ',
+				0 => 'تم جلب البيانات',
+				1 => 'رقم  التاجر غير موجود',
+				2 => 'المبلغ غير صحيح',
+				3 => 'المتجر غير موجود',
 			);
 
 		} else {
 
 			$msg = array(
 				0 => 'successfully done',
-				1 => 'total_paid_amount required',
-				2 => 'total_paid_amount is invalid',
-				3 => 'faild to process ',
+				1 => 'total paid amount required',
+				2 => 'total paid amount is invalid',
+				3 => 'failed to process',
 			);
 
 		}
