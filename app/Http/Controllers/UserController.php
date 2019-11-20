@@ -4611,7 +4611,8 @@ class UserController extends Controller
 		);
 
 		$validator = Validator::make($request->all(), [
-			'total_paid_amount' => array('required', 'regex:/^\d+(\.\d{1,2})?$/', 'min:1'),
+			'total_paid_amount' => array('required', 'min:1'),
+//			'total_paid_amount' => array('required', 'regex:/^\d+(\.\d{1,2})?$/', 'min:1'),
 		], $messages);
 
 		if ($validator->fails()) {
