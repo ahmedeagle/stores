@@ -4611,7 +4611,7 @@ class UserController extends Controller
 		);
 
 		$validator = Validator::make($request->all(), [
-			'total_paid_amount' => array('required', 'min:1'),
+			'total_paid_amount' => array('required', 'regex:/^[0-9]{1,12}(\\.[0-9]{2})?$/', 'min:1'),
 //			'total_paid_amount' => array('required', 'regex:/^\d+(\.\d{1,2})?$/', 'min:1'),
 		], $messages);
 
@@ -4632,6 +4632,7 @@ class UserController extends Controller
 //            "&testMode=EXTERNAL".
 			"&testMode=INTERNAL" .
 			"&customer.email=info@wisyst.info";
+
 		try {
 			$ch = curl_init();
 			curl_setopt($ch, CURLOPT_URL, $url);
@@ -4649,6 +4650,7 @@ class UserController extends Controller
 		} catch (\Exception $ex) {
 			return response()->json(['status' => false, 'errNum' => 3, 'msg' => $ex->getMessage()]);
 		}
+
 		$id = json_decode($responseData)->id;
 		return response()->json(['status' => true, 'errNum' => 0, 'checkoutId' => $id, 'msg' => $msg[0]]);
 
