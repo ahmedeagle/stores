@@ -36,26 +36,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/Http/Controllers/UserController.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="374">
-              <caret line="3362" column="19" lean-forward="true" selection-start-line="3362" selection-start-column="19" selection-end-line="3362" selection-end-column="19" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/Http/Controllers/ProviderController.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="166">
-              <caret line="4546" column="24" lean-forward="true" selection-start-line="4546" selection-start-column="24" selection-end-line="4546" selection-end-column="96" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/routes/user.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="344">
-              <caret line="155" column="60" selection-start-line="155" selection-start-column="48" selection-end-line="155" selection-end-column="60" />
+            <state relative-caret-position="247">
+              <caret line="4607" column="28" lean-forward="true" selection-start-line="4607" selection-start-column="28" selection-end-line="4607" selection-end-column="28" />
             </state>
           </provider>
         </entry>
@@ -64,8 +46,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>newOrders</find>
-      <find>newOrder</find>
       <find>reset</find>
       <find>forget</find>
       <find>forgetPa</find>
@@ -84,7 +64,6 @@
       <find>OrderAcceptance</find>
       <find>orders</find>
       <find>orderAcceptance</find>
-      <find>accept</find>
       <find>getProviderPage</find>
       <find>prepareProviderPage</find>
       <find>Details</find>
@@ -92,8 +71,11 @@
       <find>Deta</find>
       <find>getProviderOrders</find>
       <find>getProvi</find>
-      <find>cancel_order</find>
       <find>orderDetails</find>
+      <find>cancel</find>
+      <find>cancelOrder</find>
+      <find>accept</find>
+      <find>cancel_order</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -280,12 +262,13 @@
       <workItem from="1573108020523" duration="8134000" />
       <workItem from="1573128266503" duration="4284000" />
       <workItem from="1574069706533" duration="9574000" />
-      <workItem from="1574086890676" duration="261000" />
+      <workItem from="1574086890676" duration="1783000" />
+      <workItem from="1574250298612" duration="382000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="96758000" />
+    <option name="totallyTimeSpent" value="98662000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -298,7 +281,6 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1296" height="1000" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" weight="0.25" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
@@ -315,7 +297,7 @@
       <window_info anchor="bottom" id="Version Control" order="8" weight="0.3298731" />
       <window_info anchor="bottom" id="Database Changes" order="9" />
       <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" />
-      <window_info anchor="bottom" id="Terminal" order="11" weight="0.23990773" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="11" visible="true" weight="0.23990773" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -531,13 +513,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/routes/user.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="344">
-          <caret line="155" column="60" selection-start-line="155" selection-start-column="48" selection-end-line="155" selection-end-column="60" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/Http/Controllers/ProviderController.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="166">
@@ -545,10 +520,17 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/routes/user.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="344">
+          <caret line="155" column="60" selection-start-line="155" selection-start-column="48" selection-end-line="155" selection-end-column="60" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/app/Http/Controllers/UserController.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="374">
-          <caret line="3362" column="19" lean-forward="true" selection-start-line="3362" selection-start-column="19" selection-end-line="3362" selection-end-column="19" />
+        <state relative-caret-position="247">
+          <caret line="4607" column="28" lean-forward="true" selection-start-line="4607" selection-start-column="28" selection-end-line="4607" selection-end-column="28" />
         </state>
       </provider>
     </entry>
