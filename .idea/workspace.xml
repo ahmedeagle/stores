@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="661b7e20-c39c-40c9-a1b6-c0928f1d6fc1" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/UserController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/UserController.php" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -35,8 +35,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/Http/Controllers/UserController.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="183">
-              <caret line="2772" column="64" selection-start-line="2772" selection-start-column="44" selection-end-line="2772" selection-end-column="64" />
+            <state relative-caret-position="-2090">
+              <caret line="2808" column="37" selection-start-line="2808" selection-start-column="20" selection-end-line="2808" selection-end-column="37" />
             </state>
           </provider>
         </entry>
@@ -45,7 +45,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>forgetPa</find>
       <find>logout</find>
       <find>updatePassword</find>
       <find>license_img</find>
@@ -75,6 +74,7 @@
       <find>process_num</find>
       <find>addOrder</find>
       <find>Paid amount not equal to order amount</find>
+      <find>total_paid_amount</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -264,12 +264,12 @@
       <workItem from="1574086890676" duration="1783000" />
       <workItem from="1574250298612" duration="3003000" />
       <workItem from="1574258037531" duration="1632000" />
-      <workItem from="1574321404722" duration="1327000" />
+      <workItem from="1574321404722" duration="3638000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="104242000" />
+    <option name="totallyTimeSpent" value="106553000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -531,8 +531,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/Http/Controllers/UserController.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="183">
-          <caret line="2772" column="64" selection-start-line="2772" selection-start-column="44" selection-end-line="2772" selection-end-column="64" />
+        <state relative-caret-position="-2090">
+          <caret line="2808" column="37" selection-start-line="2808" selection-start-column="20" selection-end-line="2808" selection-end-column="37" />
         </state>
       </provider>
     </entry>

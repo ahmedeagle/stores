@@ -2641,7 +2641,7 @@ class UserController extends Controller
 		$payment_method = $request->input('payment_method_id');
 		$delivery_time = $request->input('delivery_time');
 		$totalQty = 0;
-		$totalPrice = 0;
+//		$totalPrice = 0;
 		$net = 0;
 		$totalValue = 0;
 		$totalDisc = 0;
@@ -2770,8 +2770,7 @@ class UserController extends Controller
 
 			//second step calculate total qty and price and disc
 			$totalQty += $products[$i]['qty'];
-			$totalPrice += ($productPrice + $options_added_price) * $products[$i]['qty'];
-
+//			$totalPrice += ($productPrice + $options_added_price) * $products[$i]['qty'];
 //			$totalPrice += ((int)$app_settings->tax * $totalPrice) / 100;
 
 			$totalDisc += $products[$i]['discount'];
@@ -2893,13 +2892,15 @@ class UserController extends Controller
 
 		// if payment by visa must ensure paid amount equal order total value
 		if ($payment_method == 2 || $payment_method == 3) {
-			if ($request->input("total_paid_amount") != $totalPrice) {
-				return response()->json([
-					"status" => false,
-					"errNum" => 23,
-					"msg" => $msg[23],
-				]);
-			}
+
+			/*			if ($request->input("total_paid_amount") != $totalPrice) {
+							return response()->json([
+								"status" => false,
+								"errNum" => 23,
+								"msg" => $msg[23],
+							]);
+						}*/
+
 			// $data['process_number'] = $request->input("process_number");
 			$data['process_number'] = mt_rand();
 		}
@@ -2907,7 +2908,7 @@ class UserController extends Controller
 		//we will set this to zero till split payment method is activated
 		$split_value = 0;
 		try {
-			$data['totalPrice'] = $totalPrice;
+			$data['totalPrice'] = $request->input("total_paid_amount");
 			$data['totalQty'] = $totalQty;
 			$data['totalDisc'] = $totalDisc;
 			$data['net'] = $net;
