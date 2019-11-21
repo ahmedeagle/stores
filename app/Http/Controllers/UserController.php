@@ -2771,7 +2771,9 @@ class UserController extends Controller
 			//second step calculate total qty and price and disc
 			$totalQty += $products[$i]['qty'];
 			$totalPrice += ($productPrice + $options_added_price) * $products[$i]['qty'];
-			$totalPrice += ((int)$app_settings->tax * $totalPrice) / 100;
+
+//			$totalPrice += ((int)$app_settings->tax * $totalPrice) / 100;
+
 			$totalDisc += $products[$i]['discount'];
 			$net += $products[$i]['qty'] * ($productPrice + $options_added_price); // need to subtract the discount from the net value
 
