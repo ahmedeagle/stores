@@ -2476,6 +2476,7 @@ class ProviderController extends Controller
 				23 => ' اسعار الالوان لابد ان تكون مصفوفه ',
 				24 => 'امتدادات الصور يجب ان تكون علي شكل مصفوفة',
 				25 => 'عدد الصور لا يساوي عدد الامتدادات ',
+				26 => 'يرجى إدخال كمية المنتج',
 
 			);
 		} else {
@@ -2506,6 +2507,7 @@ class ProviderController extends Controller
 				23 => 'colors prices must pass as array',
 				24 => 'image_ext must be array ',
 				25 => 'images and its extensions not equal',
+				26 => 'Product quantity is required',
 
 			);
 		}
@@ -2532,6 +2534,7 @@ class ProviderController extends Controller
 			'sizes_price.array' => 22,
 			'colors_price.array' => 23,
 			'image_ext.array' => 24,
+			'quantity.required' => 26,
 
 		);
 
@@ -2552,6 +2555,7 @@ class ProviderController extends Controller
 			'sizes_price' => 'array|required_with:sizes',
 			'colors' => 'array|min:1',
 			'colors_price' => 'array|required_with:colors',
+			'quantity' => 'required',
 
 		], $messages);
 
@@ -2585,6 +2589,7 @@ class ProviderController extends Controller
 			'title' => $request->title,
 			'category_id' => $request->category_id,
 			'price' => $request->price,
+			'quantity' => $request->quantity,
 			'description' => $request->description,
 
 		]);
@@ -2738,7 +2743,8 @@ class ProviderController extends Controller
 				$cat_col,
 				'products.description',
 				'providers.provider_id',
-				'products.price'
+				'products.price',
+				'products.quantity'
 
 			)
 			->paginate(10);
@@ -2911,7 +2917,9 @@ class ProviderController extends Controller
 				'products.id as product_id',
 				'products.title',
 				'products.description',
-				'products.price')
+				'products.price',
+				'products.quantity'
+			)
 			->first();
 
 		$images = DB::table('product_images')
@@ -3000,6 +3008,7 @@ class ProviderController extends Controller
 				23 => ' اسعار الالوان لابد ان تكون مصفوفه ',
 				24 => 'ألتصنيف غير موجود ',
 				25 => 'امتدادات الصوره لابد ان تكون علي شطل مصفوفه ',
+				26 => 'يرجى إدخال كمية المنتج',
 
 			);
 		} else {
@@ -3030,6 +3039,7 @@ class ProviderController extends Controller
 				23 => ' اسعار الالوان لابد ان تكون مصفوفه ',
 				24 => 'ألتصنيف غير موجود ',
 				25 => 'images extensions must be array ',
+				26 => 'Product quantity is required',
 
 			);
 		}
@@ -3058,6 +3068,7 @@ class ProviderController extends Controller
 			'sizes_price.array' => 22,
 			'colors_price.array' => 23,
 			'category_id.exist' => 24,
+			'quantity.required' => 26,
 
 		);
 
@@ -3069,6 +3080,7 @@ class ProviderController extends Controller
 			'product_id' => 'required|exists:products,id',
 			'description' => 'required',
 			'price' => 'required|numeric',
+			'quantity' => 'required',
 
 			'product_images' => 'required',
 			'product_images' => 'required|array',
@@ -3155,7 +3167,7 @@ class ProviderController extends Controller
 
 		}
 
-		$data = $request->only('title', 'description', 'category_id', 'description', 'price');
+		$data = $request->only('title', 'description', 'category_id', 'description', 'price', 'quantity');
 
 		$data['provider_id'] = $provider_id;
 
