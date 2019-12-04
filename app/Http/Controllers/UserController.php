@@ -1209,8 +1209,8 @@ class UserController extends Controller
 			})->values();*/
 
 
-			$desiredDistance = 80;
-			$providers = $pagianted_providers->filter(function ($item, $desiredDistance) {
+			$providers = $pagianted_providers->filter(function ($item) {
+				$desiredDistance = 80;
 				return $item->distance < $desiredDistance;
 			})->values();
 
