@@ -1203,8 +1203,15 @@ class UserController extends Controller
 
 		if ($type == 0) {
 			// filter based on distance by nearest
-			$providers = $pagianted_providers->filter(function ($item) {
-				return $item->distance > 200;
+
+			/*$providers = $pagianted_providers->sortBy(function ($item) {
+				return $item->distance;
+			})->values();*/
+
+
+			$desiredDistance = 80;
+			$providers = $pagianted_providers->filter(function ($item, $desiredDistance) {
+				return $item->distance < $desiredDistance;
 			})->values();
 
 		} else {
