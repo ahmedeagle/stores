@@ -180,7 +180,7 @@ class DeliveryController extends Controller
 				10 => 'التصنيفات مطلوبه',
 				11 => 'الدولة غير موجوده ',
 				12 => 'المدينة غير موجوده',
-				13 => ' صيغه الهاتف غير  صحيحه لابد انت تبدا ب 5 , 05',
+				13 => 'صيغة رقم الهاتف غير صحيحة لابد أن تبدأ ب 05',
 				14 => 'كلمتي المرور غير متطابقتان ',
 				15 => 'license_img_ext is required',
 				16 => 'car_form_ext is required',
@@ -203,7 +203,7 @@ class DeliveryController extends Controller
 				10 => 'Categories are required',
 				11 => 'Country not exists',
 				12 => 'City not exists',
-				13 => 'phone format invalid must start with 5 or 05',
+				13 => 'phone format invalid must start with 05',
 				14 => 'password not confirmed',
 				15 => 'license_img_ext is required',
 				16 => 'car_form_ext is required',
@@ -238,7 +238,7 @@ class DeliveryController extends Controller
 			'full_name' => 'required',
 			'country_id' => 'required|exists:country,country_id',
 			'city_id' => 'required|exists:city,city_id',
-			'phone' => array('required', 'unique:deliveries,phone', 'regex:/^(05|5)([0-9]{8})$/'),
+			'phone' => array('required', 'unique:deliveries,phone', 'regex:/^(05)([0-9]{8})$/'),
 
 			'country_code' => 'required',
 			'car_number' => 'required',
@@ -295,7 +295,7 @@ class DeliveryController extends Controller
 		}
 
 		$car_form_img = "";
-		if ($request->input('car_form_img') && $request->car_form_img != null  && !empty($request->car_form_img)) {
+		if ($request->input('car_form_img') && $request->car_form_img != null && !empty($request->car_form_img)) {
 
 			//save new image   64 encoded
 			// $image = $this->saveImage( $request -> car_form_img,'jpg', 'deliveries');
@@ -318,7 +318,7 @@ class DeliveryController extends Controller
 		}
 
 		$Insurance_img = "";
-		if ($request->input('Insurance_img') && $request->Insurance_img != null  && !empty($request->Insurance_img)) {
+		if ($request->input('Insurance_img') && $request->Insurance_img != null && !empty($request->Insurance_img)) {
 
 			//save new image   64 encoded
 			// $image = $this->saveImage( $request -> Insurance_img,'jpg', 'deliveries');
@@ -962,7 +962,7 @@ class DeliveryController extends Controller
 				10 => 'التصنيفات مطلوبه',
 				11 => 'الدولة غير موجوده ',
 				12 => 'المدينة غير موجوده',
-				13 => ' صيغه الهاتف غير  صحيحه لابد انت تبدا ب 5 , 05',
+				13 => ' صيغه الهاتف غير  صحيحه لابد انت تبدا ب 05',
 				14 => 'كلمتي المرور غير متطابقتان ',
 				15 => 'license_img_ext is required',
 				16 => 'car_form_ext is required',
@@ -986,7 +986,7 @@ class DeliveryController extends Controller
 				10 => 'Categories are required',
 				11 => 'Country not exists',
 				12 => 'City not exists',
-				13 => 'phone format invalid must start with 5 or 05',
+				13 => 'phone format invalid must start with 05',
 				14 => 'password not confirmed',
 				15 => 'license_img_ext is required',
 				16 => 'car_form_ext is required',
@@ -1035,7 +1035,7 @@ class DeliveryController extends Controller
 			'authorization_img_ext' => 'required_with:authorization_img',
 			'national_img' => 'sometimes|nullable',
 			'national_img_ext' => 'required_with:national_img',
-			'phone' => 'required|numeric|unique:deliveries,phone,' . $deliveryId . ',delivery_id',
+			'phone' => 'required|numeric|regex:/^(05)([0-9]{8})$/|unique:deliveries,phone,' . $deliveryId . ',delivery_id',
 //			"password" => "min:8|confirmed",
 
 		];
@@ -1067,7 +1067,7 @@ class DeliveryController extends Controller
 
 		if ($inputs['phone'] != $delivery->phone) {
 
-//            $rules['phone'] = array('required', 'numeric', 'regex:/^(05|5)([0-9]{8})$/', 'unique:deliveries,phone,'. $deliveryId);
+//            $rules['phone'] = array('required', 'numeric', 'regex:/^(05)([0-9]{8})$/', 'unique:deliveries,phone,'. $deliveryId);
 			$inputs['status'] = "0";
 
 			$code = $this->generate_random_number(4);
@@ -1085,10 +1085,9 @@ class DeliveryController extends Controller
 
 			$isPhoneChanged = true;
 
-		}
-		else {
+		} else {
 
-//            $rules['phone'] = array('required', 'numeric', 'regex:/^(05|5)([0-9]{8})$/');
+//            $rules['phone'] = array('required', 'numeric', 'regex:/^(05)([0-9]{8})$/');
 			$isPhoneChanged = false;
 
 		}

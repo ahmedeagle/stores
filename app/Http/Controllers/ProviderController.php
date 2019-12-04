@@ -25,6 +25,7 @@ use Mail;
 use Storage;
 use Validator;
 use Hash;
+use Illuminate\Support\Str;
 
 class ProviderController extends Controller
 {
@@ -197,7 +198,7 @@ class ProviderController extends Controller
 				6 => 'فئة المتجر غير موجوده ',
 				7 => 'الدولة غير موجوده ',
 				8 => 'المدينة غير موجوده ',
-				9 => 'صيغه الهاتف غير صحيحه لابد ان تبدا ب 5 او 05',
+				9 => 'صيغة الهاتف غير صحيحة لابد أن تبدأ ب 05',
 
 			);
 
@@ -212,7 +213,7 @@ class ProviderController extends Controller
 				6 => 'membership type not exists',
 				7 => 'country   not exists',
 				8 => 'city  not exists',
-				9 => 'phone number format invlid it must start with 5 or 05 ',
+				9 => 'phone number format invalid it must start with 05 ',
 
 			);
 		}
@@ -232,7 +233,7 @@ class ProviderController extends Controller
 		$validator = Validator::make($request->all(), [
 			'full_name' => 'required',
 			'store_name' => 'required',
-			'phone' => array('required', 'unique:providers,phone', 'regex:/^(05|5)([0-9]{8})$/'),
+			'phone' => array('required', 'unique:providers,phone', 'regex:/^(05)([0-9]{8})$/'),
 			'country_code' => 'required',
 			'password_confirmation' => 'required',
 			'password' => 'required|min:8|confirmed',
@@ -255,6 +256,11 @@ class ProviderController extends Controller
 		if ($request->input('city_id') == 0 || $request->input('city_id') == "0" || is_null($request->input('city_id')) || empty($request->input('city_id'))) {
 			return response()->json(['status' => false, 'errNum' => 1, 'msg' => $msg[1]]);
 		}
+
+		/*$checkPhoneKey = Str::startsWith($request->input('phone'), '05');
+		if (!$checkPhoneKey){
+			return response()->json(['status' => false, 'errNum' => 1, 'msg' => $msg[1]]);
+		}*/
 
 		$data['image'] = "avatar_ic.png";
 
@@ -1210,7 +1216,7 @@ class ProviderController extends Controller
 				8 => ' التوصيل لابد ان يكون رقم صحيح ',
 				9 => 'صوره الملف الشخصي غير صالحة ',
 				10 => 'رقم الهاتف  لابد ان يكون ارقام ',
-				11 => 'صيغة رقم الهاتف خطا لابد ان تبدا ب 5 او 05 ',
+				11 => 'صيغة رقم الهاتف خطا لابد ان تبدا ب 05 ',
 				12 => 'لابد من ادخال سعر التوصيل',
 				13 => 'طرق التوصيل يجب ان تكون علي شكل مصفوفه ',
 				14 => 'لابد من اهتيار طريقه توصيل واحده ع الاقل ',
@@ -1233,7 +1239,7 @@ class ProviderController extends Controller
 				8 => 'delivery_method_id must be numeric',
 				9 => 'profile image  not valid',
 				10 => 'phone number must be numeric',
-				11 => 'phone number formate  invalid must strat with 5 or 05',
+				11 => 'phone number format  invalid must start with 05',
 				12 => 'method delivery price required',
 				13 => 'delivery method must be an array',
 				14 => 'must choose at least one delivery method',
@@ -1294,12 +1300,12 @@ class ProviderController extends Controller
 
 		if ($input['phone'] != $provider->first()->phone) {
 
-			$rules['phone'] = array('required', 'regex:/^(05|5)([0-9]{8})$/', 'numeric', 'unique:providers,phone,' . $id . ',provider_id');
+			$rules['phone'] = array('required', 'regex:/^(05)([0-9]{8})$/', 'numeric', 'unique:providers,phone,' . $id . ',provider_id');
 			$rules['country_code'] = "required";
 
 		} else {
 
-			$rules['phone'] = array('required', 'regex:/^(05|5)([0-9]{8})$/', 'numeric');
+			$rules['phone'] = array('required', 'regex:/^(05)([0-9]{8})$/', 'numeric');
 			$rules['country_code'] = "required";
 
 		}
