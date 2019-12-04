@@ -53,8 +53,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/Http/Controllers/UserController.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="134">
-              <caret line="1205" column="22" selection-start-line="1205" selection-start-column="12" selection-end-line="1205" selection-end-column="22" />
+            <state relative-caret-position="342">
+              <caret line="1209" column="12" lean-forward="true" selection-start-line="1209" selection-start-column="12" selection-end-line="1209" selection-end-column="12" />
             </state>
           </provider>
         </entry>
@@ -312,12 +312,12 @@
       <workItem from="1574321404722" duration="4916000" />
       <workItem from="1574769676995" duration="690000" />
       <workItem from="1575382068731" duration="1258000" />
-      <workItem from="1575447619124" duration="8082000" />
+      <workItem from="1575447619124" duration="8240000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="117861000" />
+    <option name="totallyTimeSpent" value="118019000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -618,8 +618,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/Http/Controllers/UserController.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="134">
-          <caret line="1205" column="22" selection-start-line="1205" selection-start-column="12" selection-end-line="1205" selection-end-column="22" />
+        <state relative-caret-position="342">
+          <caret line="1209" column="12" lean-forward="true" selection-start-line="1209" selection-start-column="12" selection-end-line="1209" selection-end-column="12" />
         </state>
       </provider>
     </entry>
