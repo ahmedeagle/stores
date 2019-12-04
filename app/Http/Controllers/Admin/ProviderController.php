@@ -7,6 +7,7 @@ namespace App\Http\Controllers\Admin;
  * @author Ahmed Emam <ahmedaboemam123@gmail.com>
  */
 
+use App\Http\Controllers\SmsController;
 use Log;
 use App\Http\Controllers\Controller;
 use App\User;
@@ -298,7 +299,6 @@ class ProviderController extends Controller
 	public function update(Request $request)
 	{
 
-
 		$messages = [
 			'full_name.required' => 'لابد من ادخال الاسم  بالكامل ',
 			'store_name.required' => 'لابد من ادخال اسم المتجر ',
@@ -337,7 +337,6 @@ class ProviderController extends Controller
 
 		];
 
-
 		$rules = [
 			'full_name' => 'required',
 			'store_name' => 'required',
@@ -355,37 +354,34 @@ class ProviderController extends Controller
 			'publish' => 'required|in:0,1'
 		];
 
+		//get Provider data
+		$provider = Providers::where('provider_id', $request->provider_id)->first();
+
+		if (!$provider) {
+			return abort('404');
+		}
 
 		if ($request->hasFile('commercial_photo')) {
-
 			$rules['commercial_photo'] = 'required|mimes:jpeg,png';
-
-
 		}
 
 		if ($request->has('password')) {
-
 			$rules['password_confirmation'] = 'required';
 			$rules['password'] = 'required|min:8|confirmed';
-
 		}
 
 		$validator = Validator::make($request->all(), $rules, $messages);
 
-
 		$validator->after(function ($validator) use ($request) {
 
 			if (empty($request->delivery_method) or !$request->delivery_method) {
-
 				$validator->errors()->add('delivery_method', 'لابد من  اختيار وسائل التوصيل  او واحده ع الاقل ');
 			}
 
 			if ($request->has('delivery_method')) {
 
 				if (!is_array($request->delivery_method)) {
-
 					$validator->errors()->add('delivery_method', ' وسائل التوصيل لابد ان تطون مصفوفه .');
-
 				}
 			}
 
@@ -411,15 +407,11 @@ class ProviderController extends Controller
 			}
 		});
 
-
 		if ($validator->fails()) {
-
 			return redirect()->back()->with('errors', $validator->errors())->withInput();
 		}
 
-
 		$inputs = $request->only('full_name', 'store_name', 'phone', 'country_id', 'city_id', 'membership_id', 'category_id', 'longitude', 'latitude', 'publish');
-
 
 		if ($request->hasFile('commercial_photo')) {
 
@@ -439,7 +431,6 @@ class ProviderController extends Controller
 
 
 		if ($request->has('password')) {
-
 			$inputs['password'] = md5($request->password);
 		}
 
@@ -465,6 +456,22 @@ class ProviderController extends Controller
 				]);
 			}
 		}
+
+		####### Start send phone activation message ########
+
+		if ($inputs['publish'] == 1) {
+
+			if ($provider->lang == 'ar') {
+				$message = 'تم تفعيل الحساب الخاص بكم بنجاح.';
+			} else {
+				$message = 'Your account has been activated successfully.';
+			}
+
+			$res = (new SmsController())->send($message, $provider->phone);
+
+		}
+
+		####### End send phone activation message ########
 
 		$request->session()->flash('success', 'Provider updated successfully');
 		return redirect()->route('provider.show');
