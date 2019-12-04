@@ -7,6 +7,7 @@ namespace App\Http\Controllers\Admin;
  * @author Ahmed Emam <ahmedaboemam123@gmail.com>
  */
 
+use App\Http\Controllers\SmsController;
 use Log;
 use App\Http\Controllers\Controller;
 use App\User;
@@ -485,7 +486,7 @@ class DeliveryController extends Controller
 
 		$delivery_info = DB::table("deliveries")
 			->where("delivery_id", $id)
-			->select("status")
+			->select("status", "phone", "lang")
 			->first();
 		if ($delivery_info->status == 0 || $delivery_info->status == "0") {
 			$update = 3;
@@ -501,6 +502,20 @@ class DeliveryController extends Controller
 				"admin_activation_time" => $timestamp,
 				"publish" => 1,
 			]);
+
+		####### Start send phone activation message ########
+
+		if($delivery_info->lang == 'ar'){
+			$message = 'تم تفعيل الحساب الخاص بكم بنجاح.';
+		}
+		else{
+			$message = 'Your account has been activated successfully.';
+		}
+
+		$res = (new SmsController())->send($message, $delivery_info->phone);
+
+		####### End send phone activation message ########
+
 		$request->session()->flash('success', 'Delivery has been activated successfully');
 		return redirect()->back()->withInput();
 	}
