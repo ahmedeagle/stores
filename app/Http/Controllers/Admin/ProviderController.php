@@ -282,7 +282,7 @@ class ProviderController extends Controller
 		$data['categories'] = DB::table('categories')->where('publish', 1)
 			->select('cat_ar_name',
 				'cat_id',
-				DB::raw('IF(cat_id =' . $cat_id . ', true, false) AS choosen')
+				DB::raw('IF(cat_id =' . $cat_id ? $cat_id : 0 . ', true, false) AS choosen')
 			)->get();
 
 
