@@ -1118,7 +1118,7 @@ class UserController extends Controller
 				1 => 'all fields required',
 				2 => 'category id doesn\'t exists',
 				3 => 'done successfully',
-				4 => 'must select type fron 0,1',
+				4 => 'must select type from 0,1',
 			];
 		}
 
@@ -1204,7 +1204,7 @@ class UserController extends Controller
 		if ($type == 0) {
 			// filter based on distance by nearest
 			$providers = $pagianted_providers->sortBy(function ($item) {
-				return $item->distance;
+				return $item->distance > 71;
 			})->values();
 
 		} else {
