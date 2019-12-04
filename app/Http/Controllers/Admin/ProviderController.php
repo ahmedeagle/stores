@@ -269,7 +269,7 @@ class ProviderController extends Controller
 			->select('country_id',
 				'country_ar_name',
 				'country_code',
-				DB::raw('IF(country_id = ' . $country_id . ', true, false) AS choosen')
+				DB::raw('IF(country_id = ' . $country_id ? $country_id : 0 . ', true, false) AS choosen')
 			)->get();
 
 		//get countries
