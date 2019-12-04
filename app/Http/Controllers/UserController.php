@@ -2688,7 +2688,7 @@ class UserController extends Controller
 				->select("quantity")
 				->first();
 
-			if (!empty($products[$i]['qty']) && intValue($products[$i]['qty']) > intValue($quantity_in_stock->quantity)) {
+			if (!empty($products[$i]['qty']) && intval ($products[$i]['qty']) > intval ($quantity_in_stock->quantity)) {
 				return response()->json(['status' => false, 'errNum' => 4, 'msg' => $msg[24]]);
 			}
 
@@ -3027,7 +3027,7 @@ class UserController extends Controller
 					DB::table('products')
 						->where('product_id', $productsArr[$i]['product_id'])
 						->update([
-							'quantity' => intValue($quantity_in_stock->quantity) - intValue($productsArr[$i]['qty']),
+							'quantity' => intval ($quantity_in_stock->quantity) - intval ($productsArr[$i]['qty']),
 						]);
 
 					###### End Update Product Quantity In Stock #######
