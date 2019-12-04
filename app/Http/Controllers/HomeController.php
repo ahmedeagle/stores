@@ -52,7 +52,7 @@ class HomeController extends Controller
                 if ($request->input('latitude') && $request->input('longitude')) {
                     $latitude = $request->input('latitude');
                     $longitude = $request->input('longitude');
-                    $distance = $this->getDistance($provider->longitude, $provider->latitude, $longitude, $latitude, "KM");
+                    $distance = $this->getDistance($provider->longitude, $provider->latitude, $longitude, $latitude, "K");
                 } else {
                     $distance = -1;
                 }
