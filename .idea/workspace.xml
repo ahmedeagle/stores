@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="661b7e20-c39c-40c9-a1b6-c0928f1d6fc1" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/Admin/DeliveryController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/Admin/DeliveryController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -35,38 +35,11 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/Http/Controllers/Admin/DeliveryController.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="662">
-              <caret line="516" column="19" selection-start-line="516" selection-start-column="19" selection-end-line="516" selection-end-column="19" />
+            <state relative-caret-position="278">
+              <caret line="500" column="23" selection-start-line="500" selection-start-column="17" selection-end-line="500" selection-end-column="23" />
               <folding>
                 <element signature="e#108#147#0#PHP" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/Http/Controllers/Admin/ProviderController.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1942">
-              <caret line="212" column="28" selection-start-line="212" selection-start-column="22" selection-end-line="212" selection-end-column="28" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/Http/Controllers/UserController.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="358">
-              <caret line="355" column="71" lean-forward="true" selection-start-line="354" selection-start-column="12" selection-end-line="355" selection-end-column="71" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/Http/Controllers/Admin/UsersController.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="262">
-              <caret line="35" column="36" selection-start-line="35" selection-start-column="36" selection-end-line="35" selection-end-column="36" />
             </state>
           </provider>
         </entry>
@@ -75,7 +48,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>cancel</find>
       <find>cancelOrder</find>
       <find>accept</find>
       <find>cancel_order</find>
@@ -104,6 +76,7 @@
       <find>05|5</find>
       <find>with 05</find>
       <find>sms</find>
+      <find>ar</find>
       <find>activa</find>
     </findStrings>
     <replaceStrings>
@@ -317,12 +290,12 @@
       <workItem from="1574321404722" duration="4916000" />
       <workItem from="1574769676995" duration="690000" />
       <workItem from="1575382068731" duration="1258000" />
-      <workItem from="1575447619124" duration="14155000" />
+      <workItem from="1575447619124" duration="15189000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="123934000" />
+    <option name="totallyTimeSpent" value="124968000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -352,7 +325,7 @@
       <window_info anchor="bottom" id="Version Control" order="8" weight="0.3298731" />
       <window_info anchor="bottom" id="Database Changes" order="9" />
       <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" />
-      <window_info anchor="bottom" id="Terminal" order="11" weight="0.35063437" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="11" visible="true" weight="0.35063437" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -627,8 +600,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/Http/Controllers/Admin/DeliveryController.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="662">
-          <caret line="516" column="19" selection-start-line="516" selection-start-column="19" selection-end-line="516" selection-end-column="19" />
+        <state relative-caret-position="278">
+          <caret line="500" column="23" selection-start-line="500" selection-start-column="17" selection-end-line="500" selection-end-column="23" />
           <folding>
             <element signature="e#108#147#0#PHP" expanded="true" />
           </folding>
