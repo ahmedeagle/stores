@@ -1346,7 +1346,7 @@ class UserController extends Controller
 			$products = Product::where('products.provider_id', $providerId)
 				->where('products.category_id', $catId)
 				->where('products.publish', 1)
-				->select('products.id', 'products.title', 'products.price',
+				->select('products.id', 'products.title', 'products.price', 'products.quantity',
 					'products.likes_count', 'products.product_rate',
 					DB::raw('IF ((SELECT count(id) FROM product_likes WHERE product_likes.user_id = ' . $userId . ' AND product_likes.product_id = products.id) > 0, 1, 0) as isFavorit'));
 
