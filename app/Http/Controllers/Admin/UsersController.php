@@ -182,18 +182,20 @@ class UsersController extends Controller
 
 			if ($check != NULL) {
 
-				####### Start send phone activation message ########
+				if ($request->status == 1) {
 
-				if ($check->lang == 'ar') {
-					$message = 'تم تفعيل الحساب الخاص بكم بنجاح.';
-				} else {
-					$message = 'Your account has been activated successfully.';
+					####### Start send phone activation message ########
+
+					if ($check->lang == 'ar') {
+						$message = 'تم تفعيل الحساب الخاص بكم بنجاح.';
+					} else {
+						$message = 'Your account has been activated successfully.';
+					}
+
+					$res = (new SmsController())->send($message, $check->phone);
+
+					####### End send phone activation message ########
 				}
-
-				$res = (new SmsController())->send($message, $check->phone);
-
-				####### End send phone activation message ########
-
 			}
 
 			$request->session()->flash('success', 'User has been updated successfully');
