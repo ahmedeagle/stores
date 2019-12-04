@@ -258,10 +258,10 @@ class ProviderController extends Controller
 			return abort('404');
 		}
 
-		$city_id = $data['provider']->city_id;
-		$country_id = $data['provider']->country_id;
-		$membership_id = $data['provider']->membership_id;
-		$cat_id = $data['provider']->category_id;
+		$city_id = $data['provider']->city_id ? $data['provider']->city_id : 0;
+		$country_id = $data['provider']->country_id ? $data['provider']->country_id : 0;
+		$membership_id = $data['provider']->membership_id ? $data['provider']->membership_id : 0;
+		$cat_id = $data['provider']->category_id ? $data['provider']->category_id : 0;
 
 
 		//get countries
