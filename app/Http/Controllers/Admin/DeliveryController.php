@@ -498,7 +498,8 @@ class DeliveryController extends Controller
 			->where("delivery_id", $id)
 			->update([
 				"status" => $update,
-				"admin_activation_time" => $timestamp
+				"admin_activation_time" => $timestamp,
+				"publish" => 1,
 			]);
 		$request->session()->flash('success', 'Delivery has been activated successfully');
 		return redirect()->back()->withInput();
