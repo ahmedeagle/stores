@@ -156,6 +156,7 @@ class UsersController extends Controller
 		// $invitation_code = str_random(7);
 		//setting data to insert it
 		if (!empty($request->input('password2'))) {
+
 			$update = User::where('user_id', $request->input('user_id'))
 				->update([
 					'full_name' => $request->input('full_name'),
@@ -179,17 +180,21 @@ class UsersController extends Controller
 		}
 		if ($update) {
 
-			####### Start send phone activation message ########
+			if ($check != NULL) {
 
-			if ($check->lang == 'ar') {
-				$message = 'تم تفعيل الحساب الخاص بكم بنجاح.';
-			} else {
-				$message = 'Your account has been activated successfully.';
+				####### Start send phone activation message ########
+
+				if ($check->lang == 'ar') {
+					$message = 'تم تفعيل الحساب الخاص بكم بنجاح.';
+				} else {
+					$message = 'Your account has been activated successfully.';
+				}
+
+				$res = (new SmsController())->send($message, $check->phone);
+
+				####### End send phone activation message ########
+
 			}
-
-			$res = (new SmsController())->send($message, $check->phone);
-
-			####### End send phone activation message ########
 
 			$request->session()->flash('success', 'User has been updated successfully');
 			return redirect()->route('user.show');
