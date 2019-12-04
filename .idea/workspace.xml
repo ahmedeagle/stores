@@ -44,8 +44,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/routes/user.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="262">
-              <caret line="86" column="70" selection-start-line="86" selection-start-column="51" selection-end-line="86" selection-end-column="70" />
+            <state relative-caret-position="161">
+              <caret line="99" column="68" selection-start-line="99" selection-start-column="52" selection-end-line="99" selection-end-column="68" />
             </state>
           </provider>
         </entry>
@@ -53,8 +53,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/Http/Controllers/UserController.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="327">
-              <caret line="1355" column="54" lean-forward="true" selection-start-line="1355" selection-start-column="54" selection-end-line="1355" selection-end-column="54" />
+            <state relative-caret-position="241">
+              <caret line="1769" column="39" lean-forward="true" selection-start-line="1769" selection-start-column="39" selection-end-line="1769" selection-end-column="39" />
             </state>
           </provider>
         </entry>
@@ -72,9 +72,7 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>orderAcceptance</find>
       <find>getProviderPage</find>
-      <find>prepareProviderPage</find>
       <find>Details</find>
       <find>getOrderDetails</find>
       <find>Deta</find>
@@ -102,6 +100,8 @@
       <find>addOr</find>
       <find>intval</find>
       <find>GetProvider</find>
+      <find>prepareProviderPage</find>
+      <find>fav</find>
     </findStrings>
     <replaceStrings>
       <replace>intval</replace>
@@ -306,12 +306,12 @@
       <workItem from="1574321404722" duration="4916000" />
       <workItem from="1574769676995" duration="690000" />
       <workItem from="1575382068731" duration="1258000" />
-      <workItem from="1575447619124" duration="10556000" />
+      <workItem from="1575447619124" duration="10615000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="120335000" />
+    <option name="totallyTimeSpent" value="120394000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -341,7 +341,7 @@
       <window_info anchor="bottom" id="Version Control" order="8" weight="0.3298731" />
       <window_info anchor="bottom" id="Database Changes" order="9" />
       <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" />
-      <window_info anchor="bottom" id="Terminal" order="11" weight="0.35063437" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="11" visible="true" weight="0.35063437" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -605,15 +605,15 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/routes/user.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="262">
-          <caret line="86" column="70" selection-start-line="86" selection-start-column="51" selection-end-line="86" selection-end-column="70" />
+        <state relative-caret-position="161">
+          <caret line="99" column="68" selection-start-line="99" selection-start-column="52" selection-end-line="99" selection-end-column="68" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/Http/Controllers/UserController.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="327">
-          <caret line="1355" column="54" lean-forward="true" selection-start-line="1355" selection-start-column="54" selection-end-line="1355" selection-end-column="54" />
+        <state relative-caret-position="241">
+          <caret line="1769" column="39" lean-forward="true" selection-start-line="1769" selection-start-column="39" selection-end-line="1769" selection-end-column="39" />
         </state>
       </provider>
     </entry>

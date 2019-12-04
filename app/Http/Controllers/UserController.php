@@ -1765,7 +1765,7 @@ class UserController extends Controller
 		$data = DB::table('product_likes')->where('product_likes.user_id', $userId)
 			->join('products', 'product_likes.product_id', '=', 'products.id')
 			->join('providers', 'products.provider_id', '=', 'providers.provider_id')
-			->select('products.id AS product_id', 'products.title', 'products.likes_count', 'products.product_rate', 'providers.store_name AS full_name', 'providers.provider_id', 'products.price',
+			->select('products.id AS product_id', 'products.title', 'products.likes_count', 'products.product_rate', 'providers.store_name AS full_name', 'providers.provider_id', 'products.price', 'products.quantity',
 				'providers.membership_id',
 				'products.category_id',
 				DB::raw("CONCAT('" . env('APP_URL') . "','/public/providerProfileImages/',providers.profile_pic) AS store_pic"),
