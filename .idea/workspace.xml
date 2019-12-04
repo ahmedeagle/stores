@@ -44,8 +44,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/routes/user.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="162">
-              <caret line="81" column="105" selection-start-line="81" selection-start-column="57" selection-end-line="81" selection-end-column="105" />
+            <state relative-caret-position="161">
+              <caret line="99" column="68" selection-start-line="99" selection-start-column="52" selection-end-line="99" selection-end-column="68" />
             </state>
           </provider>
         </entry>
@@ -53,8 +53,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/Http/Controllers/UserController.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="161">
-              <caret line="3029" column="48" selection-start-line="3029" selection-start-column="42" selection-end-line="3029" selection-end-column="48" />
+            <state relative-caret-position="241">
+              <caret line="1769" column="39" lean-forward="true" selection-start-line="1769" selection-start-column="39" selection-end-line="1769" selection-end-column="39" />
             </state>
           </provider>
         </entry>
@@ -72,10 +72,7 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>orders</find>
-      <find>orderAcceptance</find>
       <find>getProviderPage</find>
-      <find>prepareProviderPage</find>
       <find>Details</find>
       <find>getOrderDetails</find>
       <find>Deta</find>
@@ -102,7 +99,13 @@
       <find>$quantity_in_stock</find>
       <find>addOr</find>
       <find>intval</find>
+      <find>GetProvider</find>
+      <find>prepareProviderPage</find>
+      <find>fav</find>
     </findStrings>
+    <replaceStrings>
+      <replace>intval</replace>
+    </replaceStrings>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -303,12 +306,12 @@
       <workItem from="1574321404722" duration="4916000" />
       <workItem from="1574769676995" duration="690000" />
       <workItem from="1575382068731" duration="1258000" />
-      <workItem from="1575447619124" duration="10292000" />
+      <workItem from="1575447619124" duration="10615000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="120071000" />
+    <option name="totallyTimeSpent" value="120394000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -568,13 +571,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/routes/user.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="162">
-          <caret line="81" column="105" selection-start-line="81" selection-start-column="57" selection-end-line="81" selection-end-column="105" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/Http/Controllers/ProviderController.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="87">
@@ -607,10 +603,17 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/Http/Controllers/UserController.php">
+    <entry file="file://$PROJECT_DIR$/routes/user.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="161">
-          <caret line="3029" column="48" selection-start-line="3029" selection-start-column="42" selection-end-line="3029" selection-end-column="48" />
+          <caret line="99" column="68" selection-start-line="99" selection-start-column="52" selection-end-line="99" selection-end-column="68" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/Http/Controllers/UserController.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="241">
+          <caret line="1769" column="39" lean-forward="true" selection-start-line="1769" selection-start-column="39" selection-end-line="1769" selection-end-column="39" />
         </state>
       </provider>
     </entry>

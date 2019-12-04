@@ -1346,7 +1346,7 @@ class UserController extends Controller
 			$products = Product::where('products.provider_id', $providerId)
 				->where('products.category_id', $catId)
 				->where('products.publish', 1)
-				->select('products.id', 'products.title', 'products.price',
+				->select('products.id', 'products.title', 'products.price', 'products.quantity',
 					'products.likes_count', 'products.product_rate',
 					DB::raw('IF ((SELECT count(id) FROM product_likes WHERE product_likes.user_id = ' . $userId . ' AND product_likes.product_id = products.id) > 0, 1, 0) as isFavorit'));
 
@@ -1765,7 +1765,7 @@ class UserController extends Controller
 		$data = DB::table('product_likes')->where('product_likes.user_id', $userId)
 			->join('products', 'product_likes.product_id', '=', 'products.id')
 			->join('providers', 'products.provider_id', '=', 'providers.provider_id')
-			->select('products.id AS product_id', 'products.title', 'products.likes_count', 'products.product_rate', 'providers.store_name AS full_name', 'providers.provider_id', 'products.price',
+			->select('products.id AS product_id', 'products.title', 'products.likes_count', 'products.product_rate', 'providers.store_name AS full_name', 'providers.provider_id', 'products.price', 'products.quantity',
 				'providers.membership_id',
 				'products.category_id',
 				DB::raw("CONCAT('" . env('APP_URL') . "','/public/providerProfileImages/',providers.profile_pic) AS store_pic"),
