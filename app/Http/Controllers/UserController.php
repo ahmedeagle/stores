@@ -1210,7 +1210,7 @@ class UserController extends Controller
 
 
 			$providers = $pagianted_providers->filter(function ($item) {
-				$desiredDistance = 80;
+				$desiredDistance = 100;
 				return $item->distance < $desiredDistance;
 			})->values();
 
@@ -2684,7 +2684,7 @@ class UserController extends Controller
 			}
 
 			$quantity_in_stock = DB::table("products")
-				->where("product_id", $products[$i]['product_id'])
+				->where("id", $products[$i]['product_id'])
 				->select("quantity")
 				->first();
 
@@ -3020,7 +3020,7 @@ class UserController extends Controller
 					###### Start Update Product Quantity In Stock #######
 
 					$quantity_in_stock = DB::table("products")
-						->where("product_id", $productsArr[$i]['product_id'])
+						->where("id", $productsArr[$i]['product_id'])
 						->select("quantity")
 						->first();
 
