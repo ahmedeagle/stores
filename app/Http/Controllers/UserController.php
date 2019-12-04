@@ -1226,8 +1226,8 @@ class UserController extends Controller
 
 		$providers = new LengthAwarePaginator(
 			$providers,
-			$pagianted_providers->total(),
-			$pagianted_providers->perPage(),
+			$providers->total(),
+			$providers->perPage(),
 			$request->input("page"),
 			["path" => url()->current()]
 
