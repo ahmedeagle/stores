@@ -22,6 +22,7 @@ use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Str;
 use Mail;
 use Validator;
 use Storage;
@@ -144,7 +145,7 @@ class UserController extends Controller
 				27 => 'رقم الدولة غير موجود ',
 				28 => 'قم المدينة غير موجود ',
 				29 => 'لابد من تاكيد كلمة المرور ',
-				30 => 'صيغة رقم الهاتف غير صحيحة لابد ان تبدا ب 5 او 05',
+				30 => 'صيغة رقم الهاتف غير صحيحة لابد أن تبدأ ب 05',
 				31 => 'لابد من ادخال امتداد الصوره الشخصية ',
 			);
 			$city_col = "city_ar_name AS city_name";
@@ -165,7 +166,7 @@ class UserController extends Controller
 				12 => 'User type must be a digit',
 				13 => 'Phone number is used before',
 				14 => 'E-mail is used before',
-				15 => 'You must determine profile picture extenstion',
+				15 => 'You must determine profile picture extension',
 				16 => 'Wrong invitation_code',
 				17 => 'city_id is required',
 				18 => 'city_id must be a number',
@@ -178,7 +179,7 @@ class UserController extends Controller
 				27 => 'country  doesn\'t exists',
 				28 => 'city  doesn\'t exists',
 				29 => 'password confirmation required',
-				30 => 'phone number format invalid must start with 5 or 05',
+				30 => 'phone number format invalid must start with 05',
 				31 => 'image_ext is required',
 
 			);
@@ -188,7 +189,7 @@ class UserController extends Controller
 		$rules = [
 			'full_name' => 'required|min:3',
 			// 'email'           => 'required|email|unique:users',
-			'phone' => array('required', 'unique:users,phone', 'regex:/^(05|5)([0-9]{8})$/'),
+			'phone' => array('required', 'unique:users,phone', 'regex:/^(05)([0-9]{8})$/'),
 			'country_code' => 'required',
 			'password' => 'required|min:8|confirmed',
 			'password_confirmation' => 'required',
@@ -949,12 +950,12 @@ class UserController extends Controller
 
 		if ($input['phone'] != $user->first()->phone) {
 
-			$rules['phone'] = array('required', 'numeric', 'regex:/^(05|5)([0-9]{8})$/', 'unique:users,phone,' . $userId . ',user_id');
+			$rules['phone'] = array('required', 'numeric', 'regex:/^(05)([0-9]{8})$/', 'unique:users,phone,' . $userId . ',user_id');
 			$rules['country_code'] = "required";
 
 		} else {
 
-			$rules['phone'] = array('required', 'numeric', 'regex:/^(05|5)([0-9]{8})$/');
+			$rules['phone'] = array('required', 'numeric', 'regex:/^(05)([0-9]{8})$/');
 			$rules['country_code'] = "required";
 
 		}
@@ -1995,7 +1996,7 @@ class UserController extends Controller
 				3 => 'access_token is required',
 				4 => 'latitude  is required ',
 				5 => 'longitude is required',
-				6 => 'Proccess failed please try again later',
+				6 => 'Process failed please try again later',
 				7 => 'User Not Found ',
 				8 => 'phone number required',
 				9 => 'phone number must be numeric',
@@ -2023,7 +2024,7 @@ class UserController extends Controller
 			'access_token' => 'required',
 			'latitude' => 'required',
 			'longitude' => 'required',
-			'phone' => array('required', 'numeric', 'regex:/^(05|5)([0-9]{8})$/'),
+			'phone' => array('required', 'numeric', 'regex:/^(05)([0-9]{8})$/'),
 			'country_code' => 'required',
 		], $messeges);
 
@@ -2324,7 +2325,7 @@ class UserController extends Controller
 
 		$validator = Validator::make($request->all(), [
 			'name' => 'required',
-			'phone' => array('required', 'regex:/^(05|5)([0-9]{8})$/'),
+			'phone' => array('required', 'regex:/^(05)([0-9]{8})$/'),
 			'country_code' => 'required',
 			'access_token' => 'required',
 			'cv' => 'required',
