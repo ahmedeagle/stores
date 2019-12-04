@@ -1460,7 +1460,7 @@ class UserController extends Controller
 			->join('providers', 'products.provider_id', '=', 'providers.provider_id')
 			->join('categories_stores', 'products.category_id', '=', 'categories_stores.id')
 			->leftJoin('categories', 'categories.cat_id', '=', 'products.category_id')
-			->select('products.id AS product_id', 'products.title', 'products.description', 'products.price',
+			->select('products.id AS product_id', 'products.title', 'products.description', 'products.price', 'products.quantity',
 				'products.likes_count', 'providers.store_name AS store_name', 'providers.membership_id', 'providers.provider_id AS provider_id', $cat_col,
 
 				DB::raw('IF ((SELECT count(id) FROM product_likes WHERE product_likes.user_id = ' . $userId . ' AND product_likes.product_id = ' . $productId . ') > 0, 1, 0) as isFavorit'),
@@ -2593,6 +2593,7 @@ class UserController extends Controller
 				21 => 'لون المنتج غير موجود ',
 				22 => 'الاضافات غير موجوده ',
 				23 => 'القيمه المدفوعه لا تساوي قيمه الطلب ',
+				24 => 'كمية المنتج اكبر من الكمية فى المخزن',
 			);
 			// $push_notif_title = "طلب جديد";
 			// $push_notif_message = "تم إضافة طلب جديد ";
@@ -2621,6 +2622,7 @@ class UserController extends Controller
 				21 => 'product_color not exists',
 				22 => 'product_options not exist',
 				23 => 'Paid amount not equal to order amount ',
+				24 => 'Product quantity is larger than quantity in stock',
 
 			);
 			// $push_notif_title = "New order";
@@ -2672,6 +2674,15 @@ class UserController extends Controller
 
 			if (empty($products[$i]['qty'])) {
 				return response()->json(['status' => false, 'errNum' => 4, 'msg' => $msg[4]]);
+			}
+
+			$quantity_in_stock = DB::table("products")
+				->where("product_id", $products[$i]['product_id'])
+				->select("quantity")
+				->first();
+
+			if (!empty($products[$i]['qty']) && intValue($products[$i]['qty']) > intValue($quantity_in_stock->quantity)) {
+				return response()->json(['status' => false, 'errNum' => 4, 'msg' => $msg[24]]);
 			}
 
 			// if product  with size  the price will change
@@ -2987,6 +2998,7 @@ class UserController extends Controller
 				$productsArr = $data['products'];
 
 				for ($i = 0; $i < count($productsArr); $i++) {
+
 					DB::table('order_products')->insert([
 						'order_id' => $id,
 						'product_id' => $productsArr[$i]['product_id'],
@@ -2997,6 +3009,21 @@ class UserController extends Controller
 						'color_id' => $productsArr[$i]['color'],
 						'serial' => $serial,
 					]);
+
+					###### Start Update Product Quantity In Stock #######
+
+					$quantity_in_stock = DB::table("products")
+						->where("product_id", $productsArr[$i]['product_id'])
+						->select("quantity")
+						->first();
+
+					DB::table('products')
+						->where('product_id', $productsArr[$i]['product_id'])
+						->update([
+							'quantity' => intValue($quantity_in_stock->quantity) - intValue($productsArr[$i]['qty']),
+						]);
+
+					###### End Update Product Quantity In Stock #######
 
 					$serial++;
 				}
