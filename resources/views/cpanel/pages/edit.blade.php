@@ -62,19 +62,26 @@
 
 								</div>
 
-								<div class="one fields">
+								<div class="ui field">
+									<label>محتوى الصفحة باللغة العربية<span class="require">*</span></label>
+									<div class="ui input">
 
-									<div class="ui field">
-										<label>محتوى الصفحة باللغة العربية<span class="require">*</span></label>
-										<div class="ui input">
+										<textarea id="ar_content" name="ar_content" class="form-control" required>
+											{{ $page->ar_content }}
+										</textarea>
 
-											<textarea id="ar_content" name="ar_content" class="form-control" required>
-												{{ $page->ar_content }}
-											</textarea>
-
-										</div>
 									</div>
+								</div>
 
+								<div class="ui field">
+									<label>محتوى الصفحة باللغة الإنجليزية<span class="require">*</span></label>
+									<div class="ui input">
+
+										<textarea id="en_content" name="en_content" class="form-control" required>
+											{{ $page->en_content }}
+										</textarea>
+
+									</div>
 								</div>
 
 								<div class="spacer-25"></div><!--End Spacer-->
