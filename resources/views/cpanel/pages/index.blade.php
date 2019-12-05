@@ -39,8 +39,7 @@
 							<tr>
 								<th> إسم الصفحة بالعربية</th>
 								<th> اسم الصفحة بالانجليزية</th>
-								<th> حالة النشر ؟</th>
-								<th></th>
+								<th> حالة العرض</th>
 							</tr>
 							</thead>
 							<tbody>
@@ -49,7 +48,7 @@
 									<tr>
 										<td> {{ $page->en_title }} </td>
 										<td> {{ $page->ar_title }} </td>
-										<td> {{ $page->active == 1 ? 'Active' : 'Not Active' }} </td>
+										<td> {{ $page->active == 1 ? 'مفعلة' : 'غير مفعلة' }} </td>
 									</tr>
 								@endforeach
 							@endif
