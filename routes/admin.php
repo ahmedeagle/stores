@@ -571,17 +571,17 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function () {
 
 			Route::get('/', [
 				'uses' => 'PagesController@index',
-				'as' => 'pages.index',
+				'as' => 'index',
 			]);
 
 			Route::get('/edit/{id}', [
 				'uses' => 'PagesController@edit',
-				'as' => 'pages.edit',
+				'as' => 'edit',
 			]);
 
 			Route::post('/update', [
 				'uses' => 'PagesController@update',
-				'as' => 'pages.update',
+				'as' => 'update',
 			]);
 		});
 
