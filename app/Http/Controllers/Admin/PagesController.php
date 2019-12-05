@@ -49,6 +49,7 @@ class PagesController extends Controller
 			'ar_title' => 'required|unique:pages,ar_title,' . $id . ',id',
 			'ar_content' => 'required',
 			'en_content' => 'required',
+			'active' => 'required|in:0,1',
 		]);
 
 		if ($validator->fails()) {
