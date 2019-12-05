@@ -37,18 +37,25 @@
 						<table id="datatable" class="table table-hover">
 							<thead>
 							<tr>
-								<th> إسم الصفحة بالعربية</th>
-								<th> اسم الصفحة بالانجليزية</th>
+								<th> اسم الصفحة بالعربية</th>
+								<th> اسم الصفحة بالإنجليزية</th>
 								<th> حالة العرض</th>
+								<th>العمليات</th>
 							</tr>
 							</thead>
 							<tbody>
 							@if($pages->count())
 								@foreach($pages AS $page)
 									<tr>
-										<td> {{ $page->en_title }} </td>
 										<td> {{ $page->ar_title }} </td>
+										<td> {{ $page->en_title }} </td>
 										<td> {{ $page->active == 1 ? 'مفعلة' : 'غير مفعلة' }} </td>
+										<td>
+											<a href="{{ route('pages.edit', $page->id)}}"
+											   class="custom-btn blue-bc">
+												<i class="fa fa-pencil"></i>
+											</a>
+										</td>
 									</tr>
 								@endforeach
 							@endif
