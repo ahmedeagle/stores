@@ -564,5 +564,29 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function () {
             //     'as'   => 'evaluations.details'
             // ]);
         });
-    });
+
+        #################################### Start Pages Routes #####################################
+
+		Route::group(['prefix' => 'pages'], function () {
+
+			Route::get('/', [
+				'uses' => 'PagesController@index',
+				'as' => 'pages.index',
+			]);
+
+			Route::get('/edit/{id}', [
+				'uses' => 'PagesController@edit',
+				'as' => 'pages.edit',
+			]);
+
+			Route::post('/update', [
+				'uses' => 'PagesController@update',
+				'as' => 'pages.update',
+			]);
+		});
+
+		#################################### End Pages Routes #####################################
+
+
+	});
 });
