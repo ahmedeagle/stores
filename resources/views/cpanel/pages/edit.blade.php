@@ -44,7 +44,7 @@
 								<div class="two fields">
 
 									<div class="ui field">
-										<label>الصفحة باللغة العربية<span class="require">*</span></label>
+										<label>عنوان الصفحة باللغة العربية<span class="require">*</span></label>
 										<div class="ui input">
 											<input name="ar_title" id="ar_title" type="text"
 												   placeholder="الصفحة باللغة العربية" value="{{ $page->ar_title }}"/>
@@ -52,7 +52,7 @@
 									</div>
 
 									<div class="ui field">
-										<label>الصفحة باللغة الإنجليزية<span class="require">*</span></label>
+										<label>عنوان الصفحة باللغة الإنجليزية<span class="require">*</span></label>
 										<div class="ui input">
 											<input name="en_title" id="en_title" type="text"
 												   placeholder="الصفحة باللغة الأنجليزية"
