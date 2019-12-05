@@ -27,7 +27,7 @@ class PagesController extends Controller
 	public function index()
 	{
 		$pages = Page::get();
-		return view('cpanel.pages.pages', compact('pages'));
+		return view('cpanel.pages.index', compact('pages'));
 	}
 
 	public function edit($id)
