@@ -62,28 +62,44 @@
 
 								</div>
 
-								<div class="ui field">
-									<label>محتوى الصفحة باللغة العربية<span class="require">*</span></label>
-									<div class="ui input">
+								<div>
+									<div class="ui field">
+										<label>محتوى الصفحة باللغة العربية<span class="require">*</span></label>
+										<div class="ui input">
 
 										<textarea id="ar_content" name="ar_content" class="form-control" required>
 											{{ $page->ar_content }}
 										</textarea>
 
+										</div>
 									</div>
-								</div>
 
-								<div class="ui field">
-									<label>محتوى الصفحة باللغة الإنجليزية<span class="require">*</span></label>
-									<div class="ui input">
+									<div class="ui field">
+										<label>محتوى الصفحة باللغة الإنجليزية<span class="require">*</span></label>
+										<div class="ui input">
 
 										<textarea id="en_content" name="en_content" class="form-control" required>
 											{{ $page->en_content }}
 										</textarea>
 
+										</div>
 									</div>
-								</div>
 
+									<div class="ui field">
+										<label>الحالة : <span class="require">*</span></label>
+										<div class="ui input">
+											<select name="active">
+												<option value="">--- اختر الحالة ---</option>
+												<option value="1" {{ $page->active == 1 ? 'selected' : '' }}>مفعلة
+												</option>
+												<option value="0" {{ $page->active == 0 ? 'selected' : '' }}> غير
+													مفعلة
+												</option>
+											</select>
+										</div>
+									</div>
+
+								</div>
 								<div class="spacer-25"></div><!--End Spacer-->
 
 								<div class="ui right algined inline field">

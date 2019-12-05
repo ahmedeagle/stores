@@ -466,10 +466,11 @@
         $("textarea").each(function () {
             var editor = CKEDITOR.replace($(this).attr('id'), {
                 language: 'ar',
-            }).on('required', function (evt) {
-                $('.hover_popup').show();
-                evt.cancel();
             });
+            /*.on('required', function (evt) {
+				$('.hover_popup').show();
+				evt.cancel();
+			});*/
         });
     });
 </script>
