@@ -466,6 +466,7 @@
         $("textarea").each(function () {
             var editor = CKEDITOR.replace($(this).attr('id'), {
                 language: 'ar',
+                width: '100%',
             });
             /*.on('required', function (evt) {
 				$('.hover_popup').show();
