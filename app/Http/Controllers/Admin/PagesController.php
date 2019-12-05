@@ -44,6 +44,8 @@ class PagesController extends Controller
 			'id' => 'required',
 			'en_title' => 'required|unique:pages,en_title,' . $id . ',id',
 			'ar_title' => 'required|unique:pages,ar_title,' . $id . ',id',
+			'ar_content' => 'required',
+			'en_content' => 'required',
 		]);
 
 		if ($validator->fails()) {
@@ -54,7 +56,9 @@ class PagesController extends Controller
 
 		$update = $page->update([
 			'en_title' => $request->input('en_title'),
-			'ar_title' => $request->input('ar_title')
+			'ar_title' => $request->input('ar_title'),
+			'ar_content' => $request->input('ar_content'),
+			'en_content' => $request->input('en_content'),
 		]);
 
 		if ($update) {
