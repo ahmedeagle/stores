@@ -1251,7 +1251,9 @@ class DeliveryController extends Controller
 				DB::table('deliveries')->where('delivery_id', $deliveryId)->update($inputs);
 			});
 
-			return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[0], 'isPhoneChanged' => $isPhoneChanged]);
+			$getDelivery = $this->getDeliveryData($deliveryId, $lang, "get");
+
+			return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[0], 'data'=> $getDelivery, 'isPhoneChanged' => $isPhoneChanged]);
 		} catch (Exception $e) {
 			return response()->json(['status' => false, 'errNum' => 6, 'msg' => $msg[6]]);
 		}
