@@ -84,6 +84,21 @@
 
 										</div>
 									</div>
+
+									<div class="ui field">
+										<label>الحالة : <span class="require">*</span></label>
+										<div class="ui input">
+											<select name="active">
+												<option value="">--- اختر الحالة ---</option>
+												<option value="1" {{ $page->active == 1 ? 'selected' : '' }}>مفعلة
+												</option>
+												<option value="0" {{ $page->active == 0 ? 'selected' : '' }}> غير
+													مفعلة
+												</option>
+											</select>
+										</div>
+									</div>
+
 								</div>
 								<div class="spacer-25"></div><!--End Spacer-->
 

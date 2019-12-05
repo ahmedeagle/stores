@@ -59,6 +59,7 @@ class PagesController extends Controller
 			'ar_title' => $request->input('ar_title'),
 			'ar_content' => $request->input('ar_content'),
 			'en_content' => $request->input('en_content'),
+			'active' => $request->input('active'),
 		]);
 
 		if ($update) {
