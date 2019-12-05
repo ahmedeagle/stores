@@ -1253,7 +1253,7 @@ class DeliveryController extends Controller
 
 			$getDelivery = $this->getDeliveryData($deliveryId, $lang, "get");
 
-			return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[0], 'data'=> $getDelivery, 'isPhoneChanged' => $isPhoneChanged]);
+			return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[0], 'delivery'=> $getDelivery, 'isPhoneChanged' => $isPhoneChanged]);
 		} catch (Exception $e) {
 			return response()->json(['status' => false, 'errNum' => 6, 'msg' => $msg[6]]);
 		}
