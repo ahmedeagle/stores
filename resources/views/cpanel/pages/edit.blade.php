@@ -23,7 +23,7 @@
                 <div class="widget-content">
                     @if($page != NULL)
                     <form class="ui form" id="create-category" method="post" action="{{ route('pages.update') }}" enctype="multipart/form-data">
-                        <input type="hidden" name="id" value="{{ $page->cat_id }}" />
+                        <input type="hidden" name="id" value="{{ $page->id }}" />
                           <div class="form-title">من فضلك إملئ الحقول التالية</div>
                         <div class="form-note">[ * ] حقل مطلوب</div>
                         <div class="ui error message"></div>
