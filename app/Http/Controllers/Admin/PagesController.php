@@ -32,7 +32,10 @@ class PagesController extends Controller
 
 	public function edit($id)
 	{
-		$page = Page::findOrFail($id);
+		$page = Page::find($id);
+		if (!$page) {
+			return abort('404');
+		}
 		return view('cpanel.pages.edit', compact('page'));
 	}
 
@@ -53,6 +56,10 @@ class PagesController extends Controller
 		}
 
 		$page = Page::findOrFail($id);
+
+		if (!$page) {
+			return abort('404');
+		}
 
 		$update = $page->update([
 			'en_title' => $request->input('en_title'),
