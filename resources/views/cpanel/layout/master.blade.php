@@ -459,6 +459,21 @@
 <script src="{{ url('admin-assets/vendor/magnific-popup/js/magnific-popup.js') }}"></script>
 <script src="{{ url('admin-assets/vendor/count-to/jquery.countTo.js') }}"></script>
 
+<script src="https://cdn.ckeditor.com/4.6.2/standard/ckeditor.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $("textarea").each(function () {
+            var editor = CKEDITOR.replace($(this).attr('id'), {
+                language: 'ar',
+            }).on('required', function (evt) {
+                $('.hover_popup').show();
+                evt.cancel();
+            });
+        });
+    });
+</script>
+
 <!-- Site JS
 ====================================-->
 <script src="{{ url('admin-assets/js/main.js') }}"></script>

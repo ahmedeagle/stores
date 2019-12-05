@@ -38,17 +38,18 @@ class PagesController extends Controller
 
 	public function update(Request $request)
 	{
+		$id = $request->input('id');
+
 		$validator = Validator::make($request->all(), [
 			'id' => 'required',
-			'en_title' => 'required|unique:pages,cat_en_title,' . $request->input('id') . ',id',
-			'ar_title' => 'required|unique:pages,cat_ar_title,' . $request->input('id') . ',id',
+			'en_title' => 'required|unique:pages,en_title,' . $id . ',id',
+			'ar_title' => 'required|unique:pages,ar_title,' . $id . ',id',
 		]);
 
 		if ($validator->fails()) {
 			return redirect()->back()->withInput()->withErrors($validator->errors());
 		}
 
-		$id = $request->input('id');
 		$page = Page::findOrFail($id);
 
 		$update = $page->update([
@@ -57,10 +58,10 @@ class PagesController extends Controller
 		]);
 
 		if ($update) {
-			$request->session()->flash('success', 'Page has been updated successfully');
+			$request->session()->flash('success', 'تم تحديث البيانات بنجاح.');
 			return redirect()->route('pages.index');
 		} else {
-			$errors = array('Failed to update the page');
+			$errors = ['فشل التحديث, يرجى المحاولة لاحقاً !!'];
 			return redirect()->back()->withInput()->withErrors($errors);
 		}
 	}
