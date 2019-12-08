@@ -505,10 +505,9 @@ class DeliveryController extends Controller
 
 		####### Start send phone activation message ########
 
-		if($delivery_info->lang == 'ar'){
+		if ($delivery_info->lang == 'ar') {
 			$message = 'تم تفعيل الحساب الخاص بكم بنجاح.';
-		}
-		else{
+		} else {
 			$message = 'Your account has been activated successfully.';
 		}
 

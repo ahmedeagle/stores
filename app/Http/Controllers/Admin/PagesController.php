@@ -30,6 +30,11 @@ class PagesController extends Controller
 		return view('cpanel.pages.index', compact('pages'));
 	}
 
+	public function create()
+	{
+		return view('cpanel.pages.create');
+	}
+
 	public function edit($id)
 	{
 		$page = Page::find($id);
@@ -37,6 +42,38 @@ class PagesController extends Controller
 			return abort('404');
 		}
 		return view('cpanel.pages.edit', compact('page'));
+	}
+
+	public function store(Request $request)
+	{
+
+		$validator = Validator::make($request->all(), [
+			'en_title' => 'required|unique:pages,en_title',
+			'ar_title' => 'required|unique:pages,ar_title',
+			'ar_content' => 'required',
+			'en_content' => 'required',
+			'active' => 'required|in:0,1',
+		]);
+
+		if ($validator->fails()) {
+			return redirect()->back()->withInput()->withErrors($validator->errors());
+		}
+
+		$page = Page::create([
+			'en_title' => $request->input('en_title'),
+			'ar_title' => $request->input('ar_title'),
+			'ar_content' => $request->input('ar_content'),
+			'en_content' => $request->input('en_content'),
+			'active' => $request->input('active'),
+		]);
+
+		if ($page) {
+			$request->session()->flash('success', 'تم إضافة البيانات بنجاح.');
+			return redirect()->route('pages.index');
+		} else {
+			$errors = ['فشل الإضافة, يرجى المحاولة لاحقاً !!'];
+			return redirect()->back()->withInput()->withErrors($errors);
+		}
 	}
 
 	public function update(Request $request)

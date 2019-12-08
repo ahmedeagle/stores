@@ -570,6 +570,8 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function () {
 		Route::group(['prefix' => 'pages'], function () {
 
 			Route::get('/', 'PagesController@index')->name('pages.index');
+			Route::get('/create', 'PagesController@create')->name('pages.create');
+			Route::post('/store', 'PagesController@store')->name('pages.store');
 			Route::get('/edit/{id}', 'PagesController@edit')->name('pages.edit');
 			Route::post('/update', 'PagesController@update')->name('pages.update');
 
