@@ -116,7 +116,16 @@ class PagesController extends Controller
 		}
 	}
 
-	public function delete(Request $request, $id)
+	public function delete($id)
+	{
+		$page = Page::find($id, ['id', 'ar_title']);
+		if (!$page) {
+			return abort('404');
+		}
+		return view('cpanel.pages.destroy', compact('page'));
+	}
+
+	public function destroy(Request $request, $id)
 	{
 		$page = Page::find($id);
 

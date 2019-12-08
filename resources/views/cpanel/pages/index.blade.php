@@ -56,8 +56,10 @@
 												<i class="fa fa-pencil"></i>
 											</a>
 											&nbsp;
-											@include('cpanel.shared.buttons.delete',
-											['id' => $page->id, 'message' => $page->ar_title, 'routePath' => route('pages.delete', $page->id) ])
+											<a href="{{ route('pages.delete', $page->id) }}" class="custom-btn"
+											   title="حذف" style="background: #d9534f">
+												<i class="fa fa-trash-o"></i>
+											</a>
 
 										</td>
 									</tr>
