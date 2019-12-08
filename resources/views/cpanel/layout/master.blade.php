@@ -323,8 +323,19 @@
 						<a rel="nofollow" rel="noreferrer" href="{{ route('income.app') }}">إيرادات التطبيق</a>
 					</li>
 
-					<li>
-						<a rel="nofollow" rel="noreferrer" href="{{ route('pages.index') }}">صفحات التطبيق</a>
+					<li class="sub-menu">
+						<a rel="nofollow" rel="noreferrer" href="javascript:void(0);">
+							صفحات التطبيق
+							<i class="fa fa-angle-down"></i>
+						</a>
+						<ul>
+							<li>
+								<a rel="nofollow" rel="noreferrer" href="{{ route('pages.create') }}">إضافة صفحة</a>
+							</li>
+							<li>
+								<a rel="nofollow" rel="noreferrer" href="{{ route('pages.index') }}">قائمة الصفحات</a>
+							</li>
+						</ul>
 					</li>
 
 					<li class="sub-menu">
@@ -343,6 +354,7 @@
 							</li>
 						</ul>
 					</li>
+
 					<li class="sub-menu">
 						<a rel="nofollow" rel="noreferrer" href="javascript:void(0);">
 							التقييمات
