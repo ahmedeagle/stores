@@ -55,6 +55,12 @@
 											   class="custom-btn blue-bc">
 												<i class="fa fa-pencil"></i>
 											</a>
+											&nbsp;
+											<a href="{{ route('pages.delete',$page->id) }}" class="custom-btn red-bc"
+											   title="حذف">
+												<i class="fa fa-trash-o"></i>
+											</a>
+
 										</td>
 									</tr>
 								@endforeach

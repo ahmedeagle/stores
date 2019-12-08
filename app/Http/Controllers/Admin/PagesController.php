@@ -115,4 +115,19 @@ class PagesController extends Controller
 			return redirect()->back()->withInput()->withErrors($errors);
 		}
 	}
+
+	public function delete(Request $request, $id)
+	{
+		$page = Page::find($id);
+
+		if (!$page) {
+			return abort('404');
+		}
+
+		$page->delete();
+
+		$request->session()->flash('success', 'تم حذف البيانات بنجاح.');
+		return redirect()->route('pages.index');
+
+	}
 }
