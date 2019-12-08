@@ -89,12 +89,12 @@
 									<label>الحالة : <span class="require">*</span></label>
 									<div class="ui input">
 										<select name="active">
-											<option value="" {{ old('active') == '' ? 'selected' : '' }}>--- اختر الحالة
+											<option value="">--- اختر الحالة
 												---
 											</option>
-											<option value="1" {{ old('active') == 1 ? 'selected' : '' }}>مفعلة
+											<option value="1">مفعلة
 											</option>
-											<option value="0" {{ old('active') == 0 ? 'selected' : '' }}> غير
+											<option value="0"> غير
 												مفعلة
 											</option>
 										</select>
