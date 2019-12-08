@@ -23,9 +23,7 @@
 					<div class="widget-content">
 
 						<form class="ui form" id="create-category" method="post"
-							  action="{{ route('pages.destroy') }}" enctype="multipart/form-data">
-
-							<input type="hidden" name="id" value="{{ $page->id }}"/>
+							  action="{{ route('pages.destroy', $page->id) }}" enctype="multipart/form-data">
 
 							<div class="ui error message"></div>
 							@if(!empty($errors->first()))
