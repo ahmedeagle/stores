@@ -574,7 +574,8 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function () {
 			Route::post('/store', 'PagesController@store')->name('pages.store');
 			Route::get('/edit/{id}', 'PagesController@edit')->name('pages.edit');
 			Route::post('/update', 'PagesController@update')->name('pages.update');
-			Route::delete('/delete/{id}', 'PagesController@delete')->name('pages.delete');
+			Route::get('/delete/{id}', 'PagesController@delete')->name('pages.delete');
+			Route::post('/destroy/{id}', 'PagesController@destroy')->name('pages.destroy');
 
 		});
 
