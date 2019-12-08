@@ -46,7 +46,7 @@
 
 										<a href="{{ route('pages.index') }}" class="custom-btn blue-bc">
 											<i class="fa fa-backward"></i>
-											حذف
+											رجوع
 										</a>
 
 									</div>
