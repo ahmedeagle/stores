@@ -45,7 +45,7 @@
 										</button>
 
 										<a href="{{ route('pages.index') }}" class="custom-btn blue-bc">
-											<i class="fa fa-trash-o"></i>
+											<i class="fa fa-backward"></i>
 											حذف
 										</a>
 
