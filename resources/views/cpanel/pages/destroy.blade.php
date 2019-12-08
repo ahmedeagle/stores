@@ -32,15 +32,12 @@
 								</div>
 							@endif
 
-							<div class="widget-title">
-								بيانات الصفحة
-							</div>
 							<div class="one fields">
 
 								<div class="ui field">
 									<label>هل تريد بالفعل حذف هذه الصفحة ؟ <b> {{ $page->ar_title  }}</b></label>
 									<div class="ui input">
-										<button type="button" class="custom-btn">
+										<button type="submit" class="custom-btn">
 											<i class="fa fa-trash-o"></i>
 											حذف
 										</button>
