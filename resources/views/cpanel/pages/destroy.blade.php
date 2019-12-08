@@ -37,10 +37,18 @@
 								<div class="ui field">
 									<label>هل تريد بالفعل حذف هذه الصفحة ؟ <b> {{ $page->ar_title  }}</b></label>
 									<div class="ui input">
-										<button type="submit" class="custom-btn">
+
+										<button type="submit" class="custom-btn"
+												style="background-color: #d9534f !important;">
 											<i class="fa fa-trash-o"></i>
 											حذف
 										</button>
+
+										<a href="{{ route('pages.index') }}" class="custom-btn blue-bc">
+											<i class="fa fa-trash-o"></i>
+											حذف
+										</a>
+
 									</div>
 								</div>
 
