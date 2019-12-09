@@ -1,0 +1,45 @@
+{
+    "name": "spatie/fractalistic",
+    "description": "A developer friendly wrapper around Fractal",
+    "keywords": [
+        "spatie",
+        "fractalistic",
+        "fractal",
+        "api",
+        "transform"
+    ],
+    "homepage": "https://github.com/spatie/fractalistic",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Freek Van der Herten",
+            "email": "freek@spatie.be",
+            "homepage": "https://spatie.be",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": "^7.0",
+        "league/fractal": "^0.18.0"
+    },
+    "require-dev": {
+        "illuminate/pagination": "~5.3.0|~5.4.0",
+        "phpunit/phpunit" : "^5.7.21"
+    },
+    "autoload": {
+        "psr-4": {
+            "Spatie\\Fractalistic\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Spatie\\Fractalistic\\Test\\": "tests"
+        }
+    },
+    "scripts": {
+        "test": "phpunit"
+    },
+    "config": {
+        "sort-packages": true
+    }
+}

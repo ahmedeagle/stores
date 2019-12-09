@@ -66,6 +66,9 @@
       <path value="$PROJECT_DIR$/vendor/hamcrest/hamcrest-php" />
       <path value="$PROJECT_DIR$/vendor/league/flysystem" />
       <path value="$PROJECT_DIR$/vendor/swiftmailer/swiftmailer" />
+      <path value="$PROJECT_DIR$/vendor/spatie/laravel-fractal" />
+      <path value="$PROJECT_DIR$/vendor/spatie/fractalistic" />
+      <path value="$PROJECT_DIR$/vendor/league/fractal" />
     </include_path>
   </component>
   <component name="PhpUnit">
