@@ -1815,7 +1815,7 @@ class UserController extends Controller
 
 			return response()->json(['status' => true, 'errNum' => 0, 'favourits' => $data, 'msg' => $msg[0]]);
 		} else {
-			return response()->json(['status' => false, 'errNum' => 2, 'msg' => $msg[2]]);
+			return response()->json(['status' => true, 'errNum' => 0, 'favourits' => [], 'msg' => $msg[2]]);
 		}
 
 	}
