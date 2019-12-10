@@ -2797,11 +2797,11 @@ class UserController extends Controller
 
 		} //end foreach
 
-		$uniqueProducts = array_values(array_unique($productsArr)); // to avoid duplicate products id
+		/*$uniqueProducts = array_values(array_unique($productsArr)); // to avoid duplicate products id
 
 		if (count($productsArr) != count($uniqueProducts)) {
 			return response()->json(['status' => false, 'errNum' => 10, 'msg' => $msg[10]]);
-		}
+		}*/
 
 		$messages = array(
 			'required' => 5,
