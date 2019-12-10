@@ -3026,7 +3026,7 @@ class UserController extends Controller
 						->first();
 
 					DB::table('products')
-						->where('product_id', $productsArr[$i]['product_id'])
+						->where('id', $productsArr[$i]['product_id'])
 						->update([
 							'quantity' => intval ($quantity_in_stock->quantity) - intval ($productsArr[$i]['qty']),
 						]);
