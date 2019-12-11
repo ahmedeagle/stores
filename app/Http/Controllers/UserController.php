@@ -4593,6 +4593,7 @@ class UserController extends Controller
 		$delivery_methods = DB::table("delivery_methods")
 			->join('providers_delivery_methods', 'delivery_methods.method_id', '=', 'providers_delivery_methods.delivery_method')
 			->where('providers_delivery_methods.provider_id', $provider->provider_id)
+			->where('delivery_methods.method_id', '!=', 3)
 			->select(
 				$delivery_col,
 				'delivery_methods.method_id as delivery_method_id'
