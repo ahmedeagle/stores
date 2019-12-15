@@ -1636,6 +1636,7 @@ class DeliveryController extends Controller
 		if ($order) {
 			$status = $order->status_id;
 
+           $order->tax = 5;
 			$rejectedOrders = DB::table('rejectedorders_delivery')->where([
 				'order_id' => $order->order_id,
 //				'delivery_id' => $order->delivery_id,
@@ -1705,7 +1706,8 @@ class DeliveryController extends Controller
 			}
 		}
 
-		$order_status = DB::table('order_status')->whereIn('status_id', [3, 4])
+
+   	$order_status = DB::table('order_status')->whereIn('status_id', [3, 4])
 			->select(
 				'status_id',
 				$status_col,
