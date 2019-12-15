@@ -3125,9 +3125,7 @@ class ProviderController extends Controller
 		$id = $request->product_id;
 
 		if (!$provider->first()) {
-
 			return response()->json(['status' => false, 'errNum' => 15, 'msg' => $msg[15]]);
-
 		}
 
 		// delete array of image from database and storage
@@ -3182,11 +3180,11 @@ class ProviderController extends Controller
 		$data['provider_id'] = $provider_id;
 
 		//delete previous images
-		$image = DB::table('product_images')
+		/*$image = DB::table('product_images')
 			->where('product_id', $request->product_id)
-			->delete();
+			->delete();*/
 
-		if ($request->has('product_images')) {
+		if ($request->has('product_images') && !empty($request->product_images)) {
 
 			//  $image_extensions = $request -> image_ext;
 			$products_images = $request->product_images;
