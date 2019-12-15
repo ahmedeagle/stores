@@ -3089,7 +3089,9 @@ class ProviderController extends Controller
 			'quantity' => 'required',
 
 			'product_images' => 'required',
-			'product_images' => 'required|array',
+			'product_images' => 'array',
+//			'product_images' => 'required|array',
+
 			//  //'product_images.*' => 'required',  that means all of them must pass value
 			// 'image_ext'        => 'required|array',
 			//'image_ext.*'      => 'required',
@@ -3149,8 +3151,10 @@ class ProviderController extends Controller
 
 			foreach ($deleted_images as $key => $images) {
 
-				$image = DB::table('product_images')
-					->where('id', $images)->first();
+				$img = DB::table('product_images')
+					->where('id', $images);
+
+				$image = $img->first();
 
 				if ($image) {
 
@@ -3165,7 +3169,7 @@ class ProviderController extends Controller
 					}
 
 					//delete from database
-					$image->delete();
+					$img->delete();
 
 				}
 
