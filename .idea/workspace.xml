@@ -3,8 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="661b7e20-c39c-40c9-a1b6-c0928f1d6fc1" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/Admin/NotificationsController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/Admin/NotificationsController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/PushNotificationController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/PushNotificationController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/ProviderController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/ProviderController.php" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -33,12 +32,23 @@
     <favorites_list name="stores" />
   </component>
   <component name="FileEditorManager">
-    <leaf />
+    <leaf>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/app/Http/Controllers/ProviderController.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="571">
+              <caret line="3166" column="21" lean-forward="true" selection-start-line="3166" selection-start-column="21" selection-end-line="3166" selection-end-column="21" />
+              <folding>
+                <element signature="e#184#203#0#PHP" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>GetCategoryProviders</find>
-      <find>$quantity_in_stock</find>
       <find>addOr</find>
       <find>intval</find>
       <find>GetProvider</find>
@@ -67,6 +77,8 @@
       <find>getUserFavorites</find>
       <find>$uniqueProducts</find>
       <find>addOrder</find>
+      <find>update</find>
+      <find>updatePr</find>
     </findStrings>
     <replaceStrings>
       <replace>intval</replace>
@@ -85,7 +97,6 @@
         <option value="$PROJECT_DIR$/resources/views/cpanel/404.blade.php" />
         <option value="$PROJECT_DIR$/app/Http/Controllers/Controller.php" />
         <option value="$PROJECT_DIR$/app/Http/Controllers/HomeController.php" />
-        <option value="$PROJECT_DIR$/app/Http/Controllers/ProviderController.php" />
         <option value="$PROJECT_DIR$/app/Http/Controllers/Admin/ProviderController.php" />
         <option value="$PROJECT_DIR$/app/Http/Controllers/Admin/UsersController.php" />
         <option value="$PROJECT_DIR$/app/Page.php" />
@@ -114,6 +125,7 @@
         <option value="$PROJECT_DIR$/app/Http/Controllers/UserController.php" />
         <option value="$PROJECT_DIR$/app/Http/Controllers/Admin/NotificationsController.php" />
         <option value="$PROJECT_DIR$/app/Http/Controllers/PushNotificationController.php" />
+        <option value="$PROJECT_DIR$/app/Http/Controllers/ProviderController.php" />
       </list>
     </option>
   </component>
@@ -200,7 +212,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -230,14 +241,6 @@
               <item name="stores" type="b2602c69:ProjectViewProjectNode" />
               <item name="stores" type="462c0819:PsiDirectoryNode" />
               <item name="app" type="462c0819:PsiDirectoryNode" />
-              <item name="Http" type="462c0819:PsiDirectoryNode" />
-              <item name="Controllers" type="462c0819:PsiDirectoryNode" />
-              <item name="Admin" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="stores" type="b2602c69:ProjectViewProjectNode" />
-              <item name="stores" type="462c0819:PsiDirectoryNode" />
-              <item name="app" type="462c0819:PsiDirectoryNode" />
               <item name="Traits" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
@@ -249,6 +252,7 @@
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -326,12 +330,14 @@
       <workItem from="1575881889130" duration="9233000" />
       <workItem from="1575989189373" duration="2490000" />
       <workItem from="1576052157292" duration="3368000" />
-      <workItem from="1576132982342" duration="1900000" />
+      <workItem from="1576132982342" duration="2507000" />
+      <workItem from="1576399901099" duration="77000" />
+      <workItem from="1576407123435" duration="838000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="168512000" />
+    <option name="totallyTimeSpent" value="170034000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -344,6 +350,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1296" height="1000" extended-state="6" />
+    <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" weight="0.25" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
@@ -360,7 +367,7 @@
       <window_info anchor="bottom" id="Version Control" order="8" weight="0.3298731" />
       <window_info anchor="bottom" id="Database Changes" order="9" />
       <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" />
-      <window_info active="true" anchor="bottom" id="Terminal" order="11" visible="true" weight="0.31487888" />
+      <window_info anchor="bottom" id="Terminal" order="11" weight="0.31487888" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -407,17 +414,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="515">
           <caret line="46" column="62" lean-forward="true" selection-start-line="46" selection-start-column="62" selection-end-line="46" selection-end-column="62" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/Http/Controllers/ProviderController.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="134">
-          <caret line="1239" column="48" lean-forward="true" selection-start-line="1239" selection-start-column="48" selection-end-line="1239" selection-end-column="48" />
-          <folding>
-            <element signature="e#184#203#0#PHP" expanded="true" />
-            <element signature="e#7203#7453#0#PHP" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -747,6 +743,16 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="96">
           <caret line="12" column="6" selection-start-line="12" selection-start-column="6" selection-end-line="12" selection-end-column="6" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/Http/Controllers/ProviderController.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="571">
+          <caret line="3166" column="21" lean-forward="true" selection-start-line="3166" selection-start-column="21" selection-end-line="3166" selection-end-column="21" />
+          <folding>
+            <element signature="e#184#203#0#PHP" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

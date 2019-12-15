@@ -792,3 +792,8 @@ Stack trace:
 [23-Oct-2019 10:17:11 Africa/Cairo] PHP Fatal error:  Class 'App\Http\Controllers\Storage' not found in /home/smwisyst/public_html/app/Http/Controllers/UserController.php on line 888
 [23-Oct-2019 10:19:52 Africa/Cairo] PHP Fatal error:  Class 'App\Http\Controllers\Storage' not found in /home/smwisyst/public_html/app/Http/Controllers/UserController.php on line 888
 [05-Nov-2019 14:28:04 Africa/Cairo] PHP Fatal error:  Cannot use App\Http\Controllers\PushNotificationController as Push because the name is already in use in /home/smwisyst/public_html/app/Http/Controllers/DeliveryController.php on line 17
+[15-Dec-2019 12:43:00 Asia/Riyadh] PHP Fatal error:  Call to undefined method stdClass::delete() in /home/smwisyst/public_html/app/Http/Controllers/ProviderController.php on line 3168
+[15-Dec-2019 13:41:51 Asia/Riyadh] PHP Fatal error:  Call to undefined method stdClass::delete() in /home/smwisyst/public_html/app/Http/Controllers/ProviderController.php on line 3168
+[15-Dec-2019 13:44:27 Asia/Riyadh] PHP Fatal error:  Call to undefined method stdClass::delete() in /home/smwisyst/public_html/app/Http/Controllers/ProviderController.php on line 3168
+[15-Dec-2019 13:45:23 Asia/Riyadh] PHP Fatal error:  Call to undefined method stdClass::delete() in /home/smwisyst/public_html/app/Http/Controllers/ProviderController.php on line 3168
+[15-Dec-2019 13:50:34 Asia/Riyadh] PHP Fatal error:  Call to undefined method stdClass::delete() in /home/smwisyst/public_html/app/Http/Controllers/ProviderController.php on line 3168
