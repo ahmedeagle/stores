@@ -3180,9 +3180,9 @@ class ProviderController extends Controller
 		$data['provider_id'] = $provider_id;
 
 		//delete previous images
-		/*$image = DB::table('product_images')
-			->where('product_id', $request->product_id)
-			->delete();*/
+//		$image = DB::table('product_images')
+//			->where('product_id', $request->product_id)
+//			->delete();
 
 		if ($request->has('product_images') && !empty($request->product_images)) {
 
