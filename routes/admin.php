@@ -11,10 +11,6 @@
 |
  */
 
-Route::get('/', function () {
-	return view('welcome');
-});
-
 Route::group(['middleware' => 'admin_auth'], function () {
 	Route::get('/publishing/{id}/{val}/{proccess}/{col}/{table}', [
 		'uses' => 'Controller@publishing',

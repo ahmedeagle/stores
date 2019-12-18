@@ -18,11 +18,6 @@ Route::get('/notfound', function(){
 	return view('cpanel.404');
 })->name('404');
 
-Route::get('/', function (){
-    return view('welcome');
-});
-
-
 
 Route::group(['middleware' => ['api_auth'], 'prefix' => 'api'], function() {
     

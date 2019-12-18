@@ -1,5 +1,9 @@
 <?php
 
+Route::get('/', function () {
+	return view('home');
+});
+
 Route::get('hyperpay', function () {
 
     $url = "https://test.oppwa.com/v1/checkouts";
