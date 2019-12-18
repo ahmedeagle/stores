@@ -29,24 +29,10 @@
     <favorites_list name="stores" />
   </component>
   <component name="FileEditorManager">
-    <leaf>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/app/Http/Controllers/ProviderController.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="314">
-              <caret line="3184" column="25" lean-forward="true" selection-start-line="3184" selection-start-column="25" selection-end-line="3184" selection-end-column="25" />
-              <folding>
-                <element signature="e#184#203#0#PHP" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-    </leaf>
+    <leaf />
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>addOr</find>
       <find>intval</find>
       <find>GetProvider</find>
       <find>prepareProviderPage</find>
@@ -76,6 +62,7 @@
       <find>addOrder</find>
       <find>update</find>
       <find>updatePr</find>
+      <find>product_images</find>
     </findStrings>
     <replaceStrings>
       <replace>intval</replace>
@@ -329,12 +316,12 @@
       <workItem from="1576052157292" duration="3368000" />
       <workItem from="1576132982342" duration="2507000" />
       <workItem from="1576399901099" duration="77000" />
-      <workItem from="1576407123435" duration="2799000" />
+      <workItem from="1576407123435" duration="4169000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="171995000" />
+    <option name="totallyTimeSpent" value="173365000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -346,7 +333,8 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1296" height="1000" extended-state="6" />
+    <frame x="-8" y="-8" width="1296" height="1000" extended-state="7" />
+    <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" weight="0.25" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
@@ -363,7 +351,7 @@
       <window_info anchor="bottom" id="Version Control" order="8" weight="0.3298731" />
       <window_info anchor="bottom" id="Database Changes" order="9" />
       <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" />
-      <window_info active="true" anchor="bottom" id="Terminal" order="11" visible="true" weight="0.47404844" />
+      <window_info anchor="bottom" id="Terminal" order="11" weight="0.39561707" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -744,8 +732,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/Http/Controllers/ProviderController.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="314">
-          <caret line="3184" column="25" lean-forward="true" selection-start-line="3184" selection-start-column="25" selection-end-line="3184" selection-end-column="25" />
+        <state relative-caret-position="138">
+          <caret line="3173" column="13" lean-forward="true" selection-start-line="3173" selection-start-column="13" selection-end-line="3173" selection-end-column="13" />
           <folding>
             <element signature="e#184#203#0#PHP" expanded="true" />
           </folding>
