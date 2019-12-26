@@ -198,7 +198,7 @@ class ProviderController extends Controller
 				6 => 'فئة المتجر غير موجوده ',
 				7 => 'الدولة غير موجوده ',
 				8 => 'المدينة غير موجوده ',
-				9 => 'صيغة الهاتف غير صحيحة لابد أن تبدأ ب 05',
+				9 => 'صيغة الهاتف غير صحيحة لابد أن تبدأ ب 05 أو 5',
 
 			);
 
@@ -213,7 +213,7 @@ class ProviderController extends Controller
 				6 => 'membership type not exists',
 				7 => 'country   not exists',
 				8 => 'city  not exists',
-				9 => 'phone number format invalid it must start with 05 ',
+				9 => 'phone number format invalid it must start with 05 or 5',
 
 			);
 		}
@@ -233,7 +233,7 @@ class ProviderController extends Controller
 		$validator = Validator::make($request->all(), [
 			'full_name' => 'required',
 			'store_name' => 'required',
-			'phone' => array('required', 'unique:providers,phone', 'regex:/^(05)([0-9]{8})$/'),
+			'phone' => array('required', 'unique:providers,phone', 'regex:/^(05|5)([0-9])$/'),
 			'country_code' => 'required',
 			'password_confirmation' => 'required',
 			'password' => 'required|min:8|confirmed',
@@ -1219,7 +1219,7 @@ class ProviderController extends Controller
 				11 => 'صيغة رقم الهاتف خطا لابد ان تبدا ب 05 ',
 				12 => 'لابد من ادخال سعر التوصيل',
 				13 => 'طرق التوصيل يجب ان تكون علي شكل مصفوفه ',
-				14 => 'لابد من اهتيار طريقه توصيل واحده ع الاقل ',
+				14 => 'لابد من اختيار طريقه توصيل واحده ع الاقل ',
 				15 => 'التاجر غير موجود ',
 				16 => 'رقم الهاتف موجود من قبل من فضلك ادخل رقم اخر ',
 			);
@@ -1300,12 +1300,12 @@ class ProviderController extends Controller
 
 		if ($input['phone'] != $provider->first()->phone) {
 
-			$rules['phone'] = array('required', 'regex:/^(05)([0-9]{8})$/', 'numeric', 'unique:providers,phone,' . $id . ',provider_id');
+			$rules['phone'] = array('required', 'regex:/^(05|5)([0-9])$/', 'numeric', 'unique:providers,phone,' . $id . ',provider_id');
 			$rules['country_code'] = "required";
 
 		} else {
 
-			$rules['phone'] = array('required', 'regex:/^(05)([0-9]{8})$/', 'numeric');
+			$rules['phone'] = array('required', 'regex:/^(05|5)([0-9])$/', 'numeric');
 			$rules['country_code'] = "required";
 
 		}

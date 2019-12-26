@@ -180,7 +180,7 @@ class DeliveryController extends Controller
 				10 => 'التصنيفات مطلوبه',
 				11 => 'الدولة غير موجوده ',
 				12 => 'المدينة غير موجوده',
-				13 => 'صيغة رقم الهاتف غير صحيحة لابد أن تبدأ ب 05',
+				13 => 'صيغة الهاتف غير صحيحة لابد أن تبدأ ب 05 أو 5',
 				14 => 'كلمتي المرور غير متطابقتان ',
 				15 => 'license_img_ext is required',
 				16 => 'car_form_ext is required',
@@ -203,7 +203,7 @@ class DeliveryController extends Controller
 				10 => 'Categories are required',
 				11 => 'Country not exists',
 				12 => 'City not exists',
-				13 => 'phone format invalid must start with 05',
+				13 => 'phone format invalid must start with 05 or 5',
 				14 => 'password not confirmed',
 				15 => 'license_img_ext is required',
 				16 => 'car_form_ext is required',
@@ -238,7 +238,7 @@ class DeliveryController extends Controller
 			'full_name' => 'required',
 			'country_id' => 'required|exists:country,country_id',
 			'city_id' => 'required|exists:city,city_id',
-			'phone' => array('required', 'unique:deliveries,phone', 'regex:/^(05)([0-9]{8})$/'),
+			'phone' => array('required', 'unique:deliveries,phone', 'regex:/^(05|5)([0-9])$/'),
 
 			'country_code' => 'required',
 			'car_number' => 'required',
@@ -962,7 +962,7 @@ class DeliveryController extends Controller
 				10 => 'التصنيفات مطلوبه',
 				11 => 'الدولة غير موجوده ',
 				12 => 'المدينة غير موجوده',
-				13 => ' صيغه الهاتف غير  صحيحه لابد انت تبدا ب 05',
+				13 => ' صيغة الهاتف غير  صحيحه لابد انت تبدا ب 05أو 5',
 				14 => 'كلمتي المرور غير متطابقتان ',
 				15 => 'license_img_ext is required',
 				16 => 'car_form_ext is required',
@@ -986,7 +986,7 @@ class DeliveryController extends Controller
 				10 => 'Categories are required',
 				11 => 'Country not exists',
 				12 => 'City not exists',
-				13 => 'phone format invalid must start with 05',
+				13 => 'phone format invalid must start with 05 or 5',
 				14 => 'password not confirmed',
 				15 => 'license_img_ext is required',
 				16 => 'car_form_ext is required',
@@ -1067,7 +1067,7 @@ class DeliveryController extends Controller
 
 		if ($inputs['phone'] != $delivery->phone) {
 
-//            $rules['phone'] = array('required', 'numeric', 'regex:/^(05)([0-9]{8})$/', 'unique:deliveries,phone,'. $deliveryId);
+//            $rules['phone'] = array('required', 'numeric', 'regex:/^(05|5)([0-9])$/', 'unique:deliveries,phone,'. $deliveryId);
 			$inputs['status'] = "0";
 
 			$code = $this->generate_random_number(4);
@@ -1087,7 +1087,7 @@ class DeliveryController extends Controller
 
 		} else {
 
-//            $rules['phone'] = array('required', 'numeric', 'regex:/^(05)([0-9]{8})$/');
+//            $rules['phone'] = array('required', 'numeric', 'regex:/^(05|5)([0-9])$/');
 			$isPhoneChanged = false;
 
 		}

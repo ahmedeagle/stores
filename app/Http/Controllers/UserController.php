@@ -145,7 +145,7 @@ class UserController extends Controller
 				27 => 'رقم الدولة غير موجود ',
 				28 => 'قم المدينة غير موجود ',
 				29 => 'لابد من تاكيد كلمة المرور ',
-				30 => 'صيغة رقم الهاتف غير صحيحة لابد أن تبدأ ب 05',
+				30 => 'صيغة رقم الهاتف غير صحيحة لابد أن تبدأ ب 05 أو 5',
 				31 => 'لابد من ادخال امتداد الصوره الشخصية ',
 			);
 			$city_col = "city_ar_name AS city_name";
@@ -179,7 +179,7 @@ class UserController extends Controller
 				27 => 'country  doesn\'t exists',
 				28 => 'city  doesn\'t exists',
 				29 => 'password confirmation required',
-				30 => 'phone number format invalid must start with 05',
+				30 => 'phone number format invalid must start with 05 or 5',
 				31 => 'image_ext is required',
 
 			);
@@ -189,7 +189,7 @@ class UserController extends Controller
 		$rules = [
 			'full_name' => 'required|min:3',
 			// 'email'           => 'required|email|unique:users',
-			'phone' => array('required', 'unique:users,phone', 'regex:/^(05)([0-9]{8})$/'),
+			'phone' => array('required', 'unique:users,phone', 'regex:/^(05|5)([0-9])$/'),
 			'country_code' => 'required',
 			'password' => 'required|min:8|confirmed',
 			'password_confirmation' => 'required',
@@ -950,12 +950,12 @@ class UserController extends Controller
 
 		if ($input['phone'] != $user->first()->phone) {
 
-			$rules['phone'] = array('required', 'numeric', 'regex:/^(05)([0-9]{8})$/', 'unique:users,phone,' . $userId . ',user_id');
+			$rules['phone'] = array('required', 'numeric', 'regex:/^(05|5)([0-9])$/', 'unique:users,phone,' . $userId . ',user_id');
 			$rules['country_code'] = "required";
 
 		} else {
 
-			$rules['phone'] = array('required', 'numeric', 'regex:/^(05)([0-9]{8})$/');
+			$rules['phone'] = array('required', 'numeric', 'regex:/^(05|5)([0-9])$/');
 			$rules['country_code'] = "required";
 
 		}
@@ -1246,6 +1246,97 @@ class UserController extends Controller
 			->get();
 
 		return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[3], "providers" => $providers, 'categories' => $categories]);
+	}
+
+	public function filterStores(Request $request)
+	{
+
+		$lang = $request->input('lang');
+
+		//0 filter by distance   //1 filter by rate   //2 filter by none
+		if ($lang == "ar") {
+
+			$name = 'ar';
+
+			$msg = [
+				1 => 'جميع الحقول مطلوبة ',
+				2 => 'تمت العملية بنجاح ',
+			];
+
+		} else {
+
+			$name = 'en';
+
+			$msg = [
+				1 => 'all fields required',
+				2 => 'done successfully',
+			];
+		}
+
+		$rules = [
+			"searchQuery" => "required",
+		];
+
+		$messages = [
+			"required" => 1,
+		];
+
+		$validator = Validator::make($request->all(), $rules, $messages);
+		if ($validator->fails()) {
+			$error = $validator->errors()->first();
+			return response()->json(['status' => false, 'errNum' => (int)$error, 'msg' => $msg[$error]]);
+		}
+
+		$type = 0;
+
+		$pagianted_providers = DB::table("categories")
+			->join("providers", "providers.category_id", "categories.cat_id")
+			->where("providers.publish", 1)
+			->where("providers.store_name", 'LIKE', '%' . $request->searchQuery . '%')
+			->select(
+				"providers.provider_id",
+				"providers.category_id",
+				"providers.store_name AS store_name",
+				"providers.provider_rate",
+				"providers.membership_id",
+				"providers.latitude",
+				"providers.longitude",
+				"providers.token AS access_token",
+				DB::raw("CONCAT('" . env('APP_URL') . "','/public/providerProfileImages/',providers.profile_pic) AS provider_image"),
+				DB::raw("CONCAT('" . env('APP_URL') . "','/public/categoriesImages/',categories.cat_img) AS cat_image")
+			)
+			->groupBy("providers.provider_id")
+			->paginate(10);
+
+		(new HomeController())->filter_providers($request, $name, $pagianted_providers, $type);
+
+		if ($type == 0) {
+			// filter based on distance by nearest
+
+			$providers = $pagianted_providers->filter(function ($item) {
+				$desiredDistance = 100;
+				return $item->distance < $desiredDistance;
+			})->values();
+
+		} else {
+			// filter by rate
+			$providers = $pagianted_providers->sortByDesc(function ($item) {
+				return $item->averageRate;
+			})->values();
+		}
+
+		//used to make pagination from collection
+
+		$providers = new LengthAwarePaginator(
+			$providers,
+			$providers->count(),
+			$pagianted_providers->perPage(),
+			$request->input("page"),
+			["path" => url()->current()]
+
+		);
+
+		return response()->json(['status' => true, 'errNum' => 0, 'msg' => $msg[2], "providers" => $providers]);
 	}
 
 	public function prepareProviderPage(Request $request)
@@ -2024,7 +2115,7 @@ class UserController extends Controller
 			'access_token' => 'required',
 			'latitude' => 'required',
 			'longitude' => 'required',
-			'phone' => array('required', 'numeric', 'regex:/^(05)([0-9]{8})$/'),
+			'phone' => array('required', 'numeric', 'regex:/^(05|5)([0-9])$/'),
 			'country_code' => 'required',
 		], $messeges);
 
@@ -2325,7 +2416,7 @@ class UserController extends Controller
 
 		$validator = Validator::make($request->all(), [
 			'name' => 'required',
-			'phone' => array('required', 'regex:/^(05)([0-9]{8})$/'),
+			'phone' => array('required', 'regex:/^(05|5)([0-9])$/'),
 			'country_code' => 'required',
 			'access_token' => 'required',
 			'cv' => 'required',
@@ -2689,7 +2780,7 @@ class UserController extends Controller
 				->select("quantity")
 				->first();
 
-			if (!empty($products[$i]['qty']) && intval ($products[$i]['qty']) > intval ($quantity_in_stock->quantity)) {
+			if (!empty($products[$i]['qty']) && intval($products[$i]['qty']) > intval($quantity_in_stock->quantity)) {
 				return response()->json(['status' => false, 'errNum' => 4, 'msg' => $msg[24]]);
 			}
 
@@ -3028,7 +3119,7 @@ class UserController extends Controller
 					DB::table('products')
 						->where('id', $productsArr[$i]['product_id'])
 						->update([
-							'quantity' => intval ($quantity_in_stock->quantity) - intval ($productsArr[$i]['qty']),
+							'quantity' => intval($quantity_in_stock->quantity) - intval($productsArr[$i]['qty']),
 						]);
 
 					###### End Update Product Quantity In Stock #######
