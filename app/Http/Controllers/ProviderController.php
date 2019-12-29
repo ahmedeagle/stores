@@ -154,6 +154,7 @@ class ProviderController extends Controller
 
         //get delivery Methods available
         $delivery_methods = DB::table("delivery_methods")
+            ->where('method_id', '!=', '3')
             ->select('method_id', $delivery_method_col)
             ->get();
 
