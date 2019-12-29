@@ -48,6 +48,7 @@ return array(
     'App\\Http\\Controllers\\UserController' => $baseDir . '/app/Http/Controllers/UserController.php',
     'App\\Http\\Kernel' => $baseDir . '/app/Http/Kernel.php',
     'App\\Http\\Middleware\\AuthenticateAdmin' => $baseDir . '/app/Http/Middleware/AuthenticateAdmin.php',
+    'App\\Http\\Middleware\\CheckPhone' => $baseDir . '/app/Http/Middleware/CheckPhone.php',
     'App\\Http\\Middleware\\EncryptCookies' => $baseDir . '/app/Http/Middleware/EncryptCookies.php',
     'App\\Http\\Middleware\\RedirectIfAdminAuthenticated' => $baseDir . '/app/Http/Middleware/RedirectIfAdminAuthenticated.php',
     'App\\Http\\Middleware\\RedirectIfAuthenticated' => $baseDir . '/app/Http/Middleware/RedirectIfAuthenticated.php',

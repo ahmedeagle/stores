@@ -498,6 +498,8 @@ class UserController extends Controller
 
         $lang = $request->input('lang');
 
+        dd($request->phone);
+
         if ($lang == "ar") {
             $msg = array(
                 0 => 'تم الدخول',

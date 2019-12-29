@@ -7,7 +7,7 @@ use Illuminate\Foundation\Http\Kernel as HttpKernel;
 class Kernel extends HttpKernel
 {
     /**
-     ~ edit
+     * ~ edit
      * The application's global HTTP middleware stack.
      *
      * These middleware are run during every request to your application.
@@ -19,7 +19,7 @@ class Kernel extends HttpKernel
         \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
         \App\Http\Middleware\TrimStrings::class,
         \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
-        
+
     ];
 
     /**
@@ -60,6 +60,7 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'admin_auth' => \App\Http\Middleware\AuthenticateAdmin::class,
         'admin_guest' => \App\Http\Middleware\RedirectIfAdminAuthenticated::class,
-        'api_auth'    => \App\Http\Middleware\api_auth::class,
+        'api_auth' => \App\Http\Middleware\api_auth::class,
+        'CheckPhone' => \App\Http\Middleware\CheckPhone::class,
     ];
 }
