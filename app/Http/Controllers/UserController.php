@@ -189,7 +189,7 @@ class UserController extends Controller
         $rules = [
             'full_name' => 'required|min:3',
             // 'email'           => 'required|email|unique:users',
-            'phone' => array('required', 'unique:users,phone', 'regex:/^(05|5)([0-9])$/'),
+            'phone' => array('required', 'unique:users,phone' /*, 'regex:/^(05|5)([0-9])$/'*/),
             'country_code' => 'required',
             'password' => 'required|min:8|confirmed',
             'password_confirmation' => 'required',
@@ -950,12 +950,13 @@ class UserController extends Controller
 
         if ($input['phone'] != $user->first()->phone) {
 
-            $rules['phone'] = array('required', 'numeric', 'regex:/^(05|5)([0-9])$/', 'unique:users,phone,' . $userId . ',user_id');
+            $rules['phone'] = array('required', 'numeric', /*'regex:/^(05|5)([0-9])$/',*/
+                'unique:users,phone,' . $userId . ',user_id');
             $rules['country_code'] = "required";
 
         } else {
 
-            $rules['phone'] = array('required', 'numeric', 'regex:/^(05|5)([0-9])$/');
+            $rules['phone'] = array('required', 'numeric', /*'regex:/^(05|5)([0-9])$/'*/);
             $rules['country_code'] = "required";
 
         }
@@ -2115,7 +2116,7 @@ class UserController extends Controller
             'access_token' => 'required',
             'latitude' => 'required',
             'longitude' => 'required',
-            'phone' => array('required', 'numeric', 'regex:/^(05|5)([0-9])$/'),
+            'phone' => array('required', 'numeric', /*'regex:/^(05|5)([0-9])$/'*/),
             'country_code' => 'required',
         ], $messeges);
 
@@ -2416,7 +2417,7 @@ class UserController extends Controller
 
         $validator = Validator::make($request->all(), [
             'name' => 'required',
-            'phone' => array('required', 'regex:/^(05|5)([0-9])$/'),
+            'phone' => array('required', /*'regex:/^(05|5)([0-9])$/'*/),
             'country_code' => 'required',
             'access_token' => 'required',
             'cv' => 'required',

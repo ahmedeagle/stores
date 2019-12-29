@@ -238,7 +238,7 @@ class DeliveryController extends Controller
 			'full_name' => 'required',
 			'country_id' => 'required|exists:country,country_id',
 			'city_id' => 'required|exists:city,city_id',
-			'phone' => array('required', 'unique:deliveries,phone', 'regex:/^(05|5)([0-9])$/'),
+			'phone' => array('required', 'unique:deliveries,phone'/*, 'regex:/^(05|5)([0-9])$/'*/),
 
 			'country_code' => 'required',
 			'car_number' => 'required',

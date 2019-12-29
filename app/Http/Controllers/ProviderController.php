@@ -234,7 +234,7 @@ class ProviderController extends Controller
         $validator = Validator::make($request->all(), [
             'full_name' => 'required',
             'store_name' => 'required',
-            'phone' => array('required', 'unique:providers,phone', 'regex:/^(05|5)([0-9])$/'),
+            'phone' => array('required', 'unique:providers,phone', /*'regex:/^(05|5)([0-9])$/'*/),
             'country_code' => 'required',
             'password_confirmation' => 'required',
             'password' => 'required|min:8|confirmed',
@@ -1301,12 +1301,12 @@ class ProviderController extends Controller
 
         if ($input['phone'] != $provider->first()->phone) {
 
-            $rules['phone'] = array('required', 'regex:/^(05|5)([0-9])$/', 'numeric', 'unique:providers,phone,' . $id . ',provider_id');
+            $rules['phone'] = array('required' /*, 'regex:/^(05|5)([0-9])$/'*/, 'numeric', 'unique:providers,phone,' . $id . ',provider_id');
             $rules['country_code'] = "required";
 
         } else {
 
-            $rules['phone'] = array('required', 'regex:/^(05|5)([0-9])$/', 'numeric');
+            $rules['phone'] = array('required' /*, 'regex:/^(05|5)([0-9])$/'*/, 'numeric');
             $rules['country_code'] = "required";
 
         }
