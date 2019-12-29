@@ -2,15 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="661b7e20-c39c-40c9-a1b6-c0928f1d6fc1" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/composerJson.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/Admin/HomeController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/Admin/HomeController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/DeliveryController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/DeliveryController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/Http/Controllers/ProviderController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/ProviderController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/Http/Controllers/UserController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/UserController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/cpanel/home.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/cpanel/home.blade.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/routes/user.php" beforeDir="false" afterPath="$PROJECT_DIR$/routes/user.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/storage/framework/views/3b907fd995c7091656da28dd8c202a2ba69374bf.php" beforeDir="false" afterPath="$PROJECT_DIR$/storage/framework/views/3b907fd995c7091656da28dd8c202a2ba69374bf.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/storage/framework/views/b909859ac44dd3dd56002fd4d6860cd5f830a341.php" beforeDir="false" afterPath="$PROJECT_DIR$/storage/framework/views/b909859ac44dd3dd56002fd4d6860cd5f830a341.php" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -39,11 +35,10 @@
     <favorites_list name="stores" />
   </component>
   <component name="FileEditorManager">
-    <leaf />
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300" />
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>abort</find>
       <find>updatePro</find>
       <find>page</find>
       <find>.red-bc</find>
@@ -73,6 +68,7 @@
       <find>05</find>
       <find>getCate</find>
       <find>regex:/^(05|5)([0-9]{8})$/</find>
+      <find>filterStores</find>
     </findStrings>
     <replaceStrings>
       <replace>intval</replace>
@@ -122,10 +118,10 @@
         <option value="$PROJECT_DIR$/resources/views/home.blade.php" />
         <option value="$PROJECT_DIR$/app/Http/Controllers/Admin/HomeController.php" />
         <option value="$PROJECT_DIR$/resources/views/cpanel/home.blade.php" />
-        <option value="$PROJECT_DIR$/routes/user.php" />
-        <option value="$PROJECT_DIR$/app/Http/Controllers/UserController.php" />
-        <option value="$PROJECT_DIR$/app/Http/Controllers/ProviderController.php" />
         <option value="$PROJECT_DIR$/app/Http/Controllers/DeliveryController.php" />
+        <option value="$PROJECT_DIR$/app/Http/Controllers/UserController.php" />
+        <option value="$PROJECT_DIR$/routes/user.php" />
+        <option value="$PROJECT_DIR$/app/Http/Controllers/ProviderController.php" />
       </list>
     </option>
   </component>
@@ -260,17 +256,17 @@
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/app/Http" />
-    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
+    <property name="settings.editor.selected.configurable" value="editor.preferences.fonts.default" />
   </component>
   <component name="RecentsManager">
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="E:\xampp\htdocs\stores\app" />
-    </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="E:\xampp\htdocs\stores\app\Http" />
       <recent name="E:\xampp\htdocs\stores\resources\views\cpanel\pages" />
       <recent name="E:\xampp\htdocs\stores\resources\views\cpanel" />
       <recent name="E:\xampp\htdocs\stores\app\Http\Controllers\Admin" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="E:\xampp\htdocs\stores\app" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -334,12 +330,17 @@
       <workItem from="1576399901099" duration="77000" />
       <workItem from="1576407123435" duration="4169000" />
       <workItem from="1576658949514" duration="3425000" />
-      <workItem from="1577367209287" duration="4461000" />
+      <workItem from="1577367209287" duration="5461000" />
+      <workItem from="1577609545690" duration="250000" />
+      <workItem from="1577609978629" duration="13000" />
+      <workItem from="1577610101914" duration="4000" />
+      <workItem from="1577610208870" duration="527000" />
+      <workItem from="1577610781323" duration="1280000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="181251000" />
+    <option name="totallyTimeSpent" value="184325000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -353,7 +354,7 @@
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1296" height="1000" extended-state="6" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" weight="0.2540453" />
+      <window_info content_ui="combo" id="Project" order="0" weight="0.25809062" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="npm" order="2" side_tool="true" weight="0.32928804" />
       <window_info id="Favorites" order="3" side_tool="true" weight="0.32928804" />
@@ -368,7 +369,7 @@
       <window_info anchor="bottom" id="Version Control" order="8" weight="0.3298731" />
       <window_info anchor="bottom" id="Database Changes" order="9" />
       <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" />
-      <window_info active="true" anchor="bottom" id="Terminal" order="11" visible="true" weight="0.2768166" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="11" visible="true" weight="0.25951558" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -713,16 +714,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/routes/user.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="310">
-          <caret line="79" column="64" lean-forward="true" selection-start-line="79" selection-start-column="64" selection-end-line="79" selection-end-column="64" />
-          <folding>
-            <element signature="e#7#448#0#PHP" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/Http/Controllers/DeliveryController.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="134">
@@ -733,22 +724,29 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/Http/Controllers/ProviderController.php">
+    <entry file="file://$PROJECT_DIR$/app/Http/Controllers/UserController.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="342">
-          <caret line="1307" column="69" selection-start-line="1307" selection-start-column="69" selection-end-line="1307" selection-end-column="69" />
+        <state relative-caret-position="216">
+          <caret line="1687" column="52" selection-start-line="1687" selection-start-column="52" selection-end-line="1687" selection-end-column="52" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/routes/user.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-7">
+          <caret line="59" column="30" selection-start-line="59" selection-start-column="30" selection-end-line="59" selection-end-column="30" />
           <folding>
-            <element signature="e#184#203#0#PHP" expanded="true" />
+            <element signature="e#7#448#0#PHP" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/Http/Controllers/UserController.php">
+    <entry file="file://$PROJECT_DIR$/app/Http/Controllers/ProviderController.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="262">
-          <caret line="2418" column="62" selection-start-line="2418" selection-start-column="62" selection-end-line="2418" selection-end-column="62" />
+        <state relative-caret-position="306">
+          <caret line="1305" column="16" lean-forward="true" selection-start-line="1305" selection-start-column="16" selection-end-line="1305" selection-end-column="16" />
           <folding>
-            <element signature="e#30475#34539#0#PHP" />
+            <element signature="e#184#203#0#PHP" expanded="true" />
           </folding>
         </state>
       </provider>
