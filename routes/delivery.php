@@ -11,7 +11,7 @@ Web Routes
 |
  */
 
-Route::group(['middleware' => ['api_auth'], 'prefix' => 'api'], function () {
+Route::group(['middleware' => ['api_auth', 'CheckPhone'], 'prefix' => 'api'], function () {
 
     Route::post('/deliveryPrepareSignUp', 'DeliveryController@prepareSignUp');
     Route::get('/deliveryPrepareSignUp', 'DeliveryController@echoEmpty');

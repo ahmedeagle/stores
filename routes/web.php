@@ -30,7 +30,7 @@ Route::get('hyperpay', function () {
 
 });
 
-Route::group(['middleware' => ['api_auth'], 'prefix' => 'api'], function () {
+Route::group(['middleware' => ['api_auth', 'CheckPhone'], 'prefix' => 'api'], function () {
 
     //////////////////tickets apis //////////////////
 

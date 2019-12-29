@@ -19,7 +19,7 @@ Route::get('/notfound', function(){
 })->name('404');
 
 
-Route::group(['middleware' => ['api_auth'], 'prefix' => 'api'], function() {
+Route::group(['middleware' => ['api_auth', 'CheckPhone'], 'prefix' => 'api'], function() {
     
     
     	//crons
