@@ -16,7 +16,7 @@ class CheckPhone
     public function handle($request, Closure $next)
     {
         if ($request->has('phone')){
-            return $request->phone = intval($request->get('phone'));
+            $request->phone = intval($request->get('phone'));
         }
         return $next($request);
     }
